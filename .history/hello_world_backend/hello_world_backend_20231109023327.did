@@ -1,0 +1,7 @@
+service : {
+    "is_mod": (text) -> (bool) query;
+     "create_profile": (text) -> ();
+    "join_tournament": (text,text) -> ();
+    "end_tournament": (text,vec text) -> ();
+    "start_tournament": (text) -> ();
+}

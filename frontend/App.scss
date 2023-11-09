@@ -1,0 +1,312 @@
+@font-face {
+  font-family: "valorant";
+  src: url("./fonts/valorant-Font.ttf");
+}
+
+.heroHeading,
+.heading2 {
+  font-family: "valorant";
+}
+
+.wallet-adapter-button-trigger {
+  background-color: #f6b8fc !important;
+  color: #01070e !important;
+  border-radius: 9999px !important;
+  border: none !important;
+}
+/* PAGINATION BUTTONS */
+
+.paginationBttns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+}
+.paginationBttns li {
+  text-decoration: none;
+  list-style-type: none;
+}
+
+.paginationBttns a {
+  padding: 5px;
+  margin: 4px;
+  color: #808080;
+}
+
+.paginationBttns a:hover {
+  color: rgba(249, 142, 45, 0.5);
+}
+
+.activeBttn a {
+  color: rgba(249, 142, 45, 0.5);
+}
+
+.chatboxLayout {
+  width: 100%;
+  display: flex;
+  overflow-y: scroll;
+  height: 5rem;
+}
+
+.chatboxLayout::-webkit-scrollbar {
+  width: 0.2rem;
+}
+
+.chatboxLayout::-webkit-scrollbar-track {
+  border-radius: 9999px;
+}
+
+.chatboxLayout::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+}
+
+// Antd table css styles
+
+thead[class*="ant-table-thead"] th {
+  background-color: #01070e !important;
+}
+// tbody > tr > td {
+//   background-color: #081729;
+// }
+
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  background-color: #1d4372 !important;
+}
+.ant-table-tbody > tr.ant-table-row > td {
+  border-color: #01070e;
+  border-width: 15px;
+}
+.ant-table-thead > tr > th {
+  border: none !important;
+}
+
+// .ant-picker-cell {
+//   color: white !important;
+// }
+
+.ant-table {
+  background-color: #01070e !important;
+}
+
+.rowClassName1 {
+  border-radius: 10px;
+}
+
+.rowClassName1 td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.rowClassName1 td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+// GLOW BUTTON
+
+:root {
+  --glow-color: #f6b8fc;
+}
+
+.glowing-btn {
+  position: relative;
+  color: var(--glow-color);
+  cursor: pointer;
+  padding: 0.35em 1em;
+  border: 0.15em solid var(--glow-color);
+  border-radius: 0.45em;
+  background: none;
+  perspective: 2em;
+  font-family: "Raleway", sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  margin: 2rem 0 0 0;
+  width: 100%;
+
+  -webkit-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+    0px 0px 0.5em 0px var(--glow-color);
+  -moz-box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+    0px 0px 0.5em 0px var(--glow-color);
+  box-shadow: inset 0px 0px 0.5em 0px var(--glow-color),
+    0px 0px 0.5em 0px var(--glow-color);
+  animation: border-flicker 2s linear infinite;
+}
+
+.glowing-txt {
+  float: left;
+  // margin-right: -0.8em;
+  -webkit-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
+    0 0 0.45em var(--glow-color);
+  -moz-text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3),
+    0 0 0.45em var(--glow-color);
+  text-shadow: 0 0 0.125em hsl(0 0% 100% / 0.3), 0 0 0.45em var(--glow-color);
+  animation: text-flicker 3s linear infinite;
+  font-size: 1rem;
+}
+
+.faulty-letter {
+  opacity: 0.5;
+  animation: faulty-flicker 2s linear infinite;
+}
+
+.glowing-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0.7;
+  filter: blur(1em);
+  transform: translateY(120%) rotateX(95deg) scale(1, 0.35);
+  background: var(--glow-color);
+  pointer-events: none;
+}
+
+.glowing-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  z-index: -1;
+  background-color: var(--glow-color);
+  box-shadow: 0 0 2em 0.2em var(--glow-color);
+  transition: opacity 100ms linear;
+}
+
+.glowing-btn:hover {
+  color: rgba(0, 0, 0, 0.8);
+  text-shadow: none;
+  animation: none;
+}
+
+.glowing-btn:hover .glowing-txt {
+  animation: none;
+}
+
+.glowing-btn:hover .faulty-letter {
+  animation: none;
+  text-shadow: none;
+  opacity: 1;
+}
+
+.glowing-btn:hover:before {
+  filter: blur(1.5em);
+  opacity: 1;
+}
+
+.glowing-btn:hover:after {
+  opacity: 1;
+}
+
+@keyframes faulty-flicker {
+  0% {
+    opacity: 0.1;
+  }
+  2% {
+    opacity: 0.1;
+  }
+  4% {
+    opacity: 0.5;
+  }
+  19% {
+    opacity: 0.5;
+  }
+  21% {
+    opacity: 0.1;
+  }
+  23% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.5;
+  }
+  83% {
+    opacity: 0.4;
+  }
+
+  87% {
+    opacity: 1;
+  }
+}
+
+@keyframes text-flicker {
+  0% {
+    opacity: 0.1;
+  }
+
+  2% {
+    opacity: 1;
+  }
+
+  8% {
+    opacity: 0.1;
+  }
+
+  9% {
+    opacity: 1;
+  }
+
+  12% {
+    opacity: 0.1;
+  }
+  20% {
+    opacity: 1;
+  }
+  25% {
+    opacity: 0.3;
+  }
+  30% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 0.7;
+  }
+  72% {
+    opacity: 0.2;
+  }
+
+  77% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes border-flicker {
+  0% {
+    opacity: 0.1;
+  }
+  2% {
+    opacity: 1;
+  }
+  4% {
+    opacity: 0.1;
+  }
+
+  8% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .glowing-btn {
+    font-size: 1em;
+  }
+}
