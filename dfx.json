@@ -5,6 +5,15 @@
       "package": "hello_world_backend",
       "type": "rust"
     },
+    "bloc_ledger":{
+      "main": "bloc_ledger/main.mo",
+      "type": "motoko"
+    },
+    "bloc":{
+      "main": "bloc/main.mo",
+      "type": "motoko",
+      "dependencies": ["hello_world_backend"]
+    },
     "assets": {
       "dependencies": ["hello_world_backend"],
       "frontend": {
