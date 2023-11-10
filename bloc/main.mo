@@ -6,29 +6,57 @@ import RustBloc "canister:hello_world_backend";
 import Cycles "mo:base/ExperimentalCycles";
 import Principal "mo:base/Principal";
 import Error "mo:base/Error";
+import Nat8 "mo:base/Nat8";
 import Debug "mo:base/Debug";
 
 actor class BlocFactory() = this {
 
 
  type UserProfile = {
-    id_hash: Text;
-    age: Nat;
-    date: Text;
-    status: Status;
-    wins: Nat;
-    tournaments_created :Nat;
+    age : Nat8;
+    id_hash : Text;
+    status : Status;
     username : Text;
+    date : Text;
+    wins : Nat8;
     is_mod : Bool;
+    tournaments_created : Nat8;
 };
+
+type TournamentAccount = {
+  idx : Nat8;
+  id_hash : Text;
+  status : TournamentStatus;
+  creator : Text;
+  game : Text;
+  user : [Text];
+  winers : [Text];
+  total_prize : Nat;
+  tournament_rules : Text;
+  starting_date : Text;
+  tournament_type : TournamentType;
+  entry_prize : Nat8;
+};
+
+type TournamentType = {
+    #Prepaid;
+    #Crowdfunded;
+};
+
+type TournamentStatus = {
+    #AcceptingPlayers;
+    #GameInProgress;
+    #GameCompleted;
+};
+
 
 type Status = {  
     #Online;
     #Offline;
 };
 
-    public func create_profile(username : Text) : () {
-        await RustBloc.create_profile(username);
+    public func create_profile(profile : UserProfile) : () {
+        await RustBloc.create_profile(profile);
     };
 
   private stable var canisterId : ?Principal = null;

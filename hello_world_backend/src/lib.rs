@@ -87,13 +87,13 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
 }
 
 #[update]
-fn create_tournament(tournament: TournamentAccount) ->  Result<(u8),u8>{
+fn create_tournament(tournament: TournamentAccount) ->  Result<u8,u8>{
     let id_hash = tournament.clone().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
         tournament_store.borrow_mut().insert(id_hash, tournament);
     });
-    Ok((1))
+    Ok(1)
 }
 
 #[update]
