@@ -4,3 +4,7 @@ dist
 dist-ssr
 *.local
 .dfx
+
+target
+
+src/declarations
