@@ -54,7 +54,7 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile) {
+fn create_profile(profile: UserProfile) -> Result<(u8),u8> {
     let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
@@ -64,6 +64,7 @@ fn create_profile(profile: UserProfile) {
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal_id, profile);
     });
+    Ok((1))
 }
 
 
@@ -86,12 +87,13 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
 }
 
 #[update]
-fn create_tournament(tournament: TournamentAccount) {
+fn create_tournament(tournament: TournamentAccount) ->  Result<(u8),u8>{
     let id_hash = tournament.clone().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
         tournament_store.borrow_mut().insert(id_hash, tournament);
     });
+    Ok((1))
 }
 
 #[update]

@@ -1,0 +1,13 @@
+/Users/ola/Documents/Github/Gamebloc-ICP/target/debug/deps/quote-7333c59497be7103.rmeta: /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/lib.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ext.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/format.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ident_fragment.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/to_tokens.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/runtime.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/spanned.rs
+
+/Users/ola/Documents/Github/Gamebloc-ICP/target/debug/deps/libquote-7333c59497be7103.rlib: /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/lib.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ext.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/format.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ident_fragment.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/to_tokens.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/runtime.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/spanned.rs
+
+/Users/ola/Documents/Github/Gamebloc-ICP/target/debug/deps/quote-7333c59497be7103.d: /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/lib.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ext.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/format.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ident_fragment.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/to_tokens.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/runtime.rs /Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/spanned.rs
+
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/lib.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ext.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/format.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/ident_fragment.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/to_tokens.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/runtime.rs:
+/Users/ola/.cargo/registry/src/github.com-1ecc6299db9ec823/quote-1.0.33/src/spanned.rs:
