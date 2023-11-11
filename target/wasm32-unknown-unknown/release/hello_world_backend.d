@@ -1,1 +1,0 @@
-/Users/macbookpro/Documents/GitHub/Gamebloc-ICP/target/wasm32-unknown-unknown/release/hello_world_backend.wasm: /Users/macbookpro/Documents/GitHub/Gamebloc-ICP/hello_world_backend/src/lib.rs /Users/macbookpro/Documents/GitHub/Gamebloc-ICP/hello_world_backend/src/model.rs
