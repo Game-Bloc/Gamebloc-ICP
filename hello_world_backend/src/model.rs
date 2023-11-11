@@ -1,4 +1,6 @@
 use crate::*;
+
+
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct UserProfile {
     pub id_hash: String,
@@ -9,6 +11,7 @@ pub struct UserProfile {
     pub tournaments_created:u8,
     pub username: String,
     pub is_mod: bool,
+
 }
 
 #[derive(Clone,Debug, Default, CandidType, Deserialize, Serialize)]

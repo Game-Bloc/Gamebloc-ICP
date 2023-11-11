@@ -2,6 +2,7 @@
 import IC "types";
 
 import RustBloc "canister:hello_world_backend";
+import Kitchen "kitchen";
 
 import Cycles "mo:base/ExperimentalCycles";
 import Principal "mo:base/Principal";
@@ -9,7 +10,7 @@ import Error "mo:base/Error";
 import Nat8 "mo:base/Nat8";
 import Debug "mo:base/Debug";
 
-actor class BlocFactory() = this {
+shared ({caller}) actor class BlocFactory() = this {
 
 
  type UserProfile = {
@@ -55,8 +56,68 @@ type Status = {
     #Offline;
 };
 
-    public func create_profile(profile : UserProfile) : () {
-        await RustBloc.create_profile(profile);
+    public shared({caller}) func create_profile(profile : UserProfile) : async Principal {
+        let userCanister : ?Principal = await getCanisterID();
+        Cycles.add(10_000_000_000);
+        switch (userCanister) {
+            case(null){
+                throw Error.reject("initialization error");
+            }; case (?userCanister) {
+                Cycles.add(10_000_000_000);
+                let userHandler = await Kitchen.Kitchen();
+
+                let userId = await userHandler.createUser(caller);
+                userHandler.createProfile(profile);
+
+                let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
+
+                let createResult = await ic.create_canister(({
+                    settings = ?{
+                        controllers = controllers;
+                        freezing_threshold = null;
+                        memory_allocation = null;
+                        compute_allocation = null;
+
+                    };
+                }));
+            return createResult.canister_id;
+            };
+        };
+
+        // await RustBloc.create_profile(profile);
+    };
+
+    public shared({caller}) func create_provisional_profile(profile : UserProfile) : async Principal {
+        let userCanister : ?Principal = await getCanisterID();
+        Cycles.add(10_000_000_000);
+        switch (userCanister) {
+            case(null){
+                throw Error.reject("initialization error");
+            }; case (?userCanister) {
+                Cycles.add(10_000_000_000);
+                let userHandler = await Kitchen.Kitchen();
+
+                let userId : Principal = await userHandler.createUser(caller);
+                userHandler.createProfile(profile);
+
+                let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
+
+                let createResult = await ic.provisional_create_canister_with_cycles(({
+                    // canister_id = userId;
+                    settings = ?{
+                        controllers = controllers;
+                        freezing_threshold = null;
+                        memory_allocation = null;
+                        compute_allocation = null;
+
+                    };
+                    amount = ?1000000000;
+                }));
+            return createResult.canister_id;
+            };
+        };
+
+        // await RustBloc.create_profile(profile);
     };
 
   private stable var canisterId : ?Principal = null;
@@ -69,6 +130,24 @@ type Status = {
 
     canisterId;
   };
+
+  private stable var canisterID : Principal = caller;
+
+  public func getOwner() : async Principal {
+        canisterID;
+    };
+
+    public shared ({caller}) func getCanisterID() : async ?Principal {
+        ?caller;
+    };
+
+    public func get() : async Principal {
+        Principal.fromActor(this);
+    };
+
+    public shared ({caller}) func getOwner2() : async Principal {
+        canisterID;
+    };
 
   // public shared ({ caller }) func init() : async (Principal) {
   //   Cycles.add(1_000_000_000_000);
@@ -158,12 +237,12 @@ type Status = {
         let controllers : ?[Principal] : ?[Principal] = ?[caller, controller];
 
         let createResult = await ic.create_canister(({
-          settings = ?{
-            controllers = controllers;
-            freezing_threshold = null;
-            memory_allocation = null;
-            compute_allocation = null;
-          };
+            settings = ?{
+                controllers = controllers;
+                freezing_threshold = null;
+                memory_allocation = null;
+                compute_allocation = null;
+            };
         }));
         return createResult.canister_id;
       };
