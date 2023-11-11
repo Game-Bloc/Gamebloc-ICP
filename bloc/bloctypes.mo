@@ -8,6 +8,9 @@ module {
         wins : Nat8;
         is_mod : Bool;
         tournaments_created : Nat8;
+        canister_id : Principal;
+        principal : Principal;
+
     };
 
     public type TournamentAccount = {
