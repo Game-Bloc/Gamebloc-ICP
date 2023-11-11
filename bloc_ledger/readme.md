@@ -17,7 +17,6 @@
 ```export TOKEN_NAME="ICP"```
 ```export TOKEN_SYMBOL="ICP"```
 
-```# dfx canister uninstall-code icp_ledger```
 
 ```dfx deploy icp_ledger --argument "(variant {Init =record {minting_account = \"${MINT_ACC}\";
 initial_values = vec { record {  \"${LEDGER_ACC}\";

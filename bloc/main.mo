@@ -58,7 +58,7 @@ type Status = {
 };
 
     // deprecated
-    public shared({caller}) func create_profile(profile : UserProfile) : async Principal {
+    private shared({caller}) func deprecated_create_profile(profile : UserProfile) : async Principal {
         let userCanister : ?Principal = await getCanisterID();
         Cycles.add(10_000_000_000);
         switch (userCanister) {
