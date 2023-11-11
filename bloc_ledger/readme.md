@@ -5,7 +5,7 @@
 ```export MINT_ACC```
 
 
-```dfx identity use default```#you can use your own user, but not minter sha
+```dfx identity use default``` 
 ```LEDGER_ACC=$(dfx ledger account-id)```
 ```export LEDGER_ACC```
 
