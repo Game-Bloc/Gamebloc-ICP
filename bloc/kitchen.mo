@@ -28,6 +28,8 @@ shared ({caller}) actor class Kitchen() {
         await RustBloc.create_profile(profile);
     };
 
+    // public func 
+
 
 
 }
