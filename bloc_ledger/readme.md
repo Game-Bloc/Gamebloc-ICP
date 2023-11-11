@@ -15,7 +15,7 @@
 
 
 ```export TOKEN_NAME="ICP"```
-```export TOKEN_SYMBOL="ICP"```
+```export TOKEN_NAME="ICP"```
 
 
 ```dfx deploy icp_ledger --argument "(variant {Init =record {minting_account = \"${MINT_ACC}\";

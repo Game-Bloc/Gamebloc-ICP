@@ -15,6 +15,12 @@
       "type": "motoko",
       "dependencies": ["hello_world_backend"]
     },
+    "bloc":{
+      "main": "bloc/main.mo",
+      "type": "motoko",
+      "dependencies": ["hello_world_backend", "kitchen"]
+    },
+
 
     "icp_ledger": {
       "type": "custom",
@@ -27,12 +33,7 @@
       }
     },
 
-    "bloc":{
-      "main": "bloc/main.mo",
-      "type": "motoko",
-      "dependencies": ["hello_world_backend", "kitchen"]
-    },
-
+    
     "assets": {
       "dependencies": ["hello_world_backend"],
       "frontend": {
