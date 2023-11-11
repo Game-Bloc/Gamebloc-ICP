@@ -54,7 +54,7 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile) -> Result<(u8),u8> {
+fn create_profile(profile: UserProfile) -> Result<u8,u8> {
     let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
@@ -64,7 +64,7 @@ fn create_profile(profile: UserProfile) -> Result<(u8),u8> {
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal_id, profile);
     });
-    Ok((1))
+    Ok(1)
 }
 
 

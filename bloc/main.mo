@@ -1,5 +1,6 @@
 // import Bloc "./bloc";
 import IC "types";
+import BlocTypes "bloctypes";
 
 import RustBloc "canister:hello_world_backend";
 import Kitchen "kitchen";
@@ -56,6 +57,7 @@ type Status = {
     #Offline;
 };
 
+    // deprecated
     public shared({caller}) func create_profile(profile : UserProfile) : async Principal {
         let userCanister : ?Principal = await getCanisterID();
         Cycles.add(10_000_000_000);
@@ -67,7 +69,7 @@ type Status = {
                 let userHandler = await Kitchen.Kitchen();
 
                 let userId = await userHandler.createUser(caller);
-                userHandler.createProfile(profile);
+                // userHandler.createProfile(profile);
 
                 let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
 
@@ -87,7 +89,7 @@ type Status = {
         // await RustBloc.create_profile(profile);
     };
 
-    public shared({caller}) func create_provisional_profile(profile : UserProfile) : async Principal {
+    public shared({caller}) func create_provisional_profile(id_hash : Text, age : Nat8, username: Text) : async Principal {
         let userCanister : ?Principal = await getCanisterID();
         Cycles.add(10_000_000_000);
         switch (userCanister) {
@@ -98,7 +100,7 @@ type Status = {
                 let userHandler = await Kitchen.Kitchen();
 
                 let userId : Principal = await userHandler.createUser(caller);
-                userHandler.createProfile(profile);
+                userHandler.createProfile(id_hash, age, #Online, username, caller, userCanister);
 
                 let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
 
