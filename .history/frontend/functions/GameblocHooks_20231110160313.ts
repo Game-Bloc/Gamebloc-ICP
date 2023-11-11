@@ -113,12 +113,11 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const getProfile = async () => {
+  const getProfile = async (username: string) => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
+      const user: any = await gamebloc.get_profile(username)
       // if (user) {
-
+      console.log("Username:", username)
       console.log("user..:", user)
       // }
 

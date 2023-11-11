@@ -4,10 +4,7 @@ import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import { useAppDispatch } from "../redux/hooks"
-import {
-  UserProfileState,
-  updateUserProfile,
-} from "../redux/slice/userProfileSlice"
+import { updateUserProfile } from "../redux/slice/userProfileSlice"
 enum Status {
   Online,
   Offline,
@@ -51,7 +48,7 @@ export const useGameBlocFunction = () => {
     age: number,
     id_hash: string,
     status: any,
-    name: string,
+    username: string,
     date: string,
     wins: number,
     is_mod: boolean,
@@ -66,29 +63,30 @@ export const useGameBlocFunction = () => {
         age: age,
         id_hash: id_hash,
         status: status,
-        username: name,
+        username: username,
         date: date,
         wins: wins,
         is_mod: is_mod,
         tournaments_created: tournaments_created,
       }
+      const profileData = {
+        age: 0,
+        id_hash: "",
+        status: status,
+        username: username,
+        date: "",
+        wins: 0,
+        is_mod: is_mod,
+        tournaments_created: 0,
+        initializeState: false,
+      }
+
+      dispatch(updateUserProfile(profileData))
 
       const user = gamebloc.create_profile(userProfileData).then((res) => {})
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
-        const profileData: UserProfileState = {
-          age: 0,
-          id_hash: "",
-          status: status,
-          username: name,
-          date: "",
-          wins: 0,
-          is_mod: is_mod,
-          tournaments_created: 0,
-          initializeState: false,
-        }
-        dispatch(updateUserProfile(profileData))
         console.log("Worked")
       }
     } catch (err) {
@@ -113,17 +111,12 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const getProfile = async () => {
+  const getProfile = async (username: string) => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
-      // if (user) {
-
-      console.log("user..:", user)
-      // }
-
+      setIsLoading(true)
+      const user: any = await gamebloc.get_profile(username)
       // dispatch(updateUserProfile(user))
-
+      console.log("User age:", user.age)
       //  const profileData = {
       //    age: user!.age,
       //    id_hash: "",

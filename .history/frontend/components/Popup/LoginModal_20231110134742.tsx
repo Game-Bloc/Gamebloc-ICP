@@ -11,13 +11,16 @@ import { Button } from "../../styles/commonStyles/Button.styled"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useGameBlocFunction } from "../../functions/GameblocHooks"
 import { ulid } from "ulid"
-import { useAppSelector } from "../../redux/hooks"
 
 const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "white",
 }
+// enum Status {
+//   Online = "online",
+//   Offline = "Online",
+// }
 
 const LoginModal = () => {
   const navigate = useNavigate()
@@ -26,8 +29,6 @@ const LoginModal = () => {
   const [joinDate, setJoinDate] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [idHash, setIdHash] = useState<string>("")
-  const name = useAppSelector((state) => state.userProfile.username)
-
   const { isLoading, initilizeUser, getProfile, getAllUsers } =
     useGameBlocFunction()
   const onlineStatus = { Online: null }
@@ -62,17 +63,17 @@ const LoginModal = () => {
   useEffect(() => {
     generateId()
     getCurrentMonthAndYear()
-    getAllUsers()
     getProfile()
+    getAllUsers()
   }, [])
 
-  // const value = {
-  //   age: +age,
-  //   idHash: idHash,
-  //   status: null,
-  //   username: userName,
-  //   date: joinDate,
-  // }
+  const value = {
+    age: +age,
+    idHash: idHash,
+    status: null,
+    username: userName,
+    date: joinDate,
+  }
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <Container0>
@@ -161,14 +162,9 @@ const LoginModal = () => {
                       0,
                       "Your Profile has been created",
                       "Error creating profile",
-                      "",
+                      "/home",
                     )
-                    // console.log(value)
-                    setTimeout(() => {
-                      console.log("Timer started")
-                      getProfile()
-                      console.log("Called")
-                    }, 5000)
+                    console.log(value)
                   }}
                 >
                   {isLoading ? (

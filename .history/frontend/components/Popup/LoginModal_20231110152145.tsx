@@ -26,7 +26,7 @@ const LoginModal = () => {
   const [joinDate, setJoinDate] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [idHash, setIdHash] = useState<string>("")
-  const name = useAppSelector((state) => state.userProfile.username)
+  const jjj = useAppSelector((state) => state.userProfile.username)
 
   const { isLoading, initilizeUser, getProfile, getAllUsers } =
     useGameBlocFunction()
@@ -63,16 +63,16 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     getAllUsers()
-    getProfile()
+    getProfile(jjj)
   }, [])
 
-  // const value = {
-  //   age: +age,
-  //   idHash: idHash,
-  //   status: null,
-  //   username: userName,
-  //   date: joinDate,
-  // }
+  const value = {
+    age: +age,
+    idHash: idHash,
+    status: null,
+    username: userName,
+    date: joinDate,
+  }
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <Container0>
@@ -161,14 +161,9 @@ const LoginModal = () => {
                       0,
                       "Your Profile has been created",
                       "Error creating profile",
-                      "",
+                      "/home",
                     )
-                    // console.log(value)
-                    setTimeout(() => {
-                      console.log("Timer started")
-                      getProfile()
-                      console.log("Called")
-                    }, 5000)
+                    console.log(value)
                   }}
                 >
                   {isLoading ? (

@@ -5,7 +5,7 @@ export interface UserProfileState {
   age: number | undefined
   id_hash: string | undefined
   status: any | undefined
-  username: string
+  username: string | undefined
   date: string | undefined
   wins: number | undefined
   is_mod: boolean

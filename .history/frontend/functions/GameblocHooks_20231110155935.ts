@@ -113,14 +113,13 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const getProfile = async () => {
+  const getProfile = async (username: string) => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
-      // if (user) {
-
-      console.log("user..:", user)
-      // }
+      const user: any = gamebloc.get_profile(username).then((res) => {})
+      if (user) {
+        console.log("Username:", username)
+        console.log("user..:", user)
+      }
 
       // dispatch(updateUserProfile(user))
 

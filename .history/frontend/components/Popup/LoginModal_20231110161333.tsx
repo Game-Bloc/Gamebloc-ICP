@@ -63,8 +63,9 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     getAllUsers()
-    getProfile()
   }, [])
+
+  getProfile(name)
 
   // const value = {
   //   age: +age,
@@ -161,12 +162,12 @@ const LoginModal = () => {
                       0,
                       "Your Profile has been created",
                       "Error creating profile",
-                      "",
+                      "/home",
                     )
                     // console.log(value)
                     setTimeout(() => {
                       console.log("Timer started")
-                      getProfile()
+                      getProfile(name)
                       console.log("Called")
                     }, 5000)
                   }}

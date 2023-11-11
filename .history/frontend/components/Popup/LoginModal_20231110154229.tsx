@@ -38,6 +38,7 @@ const LoginModal = () => {
     const id = ulid(day)
     setIdHash(id)
   }
+  console.log("This is name:", name)
 
   const onChangeUsername = (e: any) => {
     e.preventDefault()
@@ -63,16 +64,19 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     getAllUsers()
-    getProfile()
   }, [])
 
-  // const value = {
-  //   age: +age,
-  //   idHash: idHash,
-  //   status: null,
-  //   username: userName,
-  //   date: joinDate,
-  // }
+  useEffect(() => {
+    getProfile(name)
+  }, [name])
+
+  const value = {
+    age: +age,
+    idHash: idHash,
+    status: null,
+    username: userName,
+    date: joinDate,
+  }
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <Container0>
@@ -161,14 +165,10 @@ const LoginModal = () => {
                       0,
                       "Your Profile has been created",
                       "Error creating profile",
-                      "",
+                      "/home",
                     )
-                    // console.log(value)
-                    setTimeout(() => {
-                      console.log("Timer started")
-                      getProfile()
-                      console.log("Called")
-                    }, 5000)
+                    console.log(value)
+                    getProfile(name)
                   }}
                 >
                   {isLoading ? (

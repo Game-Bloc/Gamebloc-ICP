@@ -81,7 +81,7 @@ export const useGameBlocFunction = () => {
           age: 0,
           id_hash: "",
           status: status,
-          username: name,
+          username: "Funny",
           date: "",
           wins: 0,
           is_mod: is_mod,
@@ -113,17 +113,12 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const getProfile = async () => {
+  const getProfile = async (username: string) => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
-      // if (user) {
-
-      console.log("user..:", user)
-      // }
-
+      setIsLoading(true)
+      const user: any = await gamebloc.get_profile(username)
       // dispatch(updateUserProfile(user))
-
+      console.log("User name:", username)
       //  const profileData = {
       //    age: user!.age,
       //    id_hash: "",

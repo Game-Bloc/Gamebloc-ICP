@@ -3,11 +3,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
-import { useAppDispatch } from "../redux/hooks"
-import {
-  UserProfileState,
-  updateUserProfile,
-} from "../redux/slice/userProfileSlice"
+
 enum Status {
   Online,
   Offline,
@@ -19,7 +15,6 @@ export const useGameBlocFunction = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [gamebloc] = useCanister("gamebloc")
   const [Initialized, setInitialized] = useState<boolean>(false)
-  const dispatch = useAppDispatch()
 
   const popUp = (successMsg: string, route: any) => {
     MySwal.fire({
@@ -51,7 +46,7 @@ export const useGameBlocFunction = () => {
     age: number,
     id_hash: string,
     status: any,
-    name: string,
+    username: string,
     date: string,
     wins: number,
     is_mod: boolean,
@@ -66,7 +61,7 @@ export const useGameBlocFunction = () => {
         age: age,
         id_hash: id_hash,
         status: status,
-        username: name,
+        username: username,
         date: date,
         wins: wins,
         is_mod: is_mod,
@@ -77,18 +72,6 @@ export const useGameBlocFunction = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
-        const profileData: UserProfileState = {
-          age: 0,
-          id_hash: "",
-          status: status,
-          username: name,
-          date: "",
-          wins: 0,
-          is_mod: is_mod,
-          tournaments_created: 0,
-          initializeState: false,
-        }
-        dispatch(updateUserProfile(profileData))
         console.log("Worked")
       }
     } catch (err) {
@@ -101,46 +84,17 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const getAllUsers = async () => {
-    try {
-      setIsLoading(true)
-      const users = await gamebloc.get_all_user()
-      console.log("Users:", users)
-    } catch (err) {
-      console.log("Error getting all users", err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   const getProfile = async () => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
-      // if (user) {
-
-      console.log("user..:", user)
-      // }
-
-      // dispatch(updateUserProfile(user))
-
-      //  const profileData = {
-      //    age: user!.age,
-      //    id_hash: "",
-      //    status: status,
-      //    username: username,
-      //    date: "",
-      //    wins: 0,
-      //    is_mod: is_mod,
-      //    tournaments_created: 0,
-      //    initializeState: false,
-      //  }
+      setIsLoading(true)
+      const user = await gamebloc.get_profile()
+      console.log("User:", user)
     } catch (err) {
-      console.log("Error getting profile", err)
+      console.log("Error gettingprofile", err)
     } finally {
       setIsLoading(false)
     }
   }
 
-  return { initilizeUser, isLoading, getAllUsers, getProfile }
+  return { initilizeUser, isLoading, getProfile }
 }

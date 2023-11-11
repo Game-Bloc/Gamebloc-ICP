@@ -63,8 +63,9 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     getAllUsers()
-    getProfile()
   }, [])
+
+  getProfile(name)
 
   // const value = {
   //   age: +age,
@@ -166,7 +167,7 @@ const LoginModal = () => {
                     // console.log(value)
                     setTimeout(() => {
                       console.log("Timer started")
-                      getProfile()
+                      getProfile(name)
                       console.log("Called")
                     }, 5000)
                   }}

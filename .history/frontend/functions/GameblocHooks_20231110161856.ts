@@ -115,7 +115,7 @@ export const useGameBlocFunction = () => {
 
   const getProfile = async () => {
     try {
-      const user = await gamebloc.getSelf()
+      const user: any = await gamebloc.getSelf()
       // .then((res) => console.log(res))
       // if (user) {
 
