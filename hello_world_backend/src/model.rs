@@ -1,7 +1,7 @@
 use crate::*;
 
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+#[derive(Clone, Debug, CandidType, Deserialize, Serialize)]
 pub struct UserProfile {
     pub id_hash: String,
     pub age: u8,
@@ -11,7 +11,8 @@ pub struct UserProfile {
     pub tournaments_created:u8,
     pub username: String,
     pub is_mod: bool,
-
+    pub principal: Principal,
+    pub canister_id:Principal,
 }
 
 #[derive(Clone,Debug, Default, CandidType, Deserialize, Serialize)]
