@@ -26,7 +26,7 @@ fn get_self() -> UserProfile {
         profile_store
             .borrow()
             .get(&id)
-            .cloned().unwrap()
+            .cloned().unwrap_or_default()
     })
 }
 
@@ -35,7 +35,7 @@ fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            all_users.push((*user.1).clone().try_into().unwrap())
+            all_users.push((*user.1).clone().try_into().unwrap_or_default())
         });
         all_users
     })
@@ -48,7 +48,7 @@ fn get_profile(name: String) -> UserProfile {
             id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap()
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default()
         })
     })
 }
@@ -70,20 +70,20 @@ fn create_profile(profile: UserProfile) -> Result<u8,u8> {
 
 #[query]
 fn get_tournament(id: String) -> TournamentAccount {
-        TOURNAMENT_STORE.with(|tournament_store| {
-            tournament_store.borrow().get(&id).cloned().unwrap_or_default()
-        })
+    TOURNAMENT_STORE.with(|tournament_store| {
+        tournament_store.borrow().get(&id).cloned().unwrap_or_default()
+    })
 }
 
 #[query]
 fn get_all_tournament() -> Vec<TournamentAccount> {
-        TOURNAMENT_STORE.with(|tournament_store| {
-            let mut all_tournament = Vec::new();
-            tournament_store.borrow().iter().for_each(|tournament| {
-                all_tournament.push((*tournament.1).clone().try_into().unwrap_or_default())
-            });
-            all_tournament
-        })
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_tournament = Vec::new();
+        tournament_store.borrow().iter().for_each(|tournament| {
+            all_tournament.push((*tournament.1).clone().try_into().unwrap_or_default())
+        });
+        all_tournament
+    })
 }
 
 #[update]
@@ -149,7 +149,7 @@ fn set_mod(name: String, identity: Principal) {
             let mut user = id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
             user.is_mod = true;
             profile_store.borrow_mut().insert(identity, user);
         })
@@ -163,7 +163,7 @@ fn is_mod(name: String) -> bool {
             let mut user = id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
             user.is_mod
         })
     })
