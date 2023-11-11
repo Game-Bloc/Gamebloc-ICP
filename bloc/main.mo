@@ -58,7 +58,7 @@ type Status = {
 };
 
     // deprecated
-    private shared({caller}) func deprecated_create_profile(profile : UserProfile) : async Principal {
+    public shared({caller}) func deprecated_create_profile(profile : UserProfile) : async Principal {
         let userCanister : ?Principal = await getCanisterID();
         Cycles.add(10_000_000_000);
         switch (userCanister) {
@@ -100,7 +100,7 @@ type Status = {
                 let userHandler = await Kitchen.Kitchen();
 
                 let userId : Principal = await userHandler.createUser(caller);
-                userHandler.createProfile(id_hash, age, #Online, username, caller, userCanister);
+                userHandler.createProfile(id_hash, age, #Online, username, Principal.toText(caller), Principal.toText(userCanister));
 
                 let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
 
@@ -121,6 +121,8 @@ type Status = {
 
         // await RustBloc.create_profile(profile);
     };
+
+
 
   private stable var canisterId : ?Principal = null;
   private let ic : IC.Self = actor "aaaaa-aa";
