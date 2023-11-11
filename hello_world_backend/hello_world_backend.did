@@ -1,3 +1,4 @@
+type Result = variant { Ok : nat8; Err : nat8 };
 type Status = variant { Online; Offline };
 type TournamentAccount = record {
   idx : nat8;
@@ -25,13 +26,15 @@ type UserProfile = record {
   status : Status;
   username : text;
   date : text;
+  canister_id : text;
   wins : nat8;
   is_mod : bool;
+  principal_id : text;
   tournaments_created : nat8;
 };
 service : {
-  create_profile : (UserProfile) -> ();
-  create_tournament : (TournamentAccount) -> ();
+  create_profile : (UserProfile) -> (Result);
+  create_tournament : (TournamentAccount) -> (Result);
   end_tournament : (text, vec text) -> ();
   getSelf : () -> (UserProfile) query;
   get_all_tournament : () -> (vec TournamentAccount) query;

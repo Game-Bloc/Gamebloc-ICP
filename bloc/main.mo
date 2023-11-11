@@ -1,6 +1,6 @@
 // import Bloc "./bloc";
 import IC "types";
-import BlocTypes "bloctypes";
+import Bloctypes "bloctypes";
 
 import RustBloc "canister:hello_world_backend";
 import Kitchen "kitchen";
@@ -14,51 +14,38 @@ import Debug "mo:base/Debug";
 shared ({caller}) actor class BlocFactory() = this {
 
 
- type UserProfile = {
-    age : Nat8;
-    id_hash : Text;
-    status : Status;
-    username : Text;
-    date : Text;
-    wins : Nat8;
-    is_mod : Bool;
-    tournaments_created : Nat8;
-};
+    private stable var canisterId : ?Principal = null;
+    private let ic : IC.Self = actor "aaaaa-aa";
 
-type TournamentAccount = {
-  idx : Nat8;
-  id_hash : Text;
-  status : TournamentStatus;
-  creator : Text;
-  game : Text;
-  user : [Text];
-  winers : [Text];
-  total_prize : Nat;
-  tournament_rules : Text;
-  starting_date : Text;
-  tournament_type : TournamentType;
-  entry_prize : Nat8;
-};
+    public query func getCanisterId() : async ?Principal {
+      Debug.print("main balance: " # debug_show (Cycles.balance()));
 
-type TournamentType = {
-    #Prepaid;
-    #Crowdfunded;
-};
+      let canisterId = ?Principal.fromActor(this);
 
-type TournamentStatus = {
-    #AcceptingPlayers;
-    #GameInProgress;
-    #GameCompleted;
-};
+      canisterId;
+    };
 
+    private stable var canisterID : Principal = caller;
 
-type Status = {  
-    #Online;
-    #Offline;
-};
+    public func getOwner() : async Principal {
+        canisterID;
+    };
+
+    public shared ({caller}) func getCanisterID() : async ?Principal {
+        ?caller;
+    };
+
+    public func get() : async Principal {
+        Principal.fromActor(this);
+    };
+
+    public shared ({caller}) func getOwner2() : async Principal {
+        canisterID;
+    };
+
 
     // deprecated
-    public shared({caller}) func deprecated_create_profile(profile : UserProfile) : async Principal {
+    public shared({caller}) func deprecated_create_profile(profile : Bloctypes.UserProfile) : async Principal {
         let userCanister : ?Principal = await getCanisterID();
         Cycles.add(10_000_000_000);
         switch (userCanister) {
@@ -100,8 +87,11 @@ type Status = {
                 let userHandler = await Kitchen.Kitchen();
 
                 let userId : Principal = await userHandler.createUser(caller);
-                userHandler.createProfile(id_hash, age, #Online, username, Principal.toText(caller), Principal.toText(userCanister));
-
+                try {
+                  let cook = userHandler.createProfile(id_hash, age, #Online, username, Principal.toText(caller), Principal.toText(userCanister));
+                } catch err {
+                  throw (err)
+                };
                 let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
 
                 let createResult = await ic.provisional_create_canister_with_cycles(({
@@ -115,76 +105,12 @@ type Status = {
                     };
                     amount = ?1000000000;
                 }));
-            return createResult.canister_id;
+            return ( createResult.canister_id);
             };
         };
 
         // await RustBloc.create_profile(profile);
     };
-
-
-
-  private stable var canisterId : ?Principal = null;
-  private let ic : IC.Self = actor "aaaaa-aa";
-
-  public query func getCanisterId() : async ?Principal {
-    Debug.print("main balance: " # debug_show (Cycles.balance()));
-
-    let canisterId = ?Principal.fromActor(this);
-
-    canisterId;
-  };
-
-  private stable var canisterID : Principal = caller;
-
-  public func getOwner() : async Principal {
-        canisterID;
-    };
-
-    public shared ({caller}) func getCanisterID() : async ?Principal {
-        ?caller;
-    };
-
-    public func get() : async Principal {
-        Principal.fromActor(this);
-    };
-
-    public shared ({caller}) func getOwner2() : async Principal {
-        canisterID;
-    };
-
-  // public shared ({ caller }) func init() : async (Principal) {
-  //   Cycles.add(1_000_000_000_000);
-
-  //   let b = await Bloc.Bloc();
-
-  //   canisterId := ?Principal.fromActor(b);
-
-  //   switch (canisterId) {
-
-  //     case null {
-  //       throw Error.reject("Bucket init error");
-  //     };
-  //     case (?canisterId) {
-  //       // let self : Principal = Principal.fromActor(MainFactory);
-
-  //       let controllers : ?[Principal] : ?[Principal] = ?[canisterId, caller];
-
-  //       await ic.update_settings(({
-  //         canister_id = canisterId;
-  //         settings = {
-  //           controllers = controllers;
-  //           freezing_threshold = null;
-  //           memory_allocation = null;
-  //           compute_allocation = null;
-  //         }
-  //       }));
-
-  //       return canisterId;
-  //     };
-  //   };
-
-  // };
 
   public shared ({ caller }) func canisterStatus() : async IC.canister_status_response {
     let canister : ?Principal = await getCanisterId();
@@ -199,6 +125,89 @@ type Status = {
     };
 
   };
+
+   public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
+        await RustBloc.create_tournament(tournamentAccount);
+    };
+
+    public func end_tournament(id : Text, name : [Text]) : (){
+        await RustBloc.end_tournament(id, name);
+    };
+
+    // public shared ({caller})  func getSelf() : async Types.UserProfile {
+    //     let result : Types.UserProfile = await RustBloc.getSelf();
+    //     result;
+    // };
+
+    public func get_all_tournament() : async [Bloctypes.TournamentAccount] {
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return let result =  await userHandler.get_all_tournament();
+        } catch err {
+            throw (err);
+        }
+    };
+
+    public func get_all_user() : async [Bloctypes.UserProfile] {
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return let result =  await userHandler.get_all_user();
+        } catch err {
+            throw (err);
+        }
+       
+    };
+    
+    public  func get_profile(name : Text) :  async Bloctypes.UserProfile {
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return let result =  await userHandler.get_profile(name);
+        } catch err {
+            throw (err);
+        }
+    };
+
+    public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return let result = await userHandler.get_tournament(id);
+        } catch err {
+            throw (err);
+        }
+        
+    };
+
+    public func is_mod(name : Text) :  async Bool {
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return let result = await userHandler.is_mod(name);
+        } catch err {
+            throw (err);
+        }
+        
+    };
+
+    public func join_tournament(name : Text, id : Text) : async (){
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return await userHandler.join_tournament(name, id);
+        } catch err {
+            throw (err);
+        }   
+    };
+
+    public func set_mod(name : Text, identity : Principal) : async (){
+      let userHandler = await Kitchen.Kitchen();
+        try {
+            return  await userHandler.set_mod(name, identity);
+        } catch err {
+            throw (err);
+        }
+    };
+
+
+
+
 
   public func mainbalance() : async Nat {
     let balance = Cycles.balance();

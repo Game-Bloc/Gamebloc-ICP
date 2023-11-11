@@ -1,15 +1,15 @@
 module {
     public type UserProfile = {
-        age : Nat8;
-        id_hash : Text;
-        status : Status;
-        username : Text;
-        date : Text;
-        wins : Nat8;
-        is_mod : Bool;
-        tournaments_created : Nat8;
-        canister_id : Text;
-        principal : Text;
+        id_hash: Text;
+        age: Nat8;
+        date: Text;
+        status: Status;
+        wins: Nat8;
+        tournaments_created:Nat8;
+        username: Text;
+        is_mod: Bool;
+        principal_id: Text;
+        canister_id: Text;
     };
 
     public type TournamentAccount = {
@@ -38,9 +38,8 @@ module {
         #GameCompleted;
     };
 
+    public type Result =  { #Ok : Nat8; #Err: Nat8 };
 
-    public type Status = {  
-        #Online;
-        #Offline;
-    };
+
+    public type Status = { #Online; #Offline; };
 }

@@ -11,7 +11,7 @@ pub struct UserProfile {
     pub tournaments_created:u8,
     pub username: String,
     pub is_mod: bool,
-    pub principal: String,
+    pub principal_id: String,
     pub canister_id: String,
 }
 
