@@ -26,7 +26,7 @@ fn get_self() -> UserProfile {
         profile_store
             .borrow()
             .get(&id)
-            .cloned().unwrap_or_default()
+            .cloned().unwrap()
     })
 }
 
@@ -35,7 +35,7 @@ fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            all_users.push((*user.1).clone().try_into().unwrap_or_default())
+            all_users.push((*user.1).clone().try_into().unwrap())
         });
         all_users
     })
@@ -48,13 +48,13 @@ fn get_profile(name: String) -> UserProfile {
             id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default()
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap()
         })
     })
 }
 
 #[update]
-fn create_profile(profile: UserProfile) -> Result<(u8),u8> {
+fn create_profile(profile: UserProfile) -> Result<u8,u8> {
     let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
@@ -64,7 +64,7 @@ fn create_profile(profile: UserProfile) -> Result<(u8),u8> {
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal_id, profile);
     });
-    Ok((1))
+    Ok(1)
 }
 
 
@@ -149,7 +149,7 @@ fn set_mod(name: String, identity: Principal) {
             let mut user = id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
             user.is_mod = true;
             profile_store.borrow_mut().insert(identity, user);
         })
@@ -163,7 +163,7 @@ fn is_mod(name: String) -> bool {
             let mut user = id_store
                 .borrow()
                 .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
+                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
             user.is_mod
         })
     })

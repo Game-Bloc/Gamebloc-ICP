@@ -9,6 +9,13 @@
       "main": "bloc_ledger/main.mo",
       "type": "motoko"
     },
+
+    "kitchen":{
+      "main": "bloc/kitchen.mo",
+      "type": "motoko",
+      "dependencies": ["hello_world_backend"]
+    },
+
     "icp_ledger": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/ledger.did",
@@ -19,7 +26,12 @@
         }
       }
     },
+<<<<<<< HEAD
     "bloc": {
+=======
+
+    "bloc":{
+>>>>>>> 9bfd6a5c7b159d90a680355972afa66fd3f1345f
       "main": "bloc/main.mo",
       "type": "motoko",
       "dependencies": ["hello_world_backend"]
