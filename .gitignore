@@ -7,5 +7,7 @@ dist-ssr
 
 target
 
+.vessel
+
 
 src/declarations
