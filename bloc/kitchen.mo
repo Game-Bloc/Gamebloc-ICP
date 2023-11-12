@@ -51,8 +51,8 @@ shared ({caller}) actor class Kitchen() {
         await RustBloc.create_profile(profile);
     };
 
-    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, ) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text ) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         try {
             return await RustBloc.create_profile(profile);
         } catch err {
