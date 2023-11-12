@@ -80,6 +80,7 @@ shared ({caller}) actor class Kitchen() {
        
     };
     
+    
     public  func get_profile(name : Text) :  async Bloctypes.UserProfile {
         try {
             return let result =  await RustBloc.get_profile(name);

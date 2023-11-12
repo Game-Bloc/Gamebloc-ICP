@@ -58,7 +58,7 @@ shared ({caller}) actor class BlocFactory() = this {
                 let userId = await userHandler.createUser(caller);
                 // userHandler.createProfile(profile);
 
-                let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID];
+                let controllers : ?[Principal] : ?[Principal] = ?[caller, canisterID, Principal.fromActor(this)];
 
                 let createResult = await ic.create_canister(({
                     settings = ?{
@@ -68,6 +68,13 @@ shared ({caller}) actor class BlocFactory() = this {
                         compute_allocation = null;
 
                     };
+                }));
+                await ic.install_code(({
+                  arg = "";
+                  wasm_module = "";
+                  mode = #install;
+                  canister_id = createResult.canister_id;
+
                 }));
             return createResult.canister_id;
             };
@@ -205,6 +212,14 @@ shared ({caller}) actor class BlocFactory() = this {
         }
     };
 
+    public shared ({caller})  func getSelf() : async Bloctypes.UserProfile {
+        let userHandler = await Kitchen.Kitchen();
+        try {
+            return  await userHandler.getSelf();
+        } catch err {
+            throw (err);
+        }
+    };
 
 
 
