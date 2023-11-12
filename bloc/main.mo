@@ -14,7 +14,7 @@ import Debug "mo:base/Debug";
 shared ({caller}) actor class BlocFactory() = this {
 
 
-    private stable var canisterId : ?Principal = null;
+    
     private let ic : IC.Self = actor "aaaaa-aa";
 
     public query func getCanisterId() : async ?Principal {
@@ -91,6 +91,7 @@ shared ({caller}) actor class BlocFactory() = this {
                 throw Error.reject("initialization error");
             }; case (?userCanister) {
                 Cycles.add(10_000_000_000);
+                // Installs the canister where the cooking takes place
                 let userHandler = await Kitchen.Kitchen();
 
                 let userId : Principal = await userHandler.createUser(caller);
