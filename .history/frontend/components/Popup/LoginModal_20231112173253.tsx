@@ -62,8 +62,8 @@ const LoginModal = () => {
   useEffect(() => {
     generateId()
     getCurrentMonthAndYear()
-    // getAllUsers()
-    // getProfile()
+    getAllUsers()
+    getProfile()
   }, [])
 
   // const value = {

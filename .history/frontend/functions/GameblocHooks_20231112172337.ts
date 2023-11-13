@@ -73,9 +73,7 @@ export const useGameBlocFunction = () => {
         tournaments_created: tournaments_created,
       }
 
-      const user = gamebloc.createProfile(userProfileData).then((res) => {
-        console.log("data:", res)
-      })
+      const user = gamebloc.createProfile(userProfileData).then((res) => {})
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
