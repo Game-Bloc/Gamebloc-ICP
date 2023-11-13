@@ -152,7 +152,7 @@ const LoginModal = () => {
                   onClick={() => {
                     initilizeUser(
                       idHash,
-                      +age,
+                      BigInt(+age),
                       userName,
                       // onlineStatus,
                       // joinDate,

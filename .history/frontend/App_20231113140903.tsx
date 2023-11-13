@@ -11,8 +11,7 @@ import "@connect2ic/core/style.css"
 /*
  * Import canister definitions like this:
  */
-// import * as gamebloc from "../.dfx/local/canisters/kitchen"
-import * as gamebloc from "../src/declarations/kitchen"
+import * as gamebloc from "../.dfx/local/canisters/kitchen"
 
 import { ThemeProvider } from "styled-components"
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
@@ -63,7 +62,7 @@ function App() {
     }
   }, [isConnected, isAdmin])
 
-  console.log("Status:", client.actors)
+  console.log("Status:", client.activeProvider)
 
   return (
     <ThemeProvider theme={theme}>
@@ -169,7 +168,7 @@ function App() {
   )
 }
 
-export const client = createClient({
+const client = createClient({
   canisters: {
     gamebloc,
   },

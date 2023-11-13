@@ -8,7 +8,6 @@ import {
   UserProfileState,
   updateUserProfile,
 } from "../redux/slice/userProfileSlice"
-import { client } from "frontend/App"
 enum Status {
   Online,
   Offline,
@@ -63,18 +62,18 @@ export const useGameBlocFunction = () => {
   ) => {
     try {
       setIsLoading(true)
-      // const userProfileData = {
-      //   id_hash: id_hash,
-      //   age: BigInt(age),
-      //   username: name,
-      //   // status: status,
-      //   // date: date,
-      //   // wins: wins,
-      //   // is_mod: is_mod,
-      //   // tournaments_created: tournaments_created,
-      // }
+      const userProfileData = {
+        id_hash: id_hash,
+        age: age,
+        username: name,
+        // status: status,
+        // date: date,
+        // wins: wins,
+        // is_mod: is_mod,
+        // tournaments_created: tournaments_created,
+      }
 
-      const user = await gamebloc.createUserProfile(id_hash, age, name)
+      const user = await gamebloc.createUserProfile(userProfileData)
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
