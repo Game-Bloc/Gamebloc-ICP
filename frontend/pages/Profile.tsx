@@ -37,7 +37,7 @@ const items: TabsProps["items"] = [
 
 const Profile = () => {
   const username = useAppSelector((state) => state.userProfile.username);
-  const date = useAppSelector((state) => state.userProfile.date);
+  // const date = useAppSelector((state) => state.userProfile.date);
   const initials = username!.substring(0, 2).toUpperCase();
 
   return (
@@ -108,7 +108,7 @@ const Profile = () => {
             @{username?.toLowerCase()}
           </Text>
           <Text fontsize=".8rem" fontWeight={400} margin=" " color="#ffffff72">
-            Member {date}
+            {/* Member {date} */}
           </Text>
 
           <Wrapper

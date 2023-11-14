@@ -25,6 +25,8 @@ module {
         starting_date : Text;
         tournament_type : TournamentType;
         entry_prize : Nat8;
+        no_of_winners : Nat8;
+        no_of_participants : Nat;
     };
 
     public type TournamentType = {

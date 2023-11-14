@@ -52,45 +52,21 @@ export const useGameBlocFunction = () => {
     id_hash: string,
     age: number,
     name: string,
-    // status: any,
-    // date: string,
-    // wins: number,
-    // is_mod: boolean,
-    // tournaments_created: number,
     successMsg: string,
     errorMsg: string,
     route: any,
   ) => {
     try {
       setIsLoading(true)
-      // const userProfileData = {
-      //   id_hash: id_hash,
-      //   age: BigInt(age),
-      //   username: name,
-      //   // status: status,
-      //   // date: date,
-      //   // wins: wins,
-      //   // is_mod: is_mod,
-      //   // tournaments_created: tournaments_created,
-      // }
-
-      const user = await gamebloc.createUserProfile(id_hash, age, name)
+      const user =  gamebloc.createUserProfile(id_hash, age, name).then()
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
-        const profileData: UserProfileState = {
-          id_hash: "",
-          age: 0,
-          username: name,
-          // status: status,
-          // date: "",
-          // wins: 0,
-          // is_mod: is_mod,
-          // tournaments_created: 0,
-          initializeState: false,
-        }
-        dispatch(updateUserProfile(profileData))
+        window.location.reload();
         console.log("Worked")
+      }else {
+        setIsLoading(false)
+        errorPopUp(errorMsg)
       }
     } catch (err) {
       setIsLoading(false)
@@ -116,26 +92,28 @@ export const useGameBlocFunction = () => {
 
   const getProfile = async () => {
     try {
-      const user = await gamebloc.getSelf()
-      // .then((res) => console.log(res))
-      // if (user) {
-
-      console.log("user..:", user)
-      // }
-
-      // dispatch(updateUserProfile(user))
-
-      //  const profileData = {
-      //    age: user!.age,
-      //    id_hash: "",
-      //    status: status,
-      //    username: username,
-      //    date: "",
-      //    wins: 0,
-      //    is_mod: is_mod,
-      //    tournaments_created: 0,
-      //    initializeState: false,
-      //  }
+      const user:any = await gamebloc.getSelf()
+      if(user.username != ""){
+        console.log("user..:", user )
+        const profileData: UserProfileState = {
+          age: user.age,
+          canister_id: user.canister_id,
+          date: user.date,
+          id_hash: user.id_hash,
+          is_mod: false,
+          principal_id: user.principal_id,
+          status: {Online: true},
+          tournaments_created: user.tournaments_created,
+          username: user.username,
+          wins: user.wins,
+          initializeState: true,
+        }
+        dispatch(updateUserProfile(profileData))
+   
+      }else {
+        console.log("Error getting profile")
+      }
+     
     } catch (err) {
       console.log("Error getting profile", err)
     } finally {
@@ -143,5 +121,74 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  return { initilizeUser, isLoading, getAllUsers, getProfile }
+  const createTournament =  async (
+    idx: number,
+    id_hash: string,
+    status: any,
+    creator: string,
+    game: string,
+    user: string[],
+    winers: string[],
+    total_prize: number,
+    tournament_rules: string,
+    starting_date: string,
+    no_of_participants: number,
+    no_of_winners: number,
+    tournament_type: any,
+    entry_prize: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string
+  ) => {
+    try{
+      setIsLoading(true)
+      const tournamentData = {
+        idx,
+        id_hash,
+        status: status,
+        creator,
+        game,
+        user,
+        winers,
+        total_prize,
+        tournament_rules,
+        starting_date,
+        no_of_participants,
+        no_of_winners,
+        tournament_type: tournament_type,
+        entry_prize
+      }
+       const create =  gamebloc.create_tournament(
+        tournamentData
+       ).then()
+       if(create){
+        popUp(successMsg, route)
+        setIsLoading(false)
+       }else {
+        setIsLoading(false)
+        errorPopUp(errorMsg)
+      }
+
+    }catch(err){
+      errorPopUp(errorMsg);
+      setIsLoading(false)
+      console.log("Error adding tournament:", err);
+    }finally{
+      setIsLoading(false);
+    }
+  } 
+
+  const fetchAllTournaments = async () => {
+    try{
+      const tournament = await gamebloc.get_all_tournament()
+      console.log("Tournament:", tournament )
+    }catch(err){
+      setIsLoading(false)
+      console.log("Error adding tournament:", err);
+    }finally{
+      setIsLoading(false)
+    }
+  }
+
+  return { initilizeUser, isLoading, getAllUsers, getProfile, createTournament, fetchAllTournaments }
 }

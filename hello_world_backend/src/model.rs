@@ -29,6 +29,8 @@ pub struct TournamentAccount {
     pub winers: Vec<String>,
     pub entry_prize: u8,
     pub total_prize: u128,
+    pub no_of_winners: u8,
+    pub no_of_participants: u128,
 }
 
 

@@ -11,6 +11,8 @@ type TournamentAccount = record {
   total_prize : nat;
   tournament_rules : text;
   starting_date : text;
+  no_of_participants : nat;
+  no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
 };

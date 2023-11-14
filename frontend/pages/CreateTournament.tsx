@@ -22,6 +22,7 @@ import type { Dayjs } from "dayjs"
 import customParseFormat from "dayjs/plugin/customParseFormat"
 import { useAppSelector } from "../redux/hooks"
 import PaymentModal from "../components/Popup/PaymentModal"
+import { useGameBlocFunction } from "../functions/GameblocHooks"
 
 const CreateTournament = () => {
   const navigate = useNavigate()
@@ -32,6 +33,7 @@ const CreateTournament = () => {
   const [entryPrice, setEntryPrize] = useState<number>(0)
   const [noOfUsers, setNoOfUsers] = useState<number>(0)
   const [tournamentType, setTournamentType] = useState<string>("")
+  const [variantType, setVariantType] = useState(null)
   const [gameName, setGameName] = useState<string>("")
   const [noOfWinners, setNoOfWinners] = useState<number>(0)
   const [tourType, setTourType] = useState<string>("")
@@ -39,8 +41,10 @@ const CreateTournament = () => {
   const [initialTime, setInitialTime] = useState<string>("")
   const [initialDate, setInitialDate] = useState<string>("")
   const [startingDate, setStartingDate] = useState<string>("")
-  const tournamentID = useAppSelector((state) => state.tournamentCount.count)
+  const [tournamentID, setTournamentID ] = useState<string>("")
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const {isLoading, createTournament} = useGameBlocFunction();
+  const name = useAppSelector((state) => state.userProfile.username)
 
   const override = {
     display: "block",
@@ -48,12 +52,13 @@ const CreateTournament = () => {
     borderColor: "white",
   }
 
-  // const generateULID = () => {
-  //   const date = new Date();
-  //   let day = date.getDate();
-  //   const id = ulid(day);
-  //   console.log("ulid:", id);
-  // };
+  const generateULID = () => {
+    const date = new Date();
+    let day = date.getDate();
+    const id = ulid(day);
+    setTournamentID(id);
+    console.log("ulid:", id);
+  };
 
   // const generateID = () => {
   //   const max = 9;
@@ -63,7 +68,7 @@ const CreateTournament = () => {
   // };
 
   useEffect(() => {
-    // getTournamentCount();
+    generateULID()
 
     const getTimeDate = () => {
       const value = initialTime.concat(" ", initialDate)
@@ -71,8 +76,10 @@ const CreateTournament = () => {
     }
     if (tournamentType === "Crowdfunded") {
       setTourType("Crowdfunded")
+      setVariantType({Crowdfunded: null})
     } else if (tournamentType === "Prepaid") {
       setTourType("Prepaid")
+      setVariantType({Prepaid: null})
     } else {
       setTourType("Crowdfunded")
     }
@@ -186,21 +193,26 @@ const CreateTournament = () => {
     // );
   }
 
-  const createTournament = () => {
-    // addTournament(
-    //   noOfUsers,
-    //   noOfWinners,
-    //   gameName,
-    //   tournamentID,
-    //   tournamentRules,
-    //   tournamentType,
-    //   startingDate,
-    //   entryPrice,
-    //   poolPrize,
-    //   "You have successfully created a Tournament",
-    //   "Try again something went wrong",
-    //   "/home"
-    // );
+  const addTournament = () => {
+    createTournament(
+       1,
+      tournamentID,
+      {AcceptingPlayers: null},
+       name,
+       gameName,
+       [],
+       [],
+       poolPrize,
+       tournamentRules,
+       startingDate,
+      noOfUsers,
+      noOfWinners,
+      variantType,
+      entryPrice,
+      "You have successfully created a Tournament",
+      "Try again something went wrong",
+      "/home"
+    );
   }
 
   return (
@@ -565,8 +577,8 @@ const CreateTournament = () => {
                 fontStyle="normal"
               >
                 {tourType === "Prepaid"
-                  ? "Total Pool Price (SOLANA)"
-                  : "Tournament Entry Price (SOLANA)"}
+                  ? "Total Pool Price (ICP)"
+                  : "Tournament Entry Price (ICP)"}
               </Text>
               <Container
                 margin="1rem 0"
@@ -583,8 +595,8 @@ const CreateTournament = () => {
                   type="text"
                   placeholder={
                     tourType === "Prepaid"
-                      ? "Input Pool Price in Solana"
-                      : "Input entry price in Solana"
+                      ? "Input Pool Price in ICP"
+                      : "Input entry price in ICP"
                   }
                   smfontSize=".9rem"
                   noneBorder="none"
@@ -672,6 +684,31 @@ const CreateTournament = () => {
               </Container>
             </Wrapper>
           </Container>
+          <Wrapper
+              margin="0 2rem"
+              onClick={() => {
+                testFunction();
+                addTournament();
+              }}
+            >
+              <button className="glowing-btn">
+                {isLoading ? (
+                  <ClipLoader
+                    color={color}
+                    loading={isLoading}
+                    cssOverride={override}
+                    size={20}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                ) : (
+                  <span className="glowing-txt">
+                    C<span className="faulty-letter">l</span>ick me
+                  </span>
+                )}
+              </button>
+            </Wrapper>
+
 
           {/* {tournamentType === "Prepaid" && !confirmPayment ? (
             <Wrapper margin="0 2rem">

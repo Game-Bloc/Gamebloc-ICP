@@ -13,6 +13,8 @@ shared ({caller}) actor class Kitchen() {
 
     private stable var userCanisterId : Principal = caller;
 
+    type TournamentAccount = Bloctypes.TournamentAccount;
+
     // private let ic : IC.Self = actor "aaaaa-aa";
 
     public query func getOwnerCanister() : async Principal {
@@ -61,11 +63,21 @@ shared ({caller}) actor class Kitchen() {
     };
 
     public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
-        await RustBloc.create_tournament(tournamentAccount);
+        try {
+            await RustBloc.create_tournament(tournamentAccount);
+        } catch err {
+            throw (err);
+        }
+        
     };
 
     public func end_tournament(id : Text, name : [Text]) : (){
-        await RustBloc.end_tournament(id, name);
+        try {
+            await RustBloc.end_tournament(id, name);
+        } catch err {
+            throw (err);
+        }
+        
     };
 
     public shared ({caller})  func getSelf() : async Bloctypes.UserProfile {
@@ -77,7 +89,7 @@ shared ({caller}) actor class Kitchen() {
     public shared ({caller}) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
         // assert(caller == userCanisterId);
         try {
-            return let result =  await RustBloc.get_all_tournament();
+            return let result = await RustBloc.get_all_tournament();
         } catch err {
             throw (err);
         }

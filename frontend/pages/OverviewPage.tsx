@@ -4,7 +4,7 @@ import { Container } from "../styles/commonStyles/Container.styles"
 import LoginModal from "../components/Popup/LoginModal"
 import { useAppSelector } from "../redux/hooks"
 import React from "react"
-// import { useGameblocFunction } from "../functions/GameblocHook";
+import { useGameBlocFunction } from "../functions/GameblocHooks";
 
 const ActiveStreams = lazy(
   () => import("../components/overViewPageComponents/ActiveStreams"),
@@ -20,14 +20,14 @@ const GamingHub = lazy(
 )
 
 const OverviewPage = () => {
-  // const { getTournamentCount } = useGameblocFunction();
+  const { fetchAllTournaments } = useGameBlocFunction();
   const checkState = useAppSelector(
     (state) => state.userProfile.initializeState,
   )
 
-  // useEffect(() => {
-  //   getTournamentCount();
-  // }, []);
+  useEffect(() => {
+    fetchAllTournaments()
+  }, []);
 
   return (
     <Container backgroundColor="#01070E" margin="0 0 1rem 0">

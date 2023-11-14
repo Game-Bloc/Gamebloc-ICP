@@ -26,11 +26,11 @@ const LoginModal = () => {
   const [joinDate, setJoinDate] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [idHash, setIdHash] = useState<string>("")
-  const name = useAppSelector((state) => state.userProfile.username)
+ 
 
   const { isLoading, initilizeUser, getProfile, getAllUsers } =
     useGameBlocFunction()
-  const onlineStatus = { Online: null }
+
 
   const generateId = () => {
     const date = new Date()
@@ -63,16 +63,9 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     // getAllUsers()
-    // getProfile()
+    getProfile()
   }, [])
 
-  // const value = {
-  //   age: +age,
-  //   idHash: idHash,
-  //   status: null,
-  //   username: userName,
-  //   date: joinDate,
-  // }
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <Container0>
