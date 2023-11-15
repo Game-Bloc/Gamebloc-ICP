@@ -168,9 +168,9 @@ export const useGameBlocFunction = () => {
         tournamentData
        ).then()
        if(create){
-         fetchAllTournaments()
-        popUp(successMsg, route)
-        setIsLoading(false)
+         popUp(successMsg, route)
+         setIsLoading(false)
+         window.location.reload();
        }else {
         setIsLoading(false)
         errorPopUp(errorMsg)
