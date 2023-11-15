@@ -13,25 +13,34 @@ import check from "../../assets/images/check-circle.png"
 import Loader from "../Popup/Loader/Loader"
 import ReactPaginate from "react-paginate"
 import { useNavigate } from "react-router-dom"
-import { useAppSelector } from "../../redux/hooks"
-// import { useGameblocFunction } from "../../functions/GameblocHook";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks"
+import { useGameBlocFunction } from "../../functions/GameblocHooks";
 import React from "react"
+import { useFetchAllTournaments } from "../../functions/BlocHooks"
 
 const ActiveTournament = () => {
-  // const { loading, noData, fetchAllTournaments } = useGameblocFunction();
+  const {loading, nodata, fetchAllTournaments} = useFetchAllTournaments()
+  const {getProfile} = useGameBlocFunction()
   const tournament = useAppSelector((state) => state.tournamentData)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const tournamentPerPage: number = 5
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const navigate = useNavigate()
-  const [update, setUpdate] = useState(false)
-  const loading = false
 
-  // useEffect(() => {
-  //   fetchAllTournaments();
-  // }, []);
+  const dispatch = useAppDispatch()
+ 
 
-  console.log("Tournaments", tournament)
+  useEffect(() => {
+    if(tournament.length == 0){
+      fetchAllTournaments();
+      
+    }else{
+      getProfile()
+      console.log("Updated Tournament State:", tournament);
+
+    }
+  }, []);
+
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
   const changePage = ({ selected }: any) => {
@@ -51,7 +60,7 @@ const ActiveTournament = () => {
         position="relative"
         cursor="pointer"
         onClick={() =>
-          navigate(`/active-tournament-details/${data.tournamentId}`)
+          navigate(`/active-tournament-details/${data.id_hash}`)
         }
       >
         <Container
@@ -59,7 +68,7 @@ const ActiveTournament = () => {
           top=".7rem"
           left=".7rem"
           backgroundColor={
-            data.tournamentType === "crowdfunded" ? "#D1FADF" : "#FEE4E2"
+            Object.keys(data.tournament_type)[0] === "Crowdfunded"  ? "#D1FADF" : "#FEE4E2"
           }
           padding=".3rem .7rem"
           width="fit-content"
@@ -70,12 +79,12 @@ const ActiveTournament = () => {
         >
           <Text
             color={
-              data.tournamentType === "crowdfunded" ? "#039855" : "#D92D20"
+              Object.keys(data.tournament_type)[0] === "Crowdfunded" ? "#039855" : "#D92D20"
             }
             fontsize=".6rem"
             fontWeight={700}
           >
-            {data.tournamentType.toUpperCase()}
+            {Object.keys(data.tournament_type)[0].toUpperCase()}
           </Text>
         </Container>
         <Img
@@ -108,7 +117,7 @@ const ActiveTournament = () => {
               color="#ffffff"
               mdfontSize=".8rem"
             >
-              {data.gameName}
+              {data.game}
             </Text>
 
             <Wrapper
@@ -124,7 +133,7 @@ const ActiveTournament = () => {
                 fontWeight={400}
                 margin="0 0 0 .3rem"
               >
-                {data.username}
+                {data.creator}
               </Paragraph>
             </Wrapper>
           </Container>
@@ -146,7 +155,6 @@ const ActiveTournament = () => {
             <RightArrow color="#000000" />
           </Container>
         </Wrapper>
-        {console.log(data.participants)}
       </Container>
     ))
 
@@ -246,7 +254,7 @@ const ActiveTournament = () => {
               </Button>
             </Container>
           </Wrapper>
-          {/* {noData ? (
+          {nodata ? (
             <Container
               display="flex"
               flexDirection="row"
@@ -268,14 +276,14 @@ const ActiveTournament = () => {
             </Container>
           ) : (
             <div>
-              {update ? (
+              {/* {updating ? (
                 <Text margin=" 1.3rem .5rem .5rem.5rem">Updating</Text>
               ) : (
                 <></>
-              )}
+              )} */}
               <TournamentCardView displayTournaments={displayTournaments} />
             </div>
-          )} */}
+          )}
         </Container>
       </Container>
     )

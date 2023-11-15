@@ -15,19 +15,21 @@ import navigate from "../assets/images/navigate-next.png"
 import { CodImgs } from "../data/Index"
 import Loader from "../components/Popup/Loader/Loader"
 import React from "react"
-// import { useGameblocFunction } from "../functions/GameblocHook";
-import { useAppSelector } from "../redux/hooks"
+import { useGameBlocFunction } from "../functions/GameblocHooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
 
 const ActiveTournamentPage = () => {
-  // const { updating, loading, fetchAllTournaments } = useGameblocFunction();
+  const { isLoading } = useGameBlocFunction();
   const [pageNumber, setPageNumber] = useState(0)
   const tournamentPerPage: number = 10
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const navigateTo = useNavigate()
   const allTournament = useAppSelector((state) => state.tournamentData)
-  const loading = false
+  const dispatch = useAppDispatch()
+
+
   // useEffect(() => {
-  //   fetchAllTournaments();
+  //   dispatch(fetchAllTournaments())
   // }, []);
 
   const displayTournaments = allTournament
@@ -36,7 +38,7 @@ const ActiveTournamentPage = () => {
       <Container
         cursor="pointer"
         onClick={() =>
-          navigateTo(`/active-tournament-details/${data.tournamentId}`)
+          navigateTo(`/active-tournament-details/${data.id_hash}`)
         }
         key={index}
       >
@@ -56,7 +58,7 @@ const ActiveTournamentPage = () => {
             top=".7rem"
             left=".7rem"
             backgroundColor={
-              data.tournamentType === "crowdfunded" ? "#D1FADF" : "#FEE4E2"
+              Object.keys(data.tournament_type)[0] === "Crowdfunded"  ? "#D1FADF" : "#FEE4E2"
             }
             padding=".3rem .7rem"
             width="fit-content"
@@ -67,12 +69,12 @@ const ActiveTournamentPage = () => {
           >
             <Text
               color={
-                data.tournamentType === "crowdfunded" ? "#039855" : "#D92D20"
+                Object.keys(data.tournament_type)[0] === "Crowdfunded" ? "#039855" : "#D92D20"
               }
               fontsize=".8rem"
               fontWeight={700}
             >
-              {data.tournamentType.toUpperCase()}
+             {Object.keys(data.tournament_type)[0].toUpperCase()}
             </Text>
           </Container>
           <Img
@@ -108,7 +110,7 @@ const ActiveTournamentPage = () => {
                 fontWeight={700}
                 color="#ffffff"
               >
-                {data.gameName}
+                {data.game}
               </Text>
 
               <Wrapper
@@ -125,7 +127,7 @@ const ActiveTournamentPage = () => {
                   fontWeight={400}
                   margin="0 0 0 .3rem"
                 >
-                  {data.username}
+                  {data.creator}
                 </Paragraph>
               </Wrapper>
             </Container>
@@ -153,7 +155,7 @@ const ActiveTournamentPage = () => {
     setPageNumber(selected)
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Container
         width="100%"
@@ -211,7 +213,8 @@ const ActiveTournamentPage = () => {
         <Container
           display="grid"
           smgridcolumn="repeat(2, 1fr)"
-          gridColumn="repeat(auto-fill, minmax(10.375rem, 1fr))"
+          mdgridcolumn="repeat(auto-fill, minmax(10.375rem, 1fr))"
+          gridColumn="repeat(auto-fill, minmax(15.375rem, 1fr))"
           gap="2rem"
           mdgap=".5rem"
           smgap=".3rem"

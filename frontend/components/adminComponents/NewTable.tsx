@@ -88,19 +88,19 @@ const NewTable = () => {
     },
   ];
 
-  const data = dataState.map((item, index) => ({
-    key: index,
-    username: item.username,
-    type: item.tournamentType,
-    game: item.gameName,
-    players: item.participants.length,
-    prize: item.entryPrize,
-    date: item.date,
-  }));
+  // const data = dataState.map((item, index) => ({
+  //   key: index,
+  //   username: item.username,
+  //   type: item.tournamentType,
+  //   game: item.gameName,
+  //   players: item.participants.length,
+  //   prize: item.entryPrize,
+  //   date: item.date,
+  // }));
 
   return (
     <Container>
-      <Table
+      {/* <Table
         rowClassName={() => "rowClassName1"}
         columns={columns}
         dataSource={data}
@@ -115,7 +115,7 @@ const NewTable = () => {
           gameType={selectedRow.type}
           playersCount={selectedRow.players}
         />
-      )}
+      )} */}
     </Container>
   );
 };

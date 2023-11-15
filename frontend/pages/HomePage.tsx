@@ -7,11 +7,7 @@ import TechStack from "../components/homepageBody/TechStack";
 import FeatureList from "../components/homepageBody/FeatureList";
 import RoadMap from "../components/homepageBody/RoadMap";
 import { Footer } from "../components/homepageBody/Footer";
-interface Props {
-  isSignedIn: any;
-  wallet: any;
-  gamebloc: any;
-}
+
 const HomePage = () => {
   return (
     <Container>

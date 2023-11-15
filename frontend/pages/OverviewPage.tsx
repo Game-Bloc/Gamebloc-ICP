@@ -20,14 +20,14 @@ const GamingHub = lazy(
 )
 
 const OverviewPage = () => {
-  const { fetchAllTournaments } = useGameBlocFunction();
+  // const { fetchAllTournaments } = useGameBlocFunction();
   const checkState = useAppSelector(
     (state) => state.userProfile.initializeState,
   )
 
-  useEffect(() => {
-    fetchAllTournaments()
-  }, []);
+  // useEffect(() => {
+  //   fetchAllTournaments()
+  // }, []);
 
   return (
     <Container backgroundColor="#01070E" margin="0 0 1rem 0">

@@ -32,6 +32,7 @@ import "./App.scss"
 import Admin from "./pages/Admin"
 import AdminSideBar from "./components/adminComponents/AdminSideBar"
 import SetAdmin from "./pages/SetAdmin"
+import { useGameBlocFunction } from "./functions/GameblocHooks"
 const NewsPage = React.lazy(() => import("./pages/NewsPage"))
 const NewsDetails = React.lazy(() => import("./pages/NewsDetails"))
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"))
@@ -49,17 +50,22 @@ const theme = {
 function App() {
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const navigate = useNavigate()
+  const {getProfile} = useGameBlocFunction();
+  const { isConnected } = useConnect()
+  useEffect(() => {
+    if (isConnected && location.pathname === "/") {
 
-  const { isConnected, principal,  } = useConnect()
-
- useEffect(()=> {
-  setIsAdmin(false);
-  if(isConnected && location.pathname == "/"){
-  navigate("/home")
-  }else{
-    navigate("/")
-  }
- },[isConnected])
+      if (!isAdmin) {
+        navigate("/home");
+      } else {
+        navigate("/b3d7c2d4-58d4-4d40-b143-f15f344ee9a9/admin-page");
+      }
+      getProfile();
+      console.log("connection", isConnected);
+    } else if (!isConnected) {
+      navigate("/");
+    }
+  }, [isConnected, isAdmin])
 
 
   return (
