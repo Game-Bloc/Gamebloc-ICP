@@ -214,7 +214,7 @@ const CreateTournament = () => {
       entryPrice,
       "You have successfully created a Tournament",
       "Try again something went wrong",
-      "/",
+      "/home",
     )
   }
 

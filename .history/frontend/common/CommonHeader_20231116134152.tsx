@@ -68,7 +68,7 @@ const CommonHeader = ({ wallet }: any) => {
           alignItems="center"
           position="relative"
         >
-          <Wrapper margin="0 0 0 0">
+          <Wrapper margin="1.5rem 0 0 0">
             <ConnectButton
               style={{
                 backgroundColor: "#F6B8FC",

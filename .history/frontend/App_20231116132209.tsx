@@ -15,13 +15,7 @@ import * as gamebloc from "../.dfx/local/canisters/kitchen"
 // import * as gamebloc from "../src/declarations/kitchen"
 
 import { ThemeProvider } from "styled-components"
-import {
-  Routes,
-  Route,
-  useNavigate,
-  useLocation,
-  Navigate,
-} from "react-router-dom"
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
 import { Container } from "./styles/commonStyles/Container.styles"
 import { Wrapper } from "./styles/commonStyles/Wrapper"
 import GlobalStyles from "./styles/Global"
@@ -40,7 +34,6 @@ import AdminSideBar from "./components/adminComponents/AdminSideBar"
 import SetAdmin from "./pages/SetAdmin"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import ProtectedRoutes from "./ProtectedRoutes"
-import FallBackLoader from "./components/Popup/FallBackLoader"
 const NewsPage = React.lazy(() => import("./pages/NewsPage"))
 const NewsDetails = React.lazy(() => import("./pages/NewsDetails"))
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"))
@@ -57,16 +50,33 @@ const theme = {
 
 function App() {
   const { isConnected } = useConnect()
+
+  //  useEffect(() => {
+  //    if (isConnected && location.pathname === "/") {
+  //      getProfile()
+  //      console.log("connection", isConnected)
+  //    } else if (!isConnected) {
+  //      navigate("/")
+  //    }
+  //  }, [isConnected])
+
   return (
-    <React.Suspense fallback={<FallBackLoader />}>
+    <React.Suspense
+      fallback={
+        <Container
+          width="100%"
+          height="100vh"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Loader />
+        </Container>
+      }
+    >
       <ThemeProvider theme={theme}>
         <Container>
           <GlobalStyles />
           <Routes>
-            <Route
-              path="/homepage"
-              element={isConnected ? <Navigate to="/" /> : <HomePage />}
-            />
             <Route element={<ProtectedRoutes isConnected={isConnected} />}>
               <Route path="/" element={<OverviewPage />} />
               <Route
@@ -87,6 +97,7 @@ function App() {
               />
               <Route path="profile" element={<Profile />} />
             </Route>
+            <Route path="/homepage" element={<HomePage />} />
           </Routes>
         </Container>
       </ThemeProvider>

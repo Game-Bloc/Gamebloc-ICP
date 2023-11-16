@@ -57,6 +57,16 @@ const theme = {
 
 function App() {
   const { isConnected } = useConnect()
+
+  //  useEffect(() => {
+  //    if (isConnected && location.pathname === "/") {
+  //      getProfile()
+  //      console.log("connection", isConnected)
+  //    } else if (!isConnected) {
+  //      navigate("/")
+  //    }
+  //  }, [isConnected])
+
   return (
     <React.Suspense fallback={<FallBackLoader />}>
       <ThemeProvider theme={theme}>

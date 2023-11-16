@@ -40,7 +40,6 @@ import AdminSideBar from "./components/adminComponents/AdminSideBar"
 import SetAdmin from "./pages/SetAdmin"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import ProtectedRoutes from "./ProtectedRoutes"
-import FallBackLoader from "./components/Popup/FallBackLoader"
 const NewsPage = React.lazy(() => import("./pages/NewsPage"))
 const NewsDetails = React.lazy(() => import("./pages/NewsDetails"))
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"))
@@ -57,8 +56,29 @@ const theme = {
 
 function App() {
   const { isConnected } = useConnect()
+
+  //  useEffect(() => {
+  //    if (isConnected && location.pathname === "/") {
+  //      getProfile()
+  //      console.log("connection", isConnected)
+  //    } else if (!isConnected) {
+  //      navigate("/")
+  //    }
+  //  }, [isConnected])
+
   return (
-    <React.Suspense fallback={<FallBackLoader />}>
+    <React.Suspense
+      fallback={
+        <Container
+          width="100%"
+          height="100vh"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Loader />
+        </Container>
+      }
+    >
       <ThemeProvider theme={theme}>
         <Container>
           <GlobalStyles />

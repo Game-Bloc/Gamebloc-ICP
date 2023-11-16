@@ -7,10 +7,12 @@ interface Prop {
 }
 
 const ProtectedRoutes = ({ isConnected }: Prop) => {
-  const navigate = useNavigate()
   const isAuthenticated = useMemo(() => {
     return isConnected
   }, [isConnected])
+
+  const navigate = useNavigate()
+  const { getProfile } = useGameBlocFunction()
 
   return isAuthenticated ? (
     <div>

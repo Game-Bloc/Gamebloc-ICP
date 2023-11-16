@@ -1,34 +1,34 @@
-import React, { useState } from "react"
-import { Text } from "../styles/commonStyles/Text"
-import { Wrapper } from "../styles/commonStyles/Wrapper"
-import { CustomContainer } from "../styles/custom/CustomContainer"
+import React, { useState } from "react";
+import { Text } from "../styles/commonStyles/Text";
+import { Wrapper } from "../styles/commonStyles/Wrapper";
+import { CustomContainer } from "../styles/custom/CustomContainer";
 import {
   OverViewIcon,
   TournamentIcon,
   GameIcon,
   Friends,
   NewsIcon,
-} from "../styles/icon/Icons"
+} from "../styles/icon/Icons";
 
-import styled from "styled-components"
-import { NavLink, useNavigate } from "react-router-dom"
-import { Container } from "../styles/commonStyles/Container.styles"
-import type { MenuProps } from "antd"
-import { Menu } from "antd"
+import styled from "styled-components";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Container } from "../styles/commonStyles/Container.styles";
+import type { MenuProps } from "antd";
+import { Menu } from "antd";
 import {
   AppstoreOutlined,
   MailOutlined,
   SettingOutlined,
-} from "@ant-design/icons"
+} from "@ant-design/icons";
 
-type MenuItem = Required<MenuProps>["items"][number]
+type MenuItem = Required<MenuProps>["items"][number];
 
 function getItem(
   label: React.ReactNode,
   key: React.Key,
   icon?: React.ReactNode,
   children?: MenuItem[],
-  type?: "group",
+  type?: "group"
 ): MenuItem {
   return {
     key,
@@ -36,14 +36,14 @@ function getItem(
     children,
     label,
     type,
-  } as MenuItem
+  } as MenuItem;
 }
 
-const rootSubmenuKeys = ["sub1", "sub2", "sub4"]
+const rootSubmenuKeys = ["sub1", "sub2", "sub4"];
 const SideBar = () => {
-  const navigate = useNavigate()
-  const [toggleOverview, setToggleOverview] = useState<boolean>(false)
-  const [toggleTournament, setToggleTournament] = useState<boolean>(false)
+  const navigate = useNavigate();
+  const [toggleOverview, setToggleOverview] = useState<boolean>(false);
+  const [toggleTournament, setToggleTournament] = useState<boolean>(false);
 
   // submenu keys of first level
 
@@ -59,7 +59,7 @@ const SideBar = () => {
         margin="1rem"
         mdmargin="0 0 0 3rem"
         cursor="pointer"
-        onClick={() => navigate("/")}
+        onClick={() => navigate("/home")}
       >
         <Text
           className="text"
@@ -74,7 +74,7 @@ const SideBar = () => {
 
       "sub1",
 
-      <OverViewIcon className="icon" color="#F6B8FC" />,
+      <OverViewIcon className="icon" color="#F6B8FC" />
     ),
     getItem(
       <CustomContainer
@@ -113,7 +113,7 @@ const SideBar = () => {
           >
             Active Tournament
           </Text>,
-          "5",
+          "5"
         ),
         getItem(
           <Text
@@ -125,9 +125,9 @@ const SideBar = () => {
           >
             CrowFunded
           </Text>,
-          "6",
+          "6"
         ),
-      ],
+      ]
     ),
     // getItem(
     //   <CustomContainer
@@ -161,18 +161,18 @@ const SideBar = () => {
 
     //   <TournamentIcon className="icon" color="#F6B8FC" />
     // ),
-  ]
+  ];
 
-  const [openKeys, setOpenKeys] = useState(["sub1"])
+  const [openKeys, setOpenKeys] = useState(["sub1"]);
 
   const onOpenChange: MenuProps["onOpenChange"] = (keys) => {
-    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1)
+    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     if (rootSubmenuKeys.indexOf(latestOpenKey!) === -1) {
-      setOpenKeys(keys)
+      setOpenKeys(keys);
     } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : [])
+      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
     }
-  }
+  };
 
   return (
     <Wrapper
@@ -199,10 +199,10 @@ const SideBar = () => {
         items={items}
       />
     </Wrapper>
-  )
-}
+  );
+};
 
-export default SideBar
+export default SideBar;
 
 // <Wrapper mddisplay="none">
 
@@ -384,7 +384,7 @@ const NavBarLink = styled(NavLink)`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 
 const MenuOption2 = styled(NavLink)`
   font-size: 0.7rem;
@@ -398,7 +398,7 @@ const MenuOption2 = styled(NavLink)`
   &.active {
     color: #f6b8fc;
   }
-`
+`;
 const NavBarLink3 = styled(NavLink)`
   font-size: 0.8rem;
   font-weight: 600;
@@ -413,7 +413,7 @@ const NavBarLink3 = styled(NavLink)`
   @media (max-width: 1024px) {
     display: none;
   }
-`
+`;
 const MenuOption1 = styled(NavLink)`
   font-size: 0.7rem;
   font-weight: 600;
@@ -426,4 +426,4 @@ const MenuOption1 = styled(NavLink)`
   &.active {
     color: #f6b8fc;
   }
-`
+`;

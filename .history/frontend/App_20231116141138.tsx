@@ -57,6 +57,7 @@ const theme = {
 
 function App() {
   const { isConnected } = useConnect()
+
   return (
     <React.Suspense fallback={<FallBackLoader />}>
       <ThemeProvider theme={theme}>

@@ -23,7 +23,6 @@ import styled from "styled-components"
 import logo from "../assets/images/gamelogo2.png"
 import logo2 from "../assets/images/gameIcon.png"
 import React from "react"
-import { ConnectButton, ConnectDialog } from "@connect2ic/react"
 // import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const CommonHeader = ({ wallet }: any) => {
@@ -52,7 +51,7 @@ const CommonHeader = ({ wallet }: any) => {
       zIndex="1"
     >
       <Menu onClick={() => setOpenMenu(!openMenu)} />
-      <div onClick={() => navigate("/")}>
+      <div onClick={() => navigate("/home")}>
         <LogoImg src={logo} alt="" />
       </div>
 
@@ -68,7 +67,7 @@ const CommonHeader = ({ wallet }: any) => {
           alignItems="center"
           position="relative"
         >
-          <Wrapper margin="0 0 0 0">
+          <Wrapper margin="1.5rem 0 0 0">
             <ConnectButton
               style={{
                 backgroundColor: "#F6B8FC",
@@ -177,7 +176,7 @@ const CommonHeader = ({ wallet }: any) => {
 
                 <NavBarLink1
                   onClick={() => setOpenMenu(false)}
-                  to="/"
+                  to="/home"
                   className={({ isActive, isPending }) =>
                     isPending ? "pending" : isActive ? "active" : ""
                   }
@@ -260,7 +259,7 @@ const CommonHeader = ({ wallet }: any) => {
                 alignItems="center"
                 margin="0rem 0rem 1rem 17%"
                 onClick={() => {
-                  navigate("/");
+                  navigate("/home");
                   signOut();
                 }}
               >

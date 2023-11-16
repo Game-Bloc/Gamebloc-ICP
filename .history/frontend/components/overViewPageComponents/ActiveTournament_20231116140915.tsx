@@ -31,6 +31,13 @@ const ActiveTournament = () => {
 
   useEffect(() => {
     fetchAllTournaments()
+    // if(tournament.length == 0){
+
+    // }else{
+    //   getProfile()
+    //   console.log("Updated Tournament State:", tournament);
+
+    // }
   }, [])
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)

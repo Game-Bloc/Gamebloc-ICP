@@ -69,6 +69,7 @@ export const useGameBlocFunction = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
+        window.location.reload()
         console.log("Worked")
       } else {
         setIsLoading(false)
@@ -167,6 +168,7 @@ export const useGameBlocFunction = () => {
       if (create) {
         popUp(successMsg, route)
         setIsLoading(false)
+        window.location.reload()
       } else {
         setIsLoading(false)
         errorPopUp(errorMsg)
@@ -343,6 +345,6 @@ export const useGameBlocFunction = () => {
     getAllUsers,
     getProfile,
     createTournament,
-    // updateTournaments,
+    updateTournaments,
   }
 }
