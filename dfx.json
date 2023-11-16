@@ -1,19 +1,18 @@
 {
   "canisters": {
+    
     "hello_world_backend": {
       "candid": "hello_world_backend/hello_world_backend.did",
       "package": "hello_world_backend",
       "type": "rust"
     },
-  
 
     "kitchen": {
       "main": "bloc/kitchen.mo",
       "type": "motoko",
       "dependencies": ["hello_world_backend"]
     },
-   
-    
+
 
     "assets": {
       "dependencies": ["hello_world_backend"],

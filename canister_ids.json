@@ -1,5 +1,14 @@
 {
   "assets": {
     "ic": "6tgyn-vaaaa-aaaal-add7q-cai"
+  },
+  "bloc": {
+    "ic": "6lu5k-xaaaa-aaaal-adeaa-cai"
+  },
+  "hello_world_backend": {
+    "ic": "6fwqc-mqaaa-aaaal-adeba-cai"
+  },
+  "kitchen": {
+    "ic": "6cxww-biaaa-aaaal-adebq-cai"
   }
 }
