@@ -2,7 +2,7 @@
 import IC "types";
 import Bloctypes "bloctypes";
 
-import RustBloc "canister:hello_world_backend";
+import RustBloc "canister:game_bloc_backend";
 import Kitchen "kitchen";
 
 import Cycles "mo:base/ExperimentalCycles";

@@ -1,21 +1,21 @@
 {
   "canisters": {
     
-    "hello_world_backend": {
-      "candid": "hello_world_backend/hello_world_backend.did",
-      "package": "hello_world_backend",
+    "game_bloc_backend": {
+      "candid": "game_bloc_backend/game_bloc_backend.did",
+      "package": "game_bloc_backend",
       "type": "rust"
     },
 
     "kitchen": {
       "main": "bloc/kitchen.mo",
       "type": "motoko",
-      "dependencies": ["hello_world_backend"]
+      "dependencies": ["game_bloc_backend"]
     },
 
 
     "assets": {
-      "dependencies": ["hello_world_backend"],
+      "dependencies": ["game_bloc_backend"],
       "frontend": {
         "entrypoint": "dist/index.html"
       },

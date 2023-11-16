@@ -3,7 +3,7 @@ import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Int "mo:base/Int";
 
-import RustBloc "canister:hello_world_backend";
+import RustBloc "canister:game_bloc_backend";
 
 
 
