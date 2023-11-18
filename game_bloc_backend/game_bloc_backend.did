@@ -35,10 +35,12 @@ type UserProfile = record {
   tournaments_created : nat8;
 };
 service : {
-  create_profile : (UserProfile) -> (Result);
+  create_profile : (UserProfile) -> (principal);
+  create_profile_with_principal : (UserProfile, principal) -> (principal);
   create_tournament : (TournamentAccount) -> (Result);
   end_tournament : (text, vec text) -> ();
   getSelf : () -> (UserProfile) query;
+  getSelfPrincipal : (principal) -> (UserProfile) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_user : () -> (vec UserProfile) query;
   get_profile : (text) -> (UserProfile) query;
@@ -47,4 +49,5 @@ service : {
   join_tournament : (text, text) -> ();
   set_mod : (text, principal) -> ();
   start_tournament : (text) -> ();
+  whoami : () -> (principal) query;
 }
