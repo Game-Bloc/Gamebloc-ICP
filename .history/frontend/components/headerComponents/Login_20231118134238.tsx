@@ -20,7 +20,7 @@ const Login = () => {
       >
         <Button
           backgroundColor="#F6B8FC"
-          smfontsize=".9rem"
+          smfontsize=".8rem"
           width="fit-content"
           cursor="pointer"
           textColor="#01070E"
@@ -30,7 +30,6 @@ const Login = () => {
           borderRadius="9999px"
           smmargin=".4rem"
           margin=" 0 0 0 2rem"
-          fontWeight="800"
           onClick={() => setModal(true)}
         >
           Create Account

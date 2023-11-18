@@ -20,7 +20,7 @@ const Login = () => {
       >
         <Button
           backgroundColor="#F6B8FC"
-          smfontsize=".9rem"
+          smfontsize=".8rem"
           width="fit-content"
           cursor="pointer"
           textColor="#01070E"

@@ -46,6 +46,8 @@ export const useFetchAllTournaments = () => {
             dispatch(addToActiveTournament(tournamentData))
           }
           setIsLoading(false)
+        } else if (tour.length < 0 || tour == null || tour == undefined) {
+          setNoData(true)
         } else {
           setNoData(true)
         }

@@ -38,7 +38,7 @@ export const Button = styled(ButtonStyled)`
   z-index: ${(props) => (props.zIndex ? `${props.zIndex}` : "unset")};
   align-self: ${(props) => (props.alignSelf ? `${props.alignSelf}` : "")};
   font-size: ${(props) => (props.fontSize ? `${props.fontSize}` : "14px")};
-  font-weight: ${(props) => (props.fontWeight ? `${props.fontWeight}` : "400")};
+
   &:hover {
     background-color: ${(props) =>
       props.hoverBackground && `${props.hoverBackground}`};
@@ -119,4 +119,4 @@ export const Button = styled(ButtonStyled)`
     font-size: ${(props) =>
       props.smfontsize ? `${props.smfontsize}` : "14px"};
   }
-`
+`;

@@ -23,7 +23,7 @@ export const useFetchAllTournaments = () => {
         dispatch(clearTournaments())
         const tour: any = await gamebloc.get_all_tournament()
         console.log("Tour:", tour)
-        if (tour && tour.length !== 0) {
+        if (tour) {
           console.log("went")
           for (const data of tour) {
             const tournamentData = {
@@ -46,6 +46,8 @@ export const useFetchAllTournaments = () => {
             dispatch(addToActiveTournament(tournamentData))
           }
           setIsLoading(false)
+        } else if (tour.length < 0 || tour == null) {
+          setNoData(true)
         } else {
           setNoData(true)
         }

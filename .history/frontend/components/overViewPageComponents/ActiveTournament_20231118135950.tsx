@@ -255,17 +255,17 @@ const ActiveTournament = () => {
               smjustifycontent="initial"
               alignItems="center"
               smalignitems="initial"
-              margin="2rem 0"
+              margin="1rem 0"
             >
               <Text
                 fontWeight={700}
-                fontsize="1rem"
+                fontsize="1.3rem"
                 smfontSize=".8rem"
                 color="#fff"
                 textAlign="center"
               >
                 There are currently no active tournament at the moment. To
-                create a tournament go to the active tournament section.
+                create a toyrnament go to the active tournament section.
               </Text>
             </Container>
           ) : (

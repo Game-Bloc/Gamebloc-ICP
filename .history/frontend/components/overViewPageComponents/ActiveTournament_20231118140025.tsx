@@ -255,7 +255,7 @@ const ActiveTournament = () => {
               smjustifycontent="initial"
               alignItems="center"
               smalignitems="initial"
-              margin="2rem 0"
+              margin="1rem 0"
             >
               <Text
                 fontWeight={700}
