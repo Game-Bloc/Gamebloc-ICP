@@ -69,6 +69,7 @@ export const useGameBlocFunction = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
+        window.location.reload()
         console.log("Worked")
       } else {
         setIsLoading(false)

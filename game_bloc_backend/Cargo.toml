@@ -1,5 +1,5 @@
 [package]
-name = "hello_world_backend"
+name = "game_bloc_backend"
 version = "0.1.0"
 edition = "2021"
 

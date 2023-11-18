@@ -1,4 +1,4 @@
 [workspace]
 members = [
-    "hello_world_backend",
+    "game_bloc_backend",
 ]

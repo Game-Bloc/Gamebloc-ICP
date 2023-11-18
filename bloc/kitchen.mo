@@ -5,7 +5,7 @@ import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
 
-import RustBloc "canister:hello_world_backend";
+import RustBloc "canister:game_bloc_backend";
 
 
 
