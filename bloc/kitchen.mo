@@ -2,6 +2,8 @@ import Cycles "mo:base/ExperimentalCycles";
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Int "mo:base/Int";
+import HashMap "mo:base/HashMap";
+import Result "mo:base/Result";
 
 import RustBloc "canister:hello_world_backend";
 
@@ -10,6 +12,66 @@ import RustBloc "canister:hello_world_backend";
 import Bloctypes "bloctypes";
 
 shared ({caller}) actor class Kitchen() {
+
+     var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+
+        var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+
+
+        private func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
+            // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+            ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId)));
+        };
+
+        public shared ({caller}) func createprofile(id_hash : Text, age : Nat8, username: Text) : async Result.Result<Text, Text> {
+            // call the balnce function to get and set the balance of newly registered users
+            let balance = 10;
+            let checkUsername = usernameChecker(username);
+            if (checkUsername == false) {
+                #err("This username exist! Please enter another")
+            } else {
+                createOneProfile(id_hash, age, username, caller);
+                #ok("You have successfully created an account");
+            };
+        };
+
+        private func usernameChecker(username : Text) : Bool {
+            var unique = true;
+            for ((i, j) in ProfileHashMap.entries()) {
+                if (j.username == username) {
+                    unique := false;
+                };
+            };
+            unique;
+        };
+
+        public func logIn(caller : Principal) : async Bool {
+            var result = ProfileHashMap.get(caller);
+
+            switch (result) {
+                case null {
+                    return false;
+                };
+                case (?(_)) {
+                    return true;
+                };
+            };
+        };
+
+
+        public func getUser(caller : Principal) : async ?Bloctypes.UserProfile {
+            ProfileHashMap.get(caller);
+        };
+
+
+
+
+
+
+
+
+
+
 
     private stable var userCanisterId : Principal = caller;
 
@@ -31,6 +93,10 @@ shared ({caller}) actor class Kitchen() {
         await getOwner();
     };
 
+
+    
+
+
     func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, canister_id : Text) : Bloctypes.UserProfile {
         {
             id_hash;
@@ -50,13 +116,13 @@ shared ({caller}) actor class Kitchen() {
 
     public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, principal_id : Text, canister_id : Text) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  principal_id, canister_id);
-        await RustBloc.create_profile(profile);
+        await RustBloc.create_profile(profile, caller);
     };
 
     public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text ) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         try {
-            return await RustBloc.create_profile(profile);
+            return await RustBloc.create_profile(profile, caller);
         } catch err {
             throw (err);
         }
@@ -71,9 +137,9 @@ shared ({caller}) actor class Kitchen() {
         
     };
 
-    public func end_tournament(id : Text, name : [Text]) : (){
+    public shared ({caller}) func end_tournament(id : Text, name : [Text]) : (){
         try {
-            await RustBloc.end_tournament(id, name);
+            await RustBloc.end_tournament(id, name, caller);
         } catch err {
             throw (err);
         }
@@ -82,7 +148,7 @@ shared ({caller}) actor class Kitchen() {
 
     public shared ({caller})  func getSelf() : async Bloctypes.UserProfile {
         // assert(caller == userCanisterId);
-        let result : Bloctypes.UserProfile = await RustBloc.getSelf();
+        let result : Bloctypes.UserProfile = await RustBloc.getSelf(caller);
         result;
     };
 

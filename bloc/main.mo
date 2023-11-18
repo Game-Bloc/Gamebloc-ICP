@@ -138,8 +138,8 @@ shared ({caller}) actor class BlocFactory() = this {
         await RustBloc.create_tournament(tournamentAccount);
     };
 
-    public func end_tournament(id : Text, name : [Text]) : (){
-        await RustBloc.end_tournament(id, name);
+    public shared ({caller}) func end_tournament(id : Text, name : [Text]) : (){
+        await RustBloc.end_tournament(id, name, caller);
     };
 
     // public shared ({caller})  func getSelf() : async Types.UserProfile {
@@ -156,7 +156,7 @@ shared ({caller}) actor class BlocFactory() = this {
         }
     };
 
-    public func get_all_user() : async [Bloctypes.UserProfile] {
+    public shared ({ caller }) func get_all_user() : async [Bloctypes.UserProfile] {
       let userHandler = await Kitchen.Kitchen();
         try {
             return let result =  await userHandler.get_all_user();
@@ -166,7 +166,7 @@ shared ({caller}) actor class BlocFactory() = this {
        
     };
     
-    public  func get_profile(name : Text) :  async Bloctypes.UserProfile {
+    public  shared ({ caller }) func get_profile(name : Text) :  async Bloctypes.UserProfile {
       let userHandler = await Kitchen.Kitchen();
         try {
             return let result =  await userHandler.get_profile(name);
@@ -175,7 +175,7 @@ shared ({caller}) actor class BlocFactory() = this {
         }
     };
 
-    public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
+    public shared ({ caller }) func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
       let userHandler = await Kitchen.Kitchen();
         try {
             return let result = await userHandler.get_tournament(id);
@@ -185,7 +185,7 @@ shared ({caller}) actor class BlocFactory() = this {
         
     };
 
-    public func is_mod(name : Text) :  async Bool {
+    public shared ({ caller })  func is_mod(name : Text) :  async Bool {
       let userHandler = await Kitchen.Kitchen();
         try {
             return let result = await userHandler.is_mod(name);
@@ -195,7 +195,7 @@ shared ({caller}) actor class BlocFactory() = this {
         
     };
 
-    public func join_tournament(name : Text, id : Text) : async (){
+    public shared ({ caller }) func join_tournament(name : Text, id : Text) : async (){
       let userHandler = await Kitchen.Kitchen();
         try {
             return await userHandler.join_tournament(name, id);
