@@ -46,8 +46,10 @@ import { addToActiveTournament, clearTournaments, } from "../redux/slice/tournam
                 dispatch(addToActiveTournament(tournamentData));
               }
               setIsLoading(false);
-            } else {
+            } else if (!tour) {
               setNoData(true);
+            }else{
+                setNoData(true);
             }
           } catch (err) {
             console.log("Error:", err);
