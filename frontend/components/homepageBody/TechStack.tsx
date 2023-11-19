@@ -39,7 +39,7 @@ const TechStack = () => {
           smheight="20%"
         >
           The tech stack used for developing game_bloc is mostly rust in other
-          to fully utilize the Solana blockchain and the packages that it
+          to fully utilize the ICP blockchain and the packages that it
           provides.
         </Paragraph>
       </Container>
