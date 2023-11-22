@@ -478,9 +478,9 @@ const ActiveTournamentDetails = () => {
                                       </Container>
                                     </Container>
                                   ))
-                                : null}
+                                : null} */}
                             </Container>
-                          ))} */}
+                          ))}
                         </Wrapper>
                       </Container>
                     </Container>

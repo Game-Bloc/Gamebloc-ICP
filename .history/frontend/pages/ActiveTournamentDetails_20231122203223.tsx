@@ -445,7 +445,7 @@ const ActiveTournamentDetails = () => {
                           alignItems="center"
                           margin=" 1rem 0 0 2rem"
                         >
-                          {/* {data.users!.map((list: any, index: any) => (
+                          {data.users!.map((list: any, index: any) => (
                             <Container key={index}>
                               {Array.isArray(list)
                                 ? list.map((value: any, indexlist: any) => (
@@ -480,7 +480,7 @@ const ActiveTournamentDetails = () => {
                                   ))
                                 : null}
                             </Container>
-                          ))} */}
+                          ))}
                         </Wrapper>
                       </Container>
                     </Container>

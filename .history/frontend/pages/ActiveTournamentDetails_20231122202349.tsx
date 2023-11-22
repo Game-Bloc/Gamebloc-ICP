@@ -109,10 +109,10 @@ const ActiveTournamentDetails = () => {
               </Text>
             </Wrapper>
             {tournamentData
-              .filter((list: any) => list.id_hash == id)
+              .filter((list: any) => list.tournamentId == id)
               .map((data: any) => (
                 <Wrapper
-                  key={data.id_hash}
+                  key={data.tournamentId}
                   display="grid"
                   gridColumn="repeat( auto-fit, minmax(16rem, 1fr) )"
                   mdgridcolumn="repeat(1, 1fr)"
@@ -139,7 +139,7 @@ const ActiveTournamentDetails = () => {
                         top=".7rem"
                         left=".7rem"
                         backgroundColor={
-                          Object.keys(data.tournament_type)[0] === "Crowdfunded"
+                          data.tournamentType === "crowdfunded"
                             ? "#D1FADF"
                             : "#FEE4E2"
                         }
@@ -152,15 +152,14 @@ const ActiveTournamentDetails = () => {
                       >
                         <Text
                           color={
-                            Object.keys(data.tournament_type)[0] ===
-                            "Crowdfunded"
+                            data.tournamentType === "crowdfunded"
                               ? "#039855"
                               : "#D92D20"
                           }
                           fontsize=".8rem"
                           fontWeight={700}
                         >
-                          {Object.keys(data.tournament_type)[0].toUpperCase()}
+                          {data.tournamentType.toUpperCase()}
                         </Text>
                       </Container>
                       <Container
@@ -176,7 +175,7 @@ const ActiveTournamentDetails = () => {
                         alignItems="center"
                       >
                         <Text color="#B88217" fontsize=".8rem" fontWeight={700}>
-                          {data.starting_date}
+                          {data.date}
                         </Text>
                       </Container>
                     </Container>
@@ -205,7 +204,7 @@ const ActiveTournamentDetails = () => {
                             fontWeight={700}
                             color="#ffffff"
                           >
-                            {data.game}
+                            {data.gameName}
                           </Text>
 
                           <Wrapper
@@ -227,7 +226,7 @@ const ActiveTournamentDetails = () => {
                               fontWeight={400}
                               margin="0 0 0 .3rem"
                             >
-                              {data.creator}
+                              {data.username}
                             </Paragraph>
                           </Wrapper>
                         </Wrapper>
@@ -353,13 +352,12 @@ const ActiveTournamentDetails = () => {
                                 fontWeight={600}
                                 cursor="pointer"
                               >
-                                {/* {data.status} */}
+                                {data.status}
                               </Text>
                             </Container>
                           </Wrapper>
                         </Wrapper>
-                        {Object.keys(data.tournament_type)[0] ===
-                        "Crowdfunded" ? (
+                        {data.tournamentType === "crowdfunded" ? (
                           <Wrapper
                             display="flex"
                             flexDirection="row"
@@ -389,7 +387,7 @@ const ActiveTournamentDetails = () => {
                                 fontWeight={700}
                                 margin="1rem 0 0 0"
                               >
-                                {data.entry_prize} ICP
+                                {data.entryPrize} SOL
                               </Paragraph>
                             </Wrapper>
                           </Wrapper>
@@ -423,7 +421,7 @@ const ActiveTournamentDetails = () => {
                                 fontWeight={700}
                                 margin="1rem 0 0 0"
                               >
-                                {data.total_prize} ICP
+                                {data.poolPrize} SOL
                               </Paragraph>
                             </Wrapper>
                           </Wrapper>
@@ -445,7 +443,7 @@ const ActiveTournamentDetails = () => {
                           alignItems="center"
                           margin=" 1rem 0 0 2rem"
                         >
-                          {/* {data.users!.map((list: any, index: any) => (
+                          {data.participants!.map((list: any, index: any) => (
                             <Container key={index}>
                               {Array.isArray(list)
                                 ? list.map((value: any, indexlist: any) => (
@@ -480,7 +478,7 @@ const ActiveTournamentDetails = () => {
                                   ))
                                 : null}
                             </Container>
-                          ))} */}
+                          ))}
                         </Wrapper>
                       </Container>
                     </Container>
@@ -514,7 +512,7 @@ const ActiveTournamentDetails = () => {
                         smfontSize=".7rem"
                         margin="1rem 0 0 0"
                       >
-                        {data.tournament_rules}
+                        {data.tournamentRules}
                       </Paragraph>
                     </Wrapper>
                     <Wrapper display="flex" margin="1rem 0 0 0" height="100%">
