@@ -64,15 +64,6 @@ shared ({caller}) actor class Kitchen() {
         };
 
 
-
-
-
-
-
-
-
-
-
     private stable var userCanisterId : Principal = caller;
 
     type TournamentAccount = Bloctypes.TournamentAccount;
@@ -92,9 +83,6 @@ shared ({caller}) actor class Kitchen() {
         userCanisterId := user;
         await getOwner();
     };
-
-
-    
 
 
     func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, canister_id : Text) : Bloctypes.UserProfile {
@@ -214,8 +202,6 @@ shared ({caller}) actor class Kitchen() {
             throw (err);
         }
     };
-
-
 
     // public func start_tournament(id : Text) : (){
 
