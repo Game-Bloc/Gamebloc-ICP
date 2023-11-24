@@ -12,6 +12,12 @@ const ProtectedRoutes = ({ userAuthState }: Prop) => {
     return userAuthState
   }, [userAuthState])
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/homepage")
+    }
+  }, [isAuthenticated, navigate])
+
   return isAuthenticated ? (
     <div>
       <Outlet />

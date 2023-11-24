@@ -72,7 +72,7 @@ function App() {
     if (isConnected) {
       dispatch(updateAuthState(authState))
     }
-  }, [isConnected])
+  }, [dispatch])
 
   return (
     <React.Suspense fallback={<FallBackLoader />}>

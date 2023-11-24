@@ -61,18 +61,18 @@ const theme = {
 }
 
 function App() {
-  const { isConnected } = useConnect()
+  const { isConnected, isDisconnecting, status } = useConnect()
   const dispatch = useAppDispatch()
   const userAuthState = useAppSelector((state) => state.auth.auth)
-
+  console.log(status)
   useEffect(() => {
     const authState = {
       auth: true,
     }
-    if (isConnected) {
+    if (isConnected && isDisconnecting == false) {
       dispatch(updateAuthState(authState))
     }
-  }, [isConnected])
+  }, [isConnected, isDisconnecting])
 
   return (
     <React.Suspense fallback={<FallBackLoader />}>

@@ -237,7 +237,7 @@ const ActiveTournamentPage = () => {
                     flexDirection="column"
                   >
                     <Img
-                      margin="3rem 0 0 0"
+                      margin="2rem 0 0 0"
                       width="10rem"
                       src={imgView}
                       alt=""

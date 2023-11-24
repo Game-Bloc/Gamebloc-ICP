@@ -64,15 +64,15 @@ function App() {
   const { isConnected } = useConnect()
   const dispatch = useAppDispatch()
   const userAuthState = useAppSelector((state) => state.auth.auth)
-
-  useEffect(() => {
+  console.log(isConnected)
+  useMemo(() => {
     const authState = {
       auth: true,
     }
     if (isConnected) {
       dispatch(updateAuthState(authState))
     }
-  }, [isConnected])
+  }, [isConnected, dispatch])
 
   return (
     <React.Suspense fallback={<FallBackLoader />}>
