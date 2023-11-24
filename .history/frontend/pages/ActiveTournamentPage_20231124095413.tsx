@@ -228,13 +228,13 @@ const ActiveTournamentPage = () => {
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
-                  margin="0 2rem"
-                  smmargin=" 0 1rem"
                 >
                   <Container
                     display="flex"
                     alignItems="center"
                     flexDirection="column"
+                    margin="0 2rem"
+                    smmargin=" 0 1rem"
                   >
                     <Text
                       fontWeight={800}
@@ -244,7 +244,7 @@ const ActiveTournamentPage = () => {
                     >
                       No Active tournament at the moment..
                     </Text>
-                    {/* <Img margin="0 2rem" src={imgView} alt="" /> */}
+                    <Img src={imgView} alt="" />
                   </Container>
                 </Container>
               ) : (

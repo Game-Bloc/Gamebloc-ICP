@@ -226,25 +226,19 @@ const ActiveTournamentPage = () => {
               {displayTournaments.length == 0 ? (
                 <Container
                   display="flex"
+                  height="100vh"
                   justifyContent="center"
                   alignItems="center"
-                  margin="0 2rem"
-                  smmargin=" 0 1rem"
                 >
                   <Container
                     display="flex"
                     alignItems="center"
                     flexDirection="column"
                   >
-                    <Text
-                      fontWeight={800}
-                      fontsize="1.2rem"
-                      smfontSize="1rem"
-                      margin="1rem 0"
-                    >
+                    <Text margin="1rem 0">
                       No Active tournament at the moment..
                     </Text>
-                    {/* <Img margin="0 2rem" src={imgView} alt="" /> */}
+                    <Img src={imgView} alt="" />
                   </Container>
                 </Container>
               ) : (

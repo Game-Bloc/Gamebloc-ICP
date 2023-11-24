@@ -11,7 +11,6 @@ import { LeftArrow, RightArrow } from "../styles/icon/Icons"
 import { Img } from "../styles/commonStyles/Img"
 import { Paragraph } from "../styles/commonStyles/Paragraph"
 import check from "../assets/images/check-circle.png"
-import imgView from "../assets/images/framebg.png"
 import navigate from "../assets/images/navigate-next.png"
 import { CodImgs } from "../data/Index"
 import Loader from "../components/Popup/Loader/Loader"
@@ -224,28 +223,8 @@ const ActiveTournamentPage = () => {
                 {/* {updating ? <Text>Updating</Text> : <></>} */}
               </Container>
               {displayTournaments.length == 0 ? (
-                <Container
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  margin="0 2rem"
-                  smmargin=" 0 1rem"
-                >
-                  <Container
-                    display="flex"
-                    alignItems="center"
-                    flexDirection="column"
-                  >
-                    <Text
-                      fontWeight={800}
-                      fontsize="1.2rem"
-                      smfontSize="1rem"
-                      margin="1rem 0"
-                    >
-                      No Active tournament at the moment..
-                    </Text>
-                    {/* <Img margin="0 2rem" src={imgView} alt="" /> */}
-                  </Container>
+                <Container height="100vh">
+                  <Text>No Active tournament at the moment..</Text>
                 </Container>
               ) : (
                 <Container

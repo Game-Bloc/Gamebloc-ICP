@@ -244,7 +244,7 @@ const ActiveTournamentPage = () => {
                     >
                       No Active tournament at the moment..
                     </Text>
-                    {/* <Img margin="0 2rem" src={imgView} alt="" /> */}
+                    <Img src={imgView} alt="" />
                   </Container>
                 </Container>
               ) : (
