@@ -39,8 +39,8 @@ export const useFetchAllTournaments = () => {
               total_prize: Number(data.total_prize),
               tournament_rules: data.tournament_rules,
               tournament_type: data.tournament_type,
-              users: data.users,
-              winners: data.winners,
+              users: data.user.map((user) => user),
+              winners: data.winers.map((winner) => winner),
             }
             console.log(tournamentData)
             dispatch(addToActiveTournament(tournamentData))
@@ -61,3 +61,4 @@ export const useFetchAllTournaments = () => {
 
   return { fetchAllTournaments, loading, nodata }
 }
+

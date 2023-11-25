@@ -7,7 +7,7 @@ import { LeftArrow2 } from "../styles/icon/Icons"
 import background from "../assets/images/detail.jpg"
 import { Img } from "../styles/commonStyles/Img"
 import check from "../assets/images/check2.png"
-import { Paragraph } from "../styles/commonStyles/Paragraph"
+import { Paragraph } from '../styles/commonStyles/Paragraph';
 import { Button } from "../styles/commonStyles/Button.styled"
 import dice from "../assets/images/dice.png"
 import price from "../assets/images/price.png"
@@ -20,6 +20,7 @@ import PaymentModal from "../components/Popup/PaymentModal"
 import Loader from "../components/Popup/Loader/Loader"
 import SideBar from "./SideBar"
 import CommonHeader from "../common/CommonHeader"
+import { useGameBlocFunction } from '../functions/GameblocHooks';
 
 const ActiveTournamentDetails = () => {
   // const {
@@ -36,6 +37,7 @@ const ActiveTournamentDetails = () => {
   const owner = useAppSelector((state) => state.userProfile.username)
   const [openModal, setOpenmodal] = useState<boolean>(false)
   const [color, setColor] = useState("#fff")
+  const {isLoading, joinTournament} = useGameBlocFunction()
   const initials = owner!.substring(0, 2).toUpperCase()
 
   // console.log("payment.:", confirmPayment);
@@ -69,12 +71,13 @@ const ActiveTournamentDetails = () => {
   }
 
   const joinGameTournament = () => {
-    // joinTournament(
-    //   +id!,
-    //   "You have successfully joined this tournament",
-    //   "Something went wrong try again",
-    //   "/home"
-    // );
+    joinTournament(
+      owner,
+      id,
+      "You have successfully joined this tournament",
+      "Something went wrong try again",
+      "/"
+    );
   }
 
   return (
@@ -445,12 +448,20 @@ const ActiveTournamentDetails = () => {
                           alignItems="center"
                           margin=" 1rem 0 0 2rem"
                         >
-                          {/* {data.users!.map((list: any, index: any) => (
+                         {data.users.length == 0 ? (
+                         <Text
+                         fontWeight={500}
+                         fontsize=".85rem"
+                         >
+                          No Gamer has joined yet.
+                         </Text>
+                         ) : (
+                          <>
+                           {data.users!.map((list: any, index: any) => (
                             <Container key={index}>
-                              {Array.isArray(list)
-                                ? list.map((value: any, indexlist: any) => (
+                             
                                     <Container
-                                      key={indexlist}
+                                  
                                       display="flex"
                                       flexDirection="row"
                                       alignItems="center"
@@ -473,14 +484,16 @@ const ActiveTournamentDetails = () => {
                                           fontsize="1.2rem"
                                           fontWeight={400}
                                         >
-                                          {value.substring(0, 2).toUpperCase()}
+                                          {list.substring(0, 2).toUpperCase()}
                                         </Text>
                                       </Container>
                                     </Container>
-                                  ))
-                                : null}
+                                  
+                                
                             </Container>
-                          ))} */}
+                          ))}
+                          </>
+                         ) }
                         </Wrapper>
                       </Container>
                     </Container>
@@ -519,76 +532,47 @@ const ActiveTournamentDetails = () => {
                     </Wrapper>
                     <Wrapper display="flex" margin="1rem 0 0 0" height="100%">
                       <Wrapper alignSelf="flex-end" width="100%">
-                        {/* {!confirmPayment &&
-                  data.tournamentType === "crowdfunded" &&
-                  !data.participants.some((innerArray: any) =>
-                    innerArray.includes(owner)
-                  ) ? (
-                    <Wrapper margin="0 2rem">
-                      <Button
-                        backgroundColor="#F6B8FC"
+                        
+
+                  {data.users.some((index: any) => index.includes(owner)) ? (
+                        <Button
+                        backgroundColor="#63aa88"
+                        textColor="white"
                         borderRadius="10px 10px 10px 10px"
-                        padding="0.4rem 1.2rem 0.5rem 1.2rem"
+                        padding="0.3rem 1.2rem 0.4rem 1.2rem"
                         justifyContent="center"
                         display="flex"
                         alignItems="center"
                         height="fit-content"
                         width="100%"
-                        cursor="pointer"
-                        onClick={() => setOpenmodal(true)}
                       >
-                        Make Payment
+                        Joined
                       </Button>
-                    </Wrapper>
-                  ) : (
-                    <Wrapper width="100%">
-                      {data.tournamentType === "prepaid" &&
-                      data.username === owner ? (
-                        <></>
-                      ) : (
-                        <Wrapper alignSelf="flex-end" width="100%">
-                          {data.participants.some((innerArray: any) =>
-                            innerArray.includes(owner)
-                          ) ? (
-                            <Button
-                              backgroundColor="#63aa88"
-                              textColor="white"
-                              borderRadius="10px 10px 10px 10px"
-                              padding="0.3rem 1.2rem 0.4rem 1.2rem"
-                              justifyContent="center"
-                              display="flex"
-                              alignItems="center"
-                              height="fit-content"
-                              width="100%"
-                            >
-                              Joined
-                            </Button>
+                        ) : (
+                          <button
+                          onClick={() => joinGameTournament()}
+                          className="glowing-btn"
+                        >
+                          {isLoading ? (
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
                           ) : (
-                            <button
-                              onClick={() => joinGameTournament()}
-                              className="glowing-btn"
-                            >
-                              {loading ? (
-                                <ClipLoader
-                                  color={color}
-                                  loading={loading}
-                                  cssOverride={override}
-                                  size={20}
-                                  aria-label="Loading Spinner"
-                                  data-testid="loader"
-                                />
-                              ) : (
-                                <span className="glowing-txt">
-                                  C<span className="faulty-letter">l</span>ick
-                                  me
-                                </span>
-                              )}
-                            </button>
+                            <span className="glowing-txt">
+                              J<span className="faulty-letter">o</span>in
+                              Tournament
+                            </span>
                           )}
-                        </Wrapper>
-                      )}
-                    </Wrapper>
-                  )} */}
+                        </button>
+                        )
+
+                  }
+                   
                       </Wrapper>
                     </Wrapper>
                   </Container>
