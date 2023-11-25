@@ -356,7 +356,7 @@ const ActiveTournamentDetails = () => {
                                 fontWeight={600}
                                 cursor="pointer"
                               >
-                                {/* {data.status} */}
+                                {Object.keys(data.status)[0]}
                               </Text>
                             </Container>
                           </Wrapper>
@@ -433,7 +433,9 @@ const ActiveTournamentDetails = () => {
                         )}
                       </Wrapper>
 
-                      <Container margin="1rem 0">
+                      <Container display="flex" justifyContent="space-between" alignItems="center" margin="1rem 0">
+                        <Container>
+
                         <Text
                           fontsize="1.2rem"
                           smfontSize="1rem"
@@ -458,7 +460,7 @@ const ActiveTournamentDetails = () => {
                          ) : (
                           <>
                            {data.users!.map((list: any, index: any) => (
-                            <Container key={index}>
+                            <Container  key={index}>
                              
                                     <Container
                                   
@@ -495,6 +497,15 @@ const ActiveTournamentDetails = () => {
                           </>
                          ) }
                         </Wrapper>
+                        </Container>
+
+                        <Text
+                        margin="2rem 1rem 0 0"
+                        smmargin="2rem .8rem 0 0"
+                        fontWeight={700}
+                        >
+                    {data.users.length} / {data.no_of_participants}
+                        </Text>
                       </Container>
                     </Container>
                   </Container>
