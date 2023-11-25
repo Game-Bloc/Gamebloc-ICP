@@ -9,5 +9,7 @@ target
 
 .vessel
 
+dfx.json
+
 
 src/declarations

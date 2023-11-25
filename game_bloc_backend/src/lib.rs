@@ -20,12 +20,12 @@ thread_local! {
 
 
 #[query(name = "getSelf")]
-fn get_self() -> UserProfile {
-    let id = ic_cdk::api::caller();
+fn get_self(principal:Principal) -> UserProfile {
+    // let id = ic_cdk::api::caller();
     PROFILE_STORE.with(|profile_store| {
         profile_store
             .borrow()
-            .get(&id)
+            .get(&principal)
             .cloned().unwrap_or_default()
     })
 }
@@ -54,15 +54,15 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile) -> Result<u8,u8> {
-    let principal_id = ic_cdk::api::caller();
+fn create_profile(profile: UserProfile,principal:Principal) -> Result<u8,u8> {
+    // let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal_id);
+            .insert(profile.username.clone(), principal);
     });
     PROFILE_STORE.with(|profile_store| {
-        profile_store.borrow_mut().insert(principal_id, profile);
+        profile_store.borrow_mut().insert(principal, profile);
     });
     Ok(1)
 }
@@ -111,8 +111,8 @@ fn start_tournament(id: String) {
 }
 
 #[update]
-fn end_tournament(id: String, names:Vec<String>) {
-    if get_self().is_mod {
+fn end_tournament(id: String, names:Vec<String>,principal:Principal) {
+    if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
             tournament.status = match tournament.status {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import logo from "./assets/dfinity.svg"
 /*
  * Connect2ic provides essential utilities for IC app development
@@ -12,8 +12,6 @@ import "@connect2ic/core/style.css"
  * Import canister definitions like this:
  */
 import * as gamebloc from "../.dfx/local/canisters/kitchen"
-
-// import * as gamebloc from "../.dfx/ic/canisters/kitchen"
 
 // import * as gamebloc from "../src/declarations/kitchen"
 
@@ -44,6 +42,8 @@ import SetAdmin from "./pages/SetAdmin"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import ProtectedRoutes from "./ProtectedRoutes"
 import FallBackLoader from "./components/Popup/FallBackLoader"
+import { useAppDispatch, useAppSelector } from "./redux/hooks"
+import { updateAuthState } from "./redux/slice/authSlice"
 const NewsPage = React.lazy(() => import("./pages/NewsPage"))
 const NewsDetails = React.lazy(() => import("./pages/NewsDetails"))
 const ErrorPage = React.lazy(() => import("./pages/ErrorPage"))
@@ -60,6 +60,18 @@ const theme = {
 
 function App() {
   const { isConnected } = useConnect()
+  const dispatch = useAppDispatch()
+  const userAuthState = useAppSelector((state) => state.auth.auth)
+
+  useEffect(() => {
+    const authState = {
+      auth: true,
+    }
+    if (isConnected) {
+      dispatch(updateAuthState(authState))
+    }
+  }, [isConnected])
+
   return (
     <React.Suspense fallback={<FallBackLoader />}>
       <ThemeProvider theme={theme}>
@@ -68,9 +80,9 @@ function App() {
           <Routes>
             <Route
               path="/homepage"
-              element={isConnected ? <Navigate to="/" /> : <HomePage />}
+              element={userAuthState ? <Navigate to="/" /> : <HomePage />}
             />
-            <Route element={<ProtectedRoutes isConnected={isConnected} />}>
+            <Route element={<ProtectedRoutes userAuthState={userAuthState} />}>
               <Route path="/" element={<OverviewPage />} />
               <Route
                 path="/active-tournament"
