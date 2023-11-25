@@ -11,6 +11,8 @@ import "@connect2ic/core/style.css"
 /*
  * Import canister definitions like this:
  */
+// import * as gamebloc from "../.dfx/local/canisters/kitchen"
+
 import * as gamebloc from "../.dfx/local/canisters/kitchen"
 
 // import * as gamebloc from "../src/declarations/kitchen"
@@ -68,7 +70,12 @@ function App() {
       auth: true,
     }
     if (isConnected) {
-      dispatch(updateAuthState(authState))
+      localStorage.setItem("authState", "true")
+      const storedAuthState = localStorage.getItem("authState")
+      console.log("storedAuthState", storedAuthState)
+      if (storedAuthState) {
+        dispatch(updateAuthState(authState))
+      }
     }
   }, [isConnected])
 

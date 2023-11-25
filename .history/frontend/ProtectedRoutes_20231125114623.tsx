@@ -3,14 +3,14 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import { useConnect } from "@connect2ic/react"
 interface Prop {
-  userAuthState: boolean
+  isConnected: boolean
 }
 
-const ProtectedRoutes = ({ userAuthState }: Prop) => {
+const ProtectedRoutes = ({ isConnected }: Prop) => {
   const navigate = useNavigate()
   const isAuthenticated = useMemo(() => {
-    return userAuthState
-  }, [userAuthState])
+    return isConnected
+  }, [isConnected])
 
   return isAuthenticated ? (
     <div>

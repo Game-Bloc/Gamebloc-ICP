@@ -11,6 +11,8 @@ import "@connect2ic/core/style.css"
 /*
  * Import canister definitions like this:
  */
+// import * as gamebloc from "../.dfx/local/canisters/kitchen"
+
 import * as gamebloc from "../.dfx/local/canisters/kitchen"
 
 // import * as gamebloc from "../src/declarations/kitchen"
@@ -59,7 +61,7 @@ const theme = {
 }
 
 function App() {
-  const { isConnected } = useConnect()
+  const { isConnected, status } = useConnect()
   const dispatch = useAppDispatch()
   const userAuthState = useAppSelector((state) => state.auth.auth)
 
@@ -67,8 +69,24 @@ function App() {
     const authState = {
       auth: true,
     }
+    const falseState = {
+      auth: false,
+    }
+
     if (isConnected) {
-      dispatch(updateAuthState(authState))
+      localStorage.setItem("authState", JSON.stringify(authState))
+      const storedAuthState = localStorage.getItem("authState")
+      console.log("storedAuthState", storedAuthState)
+      console.log("status", status)
+      if (storedAuthState) {
+        const parsedAuthState = JSON.parse(storedAuthState)
+        dispatch(updateAuthState(parsedAuthState))
+      } else if (!isConnected) {
+        localStorage.setItem("authState", JSON.stringify(falseState))
+        const storedAuthState = localStorage.getItem("authState")
+        const parsedAuthState = JSON.parse(storedAuthState)
+        dispatch(updateAuthState(parsedAuthState))
+      }
     }
   }, [isConnected])
 

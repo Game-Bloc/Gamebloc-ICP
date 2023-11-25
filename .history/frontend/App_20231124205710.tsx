@@ -11,6 +11,8 @@ import "@connect2ic/core/style.css"
 /*
  * Import canister definitions like this:
  */
+// import * as gamebloc from "../.dfx/local/canisters/kitchen"
+
 import * as gamebloc from "../.dfx/local/canisters/kitchen"
 
 // import * as gamebloc from "../src/declarations/kitchen"
@@ -59,18 +61,18 @@ const theme = {
 }
 
 function App() {
-  const { isConnected } = useConnect()
+  const { isConnected, isDisconnecting } = useConnect()
   const dispatch = useAppDispatch()
   const userAuthState = useAppSelector((state) => state.auth.auth)
-
+  console.log(isDisconnecting)
   useEffect(() => {
     const authState = {
       auth: true,
     }
-    if (isConnected) {
+    if (isConnected && isDisconnecting == false) {
       dispatch(updateAuthState(authState))
     }
-  }, [isConnected])
+  }, [isConnected, isDisconnecting])
 
   return (
     <React.Suspense fallback={<FallBackLoader />}>

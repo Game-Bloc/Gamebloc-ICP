@@ -11,7 +11,7 @@ const ProtectedRoutes = ({ userAuthState }: Prop) => {
   const isAuthenticated = useMemo(() => {
     return userAuthState
   }, [userAuthState])
-
+  console.log("isAuthenticated", isAuthenticated)
   return isAuthenticated ? (
     <div>
       <Outlet />

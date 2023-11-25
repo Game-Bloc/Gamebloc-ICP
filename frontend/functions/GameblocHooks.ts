@@ -181,160 +181,22 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  // const fetchAllTournaments = (): ThunkAction<Promise<void>, RootState, null, AnyAction> => {
-  //   console.log("fetchAllTournaments function called");
-  //   return  (dispatch, getState) => {
-  //     const currentState = getState();
-  //
-  //       setIsLoading(true);
-  //       console.log("works");
-
-  //      const tour = gamebloc.get_all_tournament().then((res: any)=> {
-  //         if(res){
-  //         if ( res ) {
-  //           console.log("res:", res)
-  //           for (const data of res) {
-  //             const existingTournament = currentState.tournamentData.find(
-  //               (t) => t.id_hash === data.id_hash
-  //             );
-
-  //             const tournamentData = {
-  //               creator: data.creator,
-  //               entry_prize: data.entry_prize,
-  //               game: data.game,
-  //               id_hash: data.id_hash,
-  //               idx: data.idx,
-  //               no_of_participants: Number(data.no_of_participants),
-  //               no_of_winners: data.no_of_winners,
-  //               starting_date: data.starting_date,
-  //               status: data.status,
-  //               total_prize: Number(data.total_prize),
-  //               tournament_rules: data.tournament_rules,
-  //               tournament_type: data.tournament_type,
-  //               users: data.users,
-  //               winners: data.winners
-  //             };
-
-  //             if (existingTournament) {
-  //               dispatch(updateActiveTournament(tournamentData));
-  //             } else {
-  //               dispatch(addToActiveTournament(tournamentData));
-  //             }
-  //           }
-
-  //           setIsLoading(false);
-
-  //         } else {
-  //           setNoData(true);
-  //         }
-
-  //       }}).catch((err) => {
-  //         setIsLoading(false);
-  //         console.log("Error adding or updating tournament:", err);
-  //       }).finally(()=> setIsLoading(false) )
-
-  //      return Promise.resolve()
-  //   };
-  // };
-
-  // const useFetchAllTournaments = () => {
-  //   const dispatch = useAppDispatch();
-  //   const [isLoading, setIsLoading] = useState(false);
-  //   const [noData, setNoData] = useState(false);
-
-  //   const fetchAllTournaments = async () => {
-  //     try {
-  //       setIsLoading(true);
-  //       console.log("get tournament was called");
-  //       const tour: any = await gamebloc.get_all_tournament();
-
-  //       if (tour && tour.length > 0) {
-  //         for (const data of tour) {
-  //           const tournamentData = {
-  //             creator: data.creator,
-  //             entry_prize: data.entry_prize,
-  //             game: data.game,
-  //             id_hash: data.id_hash,
-  //             idx: data.idx,
-  //             no_of_participants: Number(data.no_of_participants),
-  //             no_of_winners: data.no_of_winners,
-  //             starting_date: data.starting_date,
-  //             status: data.status,
-  //             total_prize: Number(data.total_prize),
-  //             tournament_rules: data.tournament_rules,
-  //             tournament_type: data.tournament_type,
-  //             users: data.users,
-  //             winners: data.winners,
-  //           };
-  //           dispatch(addToActiveTournament(tournamentData));
-  //         }
-  //       } else {
-  //         setNoData(true);
-  //       }
-  //     } catch (err) {
-  //       console.log("Error:", err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   return { fetchAllTournaments, isLoading, noData };
-  // };
-
-  // const updateTournaments = (): ThunkAction<Promise<void>, RootState, null, AnyAction> => {
-
-  //  return async (dispatch, getState) => {
-  //     const currentState = getState();
-  //
-  //     setUpdating(true)
-  //       dispatch(clearTournaments())
-  //       console.log("updte");
-
-  //      const tour = gamebloc.get_all_tournament().then((res: any)=> {
-  //         if(res){
-  //         if ( res ) {
-  //           console.log("res:", res)
-  //           for (const data of res) {
-  //             const existingTournament = currentState.tournamentData.find(
-  //               (t) => t.id_hash === data.id_hash
-  //             );
-
-  //             const tournamentData = {
-  //               creator: data.creator,
-  //               entry_prize: data.entry_prize,
-  //               game: data.game,
-  //               id_hash: data.id_hash,
-  //               idx: data.idx,
-  //               no_of_participants: Number(data.no_of_participants),
-  //               no_of_winners: data.no_of_winners,
-  //               starting_date: data.starting_date,
-  //               status: data.status,
-  //               total_prize: Number(data.total_prize),
-  //               tournament_rules: data.tournament_rules,
-  //               tournament_type: data.tournament_type,
-  //               users: data.users,
-  //               winners: data.winners
-  //             };
-
-  //             if (existingTournament) {
-  //               dispatch(updateActiveTournament(tournamentData));
-  //             } else {
-  //               dispatch(addToActiveTournament(tournamentData));
-  //             }
-  //           }
-
-  //           setUpdating(false);
-
-  //         }
-
-  //       }}).catch((err) => {
-  //         setUpdating(false);
-  //         console.log("Error adding or updating tournament:", err);
-  //       }).finally(()=> setUpdating(false) )
-
-  //      return Promise.resolve()
-  //   };
-  // };
+  const joinTournament = async( name: string, id: string, successMsg: string,
+    errorMsg: string,
+    route: string, ) => {
+     try{
+      setIsLoading(true)
+       const join_tournament =  await gamebloc.join_tournament(name, id)
+          setIsLoading(false)
+          popUp(successMsg, route);  
+     }catch(err){
+      errorPopUp(errorMsg)
+      setIsLoading(false)
+      console.log("Error joining tournament:", err)
+     } finally{
+      setIsLoading(false)
+     }
+    }
 
   return {
     initilizeUser,
@@ -344,6 +206,6 @@ export const useGameBlocFunction = () => {
     getAllUsers,
     getProfile,
     createTournament,
-    // updateTournaments,
+    joinTournament
   }
 }

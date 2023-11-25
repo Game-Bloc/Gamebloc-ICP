@@ -3,22 +3,27 @@ import { Outlet, useNavigate } from "react-router-dom"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import { useConnect } from "@connect2ic/react"
 interface Prop {
-  userAuthState: boolean
+  userAuthState: string
 }
 
 const ProtectedRoutes = ({ userAuthState }: Prop) => {
   const navigate = useNavigate()
   const isAuthenticated = useMemo(() => {
-    return userAuthState
+    if (userAuthState == "true") {
+      return true
+    } else {
+      return navigate("/homepage")
+    }
   }, [userAuthState])
 
   return isAuthenticated ? (
     <div>
       <Outlet />
     </div>
-  ) : (
-    <>{navigate("/homepage")}</>
-  )
+  ) : null
+  //   (
+  //   <>{navigate("/homepage")}</>
+  // )
 }
 
 export default ProtectedRoutes

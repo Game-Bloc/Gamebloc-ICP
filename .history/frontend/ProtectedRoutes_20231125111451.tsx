@@ -1,15 +1,19 @@
 import React, { useEffect, useMemo, useState } from "react"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Navigate, Outlet, useNavigate } from "react-router-dom"
 import { useGameBlocFunction } from "./functions/GameblocHooks"
 import { useConnect } from "@connect2ic/react"
 interface Prop {
-  userAuthState: boolean
+  userAuthState: string
 }
 
 const ProtectedRoutes = ({ userAuthState }: Prop) => {
   const navigate = useNavigate()
   const isAuthenticated = useMemo(() => {
-    return userAuthState
+    if (userAuthState == "true") {
+      return true
+    } else if (userAuthState == "false") {
+      return false
+    }
   }, [userAuthState])
 
   return isAuthenticated ? (
@@ -17,7 +21,7 @@ const ProtectedRoutes = ({ userAuthState }: Prop) => {
       <Outlet />
     </div>
   ) : (
-    <>{navigate("/homepage")}</>
+    <>{<Navigate to="/homepage" />}</>
   )
 }
 

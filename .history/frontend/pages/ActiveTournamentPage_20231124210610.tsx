@@ -236,12 +236,7 @@ const ActiveTournamentPage = () => {
                     alignItems="center"
                     flexDirection="column"
                   >
-                    <Img
-                      margin="3rem 0 0 0"
-                      width="10rem"
-                      src={imgView}
-                      alt=""
-                    />
+                    <Img margin="2rem" width="10rem" src={imgView} alt="" />
                     <Text
                       fontWeight={800}
                       fontsize="1.2rem"
