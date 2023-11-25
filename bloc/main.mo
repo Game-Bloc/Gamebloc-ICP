@@ -3,6 +3,7 @@ import IC "types";
 import Bloctypes "bloctypes";
 
 import RustBloc "canister:game_bloc_backend";
+import ICPLedger "canister:icp_ledger";
 import Kitchen "kitchen";
 
 import Cycles "mo:base/ExperimentalCycles";
@@ -10,6 +11,7 @@ import Principal "mo:base/Principal";
 import Error "mo:base/Error";
 import Nat8 "mo:base/Nat8";
 import Debug "mo:base/Debug";
+import Result "mo:base/Result";
 
 shared ({caller}) actor class BlocFactory() = this {
 
@@ -42,6 +44,22 @@ shared ({caller}) actor class BlocFactory() = this {
     public shared ({caller}) func getOwner2() : async Principal {
         canisterID;
     };
+
+    public shared({caller}) func getLedgerBalance() : async Result.Result<Nat, Text> {
+      try{
+        let balance : Nat = await ICPLedger.icrc1_balance_of({
+          owner = caller;
+          subaccount = null;
+        });
+        return #ok(balance)
+      } catch(err){
+        return #err(Error.message(err));
+      }
+    };
+
+    
+
+
 
 
     // deprecated
