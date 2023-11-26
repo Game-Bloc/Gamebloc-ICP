@@ -9,6 +9,7 @@ import Loader from "../components/Popup/Loader/Loader"
 import CommonHeader from "../common/CommonHeader"
 import SideBar from "./SideBar"
 import { Wrapper } from "../styles/commonStyles/Wrapper"
+import FallBackLoader from "../components/Popup/FallBackLoader"
 
 const ActiveStreams = lazy(
   () => import("../components/overViewPageComponents/ActiveStreams"),
@@ -24,38 +25,47 @@ const GamingHub = lazy(
 )
 
 const OverviewPage = () => {
-  // const { fetchAllTournaments } = useGameBlocFunction();
+  const { getProfile, isLoading } = useGameBlocFunction();
   const checkState = useAppSelector(
     (state) => state.userProfile.initializeState,
   )
 
-  // useEffect(() => {
-  //   fetchAllTournaments()
-  // }, []);
+  useEffect(() => {
+    getProfile()
+  }, []);
 
-  return (
-    <>
-      <CommonHeader />
-      <Container display="flex" flexDirection="row">
-        <SideBar />
-        <Wrapper
-          xmdmargin="7rem 1rem 0 1rem"
-          xmdwidth="100%"
-          width="79%"
-          margin="7rem 0 0 19%"
-        >
-          <Container backgroundColor="#01070E" margin="0 0 1rem 0">
-            <SliderView />
-            <ActiveTournament />
-            <PopularGame />
-            <GamingHub />
-            <ActiveStreams />
-            {!checkState && <LoginModal />}
-          </Container>
-        </Wrapper>
-      </Container>
-    </>
-  )
+  if(isLoading){
+    return (
+      <React.Suspense>
+        <FallBackLoader />
+
+      </React.Suspense>
+    )
+  } else {
+    return (
+      <>
+        <CommonHeader />
+        <Container display="flex" flexDirection="row">
+          <SideBar />
+          <Wrapper
+            xmdmargin="7rem 1rem 0 1rem"
+            xmdwidth="100%"
+            width="79%"
+            margin="7rem 0 0 19%"
+          >
+            <Container backgroundColor="#01070E" margin="0 0 1rem 0">
+              <SliderView />
+              <ActiveTournament />
+              <PopularGame />
+              <GamingHub />
+              <ActiveStreams />
+              {!checkState && <LoginModal />}
+            </Container>
+          </Wrapper>
+        </Container>
+      </>
+    )
+  }
 }
 
 export default OverviewPage

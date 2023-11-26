@@ -99,6 +99,7 @@ export const useGameBlocFunction = () => {
 
   const getProfile = async () => {
     try {
+      setIsLoading(true)
       const user: any = await gamebloc.getSelf()
       if (user.username != "") {
         console.log("user..:", user)

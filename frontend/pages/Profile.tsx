@@ -3,7 +3,7 @@ import { Img } from "../styles/commonStyles/Img"
 import { Wrapper } from "../styles/commonStyles/Wrapper"
 import img from "../assets/images/avatar2.png"
 import avatar from "../assets/images/img9.png"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Text } from "../styles/commonStyles/Text"
 // import { useAppSelector } from "../redux/hooks";
 import { Discord } from "../styles/icon/Icons"
@@ -15,6 +15,7 @@ import { useAppSelector } from "../redux/hooks"
 import CommonHeader from "../common/CommonHeader"
 import Loader from "../components/Popup/Loader/Loader"
 import SideBar from "./SideBar"
+
 
 const onChange = (key: string) => {
   console.log(key)
@@ -39,9 +40,17 @@ const items: TabsProps["items"] = [
 ]
 
 const Profile = () => {
+  const [_date , setDate] = useState<string>("")
   const username = useAppSelector((state) => state.userProfile.username)
-  // const date = useAppSelector((state) => state.userProfile.date);
+  const date = useAppSelector((state) => state.userProfile.date);
   const initials = username!.substring(0, 2).toUpperCase()
+
+  useEffect(() => {
+    console.log(date)
+    const timeStamp = +date /1e9
+   const newDate = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timeStamp)
+    setDate(newDate)
+   },[])
 
   return (
     <>
@@ -130,7 +139,7 @@ const Profile = () => {
                   margin=" "
                   color="#ffffff72"
                 >
-                  {/* Member {date} */}
+                  Member since {_date}
                 </Text>
 
                 <Wrapper

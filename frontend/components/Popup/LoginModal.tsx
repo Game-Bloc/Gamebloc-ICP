@@ -63,7 +63,7 @@ const LoginModal = () => {
     generateId()
     getCurrentMonthAndYear()
     // getAllUsers()
-    getProfile()
+    // getProfile()
   }, [])
 
   return (
