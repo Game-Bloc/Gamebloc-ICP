@@ -1,10 +1,12 @@
 import Cycles "mo:base/ExperimentalCycles";
+import Error "mo:base/Error";
 import Time "mo:base/Time";
 import Principal "mo:base/Principal";
 import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
 
+import ICPLedger "canister:icp_ledger";
 import RustBloc "canister:game_bloc_backend";
 
 
@@ -44,6 +46,57 @@ shared ({caller}) actor class Kitchen() {
             };
             unique;
         };
+
+        public shared({caller}) func getLedgerBalance() : async Result.Result<Nat, Text> {
+            try{
+                let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = caller;
+                subaccount = null;
+                });
+                return #ok(balance)
+            } catch(err){
+                return #err(Error.message(err));
+            }
+        };
+
+        public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
+            try{
+                let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = Principal.fromText(user);
+                subaccount = null;
+                });
+                return #ok(balance)
+            } catch(err){
+                return #err(Error.message(err));
+            }
+        };
+
+        public func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
+            try {
+                let transferLog = await ICPLedger.icrc1_transfer({
+                    from_subaccount = null;
+                    to = {
+                        owner = Principal.fromText(recipient);
+                        subaccount = null;
+                    };
+                    amount = amount;
+                    fee = null;
+                    memo = null;
+                    created_at_time = null;
+                });
+                switch(transferLog) {
+                    case(#Ok(trabsferLog)) { 
+                        #ok();
+                     };
+                    case(#Err(error)) { 
+                        return #err("An error occured!");
+                     };
+                };
+            } catch(err) {
+                return #err(Error.message(err));
+            };
+        };
+
 
         public func logIn(caller : Principal) : async Bool {
             var result = ProfileHashMap.get(caller);
