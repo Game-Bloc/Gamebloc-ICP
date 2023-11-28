@@ -17,21 +17,27 @@ import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../../redux/hooks"
 import { useGameBlocFunction } from "../../functions/GameblocHooks"
 import React from "react"
-import { useFetchAllTournaments } from "../../functions/BlocHooks"
+import { useFetchAllTournaments, useUpdateTournament } from "../../functions/BlocHooks"
 
 const ActiveTournament = () => {
   const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
+  const { updating, updateTournament} = useUpdateTournament()
   const { getProfile } = useGameBlocFunction()
   const tournament = useAppSelector((state) => state.tournamentData)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const tournamentPerPage: number = 5
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const navigate = useNavigate()
-
+  
   const dispatch = useAppDispatch()
 
   useEffect(() => {
-    fetchAllTournaments()
+    if(tournament.length != 0){
+      updateTournament()
+    }else{
+
+      fetchAllTournaments()
+    }
   }, [])
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
