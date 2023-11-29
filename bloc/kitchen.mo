@@ -97,6 +97,14 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
+        // public func pay_to_join_tournament(name : Text, id : Text, ) : async (){
+        //     let transfer
+        //     try {
+        //         return await RustBloc.join_tournament(name, id);
+        //     } catch err {
+        //         throw (err);
+        //     }   
+        // };
 
         public func logIn(caller : Principal) : async Bool {
             var result = ProfileHashMap.get(caller);
