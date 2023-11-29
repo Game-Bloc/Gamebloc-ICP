@@ -42,7 +42,6 @@ const ActiveTournament = () => {
     }
   }, [])
 
-  console.log("fetched data", tournament)
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
   const changePage = ({ selected }: any) => {
     setPageNumber(selected)

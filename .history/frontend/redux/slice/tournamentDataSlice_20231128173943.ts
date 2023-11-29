@@ -28,35 +28,22 @@ const tournamentDataSlice = createSlice({
       state,
       { payload }: PayloadAction<TournamentState>,
     ) => {
-      const tournament = payload
-
-      const existingTournamentIndex = state.findIndex(
-        (item) => item.id_hash === payload.id_hash,
-      )
-
-      if (existingTournamentIndex !== -1) {
-        state[existingTournamentIndex] = tournament
-      } else {
-        state.push(tournament)
-      }
+      state.push(payload)
     },
     updateActiveTournament: (
       state,
       { payload }: PayloadAction<TournamentState>,
     ) => {
-      const newTournament = payload
+      let newTournament = payload
 
-      const existingTournamentIndex = state.findIndex(
+      const existingTournament = state.find(
         (item) => item.id_hash === payload.id_hash,
       )
-
-      if (existingTournamentIndex !== -1) {
-        state[existingTournamentIndex] = newTournament
-      } else {
-        state.push(newTournament)
-      }
-
-      console.log("State", state)
+      state = existingTournament
+        ? state.map((item) =>
+            item.id_hash === existingTournament.id_hash ? newTournament : item,
+          )
+        : [...state, newTournament]
     },
     clearTournaments: () => {
       return initialState
