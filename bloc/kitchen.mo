@@ -59,6 +59,18 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
+            try{
+                let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = userCanisterId;
+                subaccount = null;
+                });
+                return #ok(balance)
+            } catch(err){
+                return #err(Error.message(err));
+            }
+        };
+
         public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
             try{
                 let balance : Nat = await ICPLedger.icrc1_balance_of({
@@ -71,7 +83,7 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
-        private func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
+        public func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
             try {
                 let transferLog = await ICPLedger.icrc1_transfer({
                     from_subaccount = null;
