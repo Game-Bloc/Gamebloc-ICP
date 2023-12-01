@@ -71,7 +71,7 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
-        public func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
+        private func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
             try {
                 let transferLog = await ICPLedger.icrc1_transfer({
                     from_subaccount = null;
@@ -97,7 +97,7 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
-        public func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
+        public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
             let transfer = await transferICP("ae7ff53c79e2abdeb8c6250c0e15a7eb4536541a06437028aeefb14d3aa78359", fee);
             switch(transfer) {
                 case(#ok()){
