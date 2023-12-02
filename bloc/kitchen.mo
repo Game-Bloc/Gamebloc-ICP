@@ -124,6 +124,25 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
+            let payment : Nat = tournamentAccount.total_prize;
+            let transfer = await transferICP("ae7ff53c79e2abdeb8c6250c0e15a7eb4536541a06437028aeefb14d3aa78359", payment);
+            switch(transfer){
+                case(#ok){
+                    try {
+                        return #ok(await RustBloc.create_tournament(tournamentAccount));
+                    } catch err {
+                        throw (err);
+                    }
+                };
+                case(_){
+                    return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
+                }
+            }
+            
+
+        };
+
         public func logIn(caller : Principal) : async Bool {
             var result = ProfileHashMap.get(caller);
 
@@ -235,7 +254,6 @@ shared ({caller}) actor class Kitchen() {
         } catch err {
             throw (err);
         }
-       
     };
     
     

@@ -30,3 +30,11 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 
 ```
 ````
+
+dfx canisyer --network local call icp_ledger icr1_transfer '
+    (record {
+      to=(record {
+        owner=(principal "6cxww-biaaa-aaaal-adebq-cai")
+        });
+        amount=500_000
+    })'
