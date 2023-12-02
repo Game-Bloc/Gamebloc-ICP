@@ -4,6 +4,8 @@ import { RiCloseFill } from "react-icons/ri"
 import { Text } from "../../styles/commonStyles/Text"
 import { Button } from "../../styles/commonStyles/Button.styled"
 import ClipLoader from "react-spinners/ClipLoader"
+import { Container } from "../../styles/commonStyles/Container.styles"
+import { InputField } from "../../styles/commonStyles/InputField"
 
 type model = {
   addPayment: (money: any) => void
@@ -12,22 +14,54 @@ type model = {
   loading: any
 }
 
-const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
+const TransferModal = ({ addPayment, modal, amount, loading }: model) => {
   const [color, setColor] = useState("#fff")
+  const [recipientAddress, setRecipientAddress] = useState<string>("")
   const override = {
     display: "block",
     margin: "0 auto",
     borderColor: "white",
   }
 
+  const onInputChange = (e: any) => {
+    e.preventDefault()
+    const Input = e.target.value
+    setRecipientAddress(Input)
+  }
+
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
-      <Container>
+      <Container0>
         <Container2>
           <Container3>
             <Container4>
               <Modal>
                 <Close onClick={() => modal(false)} />
+
+                <Container display="flex" flexDirection="column">
+                  <Container
+                    margin="1rem 0"
+                    borderColor="#fff"
+                    borderStyle="solid"
+                    borderWidth="1px"
+                    borderRadius="8px"
+                    display="flex"
+                    flexDirection="row"
+                    alignItems="center"
+                    padding="0rem 2rem 0rem .3rem"
+                  >
+                    <InputField
+                      type="text"
+                      placeholder="Input Recipient Address"
+                      noneBorder="none"
+                      placeHolderColor="#fff"
+                      smfontSize=".9rem"
+                      color="#fff"
+                      onChange={onInputChange}
+                      value={recipientAddress}
+                    />
+                  </Container>
+                </Container>
                 <Text
                   textAlign="center"
                   fontWeight={500}
@@ -38,6 +72,7 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
                   Proceed to make a payment of {amount} ICP to join this
                   Tournament
                 </Text>
+
                 <Button
                   margin="0 0 1rem 0"
                   backgroundColor="#F6B8FC"
@@ -70,7 +105,7 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
             </Container4>
           </Container3>
         </Container2>
-      </Container>
+      </Container0>
     </Wrapper>
   )
 }
@@ -80,7 +115,7 @@ const Wrapper = styled.div`
   z-index: 10;
 `
 
-const Container = styled.div`
+const Container0 = styled.div`
   position: fixed;
   inset: 0;
   background-color: rgba(128, 128, 128, 0.2);
@@ -145,4 +180,4 @@ const Close = styled(RiCloseFill)`
   cursor: pointer;
 `
 
-export default PaymentModal
+export default TransferModal

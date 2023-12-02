@@ -1,24 +1,24 @@
-import React, { useState } from "react"
-import styled from "styled-components"
-import { RiCloseFill } from "react-icons/ri"
-import { Text } from "../../styles/commonStyles/Text"
-import { Button } from "../../styles/commonStyles/Button.styled"
-import ClipLoader from "react-spinners/ClipLoader"
+import React, { useState } from "react";
+import styled from "styled-components";
+import { RiCloseFill } from "react-icons/ri";
+import { Text } from "../../styles/commonStyles/Text";
+import { Button } from "../../styles/commonStyles/Button.styled";
+import ClipLoader from "react-spinners/ClipLoader";
 
 type model = {
-  addPayment: (money: any) => void
-  modal: (isOpen: boolean) => void
-  amount: any
-  loading: any
-}
+  addPayment: (money: any) => void;
+  modal: (isOpen: boolean) => void;
+  amount: any;
+  loading: any;
+};
 
 const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
-  const [color, setColor] = useState("#fff")
+  const [color, setColor] = useState("#fff");
   const override = {
     display: "block",
     margin: "0 auto",
     borderColor: "white",
-  }
+  };
 
   return (
     <Wrapper aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -35,7 +35,7 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
                   mdfontSize=".8rem"
                   margin="4rem 0 2rem 0"
                 >
-                  Proceed to make a payment of {amount} ICP to join this
+                  Proceed to make a payment of {amount} solana for this
                   Tournament
                 </Text>
                 <Button
@@ -50,7 +50,7 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
                   width="80%"
                   cursor="pointer"
                   onClick={() => {
-                    addPayment(amount)
+                    addPayment(amount);
                   }}
                 >
                   {loading ? (
@@ -72,33 +72,33 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
         </Container2>
       </Container>
     </Wrapper>
-  )
-}
+  );
+};
 
 const Wrapper = styled.div`
   position: relative;
   z-index: 10;
-`
+`;
 
 const Container = styled.div`
   position: fixed;
   inset: 0;
   background-color: rgba(128, 128, 128, 0.2);
-`
+`;
 
 const Container2 = styled.div`
   position: fixed;
   z-index: 10;
   inset: 0;
   overflow-y: auto;
-`
+`;
 
 const Container3 = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100%;
-`
+`;
 
 const Container4 = styled.div`
   position: relative;
@@ -106,7 +106,7 @@ const Container4 = styled.div`
   width: 50%;
   border-radius: 10px;
   overflow: hidden;
-`
+`;
 
 const Modal = styled.div`
   background-color: #01070e;
@@ -118,7 +118,7 @@ const Modal = styled.div`
   h3 {
     color: white;
   }
-`
+`;
 
 // const Button = styled.div`
 //   background-color: #f6b8fcb5;
@@ -143,6 +143,6 @@ const Close = styled(RiCloseFill)`
   font-size: 2rem;
   top: 1rem;
   cursor: pointer;
-`
+`;
 
-export default PaymentModal
+export default PaymentModal;

@@ -78,7 +78,6 @@ const Container5 = styled.div`
   @media screen and (max-width: 600px) {
     flex-direction: column-reverse;
     align-items: center;
-    justify-content: center;
   }
 `
 
@@ -118,7 +117,7 @@ const Button = styled.div`
     background-color: #f6b8fc;
   }
   @media screen and (max-width: 600px) {
-    margin: 1rem 0 0 0;
+    margin-top: 1rem;
   }
 `
 

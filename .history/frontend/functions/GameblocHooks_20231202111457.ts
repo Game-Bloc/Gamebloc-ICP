@@ -227,26 +227,6 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const transferICP = (
-    address: string,
-    amount: number,
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
-    try {
-      setIsLoading(true)
-
-      // const payment = await gamebloc.
-    } catch (err) {
-      errorPopUp(errorMsg)
-      setIsLoading(false)
-      console.log("Error Transfering ICP:", err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return {
     initilizeUser,
     isLoading,

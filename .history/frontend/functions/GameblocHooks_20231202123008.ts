@@ -227,13 +227,7 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const transferICP = (
-    address: string,
-    amount: number,
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
+  const transferICP = (successMsg: string, errorMsg: string, route: string) => {
     try {
       setIsLoading(true)
 

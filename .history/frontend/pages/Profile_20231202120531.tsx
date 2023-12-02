@@ -15,7 +15,6 @@ import { useAppSelector } from "../redux/hooks"
 import CommonHeader from "../common/CommonHeader"
 import Loader from "../components/Popup/Loader/Loader"
 import SideBar from "./SideBar"
-import TransferModal from "../components/Popup/TransferModal"
 
 const onChange = (key: string) => {
   console.log(key)
@@ -43,7 +42,6 @@ const Profile = () => {
   const [_date, setDate] = useState<string>("")
   const username = useAppSelector((state) => state.userProfile.username)
   const date = useAppSelector((state) => state.userProfile.date)
-  const [openModal, setOpenModal] = useState<boolean>(false)
   const initials = username!.substring(0, 2).toUpperCase()
 
   useEffect(() => {
@@ -59,19 +57,6 @@ const Profile = () => {
     }).format(timeStamp)
     setDate(newDate)
   }, [])
-
-  const makePayment = (money: any, address: string) => {
-    console.log("values", address, money)
-    // payToJoinTournament(
-
-    //   id,
-    //   money,
-    //   "Payment successful. You have successfully joined this tournament",
-    //   "Payment Failed. Something went wrong try again",
-    //   "/",
-    // )
-    // console.log("Worked!!", money)
-  }
 
   return (
     <>
@@ -224,7 +209,3 @@ const Profile = () => {
 }
 
 export default Profile
-
-//  {
-//    openModal && <TransferModal />
-//  }

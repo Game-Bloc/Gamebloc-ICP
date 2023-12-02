@@ -65,7 +65,7 @@ export const useGameBlocFunction = () => {
   ) => {
     try {
       setIsLoading(true)
-      const user = await gamebloc.createUserProfile(id_hash, age, name)
+      const user = gamebloc.createUserProfile(id_hash, age, name).then()
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
@@ -203,50 +203,6 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const payToJoinTournament = async (
-    name: string,
-    id: string,
-    amount: number,
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
-    try {
-      setIsLoading(true)
-      const payment = await gamebloc.pay_to_join_tournament(name, id, amount)
-      if (payment) {
-        setIsLoading(false)
-        popUp(successMsg, route)
-      }
-    } catch (err) {
-      errorPopUp(errorMsg)
-      setIsLoading(false)
-      console.log("Error joining tournament:", err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const transferICP = (
-    address: string,
-    amount: number,
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
-    try {
-      setIsLoading(true)
-
-      // const payment = await gamebloc.
-    } catch (err) {
-      errorPopUp(errorMsg)
-      setIsLoading(false)
-      console.log("Error Transfering ICP:", err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
   return {
     initilizeUser,
     isLoading,
@@ -256,6 +212,5 @@ export const useGameBlocFunction = () => {
     getProfile,
     createTournament,
     joinTournament,
-    payToJoinTournament,
   }
 }
