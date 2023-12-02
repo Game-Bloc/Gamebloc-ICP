@@ -109,6 +109,33 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
+        public func transferICP2(amount : Nat) : async Result.Result<(), Text> {
+            let recipient = "rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe";
+            try {
+                let transferLog = await ICPLedger.icrc1_transfer({
+                    from_subaccount = null;
+                    to = {
+                        owner = Principal.fromText(recipient);
+                        subaccount = null;
+                    };
+                    amount = amount;
+                    fee = null;
+                    memo = null;
+                    created_at_time = null;
+                });
+                switch(transferLog) {
+                    case(#Ok(trabsferLog)) { 
+                        #ok();
+                     };
+                    case(#Err(error)) { 
+                        return #err("An error occured!");
+                     };
+                };
+            } catch(err) {
+                return #err(Error.message(err));
+            };
+        };
+
         public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
             let transfer = await transferICP("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", fee);
             switch(transfer) {
