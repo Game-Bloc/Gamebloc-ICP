@@ -35,25 +35,6 @@ const Login = () => {
         >
           Login
         </Button>
-        <Button
-          backgroundColor="transparent"
-          smfontsize=".9rem"
-          width="fit-content"
-          cursor="pointer"
-          textColor="#F6B8FC"
-          xmdpadding=".3rem .4rem"
-          padding=".8rem 1.1rem"
-          borderColor="#F6B8FC"
-          borderStyle="solid"
-          borderWidth="1.3px"
-          borderRadius="9999px"
-          smmargin=".4rem"
-          margin=" 0 0 0 2rem"
-          fontWeight="800"
-          onClick={() => setModal(true)}
-        >
-          Sign Up
-        </Button>
       </Container>
       {modal && <AuthModal modal={setModal} />}
     </Wrapper>

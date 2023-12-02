@@ -36,11 +36,11 @@ const Login = () => {
           Login
         </Button>
         <Button
-          backgroundColor="transparent"
+          backgroundColor=""
           smfontsize=".9rem"
           width="fit-content"
           cursor="pointer"
-          textColor="#F6B8FC"
+          textColor="#01070E"
           xmdpadding=".3rem .4rem"
           padding=".8rem 1.1rem"
           borderColor="#F6B8FC"
