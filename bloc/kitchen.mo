@@ -110,7 +110,7 @@ shared ({caller}) actor class Kitchen() {
         };
 
         public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
-            let transfer = await transferICP("ae7ff53c79e2abdeb8c6250c0e15a7eb4536541a06437028aeefb14d3aa78359", fee);
+            let transfer = await transferICP("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", fee);
             switch(transfer) {
                 case(#ok()){
                     try {
@@ -126,7 +126,7 @@ shared ({caller}) actor class Kitchen() {
 
         public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
             let payment : Nat = tournamentAccount.total_prize;
-            let transfer = await transferICP("ae7ff53c79e2abdeb8c6250c0e15a7eb4536541a06437028aeefb14d3aa78359", payment);
+            let transfer = await transferICP("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", payment);
             switch(transfer){
                 case(#ok){
                     try {
