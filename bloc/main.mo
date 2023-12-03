@@ -268,33 +268,33 @@ shared ({caller}) actor class BlocFactory() = this {
   };
 
   // function to create a new Greeter canister
-  public shared ({ caller }) func createGreeterr(controller : Principal) : async Principal {
+  // public shared ({ caller }) func createGreeterr(controller : Principal) : async Principal {
 
-    let canister : ?Principal = await getCanisterId();
-    Cycles.add(1_000_000_000_000);
-    // canisterId := ?Principal.fromActor(b);
-    switch (canister) {
+  //   let canister : ?Principal = await getCanisterId();
+  //   Cycles.add(1_000_000_000_000);
+  //   // canisterId := ?Principal.fromActor(b);
+  //   switch (canister) {
 
-      case null {
-        throw Error.reject("init error");
-      };
-      case (?canister) {
+  //     case null {
+  //       throw Error.reject("init error");
+  //     };
+  //     case (?canister) {
 
-        Cycles.add(1_000_000_000_000);
-        let controllers : ?[Principal] : ?[Principal] = ?[caller, controller];
+  //       Cycles.add(1_000_000_000_000);
+  //       let controllers : ?[Principal] : ?[Principal] = ?[caller, controller];
 
-        let createResult = await ic.create_canister(({
-            settings = ?{
-                controllers = controllers;
-                freezing_threshold = null;
-                memory_allocation = null;
-                compute_allocation = null;
-            };
-        }));
-        return createResult.canister_id;
-      };
-    };
+  //       let createResult = await ic.create_canister(({
+  //           settings = ?{
+  //               controllers = controllers;
+  //               freezing_threshold = null;
+  //               memory_allocation = null;
+  //               compute_allocation = null;
+  //           };
+  //       }));
+  //       return createResult.canister_id;
+  //     };
+  //   };
 
-  };
+  // };
 
 };
