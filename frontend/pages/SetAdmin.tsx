@@ -8,14 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader"
 
 
 const SetAdmin = () => {
-  // const {
-  //   loading,
-  //   addAdminFunction,
-  //   checkAdmin,
-  //   checkAdminState,
-  //   updating,
-  //   removeAdminAddress,
-  // } = useGameblocFunction();
+
   const [address, setAddress] = useState<string>("")
   const [rAddress, setRaddress] = useState<string>("")
   const [color, setColor] = useState("#fff")
