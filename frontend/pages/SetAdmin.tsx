@@ -5,7 +5,7 @@ import { Text } from "../styles/commonStyles/Text"
 import { InputField } from "../styles/commonStyles/InputField"
 import { Button } from "../styles/commonStyles/Button.styled"
 import ClipLoader from "react-spinners/ClipLoader"
-// import { useGameblocFunction } from "../functions/GameblocHook";
+
 
 const SetAdmin = () => {
   // const {
