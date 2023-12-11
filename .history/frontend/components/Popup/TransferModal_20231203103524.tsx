@@ -79,7 +79,7 @@ const TransferModal = ({ addPayment, modal, loading }: model) => {
                     padding="0rem 2rem 0rem .3rem"
                   >
                     <InputField
-                      type="number"
+                      type="text"
                       placeholder="Input Amount In ICP"
                       noneBorder="none"
                       placeHolderColor="#fff"

@@ -63,12 +63,13 @@ const Profile = () => {
 
   const makePayment = (money: any, address: string) => {
     console.log("values", address, money)
-    transferICP(
-      money,
-      "Payment successful. You have successfully joined this tournament",
-      "Payment Failed. Something went wrong try again",
-      "/",
-    )
+
+    // transferICP(
+    //   money,
+    //   "Payment successful. You have successfully joined this tournament",
+    //   "Payment Failed. Something went wrong try again",
+    //   "/",
+    // )
     console.log("Worked!!", money)
   }
 
