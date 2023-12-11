@@ -9,6 +9,8 @@ target
 
 .vessel
 
+canister_ids.json
+
 dfx.json
 
 

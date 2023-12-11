@@ -8,7 +8,7 @@ import icon2 from "../assets/images/carbon_continue.png"
 import icon3 from "../assets/images/clarity_new-solid.png"
 import icon4 from "../assets/images/ic_sharp-pending-actions.png"
 import AdminTabBar from "../components/adminComponents/AdminTabBar"
-// import { useGameblocFunction } from "../functions/GameblocHook";
+
 const Admin = () => {
   // const { fetchAllTournaments } = useGameblocFunction();
   // useEffect(() => {
