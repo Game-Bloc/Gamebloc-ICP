@@ -47,6 +47,7 @@ shared ({caller}) actor class Kitchen() {
             unique;
         };
 
+        // Using the caller
         public shared({caller}) func getLedgerBalance() : async Result.Result<Nat, Text> {
             try{
                 let balance : Nat = await ICPLedger.icrc1_balance_of({
@@ -59,6 +60,7 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        // using the canister
         public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
             try{
                 let balance : Nat = await ICPLedger.icrc1_balance_of({
@@ -71,6 +73,7 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        // Required to be parsed as an argument
         public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
             try{
                 let balance : Nat = await ICPLedger.icrc1_balance_of({
@@ -82,6 +85,19 @@ shared ({caller}) actor class Kitchen() {
                 return #err(Error.message(err));
             }
         };
+
+        //  --------------------------
+        // /                        /
+        // /    Index Canister      /
+        // /                        /
+        // --------------------------
+
+        public func getAccountTransactions() : () {
+            
+        };
+
+
+
 
         public func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
             try {
@@ -202,6 +218,9 @@ shared ({caller}) actor class Kitchen() {
     public query({caller}) func getOwner() : async Principal {
         caller;
     };
+
+    // Trying to hard code the wallet id - possible solution is use a transfer_from func
+    // Look into the icrc-2 documentation
 
     public func convert() : async Principal {
         Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe");
