@@ -1,11 +1,15 @@
 use candid::{CandidType, Deserialize, Principal};
+
 use serde::Serialize;
-use ic_cdk::{api::call::ManualReply, query, update};
+use ic_cdk::{ post_upgrade, pre_upgrade, query, update, init, storage,};
 use std::cell::RefCell;
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
 use crate::{model::*};
+
+use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, UserProfile>;
@@ -165,6 +169,46 @@ fn is_mod(name: String) -> bool {
         })
     })
 }
+
+
+// // Retrieves the value associated with the given key if it exists.
+// #[ic_cdk_macros::query]
+// fn get_stable_profile(key: Principal) -> Option<UserProfile> {
+//     MAP.with(|p| p.borrow().get(&key))
+// }
+//
+// // Inserts an entry into the map and returns the previous value of the key if it exists.
+// #[ic_cdk_macros::update]
+// fn insert_stable_profile(key: Principal, value: UserProfile) -> Option<UserProfile> {
+//     MAP.with(|p| p.borrow_mut().insert(key, value))
+// }
+//
+// // Retrieves the value associated with the given key if it exists.
+// #[ic_cdk_macros::query]
+// fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
+//     TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
+// }
+//
+// // Inserts an entry into the map and returns the previous value of the key if it exists.
+// #[ic_cdk_macros::update]
+// fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
+//     TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
+// }
+
+#[pre_upgrade]
+fn pre_upgrade() {
+    PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
+    TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
+}
+
+#[post_upgrade]
+fn post_upgrade() {
+    let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
+    PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
+    let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
+    TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
+}
+
 
 // Enable Candid export
 ic_cdk::export_candid!();
