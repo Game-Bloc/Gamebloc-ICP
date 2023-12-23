@@ -5,6 +5,7 @@ import img from "../assets/images/avatar2.png"
 import avatar from "../assets/images/img9.png"
 import React, { useEffect, useState } from "react"
 import { Text } from "../styles/commonStyles/Text"
+// import { useAppSelector } from "../redux/hooks";
 import { Discord } from "../styles/icon/Icons"
 import { Button } from "../styles/commonStyles/Button.styled"
 import { ConfigProvider, Tabs } from "antd"
@@ -14,8 +15,7 @@ import { useAppSelector } from "../redux/hooks"
 import CommonHeader from "../common/CommonHeader"
 import Loader from "../components/Popup/Loader/Loader"
 import SideBar from "./SideBar"
-import TransferModal from "../components/Popup/TransferModal"
-import { useGameBlocFunction } from "../functions/GameblocHooks"
+
 const onChange = (key: string) => {
   console.log(key)
 }
@@ -42,9 +42,7 @@ const Profile = () => {
   const [_date, setDate] = useState<string>("")
   const username = useAppSelector((state) => state.userProfile.username)
   const date = useAppSelector((state) => state.userProfile.date)
-  const [openModal, setOpenModal] = useState<boolean>(false)
   const initials = username!.substring(0, 2).toUpperCase()
-  const { transferICP, isLoading } = useGameBlocFunction()
 
   useEffect(() => {
     console.log(date)
@@ -59,17 +57,6 @@ const Profile = () => {
     }).format(timeStamp)
     setDate(newDate)
   }, [])
-
-  const makePayment = (money: any, address: string) => {
-    console.log("values", address, money)
-    transferICP(
-      money,
-      "Payment successful. You have successfully joined this tournament",
-      "Payment Failed. Something went wrong try again",
-      "/",
-    )
-    console.log("Worked!!", money)
-  }
 
   return (
     <>
@@ -192,8 +179,7 @@ const Profile = () => {
                     borderStyle="solid"
                     borderWidth="1px"
                     padding=".6rem 1rem"
-                    margin=" 0 0 0 1rem"
-                    onClick={() => setOpenModal(true)}
+                    margin="1rem"
                   >
                     Transfer ICP
                   </Button>
@@ -217,14 +203,6 @@ const Profile = () => {
             </Container>
           </Container>
         </Wrapper>
-
-        {openModal && (
-          <TransferModal
-            addPayment={makePayment}
-            modal={setOpenModal}
-            loading={isLoading}
-          />
-        )}
       </Container>
     </>
   )

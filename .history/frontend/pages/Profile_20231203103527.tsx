@@ -5,6 +5,7 @@ import img from "../assets/images/avatar2.png"
 import avatar from "../assets/images/img9.png"
 import React, { useEffect, useState } from "react"
 import { Text } from "../styles/commonStyles/Text"
+// import { useAppSelector } from "../redux/hooks";
 import { Discord } from "../styles/icon/Icons"
 import { Button } from "../styles/commonStyles/Button.styled"
 import { ConfigProvider, Tabs } from "antd"

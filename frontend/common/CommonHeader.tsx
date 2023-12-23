@@ -24,7 +24,7 @@ import logo from "../assets/images/gamelogo2.png"
 import logo2 from "../assets/images/gameIcon.png"
 import React from "react"
 import { ConnectButton, ConnectDialog } from "@connect2ic/react"
-// import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+
 
 const CommonHeader = ({ wallet }: any) => {
   const [openPopup, setOpenPopup] = useState<boolean>(false)

@@ -118,7 +118,7 @@ const Button = styled.div`
     background-color: #f6b8fc;
   }
   @media screen and (max-width: 600px) {
-    margin: 1rem 0 0 0;
+    margin-top: 1rem;
   }
 `
 

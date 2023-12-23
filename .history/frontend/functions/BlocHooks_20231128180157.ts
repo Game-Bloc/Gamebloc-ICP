@@ -74,6 +74,7 @@ export const useUpdateTournament = () => {
     if (isConnected) {
       try {
         setUpdating(true)
+        // dispatch(clearTournaments())
         const update: any = await gamebloc.get_all_tournament()
         if (update && update.length !== 0) {
           console.log("update function working")

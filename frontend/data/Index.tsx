@@ -42,12 +42,7 @@ export const Streams = [
   {
     video: vid,
   },
-  //   {
-  //    video: vid
-  //   },
-  //   {
-  //    video: vid
-  //   },
+  
 ];
 
 export const CodImgs = [

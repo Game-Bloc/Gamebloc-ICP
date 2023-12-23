@@ -16,12 +16,7 @@ const AuthModal = ({ modal }: modal) => {
           <Container3>
             <Container4>
               <Modal>
-                <Text
-                  smfontSize=".85rem"
-                  fontWeight={500}
-                  margin="1rem 0"
-                  textAlign="center"
-                >
+                <Text fontWeight={500} margin="1rem 0" textAlign="center">
                   Please Authenticate with NFID, other identity provider seems
                   to be down. We are currently working to rectify this.
                 </Text>
@@ -77,8 +72,6 @@ const Container5 = styled.div`
   justify-content: space-between;
   @media screen and (max-width: 600px) {
     flex-direction: column-reverse;
-    align-items: center;
-    justify-content: center;
   }
 `
 
@@ -116,9 +109,6 @@ const Button = styled.div`
   &:hover {
     scale: 1.03;
     background-color: #f6b8fc;
-  }
-  @media screen and (max-width: 600px) {
-    margin: 1rem 0 0 0;
   }
 `
 

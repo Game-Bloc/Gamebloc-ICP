@@ -20,11 +20,11 @@ const Login = () => {
       >
         <Button
           backgroundColor="#F6B8FC"
-          smfontsize=".7rem"
+          smfontsize=".9rem"
           width="fit-content"
           cursor="pointer"
           textColor="#01070E"
-          xmdpadding=".2rem .3rem"
+          xmdpadding=".3rem .4rem"
           padding=".8rem 1.1rem"
           border="none"
           borderRadius="9999px"
@@ -36,12 +36,12 @@ const Login = () => {
           Login
         </Button>
         <Button
-          backgroundColor="transparent"
-          smfontsize=".7rem"
+          backgroundColor=""
+          smfontsize=".9rem"
           width="fit-content"
           cursor="pointer"
-          textColor="#F6B8FC"
-          xmdpadding=".2rem .3rem"
+          textColor="#01070E"
+          xmdpadding=".3rem .4rem"
           padding=".8rem 1.1rem"
           borderColor="#F6B8FC"
           borderStyle="solid"

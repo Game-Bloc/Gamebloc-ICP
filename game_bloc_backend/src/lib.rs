@@ -1,5 +1,4 @@
 use candid::{CandidType, Deserialize, Principal};
-
 use serde::Serialize;
 use ic_cdk::{api::call::ManualReply, query, update};
 use std::cell::RefCell;
@@ -17,7 +16,6 @@ thread_local! {
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
 }
-
 
 #[query(name = "getSelf")]
 fn get_self(principal:Principal) -> UserProfile {
@@ -66,7 +64,6 @@ fn create_profile(profile: UserProfile,principal:Principal) -> Result<u8,u8> {
     });
     Ok(1)
 }
-
 
 #[query]
 fn get_tournament(id: String) -> TournamentAccount {

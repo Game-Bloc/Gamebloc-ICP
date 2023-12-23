@@ -12,6 +12,7 @@ import { ulid } from "ulid"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useEffect, useState } from "react"
 import React from "react"
+// import { useGameblocFunction } from "../functions/GameblocHook";
 import { TextAreaField } from "../styles/commonStyles/TextArea"
 import { Select, DatePicker, TimePicker } from "antd"
 import type { DatePickerProps } from "antd"
@@ -31,8 +32,8 @@ const CreateTournament = () => {
   dayjs.extend(customParseFormat)
   // const [tournamentID, setTournamentID] = useState<number>(0);
   const [color, setColor] = useState("#ffffff")
-  const [poolPrize, setPoolPrize] = useState("")
-  const [entryPrice, setEntryPrize] = useState("")
+  const [poolPrize, setPoolPrize] = useState<number>(0)
+  const [entryPrice, setEntryPrize] = useState()
   const [noOfUsers, setNoOfUsers] = useState<number>(0)
   const [tournamentType, setTournamentType] = useState<string>("")
   const [variantType, setVariantType] = useState(null)
@@ -138,14 +139,14 @@ const CreateTournament = () => {
   const onPriceChange = (e: any) => {
     e.preventDefault()
     const priceinput = e.target.value
-    setPoolPrize(priceinput)
-    setEntryPrize("")
+    setPoolPrize(+priceinput)
+    setEntryPrize(0)
   }
   const onEntryChange = (e: any) => {
     e.preventDefault()
     const entryInput = e.target.value
-    setEntryPrize(entryInput)
-    setPoolPrize("")
+    setEntryPrize(+entryInput)
+    setPoolPrize(0)
   }
 
   const onRuleChange = (e: any) => {
@@ -181,8 +182,8 @@ const CreateTournament = () => {
     console.log("tournament Rules", tournamentRules)
     console.log("tournament type", tournamentType)
     console.log("Starting Date", startingDate)
-    console.log("Entry price", +entryPrice)
-    console.log("Total price", +poolPrize)
+    console.log("Entry price", entryPrice)
+    console.log("Total price", poolPrize)
     console.log("Game", gameName)
   }
 
@@ -204,13 +205,13 @@ const CreateTournament = () => {
       gameName,
       [],
       [],
-      +poolPrize,
+      poolPrize,
       tournamentRules,
       startingDate,
       noOfUsers,
       noOfWinners,
       variantType,
-      +entryPrice,
+      entryPrice,
       "You have successfully created a Tournament",
       "Try again something went wrong",
       "/",

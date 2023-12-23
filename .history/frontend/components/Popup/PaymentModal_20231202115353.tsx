@@ -35,8 +35,7 @@ const PaymentModal = ({ addPayment, modal, amount, loading }: model) => {
                   mdfontSize=".8rem"
                   margin="4rem 0 2rem 0"
                 >
-                  Proceed to make a payment of {amount} ICP to join this
-                  Tournament
+                  Proceed to make a payment of {amount} ICP for this Tournament
                 </Text>
                 <Button
                   margin="0 0 1rem 0"

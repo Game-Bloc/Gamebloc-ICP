@@ -227,20 +227,10 @@ export const useGameBlocFunction = () => {
     }
   }
 
-  const transferICP = async (
-    // address: string,
-    amount: number,
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
+  const transferICP = (successMsg: string, errorMsg: string, route: string) => {
     try {
       setIsLoading(true)
-      const payment = await gamebloc.transferICP2(amount)
-      if (payment) {
-        setIsLoading(false)
-        popUp(successMsg, route)
-      }
+
       // const payment = await gamebloc.
     } catch (err) {
       errorPopUp(errorMsg)
@@ -261,6 +251,5 @@ export const useGameBlocFunction = () => {
     createTournament,
     joinTournament,
     payToJoinTournament,
-    transferICP,
   }
 }
