@@ -6,6 +6,8 @@ import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
 
+import AccountIdentifier "mo:principal/AccountIdentifier";
+
 import ICPLedger "canister:icp_ledger";
 import RustBloc "canister:game_bloc_backend";
 
@@ -225,6 +227,8 @@ shared ({caller}) actor class Kitchen() {
     public func convert() : async Principal {
         Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe");
     };
+
+    
 
     public shared({caller}) func createUser(user : Principal) : async Principal {
         assert(caller == userCanisterId);
