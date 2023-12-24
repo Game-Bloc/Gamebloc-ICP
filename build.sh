@@ -32,3 +32,6 @@ dfx canister --network local call icp_ledger icr1_transfer '
         });
         amount=500_000
     })'
+
+dfx deploy
+
