@@ -261,11 +261,11 @@ shared ({caller}) actor class BlocFactory() = this {
     return obtained;
   };
 
-  public func createGreeter() : async (Principal) {
-    let canisterId = Principal.fromActor(this);
-    let newGreeter = await createGreeterr(canisterId);
-    return (newGreeter);
-  };
+  // public func createGreeter() : async (Principal) {
+  //   let canisterId = Principal.fromActor(this);
+  //   let newGreeter = await createGreeter(canisterId);
+  //   return (newGreeter);
+  // };
 
   // function to create a new Greeter canister
   // public shared ({ caller }) func createGreeterr(controller : Principal) : async Principal {
