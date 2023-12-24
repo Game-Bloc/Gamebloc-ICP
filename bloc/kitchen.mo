@@ -228,7 +228,9 @@ shared ({caller}) actor class Kitchen() {
         Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe");
     };
 
-    
+     public query ({ caller }) func convertAID() : async Text {
+       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    };
 
     public shared({caller}) func createUser(user : Principal) : async Principal {
         assert(caller == userCanisterId);
