@@ -155,7 +155,7 @@ shared ({caller}) actor class Kitchen() {
         };
 
         public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
-            let transfer = await transferICP("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", fee);
+            let transfer = await transferICP(await getAccountIdentifier(caller), fee);
             switch(transfer) {
                 case(#ok()){
                     try {
@@ -230,6 +230,20 @@ shared ({caller}) actor class Kitchen() {
 
      public query ({ caller }) func convertAID() : async Text {
        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    };
+
+     public query ({ caller }) func getMyAccountIdentifier() : async Text {
+       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    };
+
+     public func getAccountIdentifier(caller : Principal) : async Text {
+       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    };
+
+    public type AccountIdentifier = [Nat8];
+
+     public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
+       AccountIdentifier.fromText(caller);
     };
 
     public shared({caller}) func createUser(user : Principal) : async Principal {
