@@ -5,6 +5,7 @@ import Principal "mo:base/Principal";
 import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
+import Nat64 "mo:base/Nat64";
 
 import AccountIdentifier "mo:principal/AccountIdentifier";
 
@@ -12,9 +13,9 @@ import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
 
-
-
+import IndexTypes "indextypes";
 import Bloctypes "bloctypes";
+import LedgerTypes "ledgertypes";
 
 shared ({caller}) actor class Kitchen() {
 
@@ -98,33 +99,55 @@ shared ({caller}) actor class Kitchen() {
             
         };
 
+        public func get_account_identifier_balance(aid : Text) : async Nat64 {
+            await ICPIndex.get_account_identifier_balance(aid);
+        };
 
+        // public func get_account_identifier_transactions(args : IndexTypes.GetAccountIdentifierTransactionsArgs) : async IndexTypes.GetAccountIdentifierTransactionsResult {
+        //     await ICPIndex.get_account_identifier_transactions(args);
+        // };
 
+        public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+            await ICPIndex.icrc1_balance_of(account);
+        };
 
-        public func transferICP(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
-            try {
-                let transferLog = await ICPLedger.icrc1_transfer({
+        public func index_status() : async IndexTypes.Status {
+            await ICPIndex.status();
+        };
+
+        public func ledger_id() :  async Principal {
+            await ICPIndex.ledger_id();
+        };
+
+        type ICP = {
+            e8s : Nat64;
+        };
+
+        type TimeStamp =  { timestamp_nanos : Nat64 };
+
+        type Memo = Nat64;
+
+        public func transferICP(recipient : Text, amount : ICP, fee : ICP,  memo : Memo, created_at : TimeStamp) : async LedgerTypes.Result_5 {
+            // try {
+            await ICPLedger.transfer({
                     from_subaccount = null;
-                    to = {
-                        owner = Principal.fromText(recipient);
-                        subaccount = null;
-                    };
+                    to = AccountIdentifier.fromPrincipal(Principal.fromText(recipient), null);
                     amount = amount;
-                    fee = null;
-                    memo = null;
-                    created_at_time = null;
+                    fee = fee;
+                    memo = memo;
+                    created_at_time = ?created_at;
                 });
-                switch(transferLog) {
-                    case(#Ok(trabsferLog)) { 
-                        #ok();
-                    };
-                    case(#Err(error)) { 
-                        return #err("An error occured!");
-                    };
-                };
-            } catch(err) {
-                return #err(Error.message(err));
-            };
+            //     switch(transferLog) {
+            //         case(#Ok(transferLog)) { 
+            //             #ok(transferLog);
+            //         };
+            //         case(#Err(error)) { 
+            //             return #err("An error occured!");
+            //         };
+            //     };
+            // } catch(err) {
+            //     return #err(Error.message(err));
+            // };
         };
 
         public func transferWinnerReward(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
@@ -184,38 +207,38 @@ shared ({caller}) actor class Kitchen() {
             Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
         };
 
-        public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
-            let transfer = await transferICP(await getAccountIdentifier(caller), fee);
-            switch(transfer) {
-                case(#ok()){
-                    try {
-                        return #ok(await RustBloc.join_tournament(name, id));
-                    } catch err {
-                        throw (err);
-                    }  
-                }; case (_){
-                    return #err("An error occured! Kindly check your balance");
-                }
-            }
-        };
+        // public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
+        //     // let transfer = await transferICP(await getAccountIdentifier(caller), fee);
+        //     switch(transfer) {
+        //         case(#ok()){
+        //             try {
+        //                 return #ok(await RustBloc.join_tournament(name, id));
+        //             } catch err {
+        //                 throw (err);
+        //             }  
+        //         }; case (_){
+        //             return #err("An error occured! Kindly check your balance");
+        //         }
+        //     }
+        // };
 
-        public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
-            let payment : Nat = tournamentAccount.total_prize;
-            let transfer = await transferICP("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", payment);
-            switch(transfer){
-                case(#ok){
-                    try {
-                        return #ok(await RustBloc.create_tournament(tournamentAccount));
-                    } catch err {
-                        throw (err);
-                    }
-                };
-                case(_){
-                    return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
-                }
-            }
+        // public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
+        //     let payment : Nat = tournamentAccount.total_prize;
+        //     let transfer = await transferICP(Principal.fromText"rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", payment);
+        //     switch(transfer){
+        //         case(#ok){
+        //             try {
+        //                 return #ok(await RustBloc.create_tournament(tournamentAccount));
+        //             } catch err {
+        //                 throw (err);
+        //             }
+        //         };
+        //         case(_){
+        //             return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
+        //         }
+        //     }
         
-        };
+        // };
 
         public func logIn(caller : Principal) : async Bool {
             var result = ProfileHashMap.get(caller);
