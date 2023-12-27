@@ -9,6 +9,7 @@ import Result "mo:base/Result";
 import AccountIdentifier "mo:principal/AccountIdentifier";
 
 import ICPLedger "canister:icp_ledger";
+import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
 
 
@@ -17,10 +18,9 @@ import Bloctypes "bloctypes";
 
 shared ({caller}) actor class Kitchen() {
 
-     var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+        var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
 
         var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
-
 
         private func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
             // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
@@ -79,8 +79,8 @@ shared ({caller}) actor class Kitchen() {
         public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
             try{
                 let balance : Nat = await ICPLedger.icrc1_balance_of({
-                owner = Principal.fromText(user);
-                subaccount = null;
+                    owner = Principal.fromText(user);
+                    subaccount = null;
                 });
                 return #ok(balance)
             } catch(err){
@@ -117,10 +117,36 @@ shared ({caller}) actor class Kitchen() {
                 switch(transferLog) {
                     case(#Ok(trabsferLog)) { 
                         #ok();
-                     };
+                    };
                     case(#Err(error)) { 
                         return #err("An error occured!");
-                     };
+                    };
+                };
+            } catch(err) {
+                return #err(Error.message(err));
+            };
+        };
+
+        public func transferWinnerReward(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
+            try {
+                let transferLog = await ICPLedger.icrc1_transfer({
+                    from_subaccount = null;
+                    to = {
+                        owner = Principal.fromText(recipient);
+                        subaccount = null;
+                    };
+                    amount = amount;
+                    fee = null;
+                    memo = null;
+                    created_at_time = null;
+                });
+                switch(transferLog) {
+                    case(#Ok(trabsferLog)) { 
+                        #ok();
+                    };
+                    case(#Err(error)) { 
+                        return #err("An error occured!");
+                    };
                 };
             } catch(err) {
                 return #err(Error.message(err));
@@ -144,14 +170,18 @@ shared ({caller}) actor class Kitchen() {
                 switch(transferLog) {
                     case(#Ok(trabsferLog)) { 
                         #ok();
-                     };
+                    };
                     case(#Err(error)) { 
                         return #err("An error occured!");
-                     };
+                    };
                 };
             } catch(err) {
                 return #err(Error.message(err));
             };
+        };
+
+        public func getPrincipal() : async Principal {
+            Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
         };
 
         public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
@@ -184,8 +214,7 @@ shared ({caller}) actor class Kitchen() {
                     return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
                 }
             }
-            
-
+        
         };
 
         public func logIn(caller : Principal) : async Bool {
@@ -228,22 +257,22 @@ shared ({caller}) actor class Kitchen() {
         Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe");
     };
 
-     public query ({ caller }) func convertAID() : async Text {
-       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    public query ({ caller }) func convertAID() : async Text {
+        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
     };
 
-     public query ({ caller }) func getMyAccountIdentifier() : async Text {
-       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    public query ({ caller }) func getMyAccountIdentifier() : async Text {
+        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
     };
 
-     public func getAccountIdentifier(caller : Principal) : async Text {
-       AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+    public func getAccountIdentifier(caller : Principal) : async Text {
+        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
     };
 
     public type AccountIdentifier = [Nat8];
 
-     public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
-       AccountIdentifier.fromText(caller);
+    public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
+        AccountIdentifier.fromText(caller);
     };
 
     public shared({caller}) func createUser(user : Principal) : async Principal {
@@ -342,7 +371,6 @@ shared ({caller}) actor class Kitchen() {
         } catch err {
             throw (err);
         }
-        
     };
 
     public func is_mod(name : Text) :  async Bool {
