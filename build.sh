@@ -8,7 +8,7 @@ dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
-dfx identity use marvin
+dfx identity use finisher
 LEDGER_ACC=$(dfx ledger account-id)
 export LEDGER_ACC
 
@@ -25,5 +25,13 @@ record { e8s=100_000_000_000 } } } ; archive_options = opt record {num_blocks_to
 
 dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(record {ledger_id = principal "ryjl3-tyaaa-aaaaa-aaaba-cai"})'
 
+dfx canister --network local call icp_ledger icr1_transfer '
+    (record {
+      to=(record {
+        owner=(principal "6cxww-biaaa-aaaal-adebq-cai")
+        });
+        amount=500_000
+    })'
 
 dfx deploy
+

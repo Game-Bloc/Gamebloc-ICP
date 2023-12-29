@@ -49,7 +49,7 @@ thread_local! {
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
     static NEW_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
-    static SQUAD_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
+    static SQUAD_TOURNAMENT_STORE: RefCell<SquadStore> = RefCell::default();
 }
 
 
