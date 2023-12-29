@@ -11,23 +11,55 @@ use crate::{model::*};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 
+type Memory = VirtualMemory<DefaultMemoryImpl>;
+type TournamentMemory = VirtualMemory<DefaultMemoryImpl>;
+
+// thread_local! {
+//     // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
+//     // return a memory that can be used by stable structures.
+//     static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+//         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+//
+//      static TOURNAMENT_MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+//         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+//
+//     // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+//     static MAP: RefCell<StableBTreeMap<Principal, UserProfile, Memory>> = RefCell::new(
+//         StableBTreeMap::init(
+//             MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+//         )
+//     );
+//
+//      // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+//     static TOURNAMENT_MAP: RefCell<StableBTreeMap<String, TournamentAccount, TournamentMemory>> = RefCell::new(
+//         StableBTreeMap::init(
+//             TOURNAMENT_MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+//         )
+//     );
+// }
+
 type IdStore = BTreeMap<String, Principal>;
 type ProfileStore = BTreeMap<Principal, UserProfile>;
 type TournamentStore = BTreeMap<String, TournamentAccount>;
+type SquadStore = BTreeMap<String, TournamentAccount>;
+type NewTournamentStore = BTreeMap<String, NewTournamentAccount>;
 
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
+    static NEW_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
+    static SQUAD_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
 }
 
+
 #[query(name = "getSelf")]
-fn get_self(principal:Principal) -> UserProfile {
-    // let id = ic_cdk::api::caller();
+fn get_self() -> UserProfile {
+    let id = ic_cdk::api::caller();
     PROFILE_STORE.with(|profile_store| {
         profile_store
             .borrow()
-            .get(&principal)
+            .get(&id)
             .cloned().unwrap_or_default()
     })
 }
@@ -56,45 +88,44 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile,principal:Principal) -> Result<u8,u8> {
-    // let principal_id = ic_cdk::api::caller();
+fn create_profile(profile: UserProfile) {
+    let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal);
+            .insert(profile.username.clone(), principal_id);
     });
     PROFILE_STORE.with(|profile_store| {
-        profile_store.borrow_mut().insert(principal, profile);
+        profile_store.borrow_mut().insert(principal_id, profile);
     });
-    Ok(1)
 }
+
 
 #[query]
 fn get_tournament(id: String) -> TournamentAccount {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        tournament_store.borrow().get(&id).cloned().unwrap_or_default()
-    })
+        TOURNAMENT_STORE.with(|tournament_store| {
+            tournament_store.borrow().get(&id).cloned().unwrap_or_default()
+        })
 }
 
 #[query]
 fn get_all_tournament() -> Vec<TournamentAccount> {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut all_tournament = Vec::new();
-        tournament_store.borrow().iter().for_each(|tournament| {
-            all_tournament.push((*tournament.1).clone().try_into().unwrap_or_default())
-        });
-        all_tournament
-    })
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut all_tournament = Vec::new();
+            tournament_store.borrow().iter().for_each(|tournament| {
+                all_tournament.push((*tournament.1).clone().try_into().unwrap_or_default())
+            });
+            all_tournament
+        })
 }
 
 #[update]
-fn create_tournament(tournament: TournamentAccount) ->  Result<u8,u8>{
+fn create_tournament(tournament: TournamentAccount) {
     let id_hash = tournament.clone().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
         tournament_store.borrow_mut().insert(id_hash, tournament);
     });
-    Ok(1)
 }
 
 #[update]
@@ -112,8 +143,8 @@ fn start_tournament(id: String) {
 }
 
 #[update]
-fn end_tournament(id: String, names:Vec<String>,principal:Principal) {
-    if get_self(principal).is_mod {
+fn end_tournament(id: String, names:Vec<String>) {
+    if get_self().is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
             tournament.status = match tournament.status {
@@ -170,7 +201,6 @@ fn is_mod(name: String) -> bool {
     })
 }
 
-
 // // Retrieves the value associated with the given key if it exists.
 // #[ic_cdk_macros::query]
 // fn get_stable_profile(key: Principal) -> Option<UserProfile> {
@@ -197,8 +227,17 @@ fn is_mod(name: String) -> bool {
 
 #[pre_upgrade]
 fn pre_upgrade() {
+    let squad:Squad;
     PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
     TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
+    TOURNAMENT_STORE.take().iter().for_each(|item|{
+        NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+            new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+                oldtournaments:item.1.clone(),
+                squad: [].to_vec(),
+            });
+        });
+    })
 }
 
 #[post_upgrade]
@@ -209,19 +248,9 @@ fn post_upgrade() {
     TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
 }
 
-
 // Enable Candid export
 ic_cdk::export_candid!();
 
-// "get_self": () -> (UserProfile) query;
-// "get_all_user": () -> (vec UserProfile) query;
-// "get_profile": (text) -> (UserProfile) query;
-// "set_mod": (text,principal) -> ();
-//
-// "create_profile": (UserProfile) -> ();
-// "create_tournament": (TournamentAccount) -> ();
-// "get_all_tournament": () -> (vec TournamentAccount) query;
-// "get_tournament": (text) -> (TournamentAccount) query;
-// "get_profile": (text) -> (UserProfile) query;
-//
-// "get_all_user": () -> (vec UserProfile) query;
+
+
+
