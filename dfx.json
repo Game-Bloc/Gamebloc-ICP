@@ -36,11 +36,14 @@
   
 
     "assets": {
-      "dependencies": ["game_bloc_backend"],
+      "dependencies": ["kitchen", "game_bloc_backend"],
       "frontend": {
-        "entrypoint": "dist/index.html"
+        "entrypoint": "src/gamebloc_new_frontend/src/index.html"
       },
-      "source": ["dist/"],
+      "source": [
+        "src/gamebloc_new_frontend/assets",
+        "dist/gamebloc_new_frontend/"
+      ],
       "type": "assets"
     }
   },
