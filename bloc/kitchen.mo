@@ -107,11 +107,11 @@ shared ({caller}) actor class Kitchen() {
         //     await ICPIndex.get_account_identifier_transactions(args);
         // };
 
-        public shared ({ caller }) func icp_balance() : async ICP {
-            await ICPLedger.account_balance({
-                account = AccountIdentifier.fromPrincipal(caller, null);
-            })
-        };
+        // public shared ({ caller }) func icp_balance() : async ICP {
+        //     await ICPLedger.account_balance({
+        //         account = AccountIdentifier.fromPrincipal(caller, null);
+        //     })
+        // };
 
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
@@ -133,28 +133,28 @@ shared ({caller}) actor class Kitchen() {
 
         type Memo = Nat64;
 
-        public func transferICP(recipient : Text, amount : ICP, fee : ICP,  memo : Memo, created_at : TimeStamp) : async LedgerTypes.Result_5 {
-            // try {
-            await ICPLedger.transfer({
-                    from_subaccount = null;
-                    to = AccountIdentifier.fromPrincipal(Principal.fromText(recipient), null);
-                    amount = amount;
-                    fee = fee;
-                    memo = memo;
-                    created_at_time = ?created_at;
-                });
-            //     switch(transferLog) {
-            //         case(#Ok(transferLog)) { 
-            //             #ok(transferLog);
-            //         };
-            //         case(#Err(error)) { 
-            //             return #err("An error occured!");
-            //         };
-            //     };
-            // } catch(err) {
-            //     return #err(Error.message(err));
-            // };
-        };
+        // public func transferICP(recipient : Text, amount : ICP, fee : ICP,  memo : Memo, created_at : TimeStamp) : async LedgerTypes.Result_5 {
+        //     // try {
+        //     await ICPLedger.transfer({
+        //             from_subaccount = null;
+        //             to = AccountIdentifier.fromPrincipal(Principal.fromText(recipient), null);
+        //             amount = amount;
+        //             fee = fee;
+        //             memo = memo;
+        //             created_at_time = ?created_at;
+        //         });
+        //     //     switch(transferLog) {
+        //     //         case(#Ok(transferLog)) { 
+        //     //             #ok(transferLog);
+        //     //         };
+        //     //         case(#Err(error)) { 
+        //     //             return #err("An error occured!");
+        //     //         };
+        //     //     };
+        //     // } catch(err) {
+        //     //     return #err(Error.message(err));
+        //     // };
+        // };
 
         public func transferWinnerReward(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
             try {
