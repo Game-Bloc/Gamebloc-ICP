@@ -225,11 +225,26 @@ fn is_mod(name: String) -> bool {
 //     TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
 // }
 
+// #[pre_upgrade]
+// fn pre_upgrade() {
+//     let squad:Squad;
+//     PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
+//     TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
+//     TOURNAMENT_STORE.take().iter().for_each(|item|{
+//         NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+//             new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+//                 oldtournaments:item.1.clone(),
+//                 squad: [].to_vec(),
+//             });
+//         });
+//     })
+// }
+
 #[pre_upgrade]
 fn pre_upgrade() {
     let squad:Squad;
-    PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
-    TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
+    // PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
+    // TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
     TOURNAMENT_STORE.take().iter().for_each(|item|{
         NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
             new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
@@ -242,10 +257,10 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
-    PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
-    let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
-    TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
+    // let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
+    // PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
+    // let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
+    // TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
 }
 
 // Enable Candid export
