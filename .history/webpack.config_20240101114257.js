@@ -1,48 +1,53 @@
-require("dotenv").config()
-const path = require("path")
-const webpack = require("webpack")
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const TerserPlugin = require("terser-webpack-plugin")
-const CopyPlugin = require("copy-webpack-plugin")
+require("dotenv").config();
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
-const LOCAL_II_CANISTER = "http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943"
+const LOCAL_II_CANISTER = "http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943";
 
 const network =
   process.env.DFX_NETWORK ||
-  (process.env.NODE_ENV === "production" ? "ic" : "local")
+  (process.env.NODE_ENV === "production" ? "ic" : "local");
 
 function initCanisterEnv() {
-  let localCanisters, prodCanisters
+  let localCanisters, prodCanisters;
   try {
-    localCanisters = require(path.resolve(".dfx", "local", "canister_ids.json"))
+    localCanisters = require(path.resolve(
+      ".dfx",
+      "local",
+      "canister_ids.json"
+    ));
   } catch (error) {
-    console.log("No local canister_ids.json found. Continuing production")
+    console.log("No local canister_ids.json found. Continuing production");
   }
   try {
-    prodCanisters = require(path.resolve("canister_ids.json"))
+    prodCanisters = require(path.resolve("canister_ids.json"));
   } catch (error) {
-    console.log("No production canister_ids.json found. Continuing with local")
+    console.log("No production canister_ids.json found. Continuing with local");
   }
 
   const network =
     process.env.DFX_NETWORK ||
-    (process.env.NODE_ENV === "production" ? "ic" : "local")
+    (process.env.NODE_ENV === "production" ? "ic" : "local");
 
-  const canisterConfig = network === "local" ? localCanisters : prodCanisters
+  const canisterConfig = network === "local" ? localCanisters : prodCanisters;
 
   return Object.entries(canisterConfig).reduce((prev, current) => {
-    const [canisterName, canisterDetails] = current
-    prev[canisterName.toUpperCase() + "_CANISTER_ID"] = canisterDetails[network]
-    return prev
-  }, {})
+    const [canisterName, canisterDetails] = current;
+    prev[canisterName.toUpperCase() + "_CANISTER_ID"] =
+      canisterDetails[network];
+    return prev;
+  }, {});
 }
-const canisterEnvVariables = initCanisterEnv()
+const canisterEnvVariables = initCanisterEnv();
 
-const isDevelopment = process.env.NODE_ENV !== "production"
+const isDevelopment = process.env.NODE_ENV !== "production";
 
-const frontendDirectory = "gamebloc_new_frontend"
+const frontendDirectory = "gamebloc_new_frontend";
 
-const frontend_entry = path.join("src", frontendDirectory, "src", "index.html")
+const frontend_entry = path.join("src", frontendDirectory, "src", "index.html");
 
 module.exports = {
   target: "web",
@@ -165,4 +170,4 @@ module.exports = {
       rewrites: [{ from: /./, to: "/index.html" }],
     },
   },
-}
+};

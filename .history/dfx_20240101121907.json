@@ -48,12 +48,14 @@
   },
   "defaults": {
     "build": {
-      "args": "",
       "packtool": "vessel sources"
     }
   },
-  "output_env_file": ".env",
   "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
     "ic": {
       "providers": ["https://mainnet.dfinity.network"],
       "type": "persistent"

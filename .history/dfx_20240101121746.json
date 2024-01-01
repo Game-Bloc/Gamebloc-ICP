@@ -35,7 +35,7 @@
     },
 
     "gamebloc_new_frontend": {
-      "dependencies": ["kitchen", "game_bloc_backend"],
+      "dependencies": ["gamebloc_new_backend"],
       "frontend": {
         "entrypoint": "src/gamebloc_new_frontend/src/index.html"
       },
@@ -48,12 +48,14 @@
   },
   "defaults": {
     "build": {
-      "args": "",
       "packtool": "vessel sources"
     }
   },
-  "output_env_file": ".env",
   "networks": {
+    "local": {
+      "bind": "127.0.0.1:8000",
+      "type": "ephemeral"
+    },
     "ic": {
       "providers": ["https://mainnet.dfinity.network"],
       "type": "persistent"
