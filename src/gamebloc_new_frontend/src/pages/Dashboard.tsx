@@ -20,13 +20,13 @@ const Dashboard = () => {
       <section className="flex gap-6">
         <Header />
         <Sidebar />
-        <div className="flex flex-col ">
+        <div className="flex flex-col w-full ">
           <div className="m-4 mt-24 ">
             <h2 className="text-base text-white sm:text-lg my-4">
               Featured and Hot
             </h2>
             <Carousel />
-            <Recommended />
+            {/* <Recommended /> */}
             <FreeRegistration />
             <GameblocTournaments />
           </div>

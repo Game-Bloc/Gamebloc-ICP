@@ -107,6 +107,60 @@ export const useGameblocHooks = () => {
     }
   };
 
+  const createTournament = async (
+    idx: number,
+    id_hash: string,
+    status: any,
+    creator: string,
+    game: string,
+    user: string[],
+    winers: string[],
+    total_prize: bigint,
+    tournament_rules: string,
+    starting_date: string,
+    no_of_participants: bigint,
+    no_of_winners: number,
+    tournament_type: any,
+    entry_prize: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string
+  ) => {
+    try {
+      setIsLoading(true);
+      const tournamentData = {
+        idx,
+        id_hash,
+        status: status,
+        creator,
+        game,
+        user,
+        winers,
+        total_prize,
+        tournament_rules,
+        starting_date,
+        no_of_participants,
+        no_of_winners,
+        tournament_type: tournament_type,
+        entry_prize,
+      };
+      const create = await whoamiActor.create_tournament(tournamentData);
+      if (create) {
+        popUp(successMsg, route);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        errorPopUp(errorMsg);
+      }
+    } catch (err) {
+      errorPopUp(errorMsg);
+      setIsLoading(false);
+      console.log("Error creating tournament:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     isLoadingProfile,
@@ -114,6 +168,7 @@ export const useGameblocHooks = () => {
     noData,
     isAccount,
     createAccount,
+    createTournament,
     getProfile,
   };
 };

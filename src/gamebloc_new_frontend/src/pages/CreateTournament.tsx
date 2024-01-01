@@ -1,12 +1,190 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header/Header";
 import Sidebar from "../components/dashboardComps/Sidebar";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { Select, DatePicker, TimePicker } from "antd";
+import { Select, DatePicker, TimePicker, ConfigProvider, theme } from "antd";
 import { useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
+import { useAppSelector } from "../redux/hooks";
+import { useGameblocHooks } from "../Functions/gameblocHooks";
+import { ulid } from "ulid";
+import dayjs from "dayjs";
+import type { Dayjs } from "dayjs";
+import type { DatePickerProps } from "antd";
+import type { RangePickerProps } from "antd/es/date-picker";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const CreateTournament = () => {
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const location = useLocation();
+  const title = new URLSearchParams(location.search).get("title") || "";
+  const [color, setColor] = useState("#ffffff");
+  const [poolPrize, setPoolPrize] = useState("");
+  const [entryPrice, setEntryPrize] = useState("");
+  const [noOfUsers, setNoOfUsers] = useState<number>(0);
+  const [tournamentType, setTournamentType] = useState<string>("");
+  const [variantType, setVariantType] = useState(null);
+  const [gameName, setGameName] = useState<string>("");
+  const [noOfWinners, setNoOfWinners] = useState<number>(0);
+  const [tourType, setTourType] = useState<string>("");
+  const [tournamentRules, setTournamentRules] = useState<string>("");
+  const [initialTime, setInitialTime] = useState<string>("");
+  const [initialDate, setInitialDate] = useState<string>("");
+  const [startingDate, setStartingDate] = useState<string>("");
+  const [tournamentID, setTournamentID] = useState<string>("");
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const { isLoading, createTournament } = useGameblocHooks();
+  const name = useAppSelector((state) => state.userProfile.username);
+
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "white",
+  };
+
+  const generateULID = () => {
+    const date = new Date();
+    let day = date.getDate();
+    const id = ulid(day);
+    setTournamentID(id);
+    console.log("ulid:", id);
+  };
+
+  useEffect(() => {
+    generateULID();
+
+    const getTimeDate = () => {
+      const value = initialTime.concat(" ", initialDate);
+      setStartingDate(value);
+    };
+    if (tournamentType === "Crowdfunded") {
+      setTourType("Crowdfunded");
+      setVariantType({ Crowdfunded: null });
+    } else if (tournamentType === "Prepaid") {
+      setTourType("Prepaid");
+      setVariantType({ Prepaid: null });
+    } else {
+      setTourType("Crowdfunded");
+    }
+    getTimeDate();
+  }, [
+    tournamentType,
+    initialDate,
+    initialTime,
+    startingDate,
+    // getTournamentCount,
+  ]);
+
+  useEffect(() => {
+    if (close) {
+      setOpenModal(false);
+    }
+  }, [close]);
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+  const filterOption1 = (
+    input: string,
+    option?: { label: string; value: string }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
+  const disabledDate: RangePickerProps["disabledDate"] = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf("day");
+  };
+
+  const onTimeChange = (time: Dayjs | null, timeString: string) => {
+    const value = timeString;
+    setInitialTime(value);
+  };
+
+  const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
+    const value = dateString;
+    setInitialDate(value);
+  };
+
+  const getTimeDate = () => {
+    const value = initialTime.concat(" ", initialDate);
+    setStartingDate(value);
+    console.log("starting:", startingDate);
+  };
+
+  const onPriceChange = (e: any) => {
+    e.preventDefault();
+    const priceinput = e.target.value;
+    setPoolPrize(priceinput);
+    setEntryPrize("");
+  };
+  const onEntryChange = (e: any) => {
+    e.preventDefault();
+    const entryInput = e.target.value;
+    setEntryPrize(entryInput);
+    setPoolPrize("");
+  };
+
+  const onRuleChange = (e: any) => {
+    e.preventDefault();
+    const rules = e.target.value;
+    setTournamentRules(rules);
+  };
+  const onUserChange = (e: any) => {
+    e.preventDefault();
+    const userNumberInput = e.target.value;
+    setNoOfUsers(+userNumberInput);
+  };
+
+  const onGameChange = (e: any) => {
+    e.preventDefault();
+    const gameInput = e.target.value;
+    setGameName(gameInput);
+  };
+
+  const handleTournamentTypeChange = (value: string) => {
+    setTournamentType(value);
+  };
+
+  const handleWinnersChange = (value: string) => {
+    setNoOfWinners(+value);
+  };
+
+  const testFunction = () => {
+    console.log("Participants", noOfUsers);
+    console.log("Winners", noOfWinners);
+    console.log("name", name);
+    console.log("Tournament ID", tournamentID);
+    console.log("tournament Rules", tournamentRules);
+    console.log("tournament type", tournamentType);
+    console.log("Starting Date", startingDate);
+    console.log("Entry price", +entryPrice);
+    console.log("Total price", +poolPrize);
+    console.log("Game", title);
+  };
+
+  const addTournament = () => {
+    createTournament(
+      1,
+      tournamentID,
+      { AcceptingPlayers: null },
+      name,
+      title,
+      [],
+      [],
+      BigInt(+poolPrize),
+      tournamentRules,
+      startingDate,
+      BigInt(noOfUsers),
+      noOfWinners,
+      variantType,
+      +entryPrice,
+      "You have successfully created a Tournament",
+      "Try again something went wrong",
+      "/dashboard"
+    );
+  };
 
   return (
     <div className="">
@@ -25,12 +203,24 @@ const CreateTournament = () => {
               </div>
               <div className="flex flex-col lg:flex-row ">
                 <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
-                  <div className="border-solid border border-[#2E3438] rounded-[0.625rem]">
-                    <img
-                      src={`gamepad.png`}
-                      alt=""
-                      className="rounded-[0.625rem]"
-                    />
+                  <div className="flex w-full justify-center items-center">
+                    <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
+                      <img
+                        src={
+                          id == "1"
+                            ? `category1.svg`
+                            : id == "2"
+                            ? `category2.svg`
+                            : id == "3"
+                            ? `category3.svg`
+                            : id == "4"
+                            ? `category4.svg`
+                            : `gamepad.png`
+                        }
+                        alt=""
+                        className="rounded-[0.625rem]"
+                      />
+                    </div>
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
                     <div className="flex justify-between my-[.9rem] mx-4 items-center">
@@ -92,47 +282,59 @@ const CreateTournament = () => {
                       <p className=" mb-4 text-sm sm:text-base font-normal text-white">
                         Select Tournament Type
                       </p>
-                      <Select
-                        placeholder="Tournament Type"
-                        optionFilterProp="children"
-                        // onChange={handleTournamentTypeChange}
-                        // filterOption={filterOption1}
-                        options={[
-                          {
-                            value: "Crowdfunded",
-                            label: "Crowdfunded",
-                          },
-                          {
-                            value: "Prepaid",
-                            label: "Prepaid",
-                          },
-                        ]}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          algorithm: theme.darkAlgorithm,
+                        }}
+                      >
+                        <Select
+                          placeholder="Tournament Type"
+                          optionFilterProp="children"
+                          onChange={handleTournamentTypeChange}
+                          filterOption={filterOption1}
+                          options={[
+                            {
+                              value: "Crowdfunded",
+                              label: "Crowdfunded",
+                            },
+                            {
+                              value: "Prepaid",
+                              label: "Prepaid",
+                            },
+                          ]}
+                        />
+                      </ConfigProvider>
                     </div>
                     <div className="flex flex-col">
                       <p className=" mb-4 text-sm mt-4 lg:mt-0 sm:text-base font-normal text-white">
                         Select Number of Winners
                       </p>
-                      <Select
-                        placeholder="Select number of Winners"
-                        optionFilterProp="children"
-                        // onChange={handleWinnersChange}
-                        // filterOption={filterOption}
-                        options={[
-                          {
-                            value: "1",
-                            label: "1",
-                          },
-                          {
-                            value: "2",
-                            label: "2",
-                          },
-                          {
-                            value: "3",
-                            label: "3",
-                          },
-                        ]}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          algorithm: theme.darkAlgorithm,
+                        }}
+                      >
+                        <Select
+                          placeholder="Select number of Winners"
+                          optionFilterProp="children"
+                          onChange={handleWinnersChange}
+                          filterOption={filterOption}
+                          options={[
+                            {
+                              value: "1",
+                              label: "1",
+                            },
+                            {
+                              value: "2",
+                              label: "2",
+                            },
+                            {
+                              value: "3",
+                              label: "3",
+                            },
+                          ]}
+                        />
+                      </ConfigProvider>
                     </div>
                   </div>
 
@@ -141,44 +343,70 @@ const CreateTournament = () => {
                       <p className=" mb-4 text-sm sm:text-base font-normal text-white">
                         Set Time
                       </p>
-                      <TimePicker
-                        use12Hours
-                        format="h:mm a"
-                        // onChange={onTimeChange}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          algorithm: theme.darkAlgorithm,
+                        }}
+                      >
+                        <TimePicker
+                          use12Hours
+                          format="h:mm a"
+                          onChange={onTimeChange}
+                        />
+                      </ConfigProvider>
                     </div>
                     <div className="flex flex-col">
                       <p className=" mb-4 mt-4 lg:mt-0  text-sm sm:text-base font-normal text-white">
                         Set Date
                       </p>
-                      <DatePicker
-                      // disabledDate={disabledDate}
-                      // onChange={onDateChange}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          algorithm: theme.darkAlgorithm,
+                        }}
+                      >
+                        <DatePicker
+                          disabledDate={disabledDate}
+                          onChange={onDateChange}
+                        />
+                      </ConfigProvider>
                     </div>
                   </div>
 
-                  <div className="flex-col flex m-4 ">
+                  {/* <div className="flex-col flex m-4 ">
                     <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                       Game Name
                     </p>
-                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-white border-solid border rounded-lg flex">
+                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                       <input
-                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white appearance-none text-[0.9rem] bg-[transparent]"
+                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                         placeholder="Name of game"
                         type="text"
                       />
                     </div>
-                  </div>
+                  </div> */}
                   <div className="flex-col flex m-4 ">
                     <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                      Entry Price
+                      {tourType === "Prepaid"
+                        ? " Pool Price in $"
+                        : " Entry Price in $"}
                     </p>
-                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-white border-solid border rounded-lg flex">
+                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                       <input
-                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white appearance-none text-[0.9rem] bg-[transparent]"
-                        placeholder="Name of game"
+                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                        placeholder={
+                          tourType === "Prepaid"
+                            ? " Pool Price ($)"
+                            : "Entry price ($)"
+                        }
                         type="text"
+                        onChange={
+                          tourType === "Prepaid"
+                            ? onPriceChange
+                            : tourType === "Crowdfunded"
+                            ? onEntryChange
+                            : onEntryChange
+                        }
+                        value={tourType === "Prepaid" ? poolPrize : entryPrice}
                       />
                     </div>
                   </div>
@@ -186,11 +414,13 @@ const CreateTournament = () => {
                     <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                       Number of Participant
                     </p>
-                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-white border-solid border rounded-lg flex">
+                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                       <input
-                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white appearance-none text-[0.9rem] bg-[transparent]"
-                        placeholder="Name of game"
+                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                        placeholder="Participants"
                         type="text"
+                        onChange={onUserChange}
+                        value={noOfUsers}
                       />
                     </div>
                   </div>
@@ -198,17 +428,36 @@ const CreateTournament = () => {
                     <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                       Describe Tournament Rules/Guidelines
                     </p>
-                    <div className=" my-4 items-center pt-4 pl-4 border-white border-solid border rounded-lg flex">
+                    <div className=" my-4 items-center pt-4 pl-4 border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                       <textarea
-                        className="r border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white appearance-none text-[0.9rem] bg-[transparent]"
-                        placeholder="Name of game"
+                        className="r border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                        placeholder="Rule of your game"
                         rows={4}
+                        value={tournamentRules}
+                        onChange={onRuleChange}
                       />
                     </div>
                   </div>
                   <div className="mt-4 mx-4 lg:mx-0 mb-4 flex justify-center items-center">
-                    <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3">
-                      <p className="font-semibold">Create Tournament</p>
+                    <button
+                      onClick={() => {
+                        testFunction();
+                        addTournament();
+                      }}
+                      className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+                    >
+                      {isLoading ? (
+                        <ClipLoader
+                          color={color}
+                          loading={isLoading}
+                          cssOverride={override}
+                          size={20}
+                          aria-label="Loading Spinner"
+                          data-testid="loader"
+                        />
+                      ) : (
+                        <p className="font-semibold">Create Tournament</p>
+                      )}
                     </button>
                   </div>
                 </div>

@@ -10,6 +10,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import FallBackLoader from "./components/Modals/FallBackLoader";
 import ActiveTournament from "./pages/ActiveTournament";
 import Profile from "./pages/Profile";
+import Category from "./pages/Category";
 
 const App = () => {
   const auth = useAppSelector((state) => state.authenticationClient.auth);
@@ -21,8 +22,9 @@ const App = () => {
           <Route path="/" element={<LandingPage />} />
           <Route element={<ProtectedRoutes userAuthState={isAuthenticated} />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/createtournament" element={<CreateTournament />} />
+            <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
+            <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
           <Route path="/admin" element={<Admin />} />

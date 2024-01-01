@@ -31,7 +31,12 @@ const Header = () => {
   return (
     <div className="flex fixed justify-between lg:px-4 items-center w-full h-[5rem] bg-primary-first border-solid border-b-4 border-[#f6b8fc13] z-10 ">
       <div className="m-4 flex w-full justify-between items-center lg:my-4 lg:mx-0">
-        <img src={`logo.png`} alt="" className="w-32 m-0 hidden lg:block" />
+        <img
+          onClick={() => navigate("/dashboard")}
+          src={`logo.png`}
+          alt=""
+          className="w-32 m-0 hidden cursor-pointer lg:block"
+        />
         <IoMenu
           className="text-primary-second block lg:hidden"
           onClick={() => setOpen(!open)}

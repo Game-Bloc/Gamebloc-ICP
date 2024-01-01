@@ -2,7 +2,7 @@ import React from "react";
 
 const GameblocTournaments = () => {
   return (
-    <div className="bg-[#040D17] w-full p-4 mt-14">
+    <div className="bg-[#040D17] rounded-[1.5rem] w-full p-4 mt-14">
       <div className="flex flex-col ">
         <div className="flex w-full mt-4 justify-center items-center">
           <img

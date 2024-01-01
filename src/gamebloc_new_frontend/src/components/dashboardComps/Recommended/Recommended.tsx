@@ -20,7 +20,9 @@ const Recommended = () => {
 
   const displayTournaments = tournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
-    .map((data: any, index: any) => <RecommendedCard key={index} />);
+    .map((data: any, index: any) => (
+      <RecommendedCard data={data} index={index} key={index} />
+    ));
 
   return (
     <div className="m-4">
