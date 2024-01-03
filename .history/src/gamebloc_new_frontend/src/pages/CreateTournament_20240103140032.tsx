@@ -273,7 +273,7 @@ const CreateTournament = () => {
                 </div>
 
                 {active === "first" && (
-                  <div className="border relative rounded-[0.625rem] w-full h-full lg:w-[50%] mt-8 border-solid border-[#2E3438]">
+                  <div className="border relative rounded-[0.625rem] w-full lg:w-[50%] mt-8 border-solid border-[#2E3438]">
                     <p className="text-[0.8rem] ml-4 mt-4 mb-[1.5rem] font-semibold sm:text-base  text-white">
                       Game Details
                     </p>
@@ -293,7 +293,7 @@ const CreateTournament = () => {
                         />
                       </div>
                     </div>
-                    <div className="flex w-full justify-center mb-4 relative items-end  ">
+                    <div className="flex relative items-end  ">
                       <button
                         onClick={() => setActive("second")}
                         className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"

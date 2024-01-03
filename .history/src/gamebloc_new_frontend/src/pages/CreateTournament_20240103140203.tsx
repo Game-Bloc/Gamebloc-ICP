@@ -293,7 +293,7 @@ const CreateTournament = () => {
                         />
                       </div>
                     </div>
-                    <div className="flex w-full justify-center mb-4 relative items-end  ">
+                    <div className="flex w-full justify-center relative items-end  ">
                       <button
                         onClick={() => setActive("second")}
                         className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
