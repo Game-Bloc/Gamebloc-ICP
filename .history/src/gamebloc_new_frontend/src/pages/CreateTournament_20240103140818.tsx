@@ -278,7 +278,7 @@ const CreateTournament = () => {
                       Game Details
                     </p>
                     <div className="my-4 border border-solid border-[#2E3438] w-full" />
-                    <div className="flex mt-4 mx-4 flex-col">
+                    <div className="flex mt-4 flex-col">
                       <p className=" mb-4 text-sm sm:text-base font-normal text-white">
                         Game Type
                       </p>
@@ -311,7 +311,7 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Number of Participant
                       </p>
-                      <div className=" my-4 items-center pr-8 h-[2rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
                           className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder="Participants"
