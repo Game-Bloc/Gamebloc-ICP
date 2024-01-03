@@ -71,11 +71,6 @@ const TournamentDetail = () => {
                           Crowd Funded
                         </p>
                       </div>
-                      <div className="flex absolute left-4 bottom-4 items-center">
-                        <img src={`windows.png`} className="" alt="" />
-                        <img src={`playstation.png`} className="ml-2" alt="" />
-                        <img src={`xbox.png`} className="ml-2" alt="" />
-                      </div>
                       <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-4">
                         <div className="rounded-[9999px] pt-[0.3rem] px-[.9rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FEE4E2] border-none">
                           <p className=" text-[#D92D20] text-[0.6rem] sm:text-[0.8rem] cursor-pointer font-medium">
@@ -128,7 +123,7 @@ const TournamentDetail = () => {
                 </div>
 
                 <div className="border rounded-[0.625rem] w-full lg:w-[50%] mt-8 border-solid border-[#2E3438]">
-                  <div className="mt-[1.5rem] mx-4 mb-4">
+                  <div className="mt-[1.5rem] mx-4 ">
                     <ConfigProvider
                       theme={{
                         token: {

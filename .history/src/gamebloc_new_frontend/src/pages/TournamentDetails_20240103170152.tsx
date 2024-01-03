@@ -71,10 +71,10 @@ const TournamentDetail = () => {
                           Crowd Funded
                         </p>
                       </div>
-                      <div className="flex absolute left-4 bottom-4 items-center">
+                      <div className="flex absolute right-4 bottom-4 justify-between items-center">
                         <img src={`windows.png`} className="" alt="" />
-                        <img src={`playstation.png`} className="ml-2" alt="" />
-                        <img src={`xbox.png`} className="ml-2" alt="" />
+                        <img src={`playstation.png`} className="" alt="" />
+                        <img src={`xbox.png`} className="" alt="" />
                       </div>
                       <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-4">
                         <div className="rounded-[9999px] pt-[0.3rem] px-[.9rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FEE4E2] border-none">
