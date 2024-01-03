@@ -1,4 +1,6 @@
 use crate::*;
+
+
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct UserProfile {
     pub id_hash: String,
@@ -9,6 +11,8 @@ pub struct UserProfile {
     pub tournaments_created:u8,
     pub username: String,
     pub is_mod: bool,
+    pub principal_id: String,
+    pub canister_id: String,
 }
 
 #[derive(Clone,Debug, Default, CandidType, Deserialize, Serialize)]
@@ -25,13 +29,11 @@ pub struct TournamentAccount {
     pub winers: Vec<String>,
     pub entry_prize: u8,
     pub total_prize: u128,
+    pub no_of_winners: u8,
+    pub no_of_participants: u128,
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
-pub struct NewTournamentAccount{
-    pub oldtournaments : TournamentAccount,
-    pub squad:  Vec<Squad>,
-}
+
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum Status {
@@ -58,13 +60,4 @@ pub enum TournamentType {
 pub struct TokenState {
     pub bump: u8,
     pub amount: u64,
-}
-
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
-pub struct Squad {
-    pub id_hash: String,
-    pub captain: String,
-    pub status: bool,
-    pub members: Vec<String>,
-    pub requests: Vec<String>,
 }
