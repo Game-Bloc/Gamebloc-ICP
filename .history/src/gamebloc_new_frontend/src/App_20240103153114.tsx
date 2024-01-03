@@ -25,7 +25,6 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
-            <Route path="/tournament-details" element={<TournamentDetails />} />
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
