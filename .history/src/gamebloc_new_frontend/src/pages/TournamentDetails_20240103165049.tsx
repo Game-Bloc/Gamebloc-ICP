@@ -65,7 +65,7 @@ const TournamentDetail = () => {
                         alt=""
                         className="rounded-[0.625rem]"
                       />
-                      <div className="absolute flex top-4 left-4 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md sm:rounded-xl py-1 px-2 sm:p-3 ">
+                      <div className="absolute flex top-4 left-4 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-xl py-1 px-2 sm:p-3 ">
                         <img src={`mdi_crowd.png`} className="m-0" alt="" />
                         <p className=" ml-[.5rem]  text-[0.6rem]  sm:text-sm text-white">
                           Crowd Funded
