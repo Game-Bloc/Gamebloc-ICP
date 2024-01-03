@@ -28,11 +28,7 @@ const TournamentCard = ({ data, index }: Props) => {
             <p className="ml-1 text-white text-[.6rem] ">{data.creator}</p>
           </div>
         </div>
-        <img
-          src={`right.svg`}
-          alt=""
-          className="m-0 w-4 hidden lg:block lg:w-[1.07rem]"
-        />
+        <img src={`right.svg`} alt="" className="m-0 w-4 lg:w-[1.07rem]" />
       </div>
     </div>
   )

@@ -14,11 +14,11 @@ const TournamentCard = ({ data, index }: Props) => {
         className="rounded-[12px] m-0 h-[18rem] 2xl:h-[20rem]  w-full"
       />
       <div className="absolute cursor-pointer bg-primary-first h-fit bottom-2 ml-3  p-[.7rem] justify-between items-center  rounded-xl  flex w-[85%]">
-        <div className="flex flex-col justify-start items-start">
-          <p className=" w-full font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
+        <div className="flex flex-col justify-center items-center">
+          <p className=" w-full font-bold text-[0.75rem] 2xl:text-[.95rem]  text-white">
             {data.game}
           </p>
-          <div className="flex mt-[6px] justify-center items-center flex-row">
+          <div className="flex mt-[6px] justify-start items-start flex-row">
             <img
               src={`check-yellow.png`}
               alt=""
@@ -28,11 +28,7 @@ const TournamentCard = ({ data, index }: Props) => {
             <p className="ml-1 text-white text-[.6rem] ">{data.creator}</p>
           </div>
         </div>
-        <img
-          src={`right.svg`}
-          alt=""
-          className="m-0 w-4 hidden lg:block lg:w-[1.07rem]"
-        />
+        <img src={`right.svg`} alt="" className="m-0 w-4 lg:w-[1.07rem]" />
       </div>
     </div>
   )
