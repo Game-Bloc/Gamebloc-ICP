@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { IoMenu } from "react-icons/io5"
 import { IoClose } from "react-icons/io5"
 import { NavLink, useNavigate } from "react-router-dom"
@@ -7,7 +7,6 @@ import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
 import { Avatar } from "antd"
 import { useAppSelector } from "../../redux/hooks"
-import { useGameblocHooks } from "../../Functions/gameblocHooks"
 
 const Header = () => {
   const navigate = useNavigate()
@@ -15,7 +14,6 @@ const Header = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
-  const { getProfile, isLoadingProfile } = useGameblocHooks()
 
   useEffect(() => {
     getProfile()

@@ -1,25 +1,19 @@
-import React, { useEffect, useState } from "react"
-import { IoMenu } from "react-icons/io5"
-import { IoClose } from "react-icons/io5"
-import { NavLink, useNavigate } from "react-router-dom"
-import { MdDashboard } from "react-icons/md"
-import { MdVideogameAsset } from "react-icons/md"
-import { FaAngleDown } from "react-icons/fa"
-import { Avatar } from "antd"
-import { useAppSelector } from "../../redux/hooks"
-import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import React, { useState } from "react";
+import { IoMenu } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
+import { NavLink, useNavigate } from "react-router-dom";
+import { MdDashboard } from "react-icons/md";
+import { MdVideogameAsset } from "react-icons/md";
+import { FaAngleDown } from "react-icons/fa";
+import { Avatar } from "antd";
+import { useAppSelector } from "../../redux/hooks";
 
 const Header = () => {
-  const navigate = useNavigate()
-  const [open, setOpen] = useState<boolean>(false)
-  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
-  const username = useAppSelector((state) => state.userProfile.username)
-  const initials = username!.substring(0, 2).toUpperCase()
-  const { getProfile, isLoadingProfile } = useGameblocHooks()
-
-  useEffect(() => {
-    getProfile()
-  }, [])
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false);
+  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
+  const username = useAppSelector((state) => state.userProfile.username);
+  const initials = username!.substring(0, 2).toUpperCase();
 
   const menus = [
     { name: "Overview", link: "/dashboard", icon: MdDashboard },
@@ -32,7 +26,7 @@ const Header = () => {
         { name: "CrowdFunded", link: "/dashboard" },
       ],
     },
-  ]
+  ];
 
   return (
     <div className="flex fixed justify-between lg:px-4 items-center w-full h-[5rem] bg-primary-first border-solid border-b-4 border-[#f6b8fc13] z-10 ">
@@ -125,7 +119,7 @@ const Header = () => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

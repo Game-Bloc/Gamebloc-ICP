@@ -36,15 +36,12 @@ const Profile = () => {
   const principalID = principal
   const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
   const { getProfile, isLoadingProfile } = useGameblocHooks()
+
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
     console.log(key)
   }
-  useEffect(() => {
-    getProfile()
-  }, [])
-
   if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
