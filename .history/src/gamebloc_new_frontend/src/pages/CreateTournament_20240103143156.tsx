@@ -333,7 +333,7 @@ const CreateTournament = () => {
                 )}
                 {active === "second" && (
                   <div className="border rounded-[0.625rem] w-full lg:w-[50%] mt-8 border-solid border-[#2E3438]">
-                    <div className="flex items-center ml-4 mt-4 mb-[1.5rem]">
+                    <div className="flex items-center mt-4 mb-[1.5rem]">
                       <IoIosArrowRoundBack className="text-white" />
                       <p className="text-[0.8rem] ml-3   font-semibold sm:text-base  text-white">
                         Tournament Details
