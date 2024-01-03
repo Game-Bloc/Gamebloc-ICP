@@ -48,7 +48,7 @@ const TournamentDetail = () => {
               <div className="flex flex-col lg:flex-row ">
                 <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                   <div className="flex w-full justify-center items-center">
-                    <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
+                    <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                       <img
                         src={
                           //   id == "1"
@@ -65,9 +65,6 @@ const TournamentDetail = () => {
                         alt=""
                         className="rounded-[0.625rem]"
                       />
-                      <div className="absolute top-4 left-4  justify-center items-center">
-                        <img src={`mdi_crowd.png`} alt="" />
-                      </div>
                     </div>
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">

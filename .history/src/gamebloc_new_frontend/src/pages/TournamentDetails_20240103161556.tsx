@@ -11,17 +11,17 @@ const TournamentDetail = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: `Tournament Info`,
+      label: `Activity`,
       children: `Coming soon`,
     },
     {
       key: "2",
-      label: `Rules and Description`,
+      label: `Game Stats`,
       children: `Coming Soon`,
     },
     {
       key: "3",
-      label: `Players`,
+      label: `Wins`,
       children: `Coming Soon`,
     },
   ]
@@ -48,7 +48,7 @@ const TournamentDetail = () => {
               <div className="flex flex-col lg:flex-row ">
                 <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                   <div className="flex w-full justify-center items-center">
-                    <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
+                    <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                       <img
                         src={
                           //   id == "1"
@@ -65,9 +65,6 @@ const TournamentDetail = () => {
                         alt=""
                         className="rounded-[0.625rem]"
                       />
-                      <div className="absolute top-4 left-4  justify-center items-center">
-                        <img src={`mdi_crowd.png`} alt="" />
-                      </div>
                     </div>
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
@@ -120,7 +117,7 @@ const TournamentDetail = () => {
                 </div>
 
                 <div className="border rounded-[0.625rem] w-full lg:w-[50%] mt-8 border-solid border-[#2E3438]">
-                  <div className="mt-[1.5rem] mx-4 ">
+                  <div className="mt-[3rem] mx-4 ">
                     <ConfigProvider
                       theme={{
                         token: {
