@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react"
-import Header from "../components/Header/Header"
-import Sidebar from "../components/dashboardComps/Sidebar"
-import { IoIosArrowRoundBack } from "react-icons/io"
-import { useNavigate } from "react-router-dom"
-import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd"
-import { useAppSelector } from "../redux/hooks"
-import Copy from "../components/utils/Copy"
-import { useGameblocHooks } from "../Functions/gameblocHooks"
-import FallbackLoading from "../components/Modals/FallBackLoader"
+import React, { useEffect, useState } from "react";
+import Header from "../components/Header/Header";
+import Sidebar from "../components/dashboardComps/Sidebar";
+import { IoIosArrowRoundBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
+import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd";
+import { useAppSelector } from "../redux/hooks";
+import Copy from "../components/utils/Copy";
+import { useGameblocHooks } from "../Functions/gameblocHooks";
+import FallbackLoading from "../components/Modals/FallBackLoader";
 
 const items: TabsProps["items"] = [
   {
@@ -25,33 +25,39 @@ const items: TabsProps["items"] = [
     label: `Wins`,
     children: `Coming Soon`,
   },
-]
+];
 
 const Profile = () => {
-  const navigate = useNavigate()
-  const username = useAppSelector((state) => state.userProfile.username)
-  const principal = useAppSelector((state) => state.userProfile.principal_id)
-  const date = useAppSelector((state) => state.userProfile.date)
-  const initials = username!.substring(0, 2).toUpperCase()
-  const principalID = principal
-  const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
-  const { getProfile, isLoadingProfile } = useGameblocHooks()
+  const navigate = useNavigate();
+  const username = useAppSelector((state) => state.userProfile.username);
+  const principal = useAppSelector((state) => state.userProfile.principal_id);
+  const date = useAppSelector((state) => state.userProfile.date);
+  const initials = username!.substring(0, 2).toUpperCase();
+  const principalID = principal;
+  const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY";
+  const { getProfile, isLoadingProfile } = useGameblocHooks();
 
-  const [_date, setDate] = useState<string>("")
+  const [_date, setDate] = useState<string>("");
 
   useEffect(() => {
-    getProfile()
-  }, [])
+    getProfile();
+    const timeStamp = +date / 1e9;
+    const newDate = new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+    }).format(timeStamp);
+    setDate(newDate);
+  }, []);
 
   const onChange = (key: string) => {
-    console.log(key)
-  }
+    console.log(key);
+  };
   if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <FallbackLoading />
       </div>
-    )
+    );
   } else {
     return (
       <div className="">
@@ -92,7 +98,7 @@ const Profile = () => {
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
                           <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
-                            Member since {date}
+                            Member since {_date}
                           </p>
                         </div>
                       </div>
@@ -150,8 +156,8 @@ const Profile = () => {
           </div>
         </section>
       </div>
-    )
+    );
   }
-}
+};
 
-export default Profile
+export default Profile;
