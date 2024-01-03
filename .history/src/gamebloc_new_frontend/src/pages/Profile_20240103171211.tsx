@@ -59,7 +59,7 @@ const Profile = () => {
           <Sidebar />
           <div className="flex flex-col w-full">
             <div className="m-4 mt-24  ">
-              <div className="">
+              <div className="h-full">
                 {/* <div
                   onClick={() => navigate(-1)}
                   className="flex  items-center cursor-pointer"
@@ -72,7 +72,7 @@ const Profile = () => {
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
                   </h1>
-                  <div className=" flex flex-col w-full sm:w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15] p-4 rounded-[1.6rem]">
+                  <div className=" flex flex-col w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15] p-4 rounded-[1.6rem]">
                     <div className="flex ">
                       <Avatar
                         style={{
