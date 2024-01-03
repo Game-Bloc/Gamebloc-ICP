@@ -1,61 +1,49 @@
-import React, { useEffect, useState } from "react"
-import ClipLoader from "react-spinners/ClipLoader"
-import { RiCloseFill } from "react-icons/ri"
-import { useGameblocHooks } from "../../Functions/gameblocHooks"
-import { ulid } from "ulid"
+import React, { useEffect, useState } from "react";
+import ClipLoader from "react-spinners/ClipLoader";
+import { RiCloseFill } from "react-icons/ri";
+import { useGameblocHooks } from "../../Functions/gameblocHooks";
+import { ulid } from "ulid";
 
 interface Props {
-  modal: () => void
+  modal: () => void;
 }
 
 const override = {
   display: "block",
   margin: "0 auto",
   borderColor: "white",
-}
+};
 
 const WelcomeModal = ({ modal }: Props) => {
-  const [userName, setUserName] = useState<string>("")
-  const [age, setAge] = useState("")
-  const [joinDate, setJoinDate] = useState<string>("January, 2033")
-  const [color, setColor] = useState("#ffffff")
-  const [idHash, setIdHash] = useState<string>("")
-  const { createAccount, isLoading } = useGameblocHooks()
-
-  const generateDate = () => {
-    let currentDate = new Date()
-    let currentMonth = currentDate.toLocaleString("default", { month: "long" })
-    let currentYear = currentDate.getFullYear()
-
-    let date = currentMonth + ", " + currentYear + "."
-    console.log(date)
-    setJoinDate(date)
-  }
+  const [userName, setUserName] = useState<string>("");
+  const [age, setAge] = useState("");
+  const [joinDate, setJoinDate] = useState<string>("");
+  const [color, setColor] = useState("#ffffff");
+  const [idHash, setIdHash] = useState<string>("");
+  const { createAccount, isLoading } = useGameblocHooks();
 
   const generateId = () => {
-    const date = new Date()
-    let day = date.getDate()
-    const id = ulid(day)
-    setIdHash(id)
-    // setJoinDate()
-  }
+    const date = new Date();
+    let day = date.getDate();
+    const id = ulid(day);
+    setIdHash(id);
+  };
 
   const onChangeUsername = (e: any) => {
-    e.preventDefault()
-    const userNameInput = e.target.value
-    setUserName(userNameInput)
-  }
+    e.preventDefault();
+    const userNameInput = e.target.value;
+    setUserName(userNameInput);
+  };
 
   const onChangeAge = (e: any) => {
-    e.preventDefault()
-    const ageInput = e.target.value
-    setAge(ageInput)
-  }
+    e.preventDefault();
+    const ageInput = e.target.value;
+    setAge(ageInput);
+  };
 
   useEffect(() => {
-    generateId()
-    generateDate()
-  }, [])
+    generateId();
+  }, []);
 
   return (
     <div>
@@ -121,10 +109,9 @@ const WelcomeModal = ({ modal }: Props) => {
                           idHash,
                           +age,
                           userName,
-                          joinDate,
                           "Account Created",
                           "Error, try again",
-                          "/dashboard",
+                          "/dashboard"
                         )
                       }
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
@@ -152,7 +139,7 @@ const WelcomeModal = ({ modal }: Props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default WelcomeModal
+export default WelcomeModal;

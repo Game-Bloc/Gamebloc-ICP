@@ -22,14 +22,39 @@ const WelcomeModal = ({ modal }: Props) => {
   const [idHash, setIdHash] = useState<string>("")
   const { createAccount, isLoading } = useGameblocHooks()
 
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ]
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ]
+
   const generateDate = () => {
     let currentDate = new Date()
-    let currentMonth = currentDate.toLocaleString("default", { month: "long" })
-    let currentYear = currentDate.getFullYear()
+    let monthIndex = currentDate.getMonth()
+    let dayIndex = currentDate.getDay()
 
-    let date = currentMonth + ", " + currentYear + "."
+    let currentMonthName = monthNames[monthIndex]
+    let currentDayName = dayNames[dayIndex]
+    let date = currentDayName + " " + currentMonthName
     console.log(date)
-    setJoinDate(date)
   }
 
   const generateId = () => {
@@ -54,7 +79,6 @@ const WelcomeModal = ({ modal }: Props) => {
 
   useEffect(() => {
     generateId()
-    generateDate()
   }, [])
 
   return (
@@ -116,17 +140,17 @@ const WelcomeModal = ({ modal }: Props) => {
                   </div>
                   <div className="mt-8">
                     <button
-                      onClick={() =>
-                        createAccount(
-                          idHash,
-                          +age,
-                          userName,
-                          joinDate,
-                          "Account Created",
-                          "Error, try again",
-                          "/dashboard",
-                        )
-                      }
+                      // onClick={() =>
+                      //   createAccount(
+                      //     idHash,
+                      //     +age,
+                      //     userName,
+                      //     joinDate,
+                      //     "Account Created",
+                      //     "Error, try again",
+                      //     "/dashboard",
+                      //   )
+                      // }
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
                       <p className="text-[0.65rem] font-bold sm:text-[.85rem]">

@@ -1,24 +1,24 @@
-import { useState } from "react"
-import { useAuth } from "../Auth/use-auth-client"
-import withReactContent from "sweetalert2-react-content"
-import Swal from "sweetalert2"
-import { useNavigate } from "react-router-dom"
+import { useState } from "react";
+import { useAuth } from "../Auth/use-auth-client";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import {
   UserProfileState,
   updateUserProfile,
-} from "../redux/slice/userProfileSlice"
-import { useAppDispatch } from "../redux/hooks"
+} from "../redux/slice/userProfileSlice";
+import { useAppDispatch } from "../redux/hooks";
 
 export const useGameblocHooks = () => {
-  const { whoamiActor } = useAuth()
-  const [noData, setNoData] = useState<boolean>(false)
-  const [updating, setUpdating] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [isAccount, setIsAccount] = useState<boolean>(false)
-  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
-  const MySwal = withReactContent(Swal)
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch()
+  const { whoamiActor } = useAuth();
+  const [noData, setNoData] = useState<boolean>(false);
+  const [updating, setUpdating] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAccount, setIsAccount] = useState<boolean>(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false);
+  const MySwal = withReactContent(Swal);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const popUp = (successMsg: string, route: any) => {
     MySwal.fire({
@@ -30,10 +30,10 @@ export const useGameblocHooks = () => {
       color: "#fff",
     }).then((result) => {
       if (result.isConfirmed) {
-        navigate(route)
+        navigate(route);
       }
-    })
-  }
+    });
+  };
 
   const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
@@ -43,46 +43,45 @@ export const useGameblocHooks = () => {
       showConfirmButton: true,
       background: "#01070E",
       color: "#fff",
-    })
-  }
+    });
+  };
 
   const createAccount = async (
     id_hash: string,
     age: number,
     name: string,
-    time: string,
     successMsg: string,
     errorMsg: string,
-    route: any,
+    route: any
   ) => {
     try {
-      setIsLoading(true)
-      const user = await whoamiActor.createUserProfile(id_hash, age, name, time)
+      setIsLoading(true);
+      const user = await whoamiActor.createUserProfile(id_hash, age, name);
       if (user) {
-        popUp(successMsg, route)
-        setIsLoading(false)
-        console.log("Account Created")
+        popUp(successMsg, route);
+        setIsLoading(false);
+        console.log("Account Created");
       } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
+        setIsLoading(false);
+        errorPopUp(errorMsg);
       }
     } catch (err) {
-      setIsLoading(false)
-      console.log("Failed to create an account:", err)
-      errorPopUp(errorMsg)
+      setIsLoading(false);
+      console.log("Failed to create an account:", err);
+      errorPopUp(errorMsg);
     } finally {
-      setIsLoading(false)
-      return
+      setIsLoading(false);
+      return;
     }
-  }
+  };
 
   const getProfile = async () => {
     try {
-      setIsLoadingProfile(true)
-      const user: any = await whoamiActor.getSelf()
+      setIsLoadingProfile(true);
+      const user: any = await whoamiActor.getSelf();
       if (user.username != "") {
-        setIsAccount(true)
-        console.log("user..:", user)
+        setIsAccount(true);
+        console.log("user..:", user);
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -95,18 +94,18 @@ export const useGameblocHooks = () => {
           username: user.username,
           wins: user.wins,
           initializeState: true,
-        }
-        dispatch(updateUserProfile(profileData))
+        };
+        dispatch(updateUserProfile(profileData));
       } else {
-        setIsAccount(false)
-        console.log("No account created yet")
+        setIsAccount(false);
+        console.log("No account created yet");
       }
     } catch (err) {
-      console.log("Error getting profile", err)
+      console.log("Error getting profile", err);
     } finally {
-      setIsLoadingProfile(false)
+      setIsLoadingProfile(false);
     }
-  }
+  };
 
   const createTournament = async (
     idx: number,
@@ -125,10 +124,10 @@ export const useGameblocHooks = () => {
     entry_prize: number,
     successMsg: string,
     errorMsg: string,
-    route: string,
+    route: string
   ) => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const tournamentData = {
         idx,
         id_hash,
@@ -144,23 +143,23 @@ export const useGameblocHooks = () => {
         no_of_winners,
         tournament_type: tournament_type,
         entry_prize,
-      }
-      const create = await whoamiActor.create_tournament(tournamentData)
+      };
+      const create = await whoamiActor.create_tournament(tournamentData);
       if (create) {
-        popUp(successMsg, route)
-        setIsLoading(false)
+        popUp(successMsg, route);
+        setIsLoading(false);
       } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
+        setIsLoading(false);
+        errorPopUp(errorMsg);
       }
     } catch (err) {
-      errorPopUp(errorMsg)
-      setIsLoading(false)
-      console.log("Error creating tournament:", err)
+      errorPopUp(errorMsg);
+      setIsLoading(false);
+      console.log("Error creating tournament:", err);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return {
     isLoading,
@@ -171,5 +170,5 @@ export const useGameblocHooks = () => {
     createAccount,
     createTournament,
     getProfile,
-  }
-}
+  };
+};

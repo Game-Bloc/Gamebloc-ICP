@@ -22,16 +22,6 @@ const WelcomeModal = ({ modal }: Props) => {
   const [idHash, setIdHash] = useState<string>("")
   const { createAccount, isLoading } = useGameblocHooks()
 
-  const generateDate = () => {
-    let currentDate = new Date()
-    let currentMonth = currentDate.toLocaleString("default", { month: "long" })
-    let currentYear = currentDate.getFullYear()
-
-    let date = currentMonth + ", " + currentYear + "."
-    console.log(date)
-    setJoinDate(date)
-  }
-
   const generateId = () => {
     const date = new Date()
     let day = date.getDate()
@@ -54,7 +44,6 @@ const WelcomeModal = ({ modal }: Props) => {
 
   useEffect(() => {
     generateId()
-    generateDate()
   }, [])
 
   return (

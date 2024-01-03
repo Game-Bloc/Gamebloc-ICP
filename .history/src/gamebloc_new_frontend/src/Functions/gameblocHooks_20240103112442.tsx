@@ -57,7 +57,7 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
-      const user = await whoamiActor.createUserProfile(id_hash, age, name, time)
+      const user = await whoamiActor.createUserProfile(id_hash, age, name)
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)

@@ -27,9 +27,8 @@ const WelcomeModal = ({ modal }: Props) => {
     let currentMonth = currentDate.toLocaleString("default", { month: "long" })
     let currentYear = currentDate.getFullYear()
 
-    let date = currentMonth + ", " + currentYear + "."
+    let date = currentMonth + " " + currentYear
     console.log(date)
-    setJoinDate(date)
   }
 
   const generateId = () => {
@@ -116,17 +115,17 @@ const WelcomeModal = ({ modal }: Props) => {
                   </div>
                   <div className="mt-8">
                     <button
-                      onClick={() =>
-                        createAccount(
-                          idHash,
-                          +age,
-                          userName,
-                          joinDate,
-                          "Account Created",
-                          "Error, try again",
-                          "/dashboard",
-                        )
-                      }
+                      // onClick={() =>
+                      //   createAccount(
+                      //     idHash,
+                      //     +age,
+                      //     userName,
+                      //     joinDate,
+                      //     "Account Created",
+                      //     "Error, try again",
+                      //     "/dashboard",
+                      //   )
+                      // }
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
                       <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
