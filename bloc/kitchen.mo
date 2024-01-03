@@ -107,11 +107,11 @@ shared ({caller}) actor class Kitchen() {
         //     await ICPIndex.get_account_identifier_transactions(args);
         // };
 
-        public shared ({ caller }) func icp_balance() : async ICP {
-            await ICPLedger.account_balance({
-                account = AccountIdentifier.fromPrincipal(caller, null);
-            })
-        };
+        // public shared ({ caller }) func icp_balance() : async ICP {
+        //     await ICPLedger.account_balance({
+        //         account = AccountIdentifier.fromPrincipal(caller, null);
+        //     })
+        // };
 
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
@@ -333,8 +333,8 @@ shared ({caller}) actor class Kitchen() {
         await RustBloc.create_profile(profile, caller);
     };
 
-    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text ) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text ) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         try {
             return await RustBloc.create_profile(profile, caller);
         } catch err {
