@@ -75,34 +75,26 @@ const TournamentDetail = () => {
                         </p>
                       </div>
                       <div className="flex absolute left-4 bottom-4 items-center">
-                        <img
-                          src={`windows.png`}
-                          className="w-4 h-4 sm:w-6 sm:h-6"
-                          alt=""
-                        />
+                        <img src={`windows.png`} className="w-4 h-4" alt="" />
                         <img
                           src={`playstation.png`}
-                          className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
+                          className="ml-2 w-4 h-4"
                           alt=""
                         />
-                        <img
-                          src={`xbox.png`}
-                          className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
-                          alt=""
-                        />
+                        <img src={`xbox.png`} className="ml-2 w-4 h-4" alt="" />
                       </div>
                       <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
+                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FEE4E2] border-none">
                           <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Action
                           </p>
                         </div>
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FFD98F] border-none">
+                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FFD98F] border-none">
                           <p className=" text-[#B88217] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Adventure
                           </p>
                         </div>
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#D1FADF] border-none">
+                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#D1FADF] border-none">
                           <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Shooting
                           </p>
