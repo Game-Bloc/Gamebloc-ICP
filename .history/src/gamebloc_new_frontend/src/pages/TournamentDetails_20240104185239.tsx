@@ -18,7 +18,7 @@ const TournamentDetail = () => {
     },
     {
       key: "2",
-      label: `Rules `,
+      label: `Rules and Description`,
       children: <Rules />,
     },
     {

@@ -18,7 +18,7 @@ const TournamentDetail = () => {
     },
     {
       key: "2",
-      label: `Rules `,
+      label: `Rules and Description`,
       children: <Rules />,
     },
     {
@@ -79,7 +79,7 @@ const TournamentDetail = () => {
                         <img src={`playstation.png`} className="ml-2" alt="" />
                         <img src={`xbox.png`} className="ml-2" alt="" />
                       </div>
-                      <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
+                      {/* <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
                         <div className="rounded-[9999px] pt-[0.2rem] px-[.75rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FEE4E2] border-none">
                           <p className=" text-[#D92D20] text-[0.6rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Action
@@ -95,7 +95,7 @@ const TournamentDetail = () => {
                             Shooting
                           </p>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
