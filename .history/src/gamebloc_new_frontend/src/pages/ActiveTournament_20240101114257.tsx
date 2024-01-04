@@ -1,50 +1,50 @@
-import React, { useEffect, useState } from "react"
-import Header from "../components/Header/Header"
-import Sidebar from "../components/dashboardComps/Sidebar"
-import ReactPaginate from "react-paginate"
-import { MdChevronLeft, MdChevronRight } from "react-icons/md"
-import { useNavigate } from "react-router-dom"
-import TournamentCard from "../components/dashboardComps/Recommended/TournamentCard"
-import { useAppSelector } from "../redux/hooks"
+import React, { useEffect, useState } from "react";
+import Header from "../components/Header/Header";
+import Sidebar from "../components/dashboardComps/Sidebar";
+import ReactPaginate from "react-paginate";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
+import TournamentCard from "../components/dashboardComps/Recommended/TournamentCard";
+import { useAppSelector } from "../redux/hooks";
 import {
   useFetchAllTournaments,
   useUpdateTournament,
-} from "../Functions/blochooks"
-import FallbackLoading from "../components/Modals/FallBackLoader"
+} from "../Functions/blochooks";
+import FallbackLoading from "../components/Modals/FallBackLoader";
 
 const ActiveTournament = () => {
-  const tournament = useAppSelector((state) => state.tournamentData)
-  const navigate = useNavigate()
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const tournamentPerPage: number = window.innerWidth >= 1200 ? 15 : 10
-  const tournamentViewed: number = pageNumber * tournamentPerPage
-  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
-  const { updateTournament, updating } = useUpdateTournament()
+  const tournament = useAppSelector((state) => state.tournamentData);
+  const navigate = useNavigate();
+  const [pageNumber, setPageNumber] = useState<number>(0);
+  const tournamentPerPage: number = window.innerWidth >= 1200 ? 15 : 10;
+  const tournamentViewed: number = pageNumber * tournamentPerPage;
+  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments();
+  const { updateTournament, updating } = useUpdateTournament();
 
-  const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
+  const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage);
   const changePage = ({ selected }: any) => {
-    setPageNumber(selected)
-  }
+    setPageNumber(selected);
+  };
   const displayTournaments = tournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
     .map((data: any, index: any) => (
       <TournamentCard data={data} index={index} key={index} />
-    ))
+    ));
 
   useEffect(() => {
     if (tournament.length > 0) {
-      updateTournament()
+      updateTournament();
     } else {
-      fetchAllTournaments()
+      fetchAllTournaments();
     }
-  }, [])
+  }, []);
 
   if (loading) {
     return (
       <div className="w-full mt-8 h-screen flex justify-center items-center">
         <FallbackLoading />
       </div>
-    )
+    );
   } else {
     return (
       <div className="">
@@ -82,7 +82,7 @@ const ActiveTournament = () => {
                         className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
                       >
                         <span className="glowing-txt text-[.8rem] md:text-base">
-                          Create <span> </span>
+                          Create
                           <span className="faulty-letter text-[.8rem] md:text-base">
                             T
                           </span>
@@ -123,8 +123,8 @@ const ActiveTournament = () => {
           </div>
         </section>
       </div>
-    )
+    );
   }
-}
+};
 
-export default ActiveTournament
+export default ActiveTournament;

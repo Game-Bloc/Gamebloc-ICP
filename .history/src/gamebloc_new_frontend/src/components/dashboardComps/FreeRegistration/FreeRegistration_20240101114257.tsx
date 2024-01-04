@@ -1,52 +1,52 @@
-import React, { useEffect, useState } from "react"
-import RecommendedCard from "../Recommended/RecommendedCard"
-import { MdChevronLeft } from "react-icons/md"
-import { MdChevronRight } from "react-icons/md"
-import ReactPaginate from "react-paginate"
-import "../Recommended/Recommended.css"
-import "./color.css"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useState } from "react";
+import RecommendedCard from "../Recommended/RecommendedCard";
+import { MdChevronLeft } from "react-icons/md";
+import { MdChevronRight } from "react-icons/md";
+import ReactPaginate from "react-paginate";
+import "../Recommended/Recommended.css";
+import "./color.css";
+import { useNavigate } from "react-router-dom";
 import {
   useFetchAllTournaments,
   useUpdateTournament,
-} from "../../../Functions/blochooks"
-import { useAppSelector } from "../../../redux/hooks"
-import FallbackLoading from "../../../components/Modals/FallBackLoader"
+} from "../../../Functions/blochooks";
+import { useAppSelector } from "../../../redux/hooks";
+import FallbackLoading from "../../../components/Modals/FallBackLoader";
 
 const FreeRegistration = () => {
-  const tournament = useAppSelector((state) => state.tournamentData)
-  const navigate = useNavigate()
-  const [pageNumber, setPageNumber] = useState<number>(0)
-  const tournamentPerPage: number = window.innerWidth >= 1200 ? 7 : 5
-  const tournamentViewed: number = pageNumber * tournamentPerPage
-  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
-  const { updateTournament, updating } = useUpdateTournament()
+  const tournament = useAppSelector((state) => state.tournamentData);
+  const navigate = useNavigate();
+  const [pageNumber, setPageNumber] = useState<number>(0);
+  const tournamentPerPage: number = window.innerWidth >= 1200 ? 7 : 5;
+  const tournamentViewed: number = pageNumber * tournamentPerPage;
+  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments();
+  const { updateTournament, updating } = useUpdateTournament();
 
   useEffect(() => {
     if (tournament.length > 0) {
-      updateTournament()
+      updateTournament();
     } else {
-      fetchAllTournaments()
+      fetchAllTournaments();
     }
-  }, [])
+  }, []);
 
-  const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
+  const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage);
   const changePage = ({ selected }: any) => {
-    setPageNumber(selected)
-  }
+    setPageNumber(selected);
+  };
 
   const displayTournaments = tournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
     .map((data: any, index: any) => (
       <RecommendedCard data={data} index={index} key={index} />
-    ))
+    ));
 
   if (loading) {
     return (
       <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
         <FallbackLoading />
       </div>
-    )
+    );
   } else {
     return (
       <div>
@@ -65,7 +65,7 @@ const FreeRegistration = () => {
               className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
             >
               <span className="glowing-txt text-[.8rem] md:text-base">
-                Create <span> </span>
+                Create
                 <span className="faulty-letter text-[.8rem] md:text-base">
                   T
                 </span>
@@ -114,8 +114,8 @@ const FreeRegistration = () => {
           </div>
         )}
       </div>
-    )
+    );
   }
-}
+};
 
-export default FreeRegistration
+export default FreeRegistration;

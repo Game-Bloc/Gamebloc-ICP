@@ -82,7 +82,7 @@ const ActiveTournament = () => {
                         className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
                       >
                         <span className="glowing-txt text-[.8rem] md:text-base">
-                          Create <span> </span>
+                          Create
                           <span className="faulty-letter text-[.8rem] md:text-base">
                             T
                           </span>
