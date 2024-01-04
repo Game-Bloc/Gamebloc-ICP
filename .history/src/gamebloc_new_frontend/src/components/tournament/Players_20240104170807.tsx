@@ -14,7 +14,7 @@ const Players = () => {
             }}
           >
             <Avatar.Group
-              maxCount={3}
+              maxCount={2}
               maxPopoverTrigger="click"
               size="large"
               maxStyle={{
