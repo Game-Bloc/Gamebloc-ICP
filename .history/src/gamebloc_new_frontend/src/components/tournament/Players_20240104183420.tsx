@@ -21,8 +21,8 @@ const Players = () => {
         <SquadList />
         <SquadList />
       </div>
-      <div className="flex flex-col w-full justify-center items-center">
-        <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2">
+      <div className="flex flex-col">
+        <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3">
           <p className="font-semibold">Join Tournnament</p>
         </button>
       </div>
