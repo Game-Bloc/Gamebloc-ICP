@@ -8,7 +8,7 @@ const Players = () => {
       <div className="flex flex-col mx-4">
         <div className="flex flex-col ">
           <div className="w-full border border-primary-second border-solid my-3" />
-          <h2 className="text-white text-sm mb-2">PeakyFBlinders [pFb]</h2>
+          <h2 className="text-white text-sm mb-3">PeakyFBlinders [pFb]</h2>
           <ConfigProvider
             theme={{
               algorithm: theme.darkAlgorithm,
