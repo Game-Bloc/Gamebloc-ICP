@@ -4,7 +4,7 @@ import SquadList from "./SquadList"
 const Players = () => {
   return (
     <div className="">
-      <div className="flex flex-col mx-4 max-h-[35rem]  overflow-x-hidden overflow-y-scroll">
+      <div className="flex flex-col mx-4">
         <SquadList />
         <SquadList />
         <SquadList />
