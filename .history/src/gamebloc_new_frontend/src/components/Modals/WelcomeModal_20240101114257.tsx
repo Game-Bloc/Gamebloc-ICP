@@ -40,6 +40,7 @@ const WelcomeModal = ({ modal }: Props) => {
     const ageInput = e.target.value;
     setAge(ageInput);
   };
+  
 
   useEffect(() => {
     generateId();
