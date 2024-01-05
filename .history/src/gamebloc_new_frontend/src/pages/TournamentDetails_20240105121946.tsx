@@ -132,7 +132,7 @@ const TournamentDetail = () => {
                         {" "}
                         Call of Duty: Mobile
                       </p>
-                      <div className="flex gap-4 flex-wrap w-full mt-[8px]">
+                      <div className="flex gap-4 flex-wrap w-full mt-[6px]">
                         <div className="flex justify-between items-center rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-gradient-to-r from-[#2A2D31] to-[#272A2F] border-none">
                           <img
                             src={`img1.svg`}
