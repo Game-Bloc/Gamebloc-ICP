@@ -115,15 +115,6 @@ const TournamentDetail = () => {
                       <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
                         THE GENESIS TOURNAMENT
                       </p>
-                      <div className="flex mt-[6px]  items-center flex-row">
-                        <img
-                          src={`check-yellow.png`}
-                          alt=""
-                          className=" w-[.5rem] flex h-[.5rem]  m-0"
-                        />
-
-                        <p className="ml-1 text-white text-[.6rem] ">Belmont</p>
-                      </div>
                     </div>
                     <div className="my-4 border border-solid border-[#2E3438] w-full" />
 

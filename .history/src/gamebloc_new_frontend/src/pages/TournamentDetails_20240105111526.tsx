@@ -115,7 +115,7 @@ const TournamentDetail = () => {
                       <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
                         THE GENESIS TOURNAMENT
                       </p>
-                      <div className="flex mt-[6px]  items-center flex-row">
+                      <div className="flex mt-[6px] justify-center items-center flex-row">
                         <img
                           src={`check-yellow.png`}
                           alt=""
