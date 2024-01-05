@@ -201,13 +201,13 @@ fn pre_upgrade() {
     TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
 }
 
-#[post_upgrade]
-fn post_upgrade() {
-    let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
-    PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
-    let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
-    TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
-}
+// #[post_upgrade]
+// fn post_upgrade() {
+//     let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
+//     PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
+//     let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
+//     TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
+// }
 
 
 // Enable Candid export
