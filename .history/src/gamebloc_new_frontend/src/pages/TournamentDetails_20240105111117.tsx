@@ -111,7 +111,7 @@ const TournamentDetail = () => {
                     </div>
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
-                    <div className="flex flex-col my-[.9rem] mx-4 items-center">
+                    <div className="flex justify-between my-[.9rem] mx-4 items-center">
                       <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
                         THE GENESIS TOURNAMENT
                       </p>
