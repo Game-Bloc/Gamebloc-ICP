@@ -132,13 +132,6 @@ const TournamentDetail = () => {
                         {" "}
                         Call of Duty: Mobile
                       </p>
-                      <div className="flex flex-wrap w-full">
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
-                          <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                            Action
-                          </p>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
