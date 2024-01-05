@@ -135,7 +135,7 @@ const TournamentDetail = () => {
                       <div className="flex flex-wrap w-full mt-[6px]">
                         <div className="flex justify-between items-center rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-gradient-to-r from-[#2A2D31] to-[#272A2F] border-none">
                           <img src={`img1.svg`} className="m-0" alt="" />
-                          <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                          <p className=" text-white text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Battle Royale: Squad
                           </p>
                         </div>
