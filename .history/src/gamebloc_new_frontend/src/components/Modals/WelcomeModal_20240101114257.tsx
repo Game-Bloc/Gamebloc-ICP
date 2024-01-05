@@ -29,6 +29,13 @@ const WelcomeModal = ({ modal }: Props) => {
     setIdHash(id);
   };
 
+  const generateTime = () => {
+    const date = new Date();
+    let day = date.getDate();
+    const day_ = ulid(day);
+    setJoinDate(day_);
+  }
+
   const onChangeUsername = (e: any) => {
     e.preventDefault();
     const userNameInput = e.target.value;
@@ -40,9 +47,11 @@ const WelcomeModal = ({ modal }: Props) => {
     const ageInput = e.target.value;
     setAge(ageInput);
   };
+  
 
   useEffect(() => {
     generateId();
+    generateTime();
   }, []);
 
   return (
@@ -109,6 +118,7 @@ const WelcomeModal = ({ modal }: Props) => {
                           idHash,
                           +age,
                           userName,
+                          joinDate,
                           "Account Created",
                           "Error, try again",
                           "/dashboard"
