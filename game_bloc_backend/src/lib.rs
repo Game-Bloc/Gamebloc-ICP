@@ -1,5 +1,4 @@
 use candid::{CandidType, Deserialize, Principal};
-
 use serde::Serialize;
 use ic_cdk::{ post_upgrade, pre_upgrade, query, update, init, storage,};
 use std::cell::RefCell;
@@ -11,8 +10,35 @@ use crate::{model::*};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 
-type IdStore = BTreeMap<String, Principal>;
-type ProfileStore = BTreeMap<Principal, UserProfile>;
+type Memory = VirtualMemory<DefaultMemoryImpl>;
+type TournamentMemory = VirtualMemory<DefaultMemoryImpl>;
+
+thread_local! {
+    // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
+    // return a memory that can be used by stable structures.
+    static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+
+     static TOURNAMENT_MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+
+    // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+    static MAP: RefCell<StableBTreeMap<String, UserProfile, Memory>> = RefCell::new(
+        StableBTreeMap::init(
+            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+        )
+    );
+
+     // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+    static TOURNAMENT_MAP: RefCell<StableBTreeMap<String, TournamentAccount, TournamentMemory>> = RefCell::new(
+        StableBTreeMap::init(
+            TOURNAMENT_MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+        )
+    );
+}
+
+type IdStore = BTreeMap<String, String>;
+type ProfileStore = BTreeMap<String, UserProfile>;
 type TournamentStore = BTreeMap<String, TournamentAccount>;
 
 thread_local! {
@@ -27,7 +53,7 @@ fn get_self(principal:Principal) -> UserProfile {
     PROFILE_STORE.with(|profile_store| {
         profile_store
             .borrow()
-            .get(&principal)
+            .get(&principal.to_text())
             .cloned().unwrap_or_default()
     })
 }
@@ -61,10 +87,10 @@ fn create_profile(profile: UserProfile,principal:Principal) -> Result<u8,u8> {
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal);
+            .insert(profile.username.clone(), principal.to_text());
     });
     PROFILE_STORE.with(|profile_store| {
-        profile_store.borrow_mut().insert(principal, profile);
+        profile_store.borrow_mut().insert(principal.to_text(), profile);
     });
     Ok(1)
 }
@@ -152,7 +178,7 @@ fn set_mod(name: String, identity: Principal) {
                 .get(&name)
                 .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
             user.is_mod = true;
-            profile_store.borrow_mut().insert(identity, user);
+            profile_store.borrow_mut().insert(identity.to_text(), user);
         })
     });
 }
@@ -171,29 +197,29 @@ fn is_mod(name: String) -> bool {
 }
 
 
-// // Retrieves the value associated with the given key if it exists.
-// #[ic_cdk_macros::query]
-// fn get_stable_profile(key: Principal) -> Option<UserProfile> {
-//     MAP.with(|p| p.borrow().get(&key))
-// }
-//
-// // Inserts an entry into the map and returns the previous value of the key if it exists.
-// #[ic_cdk_macros::update]
-// fn insert_stable_profile(key: Principal, value: UserProfile) -> Option<UserProfile> {
-//     MAP.with(|p| p.borrow_mut().insert(key, value))
-// }
-//
-// // Retrieves the value associated with the given key if it exists.
-// #[ic_cdk_macros::query]
-// fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
-//     TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
-// }
-//
-// // Inserts an entry into the map and returns the previous value of the key if it exists.
-// #[ic_cdk_macros::update]
-// fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
-//     TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
-// }
+// Retrieves the value associated with the given key if it exists.
+#[ic_cdk_macros::query]
+fn get_stable_profile(key: Principal) -> Option<UserProfile> {
+    MAP.with(|p| p.borrow().get(&key.to_text()))
+}
+
+// Inserts an entry into the map and returns the previous value of the key if it exists.
+#[ic_cdk_macros::update]
+fn insert_stable_profile(key: Principal, value: UserProfile) -> Option<UserProfile> {
+    MAP.with(|p| p.borrow_mut().insert(key.to_text(), value))
+}
+
+// Retrieves the value associated with the given key if it exists.
+#[ic_cdk_macros::query]
+fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
+    TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
+}
+
+// Inserts an entry into the map and returns the previous value of the key if it exists.
+#[ic_cdk_macros::update]
+fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
+    TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
+}
 
 #[pre_upgrade]
 fn pre_upgrade() {
