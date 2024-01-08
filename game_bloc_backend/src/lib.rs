@@ -244,38 +244,38 @@ fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<Tou
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    PROFILE_STORE.with(|users| storage::stable_save((users, )).unwrap());
-    PROFILE_STORE.with(|users| users.borrow().iter().for_each(|user| {
-        insert_stable_profile(user.1.clone().principal_id, user.1.clone());
-    }));
-    TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments, )).unwrap());
-    TOURNAMENT_STORE.with(|tournaments| tournaments.borrow().iter().for_each(|tournament| {
-        insert_stable_tournament(tournament.1.clone().id_hash, tournament.1.clone());
-    }));
+    // PROFILE_STORE.with(|users| storage::stable_save((users, )).unwrap());
+    // PROFILE_STORE.with(|users| users.borrow().iter().for_each(|user| {
+    //     insert_stable_profile(user.1.clone().principal_id, user.1.clone());
+    // }));
+    // TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments, )).unwrap());
+    // TOURNAMENT_STORE.with(|tournaments| tournaments.borrow().iter().for_each(|tournament| {
+    //     insert_stable_tournament(tournament.1.clone().id_hash, tournament.1.clone());
+    // }));
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let old_profiles = get_all_stable_profile();
-    let old_tournament = get_all_stable_tournament();
-    // let (old_users, ): (ProfileStore, ) = storage::stable_restore().unwrap();
-    // PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
-    PROFILE_STORE.with(|profile_store| {
-        old_profiles.iter().for_each(
-            |profile|{
-                profile_store.borrow_mut().insert(profile.clone().principal_id, profile.clone());
-            }
-        );
-    });
-    // let (old_tournaments, ): (TournamentStore, ) = storage::stable_restore().expect("");
-    // TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
-    TOURNAMENT_STORE.with(|tournament_store| {
-        old_tournament.iter().for_each(
-            |tournament|{
-                tournament_store.borrow_mut().insert(tournament.clone().id_hash, tournament.clone());
-            }
-        );
-    });
+    // let old_profiles = get_all_stable_profile();
+    // let old_tournament = get_all_stable_tournament();
+    // // let (old_users, ): (ProfileStore, ) = storage::stable_restore().unwrap();
+    // // PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
+    // PROFILE_STORE.with(|profile_store| {
+    //     old_profiles.iter().for_each(
+    //         |profile|{
+    //             profile_store.borrow_mut().insert(profile.clone().principal_id, profile.clone());
+    //         }
+    //     );
+    // });
+    // // let (old_tournaments, ): (TournamentStore, ) = storage::stable_restore().expect("");
+    // // TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
+    // TOURNAMENT_STORE.with(|tournament_store| {
+    //     old_tournament.iter().for_each(
+    //         |tournament|{
+    //             tournament_store.borrow_mut().insert(tournament.clone().id_hash, tournament.clone());
+    //         }
+    //     );
+    // });
 }
 
 
