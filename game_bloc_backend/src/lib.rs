@@ -42,10 +42,13 @@ type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
 type TournamentStore = BTreeMap<String, TournamentAccount>;
 
+type NewTournamentStore = BTreeMap<String, NewTournamentAccount>;
+
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
+    static NEW_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
 }
 
 #[query(name = "getSelf")]
@@ -244,6 +247,7 @@ fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<Tou
 
 #[pre_upgrade]
 fn pre_upgrade() {
+    let squad:Squad;
     PROFILE_STORE.with(|users| storage::stable_save((users, )).unwrap());
     PROFILE_STORE.with(|users| users.borrow().iter().for_each(|user| {
         insert_stable_profile(user.1.clone().principal_id, user.1.clone());
@@ -252,7 +256,16 @@ fn pre_upgrade() {
     TOURNAMENT_STORE.with(|tournaments| tournaments.borrow().iter().for_each(|tournament| {
         insert_stable_tournament(tournament.1.clone().id_hash, tournament.1.clone());
     }));
+    // TOURNAMENT_STORE.take().iter().for_each(|item|{
+    //     NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+    //         new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+    //             oldtournaments:item.1.clone(),
+    //             squad: [].to_vec(),
+    //         });
+    //     });
+    // })
 }
+
 
 #[post_upgrade]
 fn post_upgrade() {

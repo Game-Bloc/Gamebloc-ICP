@@ -80,7 +80,11 @@ impl Storable for TournamentAccount {
     };
 }
 
-
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub struct NewTournamentAccount{
+    pub oldtournaments : TournamentAccount,
+    pub squad:  Vec<Squad>,
+}
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum Status {
@@ -107,4 +111,13 @@ pub enum TournamentType {
 pub struct TokenState {
     pub bump: u8,
     pub amount: u64,
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub struct Squad {
+    pub id_hash: String,
+    pub captain: String,
+    pub status: bool,
+    pub members: Vec<String>,
+    pub requests: Vec<String>,
 }
