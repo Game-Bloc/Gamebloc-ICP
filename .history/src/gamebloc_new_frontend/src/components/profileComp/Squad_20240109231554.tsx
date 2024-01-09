@@ -5,7 +5,7 @@ const Squad = () => {
 
   return (
     <div className="w-full flex justify-center mt-[3rem]">
-      <div className="flex flex-col mb-4 ">
+      <div className="flex flex-col ">
         <img src={`empty.svg`} alt="" />
         <p className="text-white text-[.8rem] mt-8 text-center">
           It looks like you are not in a squad, You can either create a squad or
