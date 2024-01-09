@@ -20,7 +20,9 @@ pub struct UserProfile {
     pub is_mod: bool,
     pub principal_id: String,
     pub canister_id: String,
+    pub squad_badge: String,
 }
+
 
 // For a type to be used in a `StableBTreeMap`, it needs to implement the `Storable`
 // trait, which specifies how the type can be serialized/deserialized.
@@ -64,6 +66,10 @@ pub struct TournamentAccount {
     pub total_prize: u128,
     pub no_of_winners: u8,
     pub no_of_participants: u128,
+    pub game_type: String,
+    pub end_date: String,
+    pub title: String,
+
 }
 
 impl Storable for TournamentAccount {
@@ -93,6 +99,14 @@ pub enum Status {
     Online,
     Offline,
 }
+
+pub enum GameType {
+    #[default]
+    MP1v1,
+    BRsingle,
+    BRDuo,
+    BRsquad
+}
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentStatus {
     #[default]
@@ -115,10 +129,19 @@ pub struct TokenState {
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub enum SquadType {
+    #[default]
+     Open,
+     Closed,
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct Squad {
     pub id_hash: String,
     pub captain: String,
-    pub status: bool,
+    pub status: SquadType,
+    pub name: String,
+    pub tag: String,
     pub members: Vec<String>,
     pub requests: Vec<String>,
 }
