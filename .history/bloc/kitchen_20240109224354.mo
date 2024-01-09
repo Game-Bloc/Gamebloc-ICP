@@ -110,13 +110,13 @@ shared ({caller}) actor class Kitchen() {
 
         public shared ({ caller }) func icp_balance() : async ICP {
             await ICPLedger.account_balance({
-                account = AccountID.fromPrincipal(caller, null);
+                account = AccountIdentifier.fromPrincipal(caller, null);
             })
         };
 
          public func icp_balance2(account : Principal) : async ICP {
             await ICPLedger.account_balance({
-                account = AccountID.fromPrincipal(account, null);
+                account = AccountIdentifier.fromPrincipal(account, null);
             })
         };
 
