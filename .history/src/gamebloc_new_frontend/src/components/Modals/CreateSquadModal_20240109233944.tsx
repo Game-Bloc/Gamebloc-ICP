@@ -17,17 +17,17 @@ const CreateSquadModal = ({ modal }: Props) => {
         <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-full ">
-              <div className="relative bg-[#1B0F21] w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
-                <div className="bg-[#1B0F21] p-[2rem] flex flex-col  items-center">
+              <div className="relative bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
+                <div className="bg-primary-first p-[2rem] flex flex-col justify-center items-center">
                   <RiCloseFill
                     onClick={modal}
                     className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                   />
                   <div className="mt-4 flex  flex-col">
-                    <h2 className="text-primary-second text-base sm:text-xl mb-4 ">
+                    <h2 className="text-primary-second text-base mb-4 ">
                       Create Squad
                     </h2>
-                    <div className="flex-col flex mt-4 ">
+                    <div className="flex-col flex m-4 ">
                       <p className="text-[.8rem] sm:text-base mt-[.8rem] font-normal text-white">
                         Squad Name
                       </p>
@@ -39,7 +39,7 @@ const CreateSquadModal = ({ modal }: Props) => {
                         />
                       </div>
                     </div>
-                    <div className="flex-col flex mt-4 ">
+                    <div className="flex-col flex m-4 ">
                       <p className="text-[.8rem] sm:text-base mt-[.8rem] font-normal text-white">
                         Squad Name
                       </p>
