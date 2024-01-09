@@ -107,11 +107,17 @@ shared ({caller}) actor class Kitchen() {
         //     await ICPIndex.get_account_identifier_transactions(args);
         // };
 
-        // public shared ({ caller }) func icp_balance() : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountIdentifier.fromPrincipal(caller, null);
-        //     })
-        // };
+        public shared ({ caller }) func icp_balance() : async ICP {
+            await ICPLedger.account_balance({
+                account = AccountIdentifier.fromPrincipal(caller, null);
+            })
+        };
+
+         public func icp_balance2(account : Principal) : async ICP {
+            await ICPLedger.account_balance({
+                account = AccountIdentifier.fromPrincipal(account, null);
+            })
+        };
 
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
