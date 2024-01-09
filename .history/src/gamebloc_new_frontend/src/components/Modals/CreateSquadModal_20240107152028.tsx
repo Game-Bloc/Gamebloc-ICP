@@ -13,9 +13,7 @@ const CreateSquadModal = () => {
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-full ">
               <div className="relative bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
-                              <div className="bg-primary-first p-[2rem] flex flex-col justify-center items-center">
-                                  
-                </div>
+                <div className="bg-primary-first p-[2rem] flex flex-col justify-center items-center"></div>
               </div>
             </div>
           </div>
