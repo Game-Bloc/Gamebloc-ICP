@@ -57,6 +57,7 @@ pub struct TournamentAccount {
     pub tournament_rules: String,
     pub tournament_type: TournamentType,
     pub game: String,
+    pub squad : Option<Vec<Squad>>,
     pub user: Vec<String>,
     pub winers: Vec<String>,
     pub entry_prize: u8,
@@ -80,11 +81,11 @@ impl Storable for TournamentAccount {
     };
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
-pub struct NewTournamentAccount{
-    pub oldtournaments : TournamentAccount,
-    pub squad:  Vec<Squad>,
-}
+// #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+// pub struct NewTournamentAccount{
+//     pub oldtournaments : TournamentAccount,
+//     pub squad:  Vec<Squad>,
+// }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum Status {

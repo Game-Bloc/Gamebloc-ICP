@@ -3,10 +3,13 @@ use serde::Serialize;
 use ic_cdk::{post_upgrade, pre_upgrade, query, update, init, storage};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
+use ic_cdk_macros::export_candid!();
 
 mod model;
 
 use crate::{model::*};
+
+use model::*;
 
 use ic_stable_structures::memory_manager::{MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
@@ -19,7 +22,7 @@ use canister_tools::{
 const PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(0);
 const TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(1);
 // const ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(2);
-const NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(2);
+// const NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(1);
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 type TournamentMemory = VirtualMemory<DefaultMemoryImpl>;
@@ -52,13 +55,13 @@ type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
 type TournamentStore = BTreeMap<String, TournamentAccount>;
 
-type NewTournamentStore = BTreeMap<String, NewTournamentAccount>;
+// type NewTournamentStore = BTreeMap<String, NewTournamentAccount>;
 
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
-    static NEW_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
+    // static NEW_TOURNAMENT_STORE: RefCell<NewTournamentStore> = RefCell::default();
 }
 
 #[query(name = "getSelf")]
@@ -258,21 +261,21 @@ fn is_mod(name: String) -> bool {
 #[init]
 fn init() {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
-    canister_tools::init(&NEW_TOURNAMENT_STORE, NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    // canister_tools::init(&NEW_TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     // canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
 }
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    TOURNAMENT_STORE.take().iter().for_each(|item|{
-        NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
-            new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
-                oldtournaments:item.1.clone(),
-                squad: [].to_vec(),
-            });
-        });
-    });
+    // TOURNAMENT_STORE.take().iter().for_each(|item|{
+    //     NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+    //         new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+    //             oldtournaments:item.1.clone(),
+    //             squad: [].to_vec(),
+    //         });
+    //     });
+    // });
     canister_tools::pre_upgrade();
 }
 
@@ -280,7 +283,7 @@ fn pre_upgrade() {
 fn post_upgrade() {
     canister_tools::post_upgrade(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(TournamentStore) -> TournamentStore>);
     // canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
-    canister_tools::post_upgrade(&NEW_TOURNAMENT_STORE, NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(NewTournamentStore) -> NewTournamentStore>);
+    // canister_tools::post_upgrade(&NEW_TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(NewTournamentStore) -> NewTournamentStore>);
     canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
 }
 
