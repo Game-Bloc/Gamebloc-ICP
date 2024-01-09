@@ -3,13 +3,12 @@ use serde::Serialize;
 use ic_cdk::{post_upgrade, pre_upgrade, query, update, init, storage};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
-use ic_cdk_macros::export_candid!();
 
 mod model;
 
 use crate::{model::*};
 
-use model::*;
+// use model::*;
 
 use ic_stable_structures::memory_manager::{MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
