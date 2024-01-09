@@ -8,35 +8,45 @@ mod model;
 
 use crate::{model::*};
 
-use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
+use ic_stable_structures::memory_manager::{MemoryManager, VirtualMemory};
 use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
+use canister_tools::{
+    MemoryId,
+    localkey::refcell::{with, with_mut},
+    Serializable
+};
+
+const PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(0);
+const TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(1);
+// const ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(2);
+const NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID: canister_tools::MemoryId = canister_tools::MemoryId::new(2);
 
 type Memory = VirtualMemory<DefaultMemoryImpl>;
 type TournamentMemory = VirtualMemory<DefaultMemoryImpl>;
 
-thread_local! {
-    // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
-    // return a memory that can be used by stable structures.
-    static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
-        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-
-     static TOURNAMENT_MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
-        RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
-
-    // Initialize a `StableBTreeMap` with `MemoryId(0)`.
-    static MAP: RefCell<StableBTreeMap<String, UserProfile, Memory>> = RefCell::new(
-        StableBTreeMap::init(
-            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
-        )
-    );
-
-     // Initialize a `StableBTreeMap` with `MemoryId(0)`.
-    static TOURNAMENT_MAP: RefCell<StableBTreeMap<String, TournamentAccount, TournamentMemory>> = RefCell::new(
-        StableBTreeMap::init(
-            TOURNAMENT_MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
-        )
-    );
-}
+// thread_local! {
+//     // The memory manager is used for simulating multiple memories. Given a `MemoryId` it can
+//     // return a memory that can be used by stable structures.
+//     static MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+//         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+//
+//      static TOURNAMENT_MEMORY_MANAGER: RefCell<MemoryManager<DefaultMemoryImpl>> =
+//         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
+//
+//     // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+//     static MAP: RefCell<StableBTreeMap<String, UserProfile, Memory>> = RefCell::new(
+//         StableBTreeMap::init(
+//             MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+//         )
+//     );
+//
+//      // Initialize a `StableBTreeMap` with `MemoryId(0)`.
+//     static TOURNAMENT_MAP: RefCell<StableBTreeMap<String, TournamentAccount, TournamentMemory>> = RefCell::new(
+//         StableBTreeMap::init(
+//             TOURNAMENT_MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
+//         )
+//     );
+// }
 
 type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
@@ -201,95 +211,125 @@ fn is_mod(name: String) -> bool {
 
 
 // Retrieves the value associated with the given key if it exists.
-#[ic_cdk_macros::query]
-fn get_stable_profile(key: String) -> Option<UserProfile> {
-    MAP.with(|p| p.borrow().get(&key))
-}
+// #[ic_cdk_macros::query]
+// fn get_stable_profile(key: String) -> Option<UserProfile> {
+//     MAP.with(|p| p.borrow().get(&key))
+// }
+//
+// #[ic_cdk_macros::query]
+// fn get_all_stable_profile() -> Vec<UserProfile> {
+//     MAP.with(|stable_profile_store| {
+//         let mut all_stable_profile = Vec::new();
+//         stable_profile_store.borrow().iter().for_each(|tournament| {
+//             all_stable_profile.push((tournament.1).clone().try_into().unwrap_or_default())
+//         });
+//         all_stable_profile
+//     })
+// }
+//
+// // Inserts an entry into the map and returns the previous value of the key if it exists.
+// #[ic_cdk_macros::update]
+// fn insert_stable_profile(key: String, value: UserProfile) -> Option<UserProfile> {
+//     MAP.with(|p| p.borrow_mut().insert(key, value))
+// }
+//
+// // Retrieves the value associated with the given key if it exists.
+// #[ic_cdk_macros::query]
+// fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
+//     TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
+// }
+// #[ic_cdk_macros::query]
+// fn get_all_stable_tournament() -> Vec<TournamentAccount> {
+//     TOURNAMENT_MAP.with(|stable_tournament_store| {
+//         let mut all_stable_tournament = Vec::new();
+//         stable_tournament_store.borrow().iter().for_each(|tournament| {
+//             all_stable_tournament.push((tournament.1).clone().try_into().unwrap_or_default())
+//         });
+//         all_stable_tournament
+//     })
+// }
+//
+// // Inserts an entry into the map and returns the previous value of the key if it exists.
+// #[ic_cdk_macros::update]
+// fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
+//     TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
+// }
 
-#[ic_cdk_macros::query]
-fn get_all_stable_profile() -> Vec<UserProfile> {
-    MAP.with(|stable_profile_store| {
-        let mut all_stable_profile = Vec::new();
-        stable_profile_store.borrow().iter().for_each(|tournament| {
-            all_stable_profile.push((tournament.1).clone().try_into().unwrap_or_default())
-        });
-        all_stable_profile
-    })
-}
-
-// Inserts an entry into the map and returns the previous value of the key if it exists.
-#[ic_cdk_macros::update]
-fn insert_stable_profile(key: String, value: UserProfile) -> Option<UserProfile> {
-    MAP.with(|p| p.borrow_mut().insert(key, value))
-}
-
-// Retrieves the value associated with the given key if it exists.
-#[ic_cdk_macros::query]
-fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
-    TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
-}
-#[ic_cdk_macros::query]
-fn get_all_stable_tournament() -> Vec<TournamentAccount> {
-    TOURNAMENT_MAP.with(|stable_tournament_store| {
-        let mut all_stable_tournament = Vec::new();
-        stable_tournament_store.borrow().iter().for_each(|tournament| {
-            all_stable_tournament.push((tournament.1).clone().try_into().unwrap_or_default())
-        });
-        all_stable_tournament
-    })
-}
-
-// Inserts an entry into the map and returns the previous value of the key if it exists.
-#[ic_cdk_macros::update]
-fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
-    TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
+#[init]
+fn init() {
+    canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    canister_tools::init(&NEW_TOURNAMENT_STORE, NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    // canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
 }
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    let squad:Squad;
-    PROFILE_STORE.with(|users| storage::stable_save((users, )).unwrap());
-    PROFILE_STORE.with(|users| users.borrow().iter().for_each(|user| {
-        insert_stable_profile(user.1.clone().principal_id, user.1.clone());
-    }));
-    TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments, )).unwrap());
-    TOURNAMENT_STORE.with(|tournaments| tournaments.borrow().iter().for_each(|tournament| {
-        insert_stable_tournament(tournament.1.clone().id_hash, tournament.1.clone());
-    }));
-    // TOURNAMENT_STORE.take().iter().for_each(|item|{
-    //     NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
-    //         new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
-    //             oldtournaments:item.1.clone(),
-    //             squad: [].to_vec(),
-    //         });
-    //     });
-    // })
+    TOURNAMENT_STORE.take().iter().for_each(|item|{
+        NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+            new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+                oldtournaments:item.1.clone(),
+                squad: [].to_vec(),
+            });
+        });
+    });
+    canister_tools::pre_upgrade();
 }
-
 
 #[post_upgrade]
 fn post_upgrade() {
-    let old_profiles = get_all_stable_profile();
-    let old_tournament = get_all_stable_tournament();
-    // let (old_users, ): (ProfileStore, ) = storage::stable_restore().unwrap();
-    // PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
-    PROFILE_STORE.with(|profile_store| {
-        old_profiles.iter().for_each(
-            |profile|{
-                profile_store.borrow_mut().insert(profile.clone().principal_id, profile.clone());
-            }
-        );
-    });
-    // let (old_tournaments, ): (TournamentStore, ) = storage::stable_restore().expect("");
-    // TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
-    TOURNAMENT_STORE.with(|tournament_store| {
-        old_tournament.iter().for_each(
-            |tournament|{
-                tournament_store.borrow_mut().insert(tournament.clone().id_hash, tournament.clone());
-            }
-        );
-    });
+    canister_tools::post_upgrade(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(TournamentStore) -> TournamentStore>);
+    // canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
+    canister_tools::post_upgrade(&NEW_TOURNAMENT_STORE, NEW_TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(NewTournamentStore) -> NewTournamentStore>);
+    canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
 }
+
+
+
+// fn pre_upgrad() {
+//     let squad:Squad;
+//     PROFILE_STORE.with(|users| storage::stable_save((users, )).unwrap());
+//     PROFILE_STORE.with(|users| users.borrow().iter().for_each(|user| {
+//         insert_stable_profile(user.1.clone().principal_id, user.1.clone());
+//     }));
+//     TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments, )).unwrap());
+//     TOURNAMENT_STORE.with(|tournaments| tournaments.borrow().iter().for_each(|tournament| {
+//         insert_stable_tournament(tournament.1.clone().id_hash, tournament.1.clone());
+//     }));
+//     TOURNAMENT_STORE.take().iter().for_each(|item|{
+//         NEW_TOURNAMENT_STORE.with(|new_tournament_store| {
+//             new_tournament_store.borrow_mut().insert(item.0.to_string(),  NewTournamentAccount{
+//                 oldtournaments:item.1.clone(),
+//                 squad: [].to_vec(),
+//             });
+//         });
+//     })
+// }
+//
+//
+// #[post_upgrade]
+// fn post_upgra() {
+//     let old_profiles = get_all_stable_profile();
+//     let old_tournament = get_all_stable_tournament();
+//     // let (old_users, ): (ProfileStore, ) = storage::stable_restore().unwrap();
+//     // PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
+//     PROFILE_STORE.with(|profile_store| {
+//         old_profiles.iter().for_each(
+//             |profile|{
+//                 profile_store.borrow_mut().insert(profile.clone().principal_id, profile.clone());
+//             }
+//         );
+//     });
+//     // let (old_tournaments, ): (TournamentStore, ) = storage::stable_restore().expect("");
+//     // TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         old_tournament.iter().for_each(
+//             |tournament|{
+//                 tournament_store.borrow_mut().insert(tournament.clone().id_hash, tournament.clone());
+//             }
+//         );
+//     });
+// }
 
 
 // Enable Candid export
