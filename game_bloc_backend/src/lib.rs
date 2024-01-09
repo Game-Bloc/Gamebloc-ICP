@@ -6,13 +6,14 @@ use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
 mod serialization_memory_ids;
+
 use serialization_memory_ids::*;
 use crate::{model::*};
 
 use canister_tools::{
     MemoryId,
     localkey::refcell::{with, with_mut},
-    Serializable
+    Serializable,
 };
 
 type IdStore = BTreeMap<String, String>;
@@ -195,7 +196,7 @@ fn get_all_squad() -> Vec<TournamentAccount> {
 }
 
 #[update]
-fn create_squad(squad: Squad,principal: Principal) -> Result<u8, u8> {
+fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
     let id_hash = squad.clone().id_hash;
 
     SQUAD_STORE.with(|squad_store| {
@@ -210,43 +211,46 @@ fn create_squad(squad: Squad,principal: Principal) -> Result<u8, u8> {
 }
 
 #[update]
-fn add_to_squad(principal: Principal,id: String) {
+fn add_to_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
-        squad.members.push(principal.to_text());
-        squad_store.borrow_mut().insert(id, squad);
-        PROFILE_STORE.with(|profile_store| {
-            let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
-            user.squad_badge = squad.id_hash.clone();
-            profile_store.borrow_mut().insert(principal.to_text(), user);
-        })
+        if squad.captain == principal.to_text() {
+            squad.members.push(principal.to_text());
+            squad_store.borrow_mut().insert(id, squad);
+            PROFILE_STORE.with(|profile_store| {
+                let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+                user.squad_badge = squad.id_hash.clone();
+                profile_store.borrow_mut().insert(principal.to_text(), user);
+            });
+        } else {
+            println!("you're not admin");
+        }
     });
 }
 
 #[update]
 fn close_squad(id: String, names: Vec<String>, principal: Principal) {
-    if get_self(principal).is_mod {
-        SQUAD_STORE.with(|squad_store| {
-            let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        if squad.captain == principal.to_text() {
             squad.status = match squad.status {
                 SquadType::Open => SquadType::Closed,
                 _ => {
                     SquadType::Closed
                 }
             };
-
             squad_store.borrow_mut().insert(id, squad);
-        });
-    } else {
-        println!("you're not admin");
-    }
+        } else {
+            println!("you're not admin");
+        }
+    });
 }
 
 #[update]
 fn open_squad(id: String, names: Vec<String>, principal: Principal) {
-    if get_self(principal).is_mod {
-        SQUAD_STORE.with(|squad_store| {
-            let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        if squad.captain == principal.to_text() {
             squad.status = match squad.status {
                 SquadType::Closed => SquadType::Open,
                 _ => {
@@ -255,26 +259,25 @@ fn open_squad(id: String, names: Vec<String>, principal: Principal) {
             };
 
             squad_store.borrow_mut().insert(id, squad);
-        });
-    } else {
-        println!("you're not admin");
-    }
+        } else {
+            println!("you're not admin");
+        }
+    });
 }
 
 #[update]
 fn join_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
-       if squad.status == SquadType::Open {
-           squad.members.push(principal.to_text());
-           squad_store.borrow_mut().insert(id, squad);
-           PROFILE_STORE.with(|profile_store| {
-               let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
-               user.squad_badge = squad.id_hash.clone();
-               profile_store.borrow_mut().insert(principal.to_text(), user);
-           })
-       }
-        else {
+        if squad.status == SquadType::Open {
+            squad.members.push(principal.to_text());
+            squad_store.borrow_mut().insert(id, squad);
+            PROFILE_STORE.with(|profile_store| {
+                let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+                user.squad_badge = squad.id_hash.clone();
+                profile_store.borrow_mut().insert(principal.to_text(), user);
+            })
+        } else {
             println!("You can't join a closed squad");
         }
     });
