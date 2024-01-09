@@ -100,6 +100,7 @@ pub enum Status {
     Offline,
 }
 
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum GameType {
     #[default]
     MP1v1,
