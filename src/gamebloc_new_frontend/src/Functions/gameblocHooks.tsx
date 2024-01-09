@@ -54,6 +54,7 @@ export const useGameblocHooks = () => {
     errorMsg: string,
     route: any
   ) => {
+    
     try {
       setIsLoading(true);
       const user = await whoamiActor.createUserProfile(id_hash, age, name);
