@@ -20,7 +20,7 @@ const Squad = () => {
             Join Squad
           </p>
           <button
-            onClick={() => setModal(true)}
+            onClick={() => handleModal}
             className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
           >
             <p className="font-semibold">Create Squad</p>

@@ -39,6 +39,11 @@ const CreateSquadModal = ({ modal }: Props) => {
                         />
                       </div>
                     </div>
+                  </div>
+                  <div className="mt-4 flex  flex-col">
+                    <h2 className="text-primary-second text-sm mb-4 ">
+                      Squad Tag
+                    </h2>
                     <div className="flex-col flex m-4 ">
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Squad Name
