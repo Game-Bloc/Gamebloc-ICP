@@ -19,6 +19,7 @@ pub struct UserProfile {
     pub username: String,
     pub is_mod: bool,
     pub principal_id: String,
+    pub account_id : String,
     pub canister_id: String,
     pub squad_badge: String,
 }

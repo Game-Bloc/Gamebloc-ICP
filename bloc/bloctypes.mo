@@ -9,6 +9,7 @@ module {
         username: Text;
         is_mod: Bool;
         principal_id: Text;
+        account_id : Text;
         canister_id: Text;
     };
 
@@ -18,6 +19,7 @@ module {
         status : TournamentStatus;
         creator : Text;
         game : Text;
+        squad : ?[Squad];
         user : [Text];
         winers : [Text];
         total_prize : Nat;
@@ -27,6 +29,21 @@ module {
         entry_prize : Nat8;
         no_of_winners : Nat8;
         no_of_participants : Nat;
+    };
+
+    public type Squad = {
+        id_hash : Text;
+        captain: Text;
+        status: SquadType;
+        name: Text;
+        tag: Text;
+        members: [Text];
+        requests: [Text];
+    };
+
+    public type SquadType = {
+        #Open; 
+        #Closed;
     };
 
     public type TournamentType = {
