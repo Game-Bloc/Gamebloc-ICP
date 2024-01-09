@@ -8,7 +8,7 @@
   html {
     margin: 0;
     padding: 0;
-    /* background-color: #08010e; */
+    background-color: #08010e;
     scroll-behavior: smooth;
   }
   body {
