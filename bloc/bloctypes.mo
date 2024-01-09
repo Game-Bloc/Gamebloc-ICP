@@ -11,6 +11,7 @@ module {
         principal_id: Text;
         account_id : Text;
         canister_id: Text;
+        squad_badge: Text;
     };
 
     public type TournamentAccount = {

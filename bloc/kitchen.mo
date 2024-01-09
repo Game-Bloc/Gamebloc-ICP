@@ -311,7 +311,7 @@ shared ({caller}) actor class Kitchen() {
     };
 
 
-    func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text) : Bloctypes.UserProfile {
+    func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : Bloctypes.UserProfile {
         {
             id_hash;
             age;
@@ -324,18 +324,19 @@ shared ({caller}) actor class Kitchen() {
             principal_id;
             account_id;
             canister_id;
+            squad_badge;
         };
     };
 
 
 
-    public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, principal_id : Text, account_id : Text, canister_id : Text) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  principal_id, account_id, canister_id);
+    public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  principal_id, account_id, canister_id, squad_badge);
         await RustBloc.create_profile(profile, caller);
     };
 
-    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text ) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId));
+    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text, squad_badge : Text ) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge);
         try {
             return await RustBloc.create_profile(profile, caller);
         } catch err {
