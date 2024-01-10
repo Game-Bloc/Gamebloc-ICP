@@ -25,16 +25,28 @@ const JoinSquadModal = ({ modal }: Props) => {
                   />
                   <div className="mt-4 flex  flex-col">
                     <h2 className="text-primary-second text-base sm:text-xl mb-4 ">
-                      Join Squad
+                      Create Squad
                     </h2>
                     <div className="flex-col flex mt-4 ">
                       <p className="text-[.8rem] sm:text-base mt-[.8rem] font-normal text-white">
-                        Squad I.D
+                        Squad Name
                       </p>
                       <div className=" my-4 items-center w-full pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
                           className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
-                          placeholder="Enter Squad I.D"
+                          placeholder="Name of your squad"
+                          type="text"
+                        />
+                      </div>
+                    </div>
+                    <div className="flex-col flex mt-4 ">
+                      <p className="text-[.8rem] sm:text-base mt-[.8rem] font-normal text-white">
+                        Squad Name
+                      </p>
+                      <div className=" my-4 items-center w-full  pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                        <input
+                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          placeholder="Enter a Squad Tag"
                           type="text"
                         />
                       </div>
@@ -42,7 +54,7 @@ const JoinSquadModal = ({ modal }: Props) => {
                   </div>
                   <div className="flex w-full mt-4 justify-end">
                     <button className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2">
-                      <p className="font-semibold">Join</p>
+                      <p className="font-semibold">Create</p>
                     </button>
                   </div>
                 </div>

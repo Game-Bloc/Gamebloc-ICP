@@ -22,10 +22,7 @@ const Squad = () => {
           join a squad from here.
         </p>
         <div className=" flex justify-center  items-center mt-[3rem]">
-          <p
-            onClick={() => setJoinModal(true)}
-            className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
-          >
+          <p className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer">
             Join Squad
           </p>
           <button

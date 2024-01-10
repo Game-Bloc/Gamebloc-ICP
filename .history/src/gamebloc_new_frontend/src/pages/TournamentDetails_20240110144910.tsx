@@ -37,9 +37,9 @@ const TournamentDetail = () => {
       <section className="flex gap-6">
         <Header />
         <Sidebar />
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col ">
           <div className="m-4 mt-24  ">
-            <div className="flex flex-col ">
+            <div className="flex flex-col w-full">
               <div
                 onClick={() => navigate(-1)}
                 className="flex  items-center cursor-pointer"
