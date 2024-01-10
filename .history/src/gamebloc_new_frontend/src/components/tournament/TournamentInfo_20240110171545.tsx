@@ -64,7 +64,7 @@ const TournamentInfo = () => {
             <div className="flex justify-between items-center w-full">
               <div className="flex items-center">
                 <img src={`check.svg`} className="m-0" alt="" />
-                <p className="text-[.85rem] ml-3 text-primary-second ">
+                <p className="text-[.85rem] text-primary-second ">
                   Registration opens
                 </p>
               </div>

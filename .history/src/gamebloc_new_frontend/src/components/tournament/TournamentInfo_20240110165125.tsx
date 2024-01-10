@@ -60,17 +60,6 @@ const TournamentInfo = () => {
               Timeline [GMT+1]
             </h2>
           </div>
-          <div className="mt-4 w-full flex flex-col">
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center">
-                <img src={`check.svg`} className="m-0" alt="" />
-                <p className="text-[.85rem] ml-3 text-primary-second ">
-                  Registration opens
-                </p>
-              </div>
-              <p className="text-[.85rem] text-primary-second ">Ongoing</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -52,26 +52,6 @@ const TournamentInfo = () => {
           </div>
         </div>
         <div className="mt-[1.5rem] mb-4 border border-solid border-[#2E3438] w-full" />
-
-        <div className="flex flex-col">
-          <div className="flex items-center">
-            <img src={`calender2.png`} className="m-0" alt="" />
-            <h2 className="text-[0.8rem] ml-3 font-semibold sm:text-base  text-white">
-              Timeline [GMT+1]
-            </h2>
-          </div>
-          <div className="mt-4 w-full flex flex-col">
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center">
-                <img src={`check.svg`} className="m-0" alt="" />
-                <p className="text-[.85rem] ml-3 text-primary-second ">
-                  Registration opens
-                </p>
-              </div>
-              <p className="text-[.85rem] text-primary-second ">Ongoing</p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )
