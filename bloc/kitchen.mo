@@ -120,6 +120,18 @@ shared ({caller}) actor class Kitchen() {
             })
         };
 
+        public shared ({ caller }) func get_icp_balance() : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+            })
+        };
+
+        public func get_icp_balance2(caller : Principal) : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+            })
+        };
+
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
         };
