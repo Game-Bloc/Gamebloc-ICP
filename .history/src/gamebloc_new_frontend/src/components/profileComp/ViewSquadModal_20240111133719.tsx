@@ -60,11 +60,6 @@ const ViewSquadModal = ({ modal }: Props) => {
                       <MemberCard />
                     </div>
                     <div className="mt-[1rem] mb-[1rem] border border-solid border-[#2E3438] w-full" />
-                    <div className="flex justify-end mt-3">
-                      <p className="text-primary-second rounded-md pt-[.15rem] pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer">
-                        Leave
-                      </p>
-                    </div>
                   </div>
                 </div>
               </div>
