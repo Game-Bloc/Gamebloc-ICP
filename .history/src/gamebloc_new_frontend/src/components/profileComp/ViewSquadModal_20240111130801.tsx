@@ -47,7 +47,6 @@ const ViewSquadModal = ({ modal }: Props) => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-[1.5rem] mb-[1.5rem] border border-solid border-[#2E3438] w-full" />
                   </div>
                 </div>
               </div>

@@ -37,17 +37,16 @@ const ViewSquadModal = ({ modal }: Props) => {
                             pFbサ
                           </span>
                         </p>
-                        <div className=" px-[2px] rounded-sm flex items-center w-fit  mt-1 bg-primary-second">
+                        <div className="p-[2px] rounded-md flex items-center w-fit  mt-2 bg-primary-second">
                           <img
                             src={`member.png`}
-                            className="m-0 w-[.7rem] h-[.7rem]"
+                            className="m-0 w-[.6rem] h-[.6rem]"
                             alt=""
                           />
-                          <p className="text-black ml-1 text-[.7rem]">8</p>
+                          <p className="text-black ml-1 text-[.8rem]">8</p>
                         </div>
                       </div>
                     </div>
-                    <div className="mt-[1.5rem] mb-[1.5rem] border border-solid border-[#2E3438] w-full" />
                   </div>
                 </div>
               </div>
