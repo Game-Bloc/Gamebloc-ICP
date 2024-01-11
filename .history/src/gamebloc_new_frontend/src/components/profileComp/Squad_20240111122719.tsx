@@ -47,7 +47,7 @@ const Squad = () => {
             <h2 className="text-white font-bold text-[.9rem] sm:text-[1.2rem]">
               PeakyFblinders
             </h2>
-            <p className="text-white text-[.8rem]">
+            <p className="text-white mt-3 text-[.8rem]">
               Clan Tag -
               <span className="text-[#E0DFBA]  text-[.8rem]"> pFbサ</span>
             </p>
