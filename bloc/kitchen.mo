@@ -24,7 +24,7 @@ shared ({caller}) actor class Kitchen() {
 
         var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
-        private func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
+        func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
             // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
             ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId)));
         };
@@ -41,7 +41,7 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
-        private func usernameChecker(username : Text) : Bool {
+        func usernameChecker(username : Text) : Bool {
             var unique = true;
             for ((i, j) in ProfileHashMap.entries()) {
                 if (j.username == username) {
@@ -50,6 +50,10 @@ shared ({caller}) actor class Kitchen() {
             };
             unique;
         };
+
+        //
+        // Ledger Canister
+        // 
 
         // Using the caller
         public shared({caller}) func getLedgerBalance() : async Result.Result<Nat, Text> {
@@ -90,6 +94,24 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        // get icp balance of user
+        // public shared ({ caller }) func icp_balance() : async ICP {
+        //     await ICPLedger.account_balance({
+        //         account = AccountID.fromPrincipal(caller, null);
+        //     })
+        // };
+
+        
+       //  public func icp_balance2(account : Principal) : async ICP {
+        //     await ICPLedger.account_balance({
+        //         account = AccountID.fromPrincipal(account, null);
+        //     })
+        // };
+
+        public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+            await ICPIndex.icrc1_balance_of(account);
+        };
+
         //  --------------------------
         // /                        /
         // /    Index Canister      /
@@ -107,22 +129,6 @@ shared ({caller}) actor class Kitchen() {
         // public func get_account_identifier_transactions(args : IndexTypes.GetAccountIdentifierTransactionsArgs) : async IndexTypes.GetAccountIdentifierTransactionsResult {
         //     await ICPIndex.get_account_identifier_transactions(args);
         // };
-
-        // public shared ({ caller }) func icp_balance() : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(caller, null);
-        //     })
-        // };
-
-        //  public func icp_balance2(account : Principal) : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(account, null);
-        //     })
-        // };
-
-        public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-            await ICPIndex.icrc1_balance_of(account);
-        };
 
         public func index_status() : async IndexTypes.Status {
             await ICPIndex.status();
