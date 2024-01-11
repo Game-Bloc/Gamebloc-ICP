@@ -42,6 +42,9 @@ const Squad = () => {
     // </div>
     <div className="flex flex-col gap-4 w-full mt-4">
       <SquadCard />
+      <SquadCard />
+      <SquadCard />
+      <SquadCard />
     </div>
   )
 }
