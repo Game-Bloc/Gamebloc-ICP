@@ -25,7 +25,7 @@ const ViewSquadModal = ({ modal }: Props) => {
                   />
                   <div className="mt-4 flex  flex-col">
                     <div className="flex items-center">
-                      <img src={`frame.svg`} className="m-0" alt="" />
+                      <img src={`frame.svg`} alt="" />
                       <div className="flex flex-col ml-4">
                         <h2 className="text-white font-bold text-[.9rem] sm:text-[1.2rem]">
                           PeakyFblinders

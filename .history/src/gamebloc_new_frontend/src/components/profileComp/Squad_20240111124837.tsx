@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import CreateSquadModal from "../Modals/CreateSquadModal"
 import JoinSquadModal from "../Modals/JoinSquadModal"
 import SquadCard from "./SquadCard"
-import ViewSquadModal from "./ViewSquadModal"
 
 const Squad = () => {
   const [modal, setModal] = useState<boolean>(false)
@@ -47,8 +46,7 @@ const Squad = () => {
     //   {joinModal && <JoinSquadModal modal={handleJoinModal} />}
     // </div>
     <div className="flex flex-col gap-4 w-full mt-4">
-      <SquadCard view={handleViewSquad} />
-      {viewModal && <ViewSquadModal modal={handleViewSquad} />}
+      <SquadCard modal={handleViewSquad} />
     </div>
   )
 }

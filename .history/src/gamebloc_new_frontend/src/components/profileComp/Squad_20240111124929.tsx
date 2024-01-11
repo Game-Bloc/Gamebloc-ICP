@@ -47,7 +47,7 @@ const Squad = () => {
     //   {joinModal && <JoinSquadModal modal={handleJoinModal} />}
     // </div>
     <div className="flex flex-col gap-4 w-full mt-4">
-      <SquadCard view={handleViewSquad} />
+      <SquadCard />
       {viewModal && <ViewSquadModal modal={handleViewSquad} />}
     </div>
   )
