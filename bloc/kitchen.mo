@@ -136,7 +136,7 @@ shared ({caller}) actor class Kitchen() {
         public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
             await ICPLedger.send_dfx({
                 to = to;
-                fee = {e8s = 10_000};
+                fee = {e8s = 10_000}; //0.0001 ICP
                 memo = 0;
                 from_subaccount = null;
                 created_at_time = ?created_at_time;
