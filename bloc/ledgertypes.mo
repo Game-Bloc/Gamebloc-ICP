@@ -48,7 +48,7 @@ module {
     length : Nat64;
   };
   public type Archives = { archives : [ArchiveInfo] };
-  public type BinaryAccountBalanceArgs = { account : Blob };
+  public type BinaryAccountBalanceArgs = { account : [Nat8] };
   public type BlockRange = { blocks : [CandidBlock] };
   public type CandidBlock = {
     transaction : CandidTransaction;
