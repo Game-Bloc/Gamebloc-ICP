@@ -17,6 +17,8 @@ import RustBloc "canister:game_bloc_backend";
 import IndexTypes "indextypes";
 import Bloctypes "bloctypes";
 import LedgerTypes "ledgertypes";
+import Utils "utils";
+import Ledgertypes "ledgertypes";
 
 shared ({caller}) actor class Kitchen() {
 
@@ -52,6 +54,8 @@ shared ({caller}) actor class Kitchen() {
             };
             unique;
         };
+
+        
 
         //
         // Ledger Canister
@@ -97,21 +101,47 @@ shared ({caller}) actor class Kitchen() {
         };
 
         // get icp balance of user
-        // public shared ({ caller }) func icp_balance() : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(caller, null);
-        //     })
-        // };
+        public shared ({ caller }) func icp_balance() : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+            })
+        };
 
         
-       //  public func icp_balance2(account : Principal) : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(account, null);
-        //     })
-        // };
+        public func icp_balance2(account : Principal) : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(account, null));
+            })
+        };
+
+        public func icp_balance_icrc1(account : Principal) : async Nat {
+            await ICPLedger.icrc1_balance_of({
+                owner = account;
+                subaccount = null;
+            });
+        };
+
+        public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
+            await ICPLedger.icrc1_balance_of({
+                owner = caller;
+                subaccount = null;
+            });
+        };
 
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
+        };
+
+        // Transfers ICP from the caller to receipient
+        public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
+            await ICPLedger.send_dfx({
+                to = to;
+                fee = {e8s = 10_000};
+                memo = 0;
+                from_subaccount = null;
+                created_at_time = ?created_at_time;
+                amount = amount;
+            });
         };
 
         //  --------------------------
@@ -197,6 +227,7 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
+        // deprecated
         public func transferICP2(amount : Nat) : async Result.Result<(), Text> {
             let recipient = "rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe";
             try {
