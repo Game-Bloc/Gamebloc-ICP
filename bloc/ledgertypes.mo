@@ -48,7 +48,7 @@ module {
     length : Nat64;
   };
   public type Archives = { archives : [ArchiveInfo] };
-  public type BinaryAccountBalanceArgs = { account : Blob };
+  public type BinaryAccountBalanceArgs = { account : [Nat8] };
   public type BlockRange = { blocks : [CandidBlock] };
   public type CandidBlock = {
     transaction : CandidTransaction;
@@ -146,6 +146,17 @@ module {
     created_at_time : ?TimeStamp;
     amount : Tokens;
   };
+
+  public type Subaccount = Blob;
+  // public type Account = {
+  //   owner : Principal;
+  //   subaccount : ?Subaccount;
+  // };
+  public type Invoice = {
+    to : Account;
+    amount : Nat;
+  };
+
   public type StandardRecord = { url : Text; name : Text };
   public type Symbol = { symbol : Text };
   public type TimeStamp = { timestamp_nanos : Nat64 };

@@ -1,33 +1,41 @@
 use candid::{CandidType, Deserialize, Principal};
-
 use serde::Serialize;
-use ic_cdk::{ post_upgrade, pre_upgrade, query, update, init, storage,};
+use ic_cdk::{post_upgrade, pre_upgrade, query, update, init, storage};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
 
 mod model;
+mod serialization_memory_ids;
+
+use serialization_memory_ids::*;
 use crate::{model::*};
 
-use ic_stable_structures::memory_manager::{MemoryId, MemoryManager, VirtualMemory};
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
+use canister_tools::{
+    MemoryId,
+    localkey::refcell::{with, with_mut},
+    Serializable,
+};
 
-type IdStore = BTreeMap<String, Principal>;
-type ProfileStore = BTreeMap<Principal, UserProfile>;
+type IdStore = BTreeMap<String, String>;
+type ProfileStore = BTreeMap<String, UserProfile>;
 type TournamentStore = BTreeMap<String, TournamentAccount>;
+type SquadStore = BTreeMap<String, Squad>;
+
 
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
     static ID_STORE: RefCell<IdStore> = RefCell::default();
+    static SQUAD_STORE: RefCell<SquadStore> = RefCell::default();
 }
 
 #[query(name = "getSelf")]
-fn get_self(principal:Principal) -> UserProfile {
+fn get_self(principal: Principal) -> UserProfile {
     // let id = ic_cdk::api::caller();
     PROFILE_STORE.with(|profile_store| {
         profile_store
             .borrow()
-            .get(&principal)
+            .get(&principal.to_text())
             .cloned().unwrap_or_default()
     })
 }
@@ -56,15 +64,15 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile,principal:Principal) -> Result<u8,u8> {
+fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> {
     // let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal);
+            .insert(profile.username.clone(), principal.to_text());
     });
     PROFILE_STORE.with(|profile_store| {
-        profile_store.borrow_mut().insert(principal, profile);
+        profile_store.borrow_mut().insert(principal.to_text(), profile);
     });
     Ok(1)
 }
@@ -88,7 +96,7 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
 }
 
 #[update]
-fn create_tournament(tournament: TournamentAccount) ->  Result<u8,u8>{
+fn create_tournament(tournament: TournamentAccount) -> Result<u8, u8> {
     let id_hash = tournament.clone().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -112,7 +120,7 @@ fn start_tournament(id: String) {
 }
 
 #[update]
-fn end_tournament(id: String, names:Vec<String>,principal:Principal) {
+fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
@@ -128,14 +136,13 @@ fn end_tournament(id: String, names:Vec<String>,principal:Principal) {
             });
             tournament_store.borrow_mut().insert(id, tournament);
         });
-    }
-    else {
+    } else {
         println!("you're not admin");
     }
 }
 
 #[update]
-fn join_tournament(name: String,id: String) {
+fn join_tournament(name: String, id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
         tournament.user.push(name);
@@ -152,7 +159,7 @@ fn set_mod(name: String, identity: Principal) {
                 .get(&name)
                 .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap_or_default();
             user.is_mod = true;
-            profile_store.borrow_mut().insert(identity, user);
+            profile_store.borrow_mut().insert(identity.to_text(), user);
         })
     });
 }
@@ -170,58 +177,131 @@ fn is_mod(name: String) -> bool {
     })
 }
 
+#[query]
+fn get_squad(id: String) -> Squad {
+    SQUAD_STORE.with(|squad_store| {
+        squad_store.borrow().get(&id).cloned().unwrap_or_default()
+    })
+}
 
-// // Retrieves the value associated with the given key if it exists.
-// #[ic_cdk_macros::query]
-// fn get_stable_profile(key: Principal) -> Option<UserProfile> {
-//     MAP.with(|p| p.borrow().get(&key))
-// }
-//
-// // Inserts an entry into the map and returns the previous value of the key if it exists.
-// #[ic_cdk_macros::update]
-// fn insert_stable_profile(key: Principal, value: UserProfile) -> Option<UserProfile> {
-//     MAP.with(|p| p.borrow_mut().insert(key, value))
-// }
-//
-// // Retrieves the value associated with the given key if it exists.
-// #[ic_cdk_macros::query]
-// fn get_stable_tournament(key: String) -> Option<TournamentAccount> {
-//     TOURNAMENT_MAP.with(|p| p.borrow().get(&key))
-// }
-//
-// // Inserts an entry into the map and returns the previous value of the key if it exists.
-// #[ic_cdk_macros::update]
-// fn insert_stable_tournament(key: String, value: TournamentAccount) -> Option<TournamentAccount> {
-//     TOURNAMENT_MAP.with(|p| p.borrow_mut().insert(key, value))
-// }
+#[query]
+fn get_all_squad() -> Vec<Squad> {
+    SQUAD_STORE.with(|squad_store| {
+        let mut all_squads = Vec::new();
+        squad_store.borrow().iter().for_each(|squad| {
+            all_squads.push((*squad.1).clone().try_into().unwrap_or_default())
+        });
+        all_squads
+    })
+}
+
+#[update]
+fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
+    let id_hash = squad.clone().id_hash;
+
+    SQUAD_STORE.with(|squad_store| {
+        squad_store.borrow_mut().insert(id_hash, squad.clone());
+        PROFILE_STORE.with(|profile_store| {
+            let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+            user.squad_badge = squad.id_hash.clone();
+            profile_store.borrow_mut().insert(principal.to_text(), user);
+        })
+    });
+    Ok(1)
+}
+
+#[update]
+fn add_to_squad(principal: Principal, id: String) {
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        if squad.captain == principal.to_text() {
+            squad.members.push(principal.to_text());
+            squad_store.borrow_mut().insert(id, squad.clone());
+            PROFILE_STORE.with(|profile_store| {
+                let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+                user.squad_badge = squad.id_hash.clone();
+                profile_store.borrow_mut().insert(principal.to_text(), user);
+            });
+        } else {
+            println!("you're not admin");
+        }
+    });
+}
+
+#[update]
+fn close_squad(id: String, names: Vec<String>, principal: Principal) {
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        if squad.captain == principal.to_text() {
+            squad.status = match squad.status {
+                SquadType::Open => SquadType::Closed,
+                _ => {
+                    SquadType::Closed
+                }
+            };
+            squad_store.borrow_mut().insert(id, squad);
+        } else {
+            println!("you're not admin");
+        }
+    });
+}
+
+#[update]
+fn open_squad(id: String, names: Vec<String>, principal: Principal) {
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        if squad.captain == principal.to_text() {
+            squad.status = match squad.status {
+                SquadType::Closed => SquadType::Open,
+                _ => {
+                    SquadType::Open
+                }
+            };
+
+            squad_store.borrow_mut().insert(id, squad);
+        } else {
+            println!("you're not admin");
+        }
+    });
+}
+
+#[update]
+fn join_squad(principal: Principal, id: String) {
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        match squad.status {
+            SquadType::Open => { squad.members.push(principal.to_text());
+                squad_store.borrow_mut().insert(id, squad.clone());
+                PROFILE_STORE.with(|profile_store| {
+                    let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+                    user.squad_badge = squad.id_hash.clone();
+                    profile_store.borrow_mut().insert(principal.to_text(), user);
+                }) },
+            SquadType::Closed => println!("You can't join a closed squad"),
+        }
+    });
+}
+
+
+#[init]
+fn init() {
+    canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+    canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
+}
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    PROFILE_STORE.with(|users| storage::stable_save((users,)).unwrap());
-    TOURNAMENT_STORE.with(|tournaments| storage::stable_save((tournaments,)).unwrap());
+    canister_tools::pre_upgrade();
 }
 
-// #[post_upgrade]
-// fn post_upgrade() {
-//     let (old_users,): ( ProfileStore,) = storage::stable_restore().unwrap();
-//     PROFILE_STORE.with(|users| *users.borrow_mut() = old_users);
-//     let (old_tournaments,): ( TournamentStore,) = storage::stable_restore().expect("");
-//     TOURNAMENT_STORE.with(|tournaments| *tournaments.borrow_mut() = old_tournaments);
-// }
+#[post_upgrade]
+fn post_upgrade() {
+    canister_tools::post_upgrade(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(TournamentStore) -> TournamentStore>);
+    canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
+    canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
+}
 
 
 // Enable Candid export
 ic_cdk::export_candid!();
-
-// "get_self": () -> (UserProfile) query;
-// "get_all_user": () -> (vec UserProfile) query;
-// "get_profile": (text) -> (UserProfile) query;
-// "set_mod": (text,principal) -> ();
-//
-// "create_profile": (UserProfile) -> ();
-// "create_tournament": (TournamentAccount) -> ();
-// "get_all_tournament": () -> (vec TournamentAccount) query;
-// "get_tournament": (text) -> (TournamentAccount) query;
-// "get_profile": (text) -> (UserProfile) query;
-//
-// "get_all_user": () -> (vec UserProfile) query;

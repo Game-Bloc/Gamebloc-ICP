@@ -15,4 +15,6 @@ dfx.json
 
 build.sh
 
+.env 
+
 src/declarations

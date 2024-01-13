@@ -17,16 +17,20 @@ import RustBloc "canister:game_bloc_backend";
 import IndexTypes "indextypes";
 import Bloctypes "bloctypes";
 import LedgerTypes "ledgertypes";
+import Utils "utils";
+import Ledgertypes "ledgertypes";
 
 shared ({caller}) actor class Kitchen() {
+
+        private stable var userCanisterId : Principal = caller;
 
         var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
 
         var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
-        private func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
+        func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
             // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-            ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId)));
+            ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller),  AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""));
         };
 
         public shared ({caller}) func createprofile(id_hash : Text, age : Nat8, username: Text) : async Result.Result<Text, Text> {
@@ -41,7 +45,7 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
-        private func usernameChecker(username : Text) : Bool {
+        func usernameChecker(username : Text) : Bool {
             var unique = true;
             for ((i, j) in ProfileHashMap.entries()) {
                 if (j.username == username) {
@@ -50,6 +54,12 @@ shared ({caller}) actor class Kitchen() {
             };
             unique;
         };
+
+        
+
+        //
+        // Ledger Canister
+        // 
 
         // Using the caller
         public shared({caller}) func getLedgerBalance() : async Result.Result<Nat, Text> {
@@ -90,6 +100,50 @@ shared ({caller}) actor class Kitchen() {
             }
         };
 
+        // get icp balance of user
+        public shared ({ caller }) func icp_balance() : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+            })
+        };
+
+        
+        public func icp_balance2(account : Principal) : async ICP {
+            await ICPLedger.account_balance_dfx({
+                account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(account, null));
+            })
+        };
+
+        public func icp_balance_icrc1(account : Principal) : async Nat {
+            await ICPLedger.icrc1_balance_of({
+                owner = account;
+                subaccount = null;
+            });
+        };
+
+        public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
+            await ICPLedger.icrc1_balance_of({
+                owner = caller;
+                subaccount = null;
+            });
+        };
+
+        public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+            await ICPIndex.icrc1_balance_of(account);
+        };
+
+        // Transfers ICP from the caller to receipient
+        public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
+            await ICPLedger.send_dfx({
+                to = to;
+                fee = {e8s = 10_000}; //0.0001 ICP
+                memo = 0;
+                from_subaccount = null;
+                created_at_time = ?created_at_time;
+                amount = amount;
+            });
+        };
+
         //  --------------------------
         // /                        /
         // /    Index Canister      /
@@ -107,22 +161,6 @@ shared ({caller}) actor class Kitchen() {
         // public func get_account_identifier_transactions(args : IndexTypes.GetAccountIdentifierTransactionsArgs) : async IndexTypes.GetAccountIdentifierTransactionsResult {
         //     await ICPIndex.get_account_identifier_transactions(args);
         // };
-
-        // public shared ({ caller }) func icp_balance() : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(caller, null);
-        //     })
-        // };
-
-        //  public func icp_balance2(account : Principal) : async ICP {
-        //     await ICPLedger.account_balance({
-        //         account = AccountID.fromPrincipal(account, null);
-        //     })
-        // };
-
-        public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-            await ICPIndex.icrc1_balance_of(account);
-        };
 
         public func index_status() : async IndexTypes.Status {
             await ICPIndex.status();
@@ -189,6 +227,7 @@ shared ({caller}) actor class Kitchen() {
             };
         };
 
+        // deprecated
         public func transferICP2(amount : Nat) : async Result.Result<(), Text> {
             let recipient = "rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe";
             try {
@@ -272,7 +311,7 @@ shared ({caller}) actor class Kitchen() {
         };
 
 
-    private stable var userCanisterId : Principal = caller;
+
 
     type TournamentAccount = Bloctypes.TournamentAccount;
 
@@ -302,7 +341,7 @@ shared ({caller}) actor class Kitchen() {
     };
 
     public func getAccountIdentifier(caller : Principal) : async Text {
-        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
     };
 
     public type AccountIdentifier = [Nat8];
@@ -318,7 +357,7 @@ shared ({caller}) actor class Kitchen() {
     };
 
 
-    func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, canister_id : Text) : Bloctypes.UserProfile {
+    func makeProfile(id_hash : Text, age: Nat8,date : Text,wins : Nat8, tournaments_created : Nat8, is_mod: Bool,  status: Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : Bloctypes.UserProfile {
         {
             id_hash;
             age;
@@ -329,19 +368,21 @@ shared ({caller}) actor class Kitchen() {
             username;
             is_mod;
             principal_id;
+            account_id;
             canister_id;
+            squad_badge;
         };
     };
 
 
 
-    public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, principal_id : Text, canister_id : Text) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  principal_id, canister_id);
+    public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username: Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status,  username,  principal_id, account_id, canister_id, squad_badge);
         await RustBloc.create_profile(profile, caller);
     };
 
-    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text ) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+    public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text, squad_badge : Text ) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge);
         try {
             return await RustBloc.create_profile(profile, caller);
         } catch err {

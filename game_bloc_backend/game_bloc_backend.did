@@ -1,11 +1,19 @@
 type Result = variant { Ok : nat8; Err : nat8 };
 type Status = variant { Online; Offline };
+type Squad = record {
+    id_hash : text;
+    captain : text;
+    status : bool;
+    members : vec text;
+    requests : vec text;
+};
 type TournamentAccount = record {
   idx : nat8;
   id_hash : text;
   status : TournamentStatus;
   creator : text;
   game : text;
+  squad : opt vec Squad;
   user : vec text;
   winers : vec text;
   total_prize : nat;
@@ -15,12 +23,16 @@ type TournamentAccount = record {
   no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
+  game_type: text;
+  end_date: text;
+  title: text;
 };
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
   GameCompleted;
 };
+
 type TournamentType = variant { Prepaid; Crowdfunded };
 type UserProfile = record {
   age : nat8;
@@ -31,6 +43,8 @@ type UserProfile = record {
   canister_id : text;
   wins : nat8;
   is_mod : bool;
+  squad_badge : text;
+  account_id : text;
   principal_id : text;
   tournaments_created : nat8;
 };
