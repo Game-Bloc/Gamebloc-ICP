@@ -30,6 +30,9 @@ module {
         entry_prize : Nat8;
         no_of_winners : Nat8;
         no_of_participants : Nat;
+        game_type: Text;
+        end_date: Text;
+        title: Text;
     };
 
     public type Squad = {

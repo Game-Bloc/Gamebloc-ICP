@@ -23,6 +23,9 @@ type TournamentAccount = record {
   no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
+  game_type: text;
+  end_date: text;
+  title: text;
 };
 type TournamentStatus = variant {
   AcceptingPlayers;
