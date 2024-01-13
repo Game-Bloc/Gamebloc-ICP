@@ -40,6 +40,8 @@ type UserProfile = record {
   canister_id : text;
   wins : nat8;
   is_mod : bool;
+  squad_badge : text;
+  account_id : text;
   principal_id : text;
   tournaments_created : nat8;
 };

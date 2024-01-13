@@ -30,7 +30,7 @@ shared ({caller}) actor class Kitchen() {
 
         func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
             // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-            ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller),  AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId)));
+            ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller),  AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""));
         };
 
         public shared ({caller}) func createprofile(id_hash : Text, age : Nat8, username: Text) : async Result.Result<Text, Text> {
