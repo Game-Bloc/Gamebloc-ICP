@@ -20,6 +20,8 @@ import LedgerTypes "ledgertypes";
 
 shared ({caller}) actor class Kitchen() {
 
+        private stable var userCanisterId : Principal = caller;
+
         var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
 
         var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -278,7 +280,7 @@ shared ({caller}) actor class Kitchen() {
         };
 
 
-    private stable var userCanisterId : Principal = caller;
+
 
     type TournamentAccount = Bloctypes.TournamentAccount;
 
