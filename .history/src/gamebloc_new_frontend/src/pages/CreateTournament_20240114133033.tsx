@@ -233,18 +233,18 @@ const CreateTournament = () => {
                         Host Tournament
                       </p>
                       <div className="flex flex-wrap justify-end items-center gap-4">
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
-                          <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                        <div className="rounded-[9999px] pt-[0.3rem] px-[.9rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FEE4E2] border-none">
+                          <p className=" text-[#D92D20] text-[0.6rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Action
                           </p>
                         </div>
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FFD98F] border-none">
-                          <p className=" text-[#B88217] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                        <div className="rounded-[9999px] pt-[0.3rem] px-[.9rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#FFD98F] border-none">
+                          <p className=" text-[#B88217] text-[0.6rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Adventure
                           </p>
                         </div>
-                        <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#D1FADF] border-none">
-                          <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                        <div className="rounded-[9999px] pt-[0.3rem] px-[.9rem] pb-[0.2rem] sm:px-[1.2rem] sm:pb-[0.4rem]  bg-[#D1FADF] border-none">
+                          <p className=" text-[#039855] text-[0.6rem] sm:text-[0.8rem] cursor-pointer font-medium">
                             Shooting
                           </p>
                         </div>
@@ -425,7 +425,7 @@ const CreateTournament = () => {
                     <div className="flex  flex-col sm:flex-row sm:justify-between mt-4 sm:items-center m-4 ">
                       <div className="flex mt-4 flex-col">
                         <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                          Start Time
+                          Set Time
                         </p>
                         <ConfigProvider
                           theme={{
@@ -441,7 +441,7 @@ const CreateTournament = () => {
                       </div>
                       <div className="flex flex-col">
                         <p className=" mb-4 mt-4 lg:mt-0  text-sm sm:text-base font-normal text-white">
-                          Start Date
+                          Set Date
                         </p>
                         <ConfigProvider
                           theme={{
@@ -454,21 +454,6 @@ const CreateTournament = () => {
                           />
                         </ConfigProvider>
                       </div>
-                    </div>
-                    <div className="flex flex-col mx-4">
-                      <p className=" mb-4 mt-4 lg:mt-0  text-sm sm:text-base font-normal text-white">
-                        End Date
-                      </p>
-                      <ConfigProvider
-                        theme={{
-                          algorithm: theme.darkAlgorithm,
-                        }}
-                      >
-                        <DatePicker
-                          disabledDate={disabledDate}
-                          onChange={onDateChange}
-                        />
-                      </ConfigProvider>
                     </div>
 
                     <div className="flex-col flex m-4 ">

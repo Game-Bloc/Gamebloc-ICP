@@ -425,7 +425,7 @@ const CreateTournament = () => {
                     <div className="flex  flex-col sm:flex-row sm:justify-between mt-4 sm:items-center m-4 ">
                       <div className="flex mt-4 flex-col">
                         <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                          Start Time
+                          Set Time
                         </p>
                         <ConfigProvider
                           theme={{
@@ -441,7 +441,7 @@ const CreateTournament = () => {
                       </div>
                       <div className="flex flex-col">
                         <p className=" mb-4 mt-4 lg:mt-0  text-sm sm:text-base font-normal text-white">
-                          Start Date
+                          Set Date
                         </p>
                         <ConfigProvider
                           theme={{
