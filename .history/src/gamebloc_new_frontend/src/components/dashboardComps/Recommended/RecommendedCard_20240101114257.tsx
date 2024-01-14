@@ -1,19 +1,13 @@
-import React from "react"
-import { CodImgs } from "../../../data/Index"
-import { useNavigate } from "react-router-dom"
+import React from "react";
+import { CodImgs } from "../../../data/Index";
 interface Props {
-  data: any
-  index: any
+  data: any;
+  index: any;
 }
 
 const RecommendedCard = ({ data, index }: Props) => {
-  const navigate = useNavigate()
-
   return (
-    <div
-      onClick={() => navigate(`/active-tournament/${data.id_hash}`)}
-      className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
-    >
+    <div className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl ">
       <img
         src={`${CodImgs[Math.floor(Math.random() * CodImgs.length)]}`}
         alt=""
@@ -44,7 +38,7 @@ const RecommendedCard = ({ data, index }: Props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default RecommendedCard
+export default RecommendedCard;

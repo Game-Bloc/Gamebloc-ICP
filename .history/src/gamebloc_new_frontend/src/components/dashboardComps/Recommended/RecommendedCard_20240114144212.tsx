@@ -11,7 +11,7 @@ const RecommendedCard = ({ data, index }: Props) => {
 
   return (
     <div
-      onClick={() => navigate(`/active-tournament/${data.id_hash}`)}
+      onClick={() => navigate(`/active-tournament-details/${data.id_hash}`)}
       className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
     >
       <img
