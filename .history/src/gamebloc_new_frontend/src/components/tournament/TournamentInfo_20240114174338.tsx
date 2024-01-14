@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = usetate()
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 

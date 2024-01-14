@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
 interface Props {
@@ -6,13 +6,10 @@ interface Props {
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const [count, setCount] = useState(0)
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 
-  // const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
-
-  const dateTimeAfterThreeDays = count
+  const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
 
   function convertToMilliseconds(inputDateString) {
     const dateTimeMatch = inputDateString.match(
@@ -64,10 +61,7 @@ const TournamentInfo = ({ data }: Props) => {
   useEffect(() => {
     const inputDateString = "4:00 pm 2024-01-16"
     const result = convertToMilliseconds(inputDateString)
-    // console.log(result)
-    setCount(result)
-    const resultDate = new Date(1705417200000)
-    console.log(resultDate.toISOString())
+    console.log(result)
   }, [])
 
   return (
@@ -187,6 +181,3 @@ const TournamentInfo = ({ data }: Props) => {
 }
 
 export default TournamentInfo
-function usetate<T>(): [any, any] {
-  throw new Error("Function not implemented.")
-}

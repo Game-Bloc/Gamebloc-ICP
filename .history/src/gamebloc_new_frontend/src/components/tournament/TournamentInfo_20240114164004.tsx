@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
 interface Props {
@@ -6,69 +6,10 @@ interface Props {
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const [count, setCount] = useState(0)
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 
-  // const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
-
-  const dateTimeAfterThreeDays = count
-
-  function convertToMilliseconds(inputDateString) {
-    const dateTimeMatch = inputDateString.match(
-      /(\d{1,2}:\d{2}\s*[APMapm]+)\s*(\d{4}-\d{2}-\d{2})/,
-    )
-
-    if (!dateTimeMatch) {
-      console.error("Invalid date format")
-      return NaN
-    }
-
-    const [, time, date] = dateTimeMatch
-
-    // Extract hours, minutes, and AM/PM from the time part
-    const [hoursStr, minutesStr] = time.split(":")
-    const hours = parseInt(hoursStr, 10)
-    const minutes = parseInt(minutesStr, 10)
-    const isPM = /pm/i.test(time)
-
-    // Extract year, month, and day from the date part
-    const [yearStr, monthStr, dayStr] = date.split("-")
-    const year = parseInt(yearStr, 10)
-    const month = parseInt(monthStr, 10) - 1
-    const day = parseInt(dayStr, 10)
-
-    // Convert 12-hour format to 24-hour format
-    let adjustedHours = hours
-    if (isPM && hours !== 12) {
-      adjustedHours += 12
-    } else if (!isPM && hours === 12) {
-      adjustedHours = 0
-    }
-
-    // Create a new Date object with the components
-    const dateObject = new Date(year, month, day, adjustedHours, minutes)
-
-    // Check for invalid date
-    if (isNaN(dateObject.getTime())) {
-      console.error("Invalid date")
-      return NaN
-    }
-
-    // Get the timestamp in milliseconds
-    const timestampInMilliseconds = dateObject.getTime()
-
-    return timestampInMilliseconds
-  }
-
-  useEffect(() => {
-    const inputDateString = "4:00 pm 2024-01-16"
-    const result = convertToMilliseconds(inputDateString)
-    // console.log(result)
-    setCount(result)
-    const resultDate = new Date(1705417200000)
-    console.log(resultDate.toISOString())
-  }, [])
+  const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
 
   return (
     <div>
@@ -102,7 +43,7 @@ const TournamentInfo = ({ data }: Props) => {
                   <p className="text-[.8rem]  text-white">1st</p>
                   <img src={`price1.svg`} className="mt-4" alt="" />
                   <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                    {`$${data.total_prize * 0.5}`}
+                    $200
                   </h1>
                 </div>
               </div>
@@ -111,7 +52,7 @@ const TournamentInfo = ({ data }: Props) => {
                   <p className="text-[.8rem]  text-white">2nd</p>
                   <img src={`price1.svg`} className="mt-4" alt="" />
                   <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                    {`$${data.total_prize * 0.3}`}
+                    $100
                   </h1>
                 </div>
               </div>
@@ -120,7 +61,7 @@ const TournamentInfo = ({ data }: Props) => {
                   <p className="text-[.8rem]  text-white">3rd</p>
                   <img src={`price1.svg`} className="mt-4" alt="" />
                   <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                    {`$${data.total_prize * 0.2}`}
+                    $50
                   </h1>
                 </div>
               </div>
@@ -187,6 +128,3 @@ const TournamentInfo = ({ data }: Props) => {
 }
 
 export default TournamentInfo
-function usetate<T>(): [any, any] {
-  throw new Error("Function not implemented.")
-}

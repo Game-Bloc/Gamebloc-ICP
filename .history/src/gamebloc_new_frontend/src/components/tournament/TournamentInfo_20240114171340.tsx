@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
 interface Props {
@@ -6,48 +6,33 @@ interface Props {
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const [count, setCount] = useState(0)
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 
-  // const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
-
-  const dateTimeAfterThreeDays = count
+  const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
 
   function convertToMilliseconds(inputDateString) {
-    const dateTimeMatch = inputDateString.match(
-      /(\d{1,2}:\d{2}\s*[APMapm]+)\s*(\d{4}-\d{2}-\d{2})/,
-    )
-
-    if (!dateTimeMatch) {
-      console.error("Invalid date format")
-      return NaN
-    }
-
-    const [, time, date] = dateTimeMatch
+    // Split the input string into time and date parts
+    const [time, date] = inputDateString.split(" ")
 
     // Extract hours, minutes, and AM/PM from the time part
-    const [hoursStr, minutesStr] = time.split(":")
-    const hours = parseInt(hoursStr, 10)
-    const minutes = parseInt(minutesStr, 10)
+    const [hours, minutes] = time.split(":").map((part) => parseInt(part, 10))
     const isPM = /pm/i.test(time)
 
     // Extract year, month, and day from the date part
-    const [yearStr, monthStr, dayStr] = date.split("-")
-    const year = parseInt(yearStr, 10)
-    const month = parseInt(monthStr, 10) - 1
-    const day = parseInt(dayStr, 10)
+    const [year, month, day] = date.split("-").map((part) => parseInt(part, 10))
 
     // Convert 12-hour format to 24-hour format
-    let adjustedHours = hours
-    if (isPM && hours !== 12) {
-      adjustedHours += 12
-    } else if (!isPM && hours === 12) {
-      adjustedHours = 0
-    }
+    const adjustedHours = isPM
+      ? hours === 12
+        ? 12
+        : hours + 12
+      : hours === 12
+      ? 0
+      : hours
 
     // Create a new Date object with the components
-    const dateObject = new Date(year, month, day, adjustedHours, minutes)
+    const dateObject = new Date(year, month - 1, day, adjustedHours, minutes)
 
     // Check for invalid date
     if (isNaN(dateObject.getTime())) {
@@ -64,10 +49,7 @@ const TournamentInfo = ({ data }: Props) => {
   useEffect(() => {
     const inputDateString = "4:00 pm 2024-01-16"
     const result = convertToMilliseconds(inputDateString)
-    // console.log(result)
-    setCount(result)
-    const resultDate = new Date(1705417200000)
-    console.log(resultDate.toISOString())
+    console.log("Time", result)
   }, [])
 
   return (
@@ -187,6 +169,3 @@ const TournamentInfo = ({ data }: Props) => {
 }
 
 export default TournamentInfo
-function usetate<T>(): [any, any] {
-  throw new Error("Function not implemented.")
-}

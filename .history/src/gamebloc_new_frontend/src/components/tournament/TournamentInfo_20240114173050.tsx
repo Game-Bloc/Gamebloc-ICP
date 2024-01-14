@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
 interface Props {
@@ -6,25 +6,14 @@ interface Props {
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const [count, setCount] = useState(0)
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 
-  // const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
+  const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
 
-  const dateTimeAfterThreeDays = count
-
-  function convertToMilliseconds(inputDateString) {
-    const dateTimeMatch = inputDateString.match(
-      /(\d{1,2}:\d{2}\s*[APMapm]+)\s*(\d{4}-\d{2}-\d{2})/,
-    )
-
-    if (!dateTimeMatch) {
-      console.error("Invalid date format")
-      return NaN
-    }
-
-    const [, time, date] = dateTimeMatch
+  function convertToMilliseconds(inputDateString: string) {
+    // Extract components from the input string
+    const [time, date] = inputDateString.split(" ")
 
     // Extract hours, minutes, and AM/PM from the time part
     const [hoursStr, minutesStr] = time.split(":")
@@ -64,10 +53,7 @@ const TournamentInfo = ({ data }: Props) => {
   useEffect(() => {
     const inputDateString = "4:00 pm 2024-01-16"
     const result = convertToMilliseconds(inputDateString)
-    // console.log(result)
-    setCount(result)
-    const resultDate = new Date(1705417200000)
-    console.log(resultDate.toISOString())
+    console.log("Time", result)
   }, [])
 
   return (
@@ -187,6 +173,3 @@ const TournamentInfo = ({ data }: Props) => {
 }
 
 export default TournamentInfo
-function usetate<T>(): [any, any] {
-  throw new Error("Function not implemented.")
-}
