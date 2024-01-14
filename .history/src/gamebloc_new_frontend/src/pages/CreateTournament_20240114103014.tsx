@@ -348,19 +348,6 @@ const CreateTournament = () => {
                     </div>
                     <div className="my-4 border border-solid border-[#2E3438] w-full" />
 
-                    <div className="flex-col flex m-4 ">
-                      <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                        Tournament Title
-                      </p>
-                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
-                        <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
-                          placeholder="Name of game"
-                          type="text"
-                        />
-                      </div>
-                    </div>
-
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
                       <div className="flex mt-4 flex-col">
                         <p className=" mb-4 text-sm sm:text-base font-normal text-white">
@@ -456,6 +443,18 @@ const CreateTournament = () => {
                       </div>
                     </div>
 
+                    {/* <div className="flex-col flex m-4 ">
+                    <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                      Game Name
+                    </p>
+                    <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <input
+                        className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                        placeholder="Name of game"
+                        type="text"
+                      />
+                    </div>
+                  </div> */}
                     <div className="flex-col flex m-4 ">
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         {tourType === "Prepaid"

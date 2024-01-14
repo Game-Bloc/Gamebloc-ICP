@@ -7,9 +7,7 @@ export interface UserProfileState {
   date: string | undefined
   id_hash: string | undefined
   is_mod: boolean
-  account_id: string | undefined
   principal_id: string | undefined
-  squad_badge: string | undefined
   status: any | undefined
   tournaments_created: number
   username: string | undefined
@@ -23,9 +21,7 @@ const initialState: UserProfileState = {
   date: "",
   id_hash: "",
   is_mod: false,
-  account_id: "",
   principal_id: "",
-  squad_badge: "",
   status: { Online: null },
   tournaments_created: 0,
   username: "",
