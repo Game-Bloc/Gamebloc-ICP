@@ -18,23 +18,17 @@ const TournamentDetail = () => {
     {
       key: "1",
       label: `Tournament Info`,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <TournamentInfo data={data} />),
+      children: <TournamentInfo />,
     },
     {
       key: "2",
       label: `Rules `,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Rules data={data} />),
+      children: <Rules />,
     },
     {
       key: "3",
       label: `Players`,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Players data={data} />),
+      children: <Players />,
     },
   ]
 

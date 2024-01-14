@@ -18,23 +18,17 @@ const TournamentDetail = () => {
     {
       key: "1",
       label: `Tournament Info`,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <TournamentInfo data={data} />),
+      children: <TournamentInfo />,
     },
     {
       key: "2",
       label: `Rules `,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Rules data={data} />),
+      children: <Rules />,
     },
     {
       key: "3",
       label: `Players`,
-      children: tournamentData
-        .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Players data={data} />),
+      children: <Players />,
     },
   ]
 
@@ -60,10 +54,7 @@ const TournamentDetail = () => {
               {tournamentData
                 .filter((list: any) => list.id_hash == id)
                 .map((data: any) => (
-                  <div
-                    key={data.id_hash}
-                    className="flex flex-col lg:flex-row "
-                  >
+                  <div className="flex flex-col lg:flex-row ">
                     <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                       <div className="flex w-full justify-center items-center">
                         <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">

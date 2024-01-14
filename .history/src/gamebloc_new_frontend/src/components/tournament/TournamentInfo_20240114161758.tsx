@@ -1,18 +1,14 @@
 import React from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 
-interface Props {
-  data: any
-}
-
-const TournamentInfo = ({ data }: Props) => {
+const TournamentInfo = ({ data }) => {
   const THREE_DAYS_IN_MS = 3 * 24 * 60 * 60 * 1000
   const NOW_IN_MS = new Date().getTime()
 
   const dateTimeAfterThreeDays = NOW_IN_MS + THREE_DAYS_IN_MS
 
   return (
-    <div key={data.id_hash}>
+    <div>
       <div className="flex flex-col mx-4 max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
         <div className="mt-8 w-full p-4 ">
           <div className="flex flex-col">

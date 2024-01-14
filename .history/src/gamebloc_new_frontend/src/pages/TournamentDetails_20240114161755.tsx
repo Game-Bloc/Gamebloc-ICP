@@ -27,14 +27,14 @@ const TournamentDetail = () => {
       label: `Rules `,
       children: tournamentData
         .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Rules data={data} />),
+        .map((data: any) => <TournamentInfo data={data} />),
     },
     {
       key: "3",
       label: `Players`,
       children: tournamentData
         .filter((list: any) => list.id_hash == id)
-        .map((data: any) => <Players data={data} />),
+        .map((data: any) => <TournamentInfo data={data} />),
     },
   ]
 
