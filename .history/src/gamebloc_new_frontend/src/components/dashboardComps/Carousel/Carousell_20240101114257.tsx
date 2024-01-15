@@ -1,20 +1,13 @@
-import React, { useState } from "react"
-import { Swiper, SwiperSlide } from "swiper/react"
-import "swiper/css"
-import "swiper/css/pagination"
-import "swiper/css/navigation"
-import { Autoplay, Pagination, Navigation } from "swiper/modules"
-import "./carousel.css"
-import CarouselCard from "./CarouselCard"
-import SoonModal from "../../../components/Modals/SoonModal"
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "./carousel.css";
+import CarouselCard from "./CarouselCard";
 
 const Carousell = () => {
-  const [modal, setModal] = useState<boolean>(false)
-
-  const handleModal = () => {
-    setModal(!modal)
-  }
-
   const carouselData = [
     {
       title: "THE CHAMPIONS TOURNAMENT",
@@ -58,7 +51,7 @@ const Carousell = () => {
       img: `img6.png`,
       tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
     },
-  ]
+  ];
 
   return (
     <div className="  justify-center items-center flex xl:block  text-white">
@@ -79,13 +72,12 @@ const Carousell = () => {
       >
         {carouselData.map((list, index) => (
           <SwiperSlide key={index}>
-            <CarouselCard list={list} setModal={setModal} />
+            <CarouselCard list={list} />
           </SwiperSlide>
         ))}
       </Swiper>
-      {modal && <SoonModal modal={handleModal} />}
     </div>
-  )
-}
+  );
+};
 
-export default Carousell
+export default Carousell;

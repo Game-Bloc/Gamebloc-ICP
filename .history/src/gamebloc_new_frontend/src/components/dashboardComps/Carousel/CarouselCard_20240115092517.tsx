@@ -3,10 +3,15 @@ import SoonModal from "../../../components/Modals/SoonModal"
 
 interface Props {
   list: any
-  setModal: any
 }
 
-const CarouselCard = ({ list, setModal }: Props) => {
+const CarouselCard = ({ list }: Props) => {
+  const [modal, setModal] = useState<boolean>(false)
+
+  const handleModal = () => {
+    setModal(!modal)
+  }
+
   return (
     <div className="flex">
       <div className="flex flex-col mt-[.8rem] sm:mt-[1.5rem] w-[75%] sm:w-[50%]  mb-4 bg-gradient-to-r from-[#111101]">
@@ -86,6 +91,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
           className="sm:w-[60vw]  sm:h-[28rem]  h-[15rem] "
         />
       </div>
+      {modal && <SoonModal modal={handleModal} />}
     </div>
   )
 }

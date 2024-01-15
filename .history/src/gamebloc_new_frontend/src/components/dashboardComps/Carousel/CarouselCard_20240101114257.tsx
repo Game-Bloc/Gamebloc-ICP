@@ -1,12 +1,10 @@
-import React, { useState } from "react"
-import SoonModal from "../../../components/Modals/SoonModal"
+import React from "react";
 
 interface Props {
-  list: any
-  setModal: any
+  list: any;
 }
 
-const CarouselCard = ({ list, setModal }: Props) => {
+const CarouselCard = ({ list }: Props) => {
   return (
     <div className="flex">
       <div className="flex flex-col mt-[.8rem] sm:mt-[1.5rem] w-[75%] sm:w-[50%]  mb-4 bg-gradient-to-r from-[#111101]">
@@ -29,11 +27,11 @@ const CarouselCard = ({ list, setModal }: Props) => {
                   className=" w-[1.5rem] sm:w-[2.5rem] m-0 "
                 />
                 <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  31
+                  700
                 </p>
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                $400
+                $20,000
               </p>
             </div>
             <div className=" flex flex-col">
@@ -47,11 +45,11 @@ const CarouselCard = ({ list, setModal }: Props) => {
                   className="w-[1.5rem] sm:w-[2.5rem] m-0"
                 />
                 <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  Free
+                  10
                 </p>
               </div>
               <p className="font-normal ml-[1rem] text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
-                Free
+                $5
               </p>
             </div>
           </div>
@@ -60,11 +58,8 @@ const CarouselCard = ({ list, setModal }: Props) => {
           <p className=" text-[.6rem] sm:text-lg my-[.6rem] sm:my-4">
             Host: {list.Host}
           </p>
-          <button
-            onClick={() => setModal(true)}
-            className="pt-1 pb-[.15rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
-          >
-            Join now
+          <button className="pt-1 pb-[.15rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3">
+            Join Now
             <img src={`details.png`} alt="" className=" ml-[.6rem] sm:ml-6" />
           </button>
           <div className="sm:flex sm:flex-wrap gap-4 mt-8 hidden ">
@@ -87,7 +82,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
         />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CarouselCard
+export default CarouselCard;
