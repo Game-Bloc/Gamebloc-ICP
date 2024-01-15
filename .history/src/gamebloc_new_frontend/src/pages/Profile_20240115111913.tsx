@@ -7,7 +7,7 @@ import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd"
 import { useAppSelector } from "../redux/hooks"
 import Copy from "../components/utils/Copy"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
-import { useGetAllSquad } from "../Functions/blochooks"
+import { useGetAllSquad } from "src/Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 

@@ -38,7 +38,7 @@ const CreateSquadModal = ({ modal }: Props) => {
   const onTagChange = (e: any) => {
     e.preventDefault()
     const tagNameInput = e.target.value
-    setTagName(tagNameInput)
+    setSquadName(tagNameInput)
   }
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const CreateSquadModal = ({ modal }: Props) => {
       [],
       "Squad Created",
       "Error, try again",
-      "/profile",
+      "",
     )
   }
   const test = () => {
@@ -121,7 +121,7 @@ const CreateSquadModal = ({ modal }: Props) => {
                   </div>
                   <div className="flex w-full mt-4 justify-end">
                     <button
-                      onClick={() => joinSquad()}
+                      onClick={() => test()}
                       className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
                     >
                       {isLoading ? (

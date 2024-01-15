@@ -56,7 +56,7 @@ const CreateSquadModal = ({ modal }: Props) => {
       [],
       "Squad Created",
       "Error, try again",
-      "/profile",
+      "",
     )
   }
   const test = () => {
