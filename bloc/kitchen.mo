@@ -444,7 +444,7 @@ shared ({caller}) actor class Kitchen() {
 
     public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
         try {
-            return let result = await RustBloc.get_tournament(id);
+            await RustBloc.get_tournament(id);
         } catch err {
             throw (err);
         }
