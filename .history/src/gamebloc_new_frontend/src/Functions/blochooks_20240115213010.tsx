@@ -7,12 +7,7 @@ import {
   clearTournaments,
   updateActiveTournament,
 } from "../redux/slice/tournamentDataSlice"
-import {
-  SquadState,
-  addSquad,
-  clearSquad,
-  updateSquad,
-} from "../redux/slice/squadSlice"
+import { SquadState, addSquad, updateSquad } from "../redux/slice/squadSlice"
 
 export const useFetchAllTournaments = () => {
   const navigate = useNavigate()
@@ -135,7 +130,6 @@ export const useGetAllSquad = () => {
   const getAllSquads = async () => {
     try {
       setUpdating(true)
-      dispatch(clearSquad())
       const fetchSquads: any = await whoamiActor.get_all_squad()
       console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
@@ -175,7 +169,6 @@ export const useUpdateAllSquad = () => {
   const updateAllSquads = async () => {
     try {
       setUpdating(true)
-
       const fetchSquads: any = await whoamiActor.get_all_squad()
       console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {

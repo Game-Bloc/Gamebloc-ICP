@@ -205,9 +205,11 @@ const CreateTournament = () => {
 
   const addTournament = () => {
     if (
-      (tourType === "Prepaid" && balance > +poolPrize) ||
-      (tourType === "Crowdfunded" && balance > +entryPrice)
+      (tourType === "Prepaid" && +poolPrize < balance) ||
+      (tourType === "Crowdfunded" && +entryPrice < balance)
     ) {
+      errorPopUp("Your ICP balance is low")
+    } else {
       createTournament(
         1,
         tournamentID,
@@ -231,8 +233,6 @@ const CreateTournament = () => {
         "Try again something went wrong",
         "/dashboard",
       )
-    } else {
-      errorPopUp("Your ICP balance is low, pls fund your account.")
     }
   }
 

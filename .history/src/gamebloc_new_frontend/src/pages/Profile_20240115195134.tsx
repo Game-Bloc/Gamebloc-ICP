@@ -30,6 +30,7 @@ const Profile = () => {
   const principalID = principal
   const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
   const { getProfile, isLoadingProfile, getICPBalance } = useGameblocHooks()
+  const { updating, getAllSquads } = useGetAllSquad()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -37,6 +38,7 @@ const Profile = () => {
   }
   useEffect(() => {
     getProfile()
+    getAllSquads()
     getICPBalance()
   }, [])
 
@@ -85,7 +87,7 @@ const Profile = () => {
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
-                        <div className="flex mt-2">
+                        <div className="flex">
                           <p className="text-bold text-[.7rem]   sm:text-[.8rem]  text-[#ffffff]">
                             ICP Balance: {balance}
                           </p>

@@ -8,7 +8,6 @@ import {
   updateUserProfile,
 } from "../redux/slice/userProfileSlice"
 import { useAppDispatch } from "../redux/hooks"
-import { IcpBalanceState, updateBalance } from "../redux/slice/icpBalanceSlice"
 
 export const useGameblocHooks = () => {
   const { whoamiActor } = useAuth()
@@ -244,11 +243,6 @@ export const useGameblocHooks = () => {
       const Balance = await whoamiActor.icp_balance()
       console.log("Balance:", Balance)
       if (Balance) {
-        const value = Object.values(Balance)[0]
-        const Icp: IcpBalanceState = {
-          balance: Number(value),
-        }
-        dispatch(updateBalance(Icp))
       }
     } catch (err) {
       console.log("Error getting Balance:", err)

@@ -42,26 +42,11 @@ const Squad = () => {
       </div>
     )
   } else {
-    const gamerInSquad = SquadsData.some((player: any) =>
-      player.members.includes(username),
-    )
     return (
       <div>
-        {gamerInSquad ? (
-          <div className="flex flex-col gap-4 w-full mt-4">
-            {SquadsData.filter((player: any) =>
-              player.members.some((index: any) => index.includes(username)),
-            ).map((data: any) => (
-              <SquadCard
-                key={data.id_hash}
-                viewModal={viewModal}
-                handleViewSquad={handleViewSquad}
-                data={data}
-                view={handleViewSquad}
-              />
-            ))}
-          </div>
-        ) : (
+        {!SquadsData.filter((player: any) =>
+          player.members.some((index: any) => index.includes(username)),
+        ) ? (
           <div className="w-full flex justify-center mt-[3rem]">
             <div className="flex flex-col mb-4 ">
               <img src={`empty.svg`} alt="" />
@@ -86,6 +71,20 @@ const Squad = () => {
             </div>
             {modal && <CreateSquadModal modal={handleModal} />}
             {joinModal && <JoinSquadModal modal={handleJoinModal} />}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 w-full mt-4">
+            {SquadsData.filter((player: any) =>
+              player.members.some((index: any) => index.includes(username)),
+            ).map((data: any) => (
+              <SquadCard
+                key={data.id_hash}
+                viewModal={viewModal}
+                handleViewSquad={handleViewSquad}
+                data={data}
+                view={handleViewSquad}
+              />
+            ))}
           </div>
         )}
       </div>

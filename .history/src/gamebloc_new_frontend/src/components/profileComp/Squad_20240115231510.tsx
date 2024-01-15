@@ -42,12 +42,13 @@ const Squad = () => {
       </div>
     )
   } else {
-    const gamerInSquad = SquadsData.some((player: any) =>
-      player.members.includes(username),
-    )
     return (
       <div>
-        {gamerInSquad ? (
+        {SquadsData.map((player: any) =>
+          player.members.some((index: any) => {
+            index.includes(username), console.log(index.includes(username))
+          }),
+        ) ? (
           <div className="flex flex-col gap-4 w-full mt-4">
             {SquadsData.filter((player: any) =>
               player.members.some((index: any) => index.includes(username)),
@@ -61,7 +62,11 @@ const Squad = () => {
               />
             ))}
           </div>
-        ) : (
+        ) : !SquadsData.map((player: any) =>
+            player.members.some((index: any) => {
+              index.includes(username), console.log(index.includes(username))
+            }),
+          ) ? (
           <div className="w-full flex justify-center mt-[3rem]">
             <div className="flex flex-col mb-4 ">
               <img src={`empty.svg`} alt="" />
@@ -87,6 +92,8 @@ const Squad = () => {
             {modal && <CreateSquadModal modal={handleModal} />}
             {joinModal && <JoinSquadModal modal={handleJoinModal} />}
           </div>
+        ) : (
+          <div className="text-white">Something's wrong</div>
         )}
       </div>
     )

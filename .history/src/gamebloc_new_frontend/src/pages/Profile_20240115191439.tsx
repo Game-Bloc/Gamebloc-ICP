@@ -25,11 +25,11 @@ const Profile = () => {
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
-  const balance = useAppSelector((state) => state.IcpBalance.balance)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
   const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
   const { getProfile, isLoadingProfile, getICPBalance } = useGameblocHooks()
+  const { updating, getAllSquads } = useGetAllSquad()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -37,10 +37,9 @@ const Profile = () => {
   }
   useEffect(() => {
     getProfile()
+    getAllSquads()
     getICPBalance()
   }, [])
-
-  console.log("Redux Balance:", balance)
 
   if (isLoadingProfile) {
     return (
@@ -85,11 +84,6 @@ const Profile = () => {
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
-                        <div className="flex mt-2">
-                          <p className="text-bold text-[.7rem]   sm:text-[.8rem]  text-[#ffffff]">
-                            ICP Balance: {balance}
-                          </p>
-                        </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
                           <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
