@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
-export interface IcpBalanceState {
+interface IcpBalanceState {
   balance: any
 }
 
@@ -17,7 +17,7 @@ export const icpBalanceSlice = createSlice({
       state: IcpBalanceState,
       { payload }: PayloadAction<IcpBalanceState>,
     ) => {
-      state.balance = payload.balance
+      state.balance.push(payload)
     },
   },
 })

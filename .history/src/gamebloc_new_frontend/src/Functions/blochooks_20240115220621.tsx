@@ -135,7 +135,6 @@ export const useGetAllSquad = () => {
   const getAllSquads = async () => {
     try {
       setUpdating(true)
-      dispatch(clearSquad())
       const fetchSquads: any = await whoamiActor.get_all_squad()
       console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
@@ -175,7 +174,7 @@ export const useUpdateAllSquad = () => {
   const updateAllSquads = async () => {
     try {
       setUpdating(true)
-
+      dispatch(clearSquad())
       const fetchSquads: any = await whoamiActor.get_all_squad()
       console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {

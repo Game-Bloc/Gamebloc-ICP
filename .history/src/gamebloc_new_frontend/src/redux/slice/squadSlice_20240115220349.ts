@@ -28,11 +28,12 @@ const squadSlice = createSlice({
         state[existingSquadIndex] = payload
       }
     },
+
     clearSquad: () => {
       return initialState
     },
   },
 })
 
-export const { addSquad, updateSquad, clearSquad } = squadSlice.actions
+export const { addSquad, updateSquad } = squadSlice.actions
 export default squadSlice.reducer
