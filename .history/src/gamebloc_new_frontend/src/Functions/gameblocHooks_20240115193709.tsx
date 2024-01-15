@@ -8,7 +8,7 @@ import {
   updateUserProfile,
 } from "../redux/slice/userProfileSlice"
 import { useAppDispatch } from "../redux/hooks"
-import { updateBalance } from "../redux/slice/icpBalanceSlice"
+import { updateBalance } from "src/redux/slice/icpBalanceSlice"
 
 export const useGameblocHooks = () => {
   const { whoamiActor } = useAuth()
