@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react"
 import CountDownTimer from "../utils/CountDownTimer"
 import { useCountdown } from "../utils/CountDown"
-import { useAppSelector } from "../../redux/hooks"
-import { useGameblocHooks } from "../../Functions/gameblocHooks"
-import ClipLoader from "react-spinners/ClipLoader"
-import { useParams } from "react-router-dom"
+import { useAppSelector } from "../redux/hooks"
 
 interface Props {
   data: any
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const { id } = useParams()
   const [count, setCount] = useState(0)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
   const owner = useAppSelector((state) => state.userProfile.username)
-  const gamerName = useAppSelector((state) => state.userProfile.username)
-  const { isLoading, joinTournament } = useGameblocHooks()
 
   const override = {
     display: "block",
@@ -70,16 +64,6 @@ const TournamentInfo = ({ data }: Props) => {
     const timestampInMilliseconds = dateObject.getTime()
 
     return timestampInMilliseconds
-  }
-
-  const join = () => {
-    joinTournament(
-      gamerName,
-      id,
-      "Tournament Joined",
-      "Error, try again.",
-      "/dashboard",
-    )
   }
 
   useEffect(() => {
@@ -263,22 +247,8 @@ const TournamentInfo = ({ data }: Props) => {
             <p className="font-semibold">Joined</p>
           </button>
         ) : (
-          <button
-            onClick={() => join()}
-            className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
-          >
-            {isLoading ? (
-              <ClipLoader
-                color={color}
-                loading={isLoading}
-                cssOverride={override}
-                size={20}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
-            ) : (
-              <p className="font-semibold">Join Tournament</p>
-            )}
+          <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2">
+            <p className="font-semibold">Join Tournament</p>
           </button>
         )}
       </div>

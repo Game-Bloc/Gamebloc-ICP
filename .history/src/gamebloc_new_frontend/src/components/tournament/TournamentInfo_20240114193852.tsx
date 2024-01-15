@@ -4,19 +4,18 @@ import { useCountdown } from "../utils/CountDown"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import ClipLoader from "react-spinners/ClipLoader"
-import { useParams } from "react-router-dom"
 
 interface Props {
   data: any
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const { id } = useParams()
   const [count, setCount] = useState(0)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
   const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
+  const id = useAppSelector((state) => state.userProfile.id_hash)
   const { isLoading, joinTournament } = useGameblocHooks()
 
   const override = {

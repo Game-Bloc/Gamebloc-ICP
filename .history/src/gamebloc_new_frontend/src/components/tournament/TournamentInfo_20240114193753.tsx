@@ -4,19 +4,18 @@ import { useCountdown } from "../utils/CountDown"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import ClipLoader from "react-spinners/ClipLoader"
-import { useParams } from "react-router-dom"
 
 interface Props {
   data: any
 }
 
 const TournamentInfo = ({ data }: Props) => {
-  const { id } = useParams()
   const [count, setCount] = useState(0)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
   const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
+  const id = useAppSelector((state) => state.userProfile.id_hash)
   const { isLoading, joinTournament } = useGameblocHooks()
 
   const override = {
@@ -263,10 +262,7 @@ const TournamentInfo = ({ data }: Props) => {
             <p className="font-semibold">Joined</p>
           </button>
         ) : (
-          <button
-            onClick={() => join()}
-            className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
-          >
+          <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2">
             {isLoading ? (
               <ClipLoader
                 color={color}
