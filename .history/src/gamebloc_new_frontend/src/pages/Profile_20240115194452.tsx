@@ -42,8 +42,6 @@ const Profile = () => {
     getICPBalance()
   }, [])
 
-  console.log("Redux Balance:", balance)
-
   if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -87,15 +85,15 @@ const Profile = () => {
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
-                        <div className="flex mt-2">
-                          <p className="text-bold text-[.7rem]   sm:text-[.8rem]  text-[#ffffff]">
-                            ICP Balance: {balance}
-                          </p>
-                        </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
                           <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
                             Member since {date}
+                          </p>
+                        </div>
+                        <div className="flex mt-2">
+                          <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#ffffff]">
+                            ICP Balance: {balance}
                           </p>
                         </div>
                       </div>

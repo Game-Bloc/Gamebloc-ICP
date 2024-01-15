@@ -87,7 +87,7 @@ const Profile = () => {
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
-                        <div className="flex mt-2">
+                        <div className="flex">
                           <p className="text-bold text-[.7rem]   sm:text-[.8rem]  text-[#ffffff]">
                             ICP Balance: {balance}
                           </p>
