@@ -30,6 +30,7 @@ type TournamentAccount = record {
   tournament_type : TournamentType;
   entry_prize : nat8;
 };
+
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
