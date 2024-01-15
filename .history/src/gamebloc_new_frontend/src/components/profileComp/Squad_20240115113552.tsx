@@ -4,14 +4,12 @@ import JoinSquadModal from "../Modals/JoinSquadModal"
 import SquadCard from "./SquadCard"
 import ViewSquadModal from "./ViewSquadModal"
 import { useGetAllSquad } from "../../Functions/blochooks"
-import { useAppSelector } from "../../redux/hooks"
 
 const Squad = () => {
   const [modal, setModal] = useState<boolean>(false)
   const [joinModal, setJoinModal] = useState<boolean>(false)
   const [viewModal, setViewModal] = useState<boolean>(false)
   const { noData, getAllSquads } = useGetAllSquad()
-  const SquadsData = useAppSelector((state) => state.squad)
 
   const handleModal = () => {
     setModal(!modal)
@@ -55,15 +53,8 @@ const Squad = () => {
   } else {
     return (
       <div className="flex flex-col gap-4 w-full mt-4">
-        {SquadsData.map((data: any) => (
-          <SquadCard
-            key={data.id_hash}
-            viewModal={viewModal}
-            handleViewSquad={handleViewSquad}
-            data={data}
-            view={handleViewSquad}
-          />
-        ))}
+        <SquadCard view={handleViewSquad} />
+        {viewModal && <ViewSquadModal modal={handleViewSquad} />}
       </div>
     )
   }

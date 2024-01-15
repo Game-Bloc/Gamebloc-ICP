@@ -56,14 +56,9 @@ const Squad = () => {
     return (
       <div className="flex flex-col gap-4 w-full mt-4">
         {SquadsData.map((data: any) => (
-          <SquadCard
-            key={data.id_hash}
-            viewModal={viewModal}
-            handleViewSquad={handleViewSquad}
-            data={data}
-            view={handleViewSquad}
-          />
+          <SquadCard key={data.id_hash} data={data} view={handleViewSquad} />
         ))}
+        {viewModal && <ViewSquadModal modal={handleViewSquad} />}
       </div>
     )
   }

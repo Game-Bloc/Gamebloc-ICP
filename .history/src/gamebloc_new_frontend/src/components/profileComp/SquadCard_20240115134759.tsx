@@ -61,7 +61,7 @@ const SquadCard = ({ view, data, viewModal, handleViewSquad }: Props) => {
           </ConfigProvider>
         </div>
       </div>
-      {viewModal && <ViewSquadModal data={data} modal={handleViewSquad} />}
+      {viewModal && <ViewSquadModal modal={handleViewSquad} />}
     </>
   )
 }

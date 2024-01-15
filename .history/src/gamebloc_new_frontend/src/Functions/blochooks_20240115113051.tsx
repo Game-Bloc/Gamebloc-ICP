@@ -157,5 +157,5 @@ export const useGetAllSquad = () => {
     }
   }
 
-  return { updating, noData, getAllSquads }
+  return { updating, getAllSquads }
 }
