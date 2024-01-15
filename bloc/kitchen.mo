@@ -444,11 +444,76 @@ shared ({caller}) actor class Kitchen() {
 
     public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
         try {
-            return let result = await RustBloc.get_tournament(id);
+            await RustBloc.get_tournament(id);
         } catch err {
             throw (err);
         }
     };
+
+    public shared ({ caller }) func create_squad(squad : Bloctypes.Squad) : async Bloctypes.Result {
+        try {
+            return await RustBloc.create_squad(squad, caller);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func add_to_squad(id : Text) : async () {
+        try {
+            return await RustBloc.add_to_squad(caller, id);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func close_squad(names : [Text], id : Text) : async () {
+        try {
+            return await RustBloc.close_squad(id, names, caller);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func open_squad(names : [Text], id : Text) : async () {
+        try {
+            return await RustBloc.open_squad(id, names, caller);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func join_squad(id : Text) : async () {
+        try {
+            return await RustBloc.join_squad(caller, id);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public func get_all_squad() : async [Bloctypes.Squad] {
+        try {
+            return await RustBloc.get_all_squad();
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public func get_squad(id : Text) : async Bloctypes.Squad {
+        try {
+            return await RustBloc.get_squad(id);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+
 
     public func is_mod(name : Text) :  async Bool {
         try {
