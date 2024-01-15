@@ -53,13 +53,14 @@ const ViewSquadModal = ({ modal, data }: Props) => {
                     </div>
                     <div className="mt-[1.5rem] mb-[1.5rem] border border-solid border-[#2E3438] w-full" />
                     <div className="flex flex-col gap-4">
-                      {data.members.map((gamer: string, index) => (
-                        <MemberCard
-                          key={index}
-                          gamer={gamer}
-                          captain={data.captain}
-                        />
-                      ))}
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
+                      <MemberCard />
                     </div>
                     <div className="mt-[1rem] mb-[1rem] border border-solid border-[#2E3438] w-full" />
                     <div className="flex justify-end mt-3">

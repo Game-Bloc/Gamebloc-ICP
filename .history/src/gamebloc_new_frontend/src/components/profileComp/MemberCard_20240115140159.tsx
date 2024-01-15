@@ -15,17 +15,12 @@ const MemberCard = ({ gamer, captain }: Props) => {
             algorithm: theme.darkAlgorithm,
           }}
         >
-          <Avatar style={{ backgroundColor: "#f56a00" }}>
-            {gamer.substring(0, 2).toUpperCase()}
-          </Avatar>
+          <Avatar style={{ backgroundColor: "#f56a00" }}>TR</Avatar>
         </ConfigProvider>
-        <p className="text-white text-[.8rem] ml-2">{gamer}</p>
+        <p className="text-white text-[.8rem] ml-2">Torvenda Richie</p>
       </div>
-      {gamer == captain ? (
-        <p className="text-white text-[.6rem]">Squad Captain</p>
-      ) : (
-        <div> </div>
-      )}
+
+      <p className="text-white text-[.6rem]">Squad Captain</p>
     </div>
   )
 }
