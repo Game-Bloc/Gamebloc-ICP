@@ -42,12 +42,9 @@ const Squad = () => {
       </div>
     )
   } else {
-    const gamerInSquad = SquadsData.some((player: any) =>
-      player.members.includes(username),
-    )
     return (
       <div>
-        {gamerInSquad ? (
+        {modal ? (
           <div className="flex flex-col gap-4 w-full mt-4">
             {SquadsData.filter((player: any) =>
               player.members.some((index: any) => index.includes(username)),
