@@ -155,16 +155,6 @@ fn join_tournament(name: String, id: String) {
 }
 
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String) {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
-
-        tournament.clone().squad.expect("No squad").push(get_squad(squad_id));
-        tournament_store.borrow_mut().insert(id, tournament);
-    });
-}
-
-#[update]
 fn set_mod(name: String, identity: Principal) {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
@@ -225,11 +215,11 @@ fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
 }
 
 #[update]
-fn add_to_squad(member: Member, principal: Principal, id: String) {
+fn add_to_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {
-            squad.members.push(member);
+            squad.members.push(principal.to_text());
             squad_store.borrow_mut().insert(id, squad.clone());
             PROFILE_STORE.with(|profile_store| {
                 let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
@@ -280,35 +270,15 @@ fn open_squad(id: String, names: Vec<String>, principal: Principal) {
 }
 
 #[update]
-fn join_squad(member: Member, principal:Principal, id: String) {
+fn join_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         match squad.status {
-            SquadType::Open => { squad.members.push(member);
+            SquadType::Open => { squad.members.push(principal.to_text());
                 squad_store.borrow_mut().insert(id, squad.clone());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
                     user.squad_badge = squad.id_hash.clone();
-                    profile_store.borrow_mut().insert(principal.to_text(), user);
-                }) },
-            SquadType::Closed => println!("You can't join a closed squad"),
-        }
-    });
-}
-
-#[update]
-fn leave_or_remove_squad(principal: Principal, id: String) {
-    SQUAD_STORE.with(|squad_store| {
-        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
-        match squad.status {
-            SquadType::Open => {
-                if let Some(pos) = squad.members.iter().position(|x| *x == principal.to_text()) {
-                    vec.remove(pos);
-                }
-                squad_store.borrow_mut().insert(id, squad.clone());
-                PROFILE_STORE.with(|profile_store| {
-                    let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
-                    user.squad_badge = "";
                     profile_store.borrow_mut().insert(principal.to_text(), user);
                 }) },
             SquadType::Closed => println!("You can't join a closed squad"),

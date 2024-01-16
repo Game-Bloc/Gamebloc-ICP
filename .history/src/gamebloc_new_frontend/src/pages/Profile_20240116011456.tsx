@@ -41,6 +41,8 @@ const Profile = () => {
     getICPBalance()
   }, [])
 
+  console.log("Redux Balance:", balance)
+
   if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">

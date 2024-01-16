@@ -267,7 +267,7 @@ export const useGameblocHooks = () => {
       if (join) {
         setIsLoading(false)
         popUp(successMsg, route)
-        window.location.reload()
+        navigate(window.location.pathname)
       }
     } catch (err) {
       errorPopUp(errorMsg)
