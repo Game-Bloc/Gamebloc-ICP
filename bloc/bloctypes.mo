@@ -12,6 +12,7 @@ module {
         account_id : Text;
         canister_id: Text;
         squad_badge: Text;
+        // ico_balance : Nat64;
     };
 
     public type Squad = {

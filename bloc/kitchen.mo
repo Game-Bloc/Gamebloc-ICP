@@ -114,6 +114,7 @@ shared ({caller}) actor class Kitchen() {
             })
         };
 
+
         public func icp_balance_icrc1(account : Principal) : async Nat {
             await ICPLedger.icrc1_balance_of({
                 owner = account;
@@ -121,6 +122,7 @@ shared ({caller}) actor class Kitchen() {
             });
         };
 
+        // 
         public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
             await ICPLedger.icrc1_balance_of({
                 owner = caller;
@@ -128,6 +130,7 @@ shared ({caller}) actor class Kitchen() {
             });
         };
 
+        // Takes in the account id as an argument
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
         };
