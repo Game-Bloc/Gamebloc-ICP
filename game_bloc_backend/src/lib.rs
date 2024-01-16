@@ -296,6 +296,26 @@ fn join_squad(principal: Principal, id: String) {
     });
 }
 
+#[update]
+fn leave_or_remove_squad_member(principal: Principal, id: String) {
+    SQUAD_STORE.with(|squad_store| {
+        let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
+        match squad.status {
+            SquadType::Open => {
+                if let Some(pos) = squad.members.iter().position(|x| *x.principal_id == principal.to_text()) {
+                    squad.members.remove(pos);
+                }
+                squad_store.borrow_mut().insert(id, squad.clone());
+                PROFILE_STORE.with(|profile_store| {
+                    let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
+                    user.squad_badge = "".to_string();
+                    profile_store.borrow_mut().insert(principal.to_text(), user);
+                }) },
+            SquadType::Closed => println!("You can't join a closed squad"),
+        }
+    });
+}
+
 
 #[init]
 fn init() {

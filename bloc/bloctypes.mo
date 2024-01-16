@@ -12,6 +12,7 @@ module {
         account_id : Text;
         canister_id: Text;
         squad_badge: Text;
+        // ico_balance : Nat64;
     };
 
     public type Squad = {
@@ -20,7 +21,7 @@ module {
         status: SquadType;
         name: Text;
         tag: Text;
-        members: [Text];
+        members: [Member];
         requests: [Text];
     };
 
@@ -65,4 +66,9 @@ module {
 
 
     public type Status = { #Online; #Offline; };
+
+    public type Member = {
+        name : Text;
+        principal_id : Text;
+    };
 }

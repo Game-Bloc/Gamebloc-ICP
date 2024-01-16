@@ -114,7 +114,7 @@ shared ({caller}) actor class BlocFactory() = this {
 
                 let userId : Principal = await userHandler.createUser(caller);
                 try {
-                  let cook = userHandler.createProfile(id_hash, age, #Online, username, Principal.toText(caller), Principal.toText(userCanister));
+                  // let cook = userHandler.createProfile(id_hash, age, #Online, username, Principal.toText(caller), Principal.toText(userCanister));
                 } catch err {
                   throw (err)
                 };

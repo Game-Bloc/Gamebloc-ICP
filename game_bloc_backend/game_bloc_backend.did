@@ -1,9 +1,10 @@
+type Member = record { name : text; principal_id : text };
 type Result = variant { Ok : nat8; Err : nat8 };
 type Squad = record {
   tag : text;
   id_hash : text;
   status : SquadType;
-  members : vec text;
+  members : vec Member;
   name : text;
   captain : text;
   requests : vec text;
@@ -30,7 +31,6 @@ type TournamentAccount = record {
   tournament_type : TournamentType;
   entry_prize : nat8;
 };
-
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
@@ -52,7 +52,7 @@ type UserProfile = record {
   tournaments_created : nat8;
 };
 service : () -> {
-  add_to_squad : (principal, text) -> ();
+  add_to_squad : (Member, principal, text) -> ();
   close_squad : (text, vec text, principal) -> ();
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
@@ -66,8 +66,10 @@ service : () -> {
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
   is_mod : (text) -> (bool) query;
-  join_squad : (principal, text) -> ();
+  join_squad : (Member, principal, text) -> ();
   join_tournament : (text, text) -> ();
+  join_tournament_with_squad : (text, text) -> ();
+  leave_or_remove_squad_member : (principal, text) -> ();
   open_squad : (text, vec text, principal) -> ();
   set_mod : (text, principal) -> ();
   start_tournament : (text) -> ();
