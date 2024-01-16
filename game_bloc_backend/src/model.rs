@@ -150,6 +150,6 @@ pub struct Squad {
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct Member {
-    pub name: u8,
-    pub principal_id: u64,
+    pub name: String,
+    pub principal_id: String,
 }
