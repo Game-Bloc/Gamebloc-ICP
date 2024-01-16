@@ -297,7 +297,7 @@ fn join_squad(member: Member, principal:Principal, id: String) {
 }
 
 #[update]
-fn leave_or_remove_squad(principal: Principal, id: String) {
+fn leave_or_remove_squad_member(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
         match squad.status {
