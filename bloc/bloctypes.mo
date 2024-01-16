@@ -66,4 +66,9 @@ module {
 
 
     public type Status = { #Online; #Offline; };
+
+    public type Member = {
+        name : Text;
+        principal_id : Text;
+    };
 }

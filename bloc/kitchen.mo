@@ -462,9 +462,9 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func add_to_squad(id : Text) : async () {
+    public shared ({ caller }) func add_to_squad(member: Bloctypes.Member, id : Text) : async () {
         try {
-            return await RustBloc.add_to_squad(caller, id);
+            return await RustBloc.add_to_squad(member, caller, id);
         }
         catch err {
             throw (err);
@@ -489,9 +489,9 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func join_squad(id : Text) : async () {
+    public shared ({ caller }) func join_squad(member : Bloctypes.Member, id : Text) : async () {
         try {
-            return await RustBloc.join_squad(caller, id);
+            return await RustBloc.join_squad(member, caller, id);
         }
         catch err {
             throw (err);
@@ -503,6 +503,14 @@ shared ({caller}) actor class Kitchen() {
             return await RustBloc.get_all_squad();
         }
         catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func leave_or_remove_squad_member(id : Text) : async () {
+        try {
+            return await RustBloc.leave_or_remove_squad_member(caller, id);
+        } catch err {
             throw (err);
         }
     };
