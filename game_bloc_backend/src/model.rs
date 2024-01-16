@@ -144,7 +144,7 @@ pub struct Squad {
     pub status: SquadType,
     pub name: String,
     pub tag: String,
-    pub members: Vec<String>,
+    pub members: Vec<Member>,
     pub requests: Vec<String>,
 }
 
