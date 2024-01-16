@@ -207,7 +207,7 @@ export const useGameblocHooks = () => {
     status: any,
     name: string,
     tag: string,
-    members: string[],
+    principal: string,
     requests: string[],
     successMsg: string,
     errorMsg: string,
@@ -215,19 +215,26 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
+      const members = [
+        {
+          name: captain,
+          principal_id: principal,
+        },
+      ]
       const squad = {
-        id_hash,
-        captain,
-        status,
-        name,
         tag,
+        id_hash,
+        status,
         members,
+        name,
+        captain,
         requests,
       }
       const _squad = await whoamiActor.create_squad(squad)
       if (_squad) {
         popUp(successMsg, route)
         setIsLoading(false)
+        window.location.reload()
       } else {
         setIsLoading(false)
         errorPopUp(errorMsg)
@@ -257,13 +264,19 @@ export const useGameblocHooks = () => {
 
   const joinSquad = async (
     id: string,
+    member: string,
+    principal: string,
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join = await whoamiActor.join_squad(id)
+      const user = {
+        name: member,
+        principal_id: principal,
+      }
+      const join = await whoamiActor.join_squad(user, id)
       setIsLoading(false)
       popUp(successMsg, route)
       window.location.reload()

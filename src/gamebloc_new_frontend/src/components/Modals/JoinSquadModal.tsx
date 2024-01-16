@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import ClipLoader from "react-spinners/ClipLoader"
+import { useAppSelector } from "../../redux/hooks"
 
 interface Props {
   modal: () => void
@@ -17,6 +18,8 @@ const JoinSquadModal = ({ modal }: Props) => {
   const [squadId, setSquadId] = useState<string>("")
   const { isLoading, joinSquad } = useGameblocHooks()
   const [color, setColor] = useState("#ffffff")
+  const username = useAppSelector((state) => state.userProfile.username)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const onIdChange = (e: any) => {
     e.preventDefault()
@@ -25,7 +28,14 @@ const JoinSquadModal = ({ modal }: Props) => {
   }
 
   const join_Squad = () => {
-    joinSquad(squadId, "Squad Joined", "Invalid Squad Id", "/dashboard")
+    joinSquad(
+      squadId,
+      username,
+      principal,
+      "Squad Joined",
+      "Invalid Squad Id",
+      "/dashboard",
+    )
   }
 
   return (

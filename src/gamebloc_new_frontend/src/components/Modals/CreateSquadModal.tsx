@@ -20,6 +20,7 @@ const CreateSquadModal = ({ modal }: Props) => {
   const [tagName, setTagName] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const captain = useAppSelector((state) => state.userProfile.username)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
   const { isLoading, createSquad } = useGameblocHooks()
 
   const generateHash = () => {
@@ -52,7 +53,7 @@ const CreateSquadModal = ({ modal }: Props) => {
       { Open: null },
       squadName,
       tagName,
-      [captain],
+      principal,
       [],
       "Squad Created",
       "Error, try again",
