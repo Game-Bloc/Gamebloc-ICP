@@ -53,7 +53,7 @@ const ViewSquadModal = ({ modal, data }: Props) => {
                     </div>
                     <div className="mt-[1.5rem] mb-[1.5rem] border border-solid border-[#2E3438] w-full" />
                     <div className="flex flex-col gap-4">
-                      {data.members.map((gamer: string, index: any) => (
+                      {data.members.map((gamer: any, index: any) => (
                         <MemberCard
                           key={index}
                           gamer={gamer}

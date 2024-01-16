@@ -43,20 +43,16 @@ const Squad = () => {
       </div>
     )
   } else {
-    const gamerInSquad = SquadsData.some(
-      (player: any) =>
-        player.members.includes(principal) || player.members.includes(username),
+    const gamerInSquad = SquadsData.some((player: any) =>
+      player.members.some((member: any) => member.name === username),
     )
+    console.log(gamerInSquad)
     return (
       <div>
         {gamerInSquad ? (
           <div className="flex flex-col gap-4 w-full mt-4">
             {SquadsData.filter((player: any) =>
-              player.members.some(
-                (index: any) =>
-                  index.includes(username) ||
-                  player.members.includes(principal),
-              ),
+              player.members.some((index: any) => index.name === username),
             ).map((data: any) => (
               <SquadCard
                 key={data.id_hash}

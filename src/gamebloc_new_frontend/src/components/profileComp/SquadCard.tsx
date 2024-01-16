@@ -46,11 +46,11 @@ const SquadCard = ({ view, data, viewModal, handleViewSquad }: Props) => {
               }}
             >
               {data.members.map((gamer: any, index: any) => (
-                <Tooltip key={index} title={gamer} placement="top">
+                <Tooltip key={index} title={gamer.name} placement="top">
                   <Avatar
                     style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
                   >
-                    {gamer.substring(0, 2).toUpperCase()}
+                    {gamer.name.substring(0, 2).toUpperCase()}
                   </Avatar>
                 </Tooltip>
               ))}
