@@ -114,6 +114,7 @@ shared ({caller}) actor class Kitchen() {
             })
         };
 
+
         public func icp_balance_icrc1(account : Principal) : async Nat {
             await ICPLedger.icrc1_balance_of({
                 owner = account;
@@ -121,6 +122,7 @@ shared ({caller}) actor class Kitchen() {
             });
         };
 
+        // 
         public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
             await ICPLedger.icrc1_balance_of({
                 owner = caller;
@@ -128,6 +130,7 @@ shared ({caller}) actor class Kitchen() {
             });
         };
 
+        // Takes in the account id as an argument
         public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
             await ICPIndex.icrc1_balance_of(account);
         };
@@ -459,9 +462,9 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func add_to_squad(id : Text) : async () {
+    public shared ({ caller }) func add_to_squad(member: Bloctypes.Member, id : Text) : async () {
         try {
-            return await RustBloc.add_to_squad(caller, id);
+            return await RustBloc.add_to_squad(member, caller, id);
         }
         catch err {
             throw (err);
@@ -486,9 +489,9 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func join_squad(id : Text) : async () {
+    public shared ({ caller }) func join_squad(member : Bloctypes.Member, id : Text) : async () {
         try {
-            return await RustBloc.join_squad(caller, id);
+            return await RustBloc.join_squad(member, caller, id);
         }
         catch err {
             throw (err);
@@ -500,6 +503,14 @@ shared ({caller}) actor class Kitchen() {
             return await RustBloc.get_all_squad();
         }
         catch err {
+            throw (err);
+        }
+    };
+
+    public shared ({ caller }) func leave_or_remove_squad_member(id : Text) : async () {
+        try {
+            return await RustBloc.leave_or_remove_squad_member(caller, id);
+        } catch err {
             throw (err);
         }
     };
