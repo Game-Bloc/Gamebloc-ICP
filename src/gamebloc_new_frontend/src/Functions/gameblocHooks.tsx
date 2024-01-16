@@ -289,8 +289,29 @@ export const useGameblocHooks = () => {
     }
   }
 
-
-  
+  const joinTournamentSqaud = async (
+    squad_id: string,
+    id: string,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      const join = await whoamiActor.join_tournament_with_squad(squad_id, id)
+      if (join) {
+        setIsLoading(false)
+        popUp(successMsg, route)
+        window.location.reload()
+      }
+    } catch (err) {
+      errorPopUp(errorMsg)
+      setIsLoading(false)
+      console.log("Error joining tournament:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return {
     isLoading,
@@ -305,5 +326,6 @@ export const useGameblocHooks = () => {
     createSquad,
     getICPBalance,
     joinSquad,
+    joinTournamentSqaud,
   }
 }

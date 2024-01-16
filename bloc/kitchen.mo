@@ -402,6 +402,7 @@ shared ({caller}) actor class Kitchen() {
         
     };
 
+
     public shared ({caller}) func end_tournament(id : Text, name : [Text]) : (){
         try {
             await RustBloc.end_tournament(id, name, caller);
@@ -444,6 +445,7 @@ shared ({caller}) actor class Kitchen() {
             throw (err);
         }
     };
+
 
     public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
         try {
@@ -492,6 +494,15 @@ shared ({caller}) actor class Kitchen() {
     public shared ({ caller }) func join_squad(member : Bloctypes.Member, id : Text) : async () {
         try {
             return await RustBloc.join_squad(member, caller, id);
+        }
+        catch err {
+            throw (err);
+        }
+    };
+
+    public func join_tournament_with_squad(squad_id : Text, id : Text) : async () {
+        try {
+            return await RustBloc.join_tournament_with_squad(squad_id, id);
         }
         catch err {
             throw (err);

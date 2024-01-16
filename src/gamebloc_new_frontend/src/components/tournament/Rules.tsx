@@ -3,6 +3,8 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { useParams } from "react-router-dom"
+import withReactContent from "sweetalert2-react-content"
+import Swal from "sweetalert2"
 interface Props {
   data: any
 }
@@ -10,9 +12,12 @@ interface Props {
 const Rules = ({ data }: Props) => {
   const { id } = useParams()
   const [color, setColor] = useState("#ffffff")
+  const MySwal = withReactContent(Swal)
   const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
-  const { isLoading, joinTournament } = useGameblocHooks()
+  const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
+  const squad_data = useAppSelector((state) => state.squad)
+  const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
 
   const override = {
     display: "block",
@@ -20,14 +25,31 @@ const Rules = ({ data }: Props) => {
     borderColor: "white",
   }
 
+  const errorPopUp = (errorMsg: string) => {
+    MySwal.fire({
+      position: "center",
+      icon: "error",
+      text: errorMsg,
+      showConfirmButton: true,
+      background: "#01070E",
+      color: "#fff",
+    })
+  }
+
   const join = () => {
-    joinTournament(
-      gamerName,
-      id,
-      "Tournament Joined",
-      "Error, try again.",
-      "/dashboard",
-    )
+    if (squad_data.some((player: any) => player.captain == owner)) {
+      joinTournamentSqaud(
+        squad_id,
+        id,
+        "Tournament Joined",
+        "Error, try again.",
+        "",
+      )
+    } else {
+      errorPopUp(
+        "Only a squad captain can join a tournament on behalf of a squad.",
+      )
+    }
   }
 
   return (
