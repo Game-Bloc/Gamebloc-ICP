@@ -26,7 +26,6 @@ const Profile = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
-  const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
   const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
@@ -40,6 +39,8 @@ const Profile = () => {
     getProfile()
     getICPBalance()
   }, [])
+
+  console.log("Redux Balance:", balance)
 
   if (isLoadingProfile) {
     return (
@@ -103,7 +104,7 @@ const Profile = () => {
 
                     <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
-                    <div className="mt-[.5rem] gap-4 flex flex-col md:flex-row md:flex-wrap ">
+                    <div className="mt-[.5rem] gap-4 flex flex-col md:flex-row ">
                       <div className="flex flex-col justify-start">
                         <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                           Principal I.D{" "}
@@ -126,20 +127,6 @@ const Profile = () => {
                           </h2>
                         </div>
                       </div>
-
-                      {squadId !== "" && (
-                        <div className="flex flex-col justify-start">
-                          <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                            Squad I.D{" "}
-                          </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
-                            <Copy textToCopy={squadId} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
-                              {squadId}
-                            </h2>
-                          </div>
-                        </div>
-                      )}
                     </div>
                   </div>
 
