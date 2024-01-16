@@ -21,7 +21,7 @@ module {
         status: SquadType;
         name: Text;
         tag: Text;
-        members: [Text];
+        members: [Member];
         requests: [Text];
     };
 
