@@ -155,6 +155,15 @@ fn join_tournament(name: String, id: String) {
 }
 
 #[update]
+fn join_tournament_with_squad(tournament_id: String, id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
+        tournament.squad.push(tournament_id);
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+
+#[update]
 fn set_mod(name: String, identity: Principal) {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
