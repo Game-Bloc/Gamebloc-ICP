@@ -144,12 +144,6 @@ pub struct Squad {
     pub status: SquadType,
     pub name: String,
     pub tag: String,
-    pub members: Vec<Member>,
+    pub members: Vec<String>,
     pub requests: Vec<String>,
-}
-
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
-pub struct Member {
-    pub name: u8,
-    pub principal_id: u64,
 }

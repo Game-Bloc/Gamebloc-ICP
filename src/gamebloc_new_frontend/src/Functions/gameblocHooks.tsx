@@ -264,11 +264,9 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const join = await whoamiActor.join_squad(id)
-      if (join) {
-        setIsLoading(false)
-        popUp(successMsg, route)
-        window.location.reload()
-      }
+      setIsLoading(false)
+      popUp(successMsg, route)
+      window.location.reload()
     } catch (err) {
       errorPopUp(errorMsg)
       setIsLoading(false)

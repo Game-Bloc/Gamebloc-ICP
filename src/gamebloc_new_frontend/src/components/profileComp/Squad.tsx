@@ -15,6 +15,7 @@ const Squad = () => {
   const { updateAllSquads } = useUpdateAllSquad()
   const SquadsData = useAppSelector((state) => state.squad)
   const username = useAppSelector((state) => state.userProfile.username)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const handleModal = () => {
     setModal(!modal)
@@ -42,15 +43,20 @@ const Squad = () => {
       </div>
     )
   } else {
-    const gamerInSquad = SquadsData.some((player: any) =>
-      player.members.includes(username),
+    const gamerInSquad = SquadsData.some(
+      (player: any) =>
+        player.members.includes(principal) || player.members.includes(username),
     )
     return (
       <div>
         {gamerInSquad ? (
           <div className="flex flex-col gap-4 w-full mt-4">
             {SquadsData.filter((player: any) =>
-              player.members.some((index: any) => index.includes(username)),
+              player.members.some(
+                (index: any) =>
+                  index.includes(username) ||
+                  player.members.includes(principal),
+              ),
             ).map((data: any) => (
               <SquadCard
                 key={data.id_hash}

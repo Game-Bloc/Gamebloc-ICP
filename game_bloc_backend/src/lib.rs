@@ -225,11 +225,11 @@ fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
 }
 
 #[update]
-fn add_to_squad(member: Member, principal: Principal, id: String) {
+fn add_to_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {
-            squad.members.push(member);
+            squad.members.push(principal.to_text());
             squad_store.borrow_mut().insert(id, squad.clone());
             PROFILE_STORE.with(|profile_store| {
                 let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
@@ -280,11 +280,11 @@ fn open_squad(id: String, names: Vec<String>, principal: Principal) {
 }
 
 #[update]
-fn join_squad(member: Member, principal:Principal, id: String) {
+fn join_squad(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         match squad.status {
-            SquadType::Open => { squad.members.push(member);
+            SquadType::Open => { squad.members.push(principal.to_text());
                 squad_store.borrow_mut().insert(id, squad.clone());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();

@@ -19,7 +19,7 @@ const MemberCard = ({ gamer, captain }: Props) => {
             {gamer.substring(0, 2).toUpperCase()}
           </Avatar>
         </ConfigProvider>
-        <p className="text-white text-[.8rem] ml-2">{gamer}</p>
+        <p className="text-white text-[.8rem] ml-2">{gamer.substring(0, 10)}</p>
       </div>
       {gamer == captain ? (
         <p className="text-white text-[.6rem]">Squad Captain</p>

@@ -38,16 +38,18 @@ const SquadCard = ({ view, data, viewModal, handleViewSquad }: Props) => {
             <Avatar.Group
               maxCount={3}
               maxPopoverTrigger="click"
-              size="small"
+              size="default"
               maxStyle={{
-                color: "#f56a00",
-                backgroundColor: "#fde3cf",
+                color: "#D1FADF",
+                backgroundColor: "#039855",
                 cursor: "pointer",
               }}
             >
               {data.members.map((gamer: any, index: any) => (
                 <Tooltip key={index} title={gamer} placement="top">
-                  <Avatar style={{ backgroundColor: "#f56a00" }}>
+                  <Avatar
+                    style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
+                  >
                     {gamer.substring(0, 2).toUpperCase()}
                   </Avatar>
                 </Tooltip>
