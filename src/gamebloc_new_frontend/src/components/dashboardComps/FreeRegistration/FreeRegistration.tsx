@@ -53,7 +53,7 @@ const FreeRegistration = () => {
         {nodata ? (
           <div className="w-full flex flex-col justify-center mt-20 bg-[#040D17] p-8 items-center rounded-[1.5rem] h-[15rem]">
             <h2 className="font-valorant text-sm text-center sm:text-lg md:text-xl text-white">
-              There is not active tournament yet !
+              There is no active tournament yet !
             </h2>
             <p className=" mb-4 mt-4 text-[0.7rem] text-center text-white xl:text-[1rem] ">
               {" "}
