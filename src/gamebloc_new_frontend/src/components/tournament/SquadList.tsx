@@ -14,33 +14,37 @@ const SquadList = ({ data }: Props) => {
         <h2 className="text-white text-sm mb-2">
           {data.name} [{data.tag}]
         </h2>
-        {data.members.map((list: any) => (
-          <ConfigProvider
-            key={list.principal_id}
-            theme={{
-              algorithm: theme.darkAlgorithm,
+
+        <ConfigProvider
+          theme={{
+            algorithm: theme.darkAlgorithm,
+          }}
+        >
+          <Avatar.Group
+            maxCount={3}
+            maxPopoverTrigger="click"
+            size="small"
+            maxStyle={{
+              color: "#f56a00",
+              backgroundColor: "#fde3cf",
+              cursor: "pointer",
             }}
           >
-            <Avatar.Group
-              maxCount={3}
-              maxPopoverTrigger="click"
-              size="small"
-              maxStyle={{
-                color: "#f56a00",
-                backgroundColor: "#fde3cf",
-                cursor: "pointer",
-              }}
-            >
-              <Tooltip title={list.name} placement="top">
+            {data.members.map((list: any) => (
+              <Tooltip
+                key={list.principal_id}
+                title={list.name}
+                placement="top"
+              >
                 <Avatar
                   style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
                 >
                   {list.name.substring(0, 2).toUpperCase()}
                 </Avatar>
               </Tooltip>
-            </Avatar.Group>
-          </ConfigProvider>
-        ))}
+            ))}
+          </Avatar.Group>
+        </ConfigProvider>
       </div>
     </>
   )
