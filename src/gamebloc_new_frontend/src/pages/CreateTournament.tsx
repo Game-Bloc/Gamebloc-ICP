@@ -102,7 +102,7 @@ const CreateTournament = () => {
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     // Can not select days before today and today
-    // return current && current < dayjs().endOf("day")
+    return current && current < dayjs().endOf("day")
     return null
   }
 
@@ -204,36 +204,36 @@ const CreateTournament = () => {
   }
 
   const addTournament = () => {
-    // if (
-    //   (tourType === "Prepaid" && balance > +poolPrize) ||
-    //   (tourType === "Crowdfunded" && balance > +entryPrice)
-    // ) {
-    createTournament(
-      1,
-      tournamentID,
-      { AcceptingPlayers: null },
-      name,
-      game_name,
-      [],
-      [],
-      [],
-      BigInt(+poolPrize),
-      tournamentRules,
-      startingDate,
-      variantType,
-      +entryPrice,
-      noOfWinners,
-      BigInt(noOfUsers),
-      gameType,
-      endDate,
-      title,
-      "You have successfully created a Tournament",
-      "Try again something went wrong",
-      "/dashboard",
-    )
-    // } else {
-    //   errorPopUp("Your ICP balance is low, pls fund your account.")
-    // }
+    if (
+      (tourType === "Prepaid" && balance > +poolPrize) ||
+      (tourType === "Crowdfunded" && balance > +entryPrice)
+    ) {
+      createTournament(
+        1,
+        tournamentID,
+        { AcceptingPlayers: null },
+        name,
+        game_name,
+        [],
+        [],
+        [],
+        BigInt(+poolPrize),
+        tournamentRules,
+        startingDate,
+        variantType,
+        +entryPrice,
+        noOfWinners,
+        BigInt(noOfUsers),
+        gameType,
+        endDate,
+        title,
+        "You have successfully created a Tournament",
+        "Try again something went wrong",
+        "/dashboard",
+      )
+    } else {
+      errorPopUp("Your ICP balance is low, pls fund your account.")
+    }
   }
 
   return (
