@@ -299,11 +299,8 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const join = await whoamiActor.join_tournament_with_squad(squad_id, id)
-      // if (join) {
       setIsLoading(false)
       popUp(successMsg, route)
-
-      // }
     } catch (err) {
       errorPopUp(errorMsg)
       setIsLoading(false)
