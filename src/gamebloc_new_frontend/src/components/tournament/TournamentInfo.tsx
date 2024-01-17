@@ -94,6 +94,8 @@ const TournamentInfo = ({ data }: Props) => {
 
   const join = () => {
     if (squad_data.some((player: any) => player.captain == owner)) {
+      console.log("squd_id:", squad_id)
+      console.log("id:", id)
       joinTournamentSqaud(
         squad_id,
         id,

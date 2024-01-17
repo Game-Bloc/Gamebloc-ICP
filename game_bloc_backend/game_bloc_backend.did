@@ -23,7 +23,7 @@ type TournamentAccount = record {
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
-  squad : opt vec Squad;
+  squad : vec Squad;
   game_type : text;
   starting_date : text;
   no_of_participants : nat;

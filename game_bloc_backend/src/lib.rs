@@ -157,10 +157,12 @@ fn join_tournament(name: String, id: String) {
 #[update]
 fn join_tournament_with_squad(squad_id: String, id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap_or_default();
-
-        tournament.clone().squad.expect("No squad").push(get_squad(squad_id));
-        tournament_store.borrow_mut().insert(id, tournament);
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        SQUAD_STORE.with(|squad_store| {
+        let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+        tournament.squad.push(squad);
+    });
+     tournament_store.borrow_mut().insert(id, tournament);
     });
 }
 
