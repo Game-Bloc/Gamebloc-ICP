@@ -6,6 +6,8 @@ import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
 import Nat64 "mo:base/Nat64";
+import TrieMap "mo:base/TrieMap";
+import Text "mo:base/Text";
 
 import AccountIdentifier "mo:principal/AccountIdentifier";
 import AccountID "mo:principal/blob/AccountIdentifier";
@@ -24,14 +26,34 @@ shared ({caller}) actor class Kitchen() {
 
         private stable var userCanisterId : Principal = caller;
 
-        var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+        /// Backuo for the Gamebloc backend in the kitchen canister
+        stable var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+        stable var TournamentEntries : [(Principal, Bloctypes.TournamentAccount)] = [];
+        stable var IDEntries : [(Text, Text)] = [];
+        stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
+        
 
+        var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+
+        var ID_STORE =TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
+        var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
+
+        /// stabilizing the motoko backup
+        system func preupgrade(){
+
+        };
+
+        system func postupgrade(){
+
+        };
 
         func createOneProfile(id_hash : Text, age : Nat8, username: Text, caller : Principal) {
             // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
             ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller),  AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""));
         };
+
+       
 
         public shared ({caller}) func createprofile(id_hash : Text, age : Nat8, username: Text) : async Result.Result<Text, Text> {
             // call the balnce function to get and set the balance of newly registered users
@@ -153,9 +175,13 @@ shared ({caller}) actor class Kitchen() {
         // /                        /
         // --------------------------
 
-        public func getAccountTransactions() : () {
-            
-        };
+        // public func getAccountTransactions(caller : Principal, max_results : Nat64, start : ?Nat64) : async IndexTypes.GetAccountIdentifierTransactionsResult {
+        //     return await ICPIndex.get_account_identifier_transactions({
+        //         max_results = max_results;
+        //         start = start;
+        //         account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
+        //     });
+        // };
 
         public func get_account_identifier_balance(aid : Text) : async Nat64 {
             await ICPIndex.get_account_identifier_balance(aid);
@@ -386,7 +412,8 @@ shared ({caller}) actor class Kitchen() {
 
     public shared ({caller}) func createUserProfile(id_hash : Text, age : Nat8, username: Text, time : Text, squad_badge : Text ) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online,  username,  Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge);
-        try {
+        try { 
+            ProfileHashMap.put(caller, profile);
             return await RustBloc.create_profile(profile, caller);
         } catch err {
             throw (err);
@@ -395,6 +422,7 @@ shared ({caller}) actor class Kitchen() {
 
     public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
+            TournamentHashMap.put(caller, tournamentAccount);
             await RustBloc.create_tournament(tournamentAccount);
         } catch err {
             throw (err);
@@ -457,6 +485,7 @@ shared ({caller}) actor class Kitchen() {
 
     public shared ({ caller }) func create_squad(squad : Bloctypes.Squad) : async Bloctypes.Result {
         try {
+            SQUAD_STORE.put(Principal.toText(caller), squad);
             return await RustBloc.create_squad(squad, caller);
         }
         catch err {
@@ -464,6 +493,7 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
+    // *
     public shared ({ caller }) func add_to_squad(member: Bloctypes.Member, id : Text) : async () {
         try {
             return await RustBloc.add_to_squad(member, caller, id);
@@ -473,6 +503,7 @@ shared ({caller}) actor class Kitchen() {
         }
     };
 
+    // *
     public shared ({ caller }) func close_squad(names : [Text], id : Text) : async () {
         try {
             return await RustBloc.close_squad(id, names, caller);
@@ -565,6 +596,22 @@ shared ({caller}) actor class Kitchen() {
     // public func start_tournament(id : Text) : (){
 
     // };
+
+    public func get_number_of_squads() : async Nat {
+        ID_STORE.size();
+    };
+
+    public func get_number_of_unique_users() : async Nat {
+        ProfileHashMap.size();
+    };
+
+    public func get_total_number_of_tournament() : async Nat {
+        TournamentHashMap.size();
+    };
+
+    public func get_total_number_of_squads() : async Nat {
+        SQUAD_STORE.size();
+    }
 
 
 
