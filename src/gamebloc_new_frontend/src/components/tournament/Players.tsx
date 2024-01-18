@@ -56,9 +56,22 @@ const Players = ({ data }: Props) => {
   return (
     <div className="">
       <div className="flex flex-col mx-4 max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
-        {data.squad.map((data) => (
-          <SquadList key={data.id_hash} data={data} />
-        ))}
+        {data.squad.length == 0 ? (
+          <div className="w-full flex justify-center mt-[3rem]">
+            <div className="flex flex-col mb-4 ">
+              <img src={`empty.svg`} alt="" />
+              <p className="text-white text-[.8rem] mt-8 text-center">
+                No Squad has joined this tournament.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div>
+            {data.squad.map((data) => (
+              <SquadList key={data.id_hash} data={data} />
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex flex-col w-full justify-center items-center">
         {Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
