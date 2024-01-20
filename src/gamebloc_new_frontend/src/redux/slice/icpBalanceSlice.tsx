@@ -6,7 +6,7 @@ export interface IcpBalanceState {
 }
 
 const initialState: IcpBalanceState = {
-  balance: 1,
+  balance: 0,
 }
 
 export const icpBalanceSlice = createSlice({

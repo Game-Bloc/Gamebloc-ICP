@@ -2,7 +2,7 @@ import { Avatar, ConfigProvider, theme } from "antd"
 import React from "react"
 
 interface Props {
-  gamer: string
+  gamer: any
   captain: string
 }
 
@@ -16,12 +16,12 @@ const MemberCard = ({ gamer, captain }: Props) => {
           }}
         >
           <Avatar style={{ backgroundColor: "#f56a00" }}>
-            {gamer.substring(0, 2).toUpperCase()}
+            {gamer.name.substring(0, 2).toUpperCase()}
           </Avatar>
         </ConfigProvider>
-        <p className="text-white text-[.8rem] ml-2">{gamer}</p>
+        <p className="text-white text-[.8rem] ml-2">{gamer.name}</p>
       </div>
-      {gamer == captain ? (
+      {gamer.name == captain ? (
         <p className="text-white text-[.6rem]">Squad Captain</p>
       ) : (
         <div> </div>

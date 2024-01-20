@@ -14,11 +14,7 @@ const RecommendedCard = ({ data, index }: Props) => {
       onClick={() => navigate(`/active-tournament/${data.id_hash}`)}
       className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
     >
-      <img
-        src={`${CodImgs[Math.floor(Math.random() * CodImgs.length)]}`}
-        alt=""
-        className="rounded-[12px] m-0 h-[15rem] 2xl:h-[18rem] w-full"
-      />
+      <img src={`reloaded.svg`} alt="" className="rounded-[12px] m-0  w-full" />
       <div className="mt-[.5rem] p-[.5rem] flex flex-col w-full">
         <div className="flex mb-4 items-center">
           <img src={`check-yellow.png`} alt="" className=" w-[1rem]  m-0" />

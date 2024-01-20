@@ -207,7 +207,7 @@ export const useGameblocHooks = () => {
     status: any,
     name: string,
     tag: string,
-    members: string[],
+    principal: string,
     requests: string[],
     successMsg: string,
     errorMsg: string,
@@ -215,19 +215,26 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
+      const members = [
+        {
+          name: captain,
+          principal_id: principal,
+        },
+      ]
       const squad = {
-        id_hash,
-        captain,
-        status,
-        name,
         tag,
+        id_hash,
+        status,
         members,
+        name,
+        captain,
         requests,
       }
       const _squad = await whoamiActor.create_squad(squad)
       if (_squad) {
         popUp(successMsg, route)
         setIsLoading(false)
+        window.location.reload()
       } else {
         setIsLoading(false)
         errorPopUp(errorMsg)
@@ -257,22 +264,47 @@ export const useGameblocHooks = () => {
 
   const joinSquad = async (
     id: string,
+    member: string,
+    principal: string,
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join = await whoamiActor.join_squad(id)
-      if (join) {
-        setIsLoading(false)
-        popUp(successMsg, route)
-        window.location.reload()
+      const user = {
+        name: member,
+        principal_id: principal,
       }
+      const join = await whoamiActor.join_squad(user, id)
+      setIsLoading(false)
+      popUp(successMsg, route)
+      window.location.reload()
     } catch (err) {
       errorPopUp(errorMsg)
       setIsLoading(false)
       console.log("Error joining squad:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const joinTournamentSqaud = async (
+    squad_id: string,
+    id: string,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      const join = await whoamiActor.join_tournament_with_squad(squad_id, id)
+      setIsLoading(false)
+      popUp(successMsg, route)
+    } catch (err) {
+      errorPopUp(errorMsg)
+      setIsLoading(false)
+      console.log("Error joining tournament:", err)
     } finally {
       setIsLoading(false)
     }
@@ -291,5 +323,6 @@ export const useGameblocHooks = () => {
     createSquad,
     getICPBalance,
     joinSquad,
+    joinTournamentSqaud,
   }
 }

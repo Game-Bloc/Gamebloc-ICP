@@ -21,7 +21,7 @@ module {
         status: SquadType;
         name: Text;
         tag: Text;
-        members: [Text];
+        members: [Member];
         requests: [Text];
     };
 
@@ -50,7 +50,7 @@ module {
         tournament_rules : Text;
         tournament_type : TournamentType;
         game : Text;
-        squad : ?[Squad];
+        squad : [Squad];
         user : [Text];
         winers : [Text];
         total_prize : Nat;
