@@ -19,7 +19,7 @@ const Header = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
-  const { getProfile, isLoadingProfile } = useGameblocHooks()
+  const { getProfile } = useGameblocHooks()
   const { logout } = useAuth()
 
   useEffect(() => {
