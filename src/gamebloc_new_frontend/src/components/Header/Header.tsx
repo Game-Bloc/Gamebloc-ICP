@@ -12,6 +12,7 @@ import { useGameblocHooks } from "../../Functions/gameblocHooks"
 const Header = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(false)
+  const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
@@ -48,8 +49,8 @@ const Header = () => {
           onClick={() => setOpen(!open)}
         />
         <div
-          onClick={() => navigate("/profile")}
-          className="flex items-center cursor-pointer rounded-[9999px] bg-[#fff]/10"
+          onClick={() => setProfileModal(!profileModal)}
+          className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
         >
           <Avatar
             style={{
@@ -65,6 +66,16 @@ const Header = () => {
           <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
             {username}
           </p>
+          {profileModal && (
+            <div className="absolute w-60 bg-[#030C15] h-64 flex flex-col top-8 right-4 p-4">
+              <div
+                onClick={() => navigate("/profile")}
+                className="hover:bg-[#fff]/10 w-full p-3"
+              >
+                <p className="text-base text-white "> Profile</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {open && (
