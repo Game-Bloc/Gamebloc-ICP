@@ -23,11 +23,14 @@ const GameblocTournaments = () => {
         </div>
         <div className=" lg:flex w-full lg:justify-center lg:items-center">
           <div className="mt-8 gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 2xl:gap-[3rem]">
-            <div className="relative flex cursor-pointer ">
+            <div
+              onClick={() => setModal(true)}
+              className="relative flex cursor-pointer "
+            >
               <img src={`Gcard1.png`} alt="" />
               <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
                 <p className="text-white text-[0.7rem] sm:text-sm ">
-                  Registration: Open
+                  Registration: Coming
                 </p>
               </div>
             </div>

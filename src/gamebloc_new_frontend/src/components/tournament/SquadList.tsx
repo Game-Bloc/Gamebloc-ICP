@@ -2,41 +2,51 @@ import React from "react"
 import { Avatar, ConfigProvider, Tooltip, theme } from "antd"
 import { AntDesignOutlined, UserOutlined } from "@ant-design/icons"
 
-const SquadList = () => {
+interface Props {
+  data: any
+}
+
+const SquadList = ({ data }: Props) => {
   return (
-    <div className="flex flex-col ">
-      <div className="w-full border border-primary-second border-solid my-3" />
-      <h2 className="text-white text-sm mb-2">PeakyFBlinders [pFb]</h2>
-      <ConfigProvider
-        theme={{
-          algorithm: theme.darkAlgorithm,
-        }}
-      >
-        <Avatar.Group
-          maxCount={3}
-          maxPopoverTrigger="click"
-          size="small"
-          maxStyle={{
-            color: "#f56a00",
-            backgroundColor: "#fde3cf",
-            cursor: "pointer",
+    <>
+      <div className="flex flex-col ">
+        <div className="w-full border border-primary-second border-solid my-3" />
+        <h2 className="text-white text-sm mb-2">
+          {data.name} [{data.tag}]
+        </h2>
+
+        <ConfigProvider
+          theme={{
+            algorithm: theme.darkAlgorithm,
           }}
         >
-          <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-          <Avatar style={{ backgroundColor: "#f56a00" }}>K</Avatar>
-          <Tooltip title="Ant User" placement="top">
-            <Avatar
-              style={{ backgroundColor: "#87d068" }}
-              icon={<UserOutlined />}
-            />
-          </Tooltip>
-          <Avatar
-            style={{ backgroundColor: "#1677ff" }}
-            icon={<AntDesignOutlined />}
-          />
-        </Avatar.Group>
-      </ConfigProvider>
-    </div>
+          <Avatar.Group
+            maxCount={3}
+            maxPopoverTrigger="click"
+            size="small"
+            maxStyle={{
+              color: "#f56a00",
+              backgroundColor: "#fde3cf",
+              cursor: "pointer",
+            }}
+          >
+            {data.members.map((list: any) => (
+              <Tooltip
+                key={list.principal_id}
+                title={list.name}
+                placement="top"
+              >
+                <Avatar
+                  style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
+                >
+                  {list.name.substring(0, 2).toUpperCase()}
+                </Avatar>
+              </Tooltip>
+            ))}
+          </Avatar.Group>
+        </ConfigProvider>
+      </div>
+    </>
   )
 }
 

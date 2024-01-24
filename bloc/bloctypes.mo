@@ -50,7 +50,7 @@ module {
         tournament_rules : Text;
         tournament_type : TournamentType;
         game : Text;
-        squad : ?[Squad];
+        squad : [Squad];
         user : [Text];
         winers : [Text];
         total_prize : Nat;

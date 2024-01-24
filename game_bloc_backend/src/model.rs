@@ -60,7 +60,7 @@ pub struct TournamentAccount {
     pub tournament_rules: String,
     pub tournament_type: TournamentType,
     pub game: String,
-    pub squad : Option<Vec<Squad>>,
+    pub squad :Vec<Squad>,
     pub user: Vec<String>,
     pub winers: Vec<String>,
     pub entry_prize: u8,

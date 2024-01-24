@@ -1,13 +1,13 @@
-import React from "react";
-import { RiCloseFill } from "react-icons/ri";
-import { useAuth } from "../../Auth/use-auth-client";
+import React from "react"
+import { RiCloseFill } from "react-icons/ri"
+import { useAuth } from "../../Auth/use-auth-client"
 
 interface Props {
-  modal: () => void;
+  modal: () => void
 }
 
 const LoginModal = ({ modal }: Props) => {
-  const { login, loginNFID } = useAuth();
+  const { login, loginNFID } = useAuth()
 
   return (
     <div>
@@ -41,8 +41,8 @@ const LoginModal = ({ modal }: Props) => {
                   </p>
                   <button
                     onClick={() => {
-                      modal();
-                      login();
+                      modal()
+                      login()
                     }}
                     className="  justify-center  w-full px-6 text-[.6rem] sm:text-base text-black  mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[9999px] items-center cursor-pointer py-3"
                   >
@@ -57,8 +57,8 @@ const LoginModal = ({ modal }: Props) => {
                   </button>
                   <button
                     onClick={() => {
-                      modal();
-                      loginNFID();
+                      modal()
+                      loginNFID()
                     }}
                     className="   justify-center w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[9999px] items-center cursor-pointer py-3"
                   >
@@ -76,8 +76,8 @@ const LoginModal = ({ modal }: Props) => {
                       Do not have an account ?{" "}
                       <span
                         onClick={() => {
-                          modal();
-                          loginNFID();
+                          modal()
+                          login()
                         }}
                         className="text-white/80 hover:underline cursor-pointer lg:text-[.82rem] text-[.7rem]"
                       >
@@ -92,7 +92,7 @@ const LoginModal = ({ modal }: Props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginModal;
+export default LoginModal
