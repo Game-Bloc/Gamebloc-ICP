@@ -87,10 +87,15 @@ const Profile = () => {
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
-                        <div className="flex mt-2">
-                          <p className="text-bold text-[.7rem]   sm:text-[.8rem]  text-[#ffffff]">
-                            ICP Balance: {balance}
+                        <div className="flex items-center  mt-2">
+                          <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
+                            {balance}
                           </p>
+                          <img
+                            src={`Internet-Computer-logo.png`}
+                            className="w-6 h-6 m-0"
+                            alt=""
+                          />
                         </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
@@ -110,19 +115,27 @@ const Profile = () => {
                         </p>
                         <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
                           <Copy textToCopy={principalID} />
-                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {principal}
+                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem]">
+                            {principal
+                              ? principal.substring(0, 7) +
+                                "......" +
+                                principal.substring(58, 64)
+                              : null}
                           </h2>
                         </div>
                       </div>
                       <div className="flex flex-col justify-start">
                         <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                          Account I.D{" "}
+                          Wallet Address{" "}
                         </p>
                         <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
                           <Copy textToCopy={accountId} />
                           <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
-                            {accountId}
+                            {accountId
+                              ? accountId.substring(0, 7) +
+                                "......" +
+                                accountId.substring(58, 64)
+                              : null}
                           </h2>
                         </div>
                       </div>
@@ -135,7 +148,11 @@ const Profile = () => {
                           <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
                             <Copy textToCopy={squadId} />
                             <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
-                              {squadId}
+                              {squadId
+                                ? squadId.substring(0, 7) +
+                                  "......" +
+                                  squadId.substring(58, 64)
+                                : null}
                             </h2>
                           </div>
                         </div>

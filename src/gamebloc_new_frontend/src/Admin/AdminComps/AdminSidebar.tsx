@@ -1,27 +1,27 @@
-import React, { useState } from "react";
-import { HiMenuAlt3 } from "react-icons/hi";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
-import { MdVideogameAsset } from "react-icons/md";
-import { FaAngleDown } from "react-icons/fa";
+import React, { useState } from "react"
+import { HiMenuAlt3 } from "react-icons/hi"
+import { NavLink, Link, useNavigate } from "react-router-dom"
+import { MdDashboard } from "react-icons/md"
+import { MdVideogameAsset } from "react-icons/md"
+import { FaAngleDown } from "react-icons/fa"
 
 const AdminSidebar = () => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false)
+  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const menus = [
-    { name: "Dashboard", link: "/", icon: MdDashboard },
+    { name: "Dashboard", link: "", icon: MdDashboard },
     {
       name: "Tournament",
       link: " ",
       icon: MdVideogameAsset,
       subMenu: [
-        { name: "History", link: "/" },
-        { name: "Activities", link: "/" },
+        { name: "History", link: "" },
+        { name: "Activities", link: "" },
       ],
     },
-  ];
+  ]
 
   return (
     <div
@@ -44,7 +44,7 @@ const AdminSidebar = () => {
               onClick={() => {
                 !menu.subMenu
                   ? navigate(`${menu.link}`)
-                  : setOpenSubMenu(!openSubMenu);
+                  : setOpenSubMenu(!openSubMenu)
               }}
             >
               <div>
@@ -98,7 +98,7 @@ const AdminSidebar = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminSidebar;
+export default AdminSidebar
