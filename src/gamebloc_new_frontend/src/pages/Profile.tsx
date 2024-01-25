@@ -29,7 +29,6 @@ const Profile = () => {
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
-  const textToCopy = "GFHnfhctUYGFYVteyutyu76534FGHJGCJVJHssh4HJY"
   const { getProfile, isLoadingProfile, getICPBalance } = useGameblocHooks()
   const [_date, setDate] = useState<string>("")
 
