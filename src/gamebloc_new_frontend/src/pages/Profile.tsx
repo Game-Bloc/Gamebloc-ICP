@@ -59,14 +59,6 @@ const Profile = () => {
           >
             <div className="m-4 mt-24  ">
               <div className="">
-                {/* <div
-                  onClick={() => navigate(-1)}
-                  className="flex  items-center cursor-pointer"
-                >
-                  <IoIosArrowRoundBack className="text-primary-second" />
-                  <p className="text-primary-second ml-2 text-[0.8rem]">Back</p>
-                </div> */}
-
                 <div className=" sm:ml-4 mt-4  flex flex-col ">
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
