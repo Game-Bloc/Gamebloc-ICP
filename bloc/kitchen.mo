@@ -41,7 +41,7 @@ shared ({caller}) actor class Kitchen() {
 
         /// stabilizing the motoko backup
         system func preupgrade(){
-
+            
         };
 
         system func postupgrade(){
@@ -168,6 +168,10 @@ shared ({caller}) actor class Kitchen() {
                 amount = amount;
             });
         };
+
+        // public shared ({caller}) func get_total_tournament() : async Nat {
+
+        // }
 
         //  --------------------------
         // /                        /
