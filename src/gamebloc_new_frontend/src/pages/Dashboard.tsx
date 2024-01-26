@@ -1,19 +1,19 @@
-import * as React from "react";
-import { useEffect } from "react";
-import Sidebar from "../components/dashboardComps/Sidebar";
-import Header from "../components/Header/Header";
-import Carousel from "../components/dashboardComps/Carousel/Carousell";
-import Recommended from "../components/dashboardComps/Recommended/Recommended";
-import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration";
-import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments";
-import { useGameblocHooks } from "../Functions/gameblocHooks";
+import * as React from "react"
+import { useEffect } from "react"
+import Sidebar from "../components/dashboardComps/Sidebar"
+import Header from "../components/Header/Header"
+import Carousel from "../components/dashboardComps/Carousel/Carousell"
+import Recommended from "../components/dashboardComps/Recommended/Recommended"
+import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
+import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
+import { useGameblocHooks } from "../Functions/gameblocHooks"
 
 const Dashboard = () => {
-  const { getProfile } = useGameblocHooks();
+  const { getProfile } = useGameblocHooks()
 
   useEffect(() => {
-    getProfile();
-  }, []);
+    getProfile()
+  }, [])
 
   return (
     <div className="">
@@ -33,10 +33,10 @@ const Dashboard = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard
 
 {
   /* <div className="">

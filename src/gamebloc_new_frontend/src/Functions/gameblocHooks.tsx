@@ -8,7 +8,11 @@ import {
   updateUserProfile,
 } from "../redux/slice/userProfileSlice"
 import { useAppDispatch } from "../redux/hooks"
-import { IcpBalanceState, updateBalance } from "../redux/slice/icpBalanceSlice"
+import {
+  IcpBalanceState,
+  updateBalance,
+  updateICP,
+} from "../redux/slice/icpBalanceSlice"
 
 export const useGameblocHooks = () => {
   const { whoamiActor } = useAuth()
@@ -81,6 +85,27 @@ export const useGameblocHooks = () => {
     } finally {
       setIsLoading(false)
       return
+    }
+  }
+
+  const getICPrice = async () => {
+    const response = fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
+    )
+    const getPricePromise: any = (await response).json()
+    if (getPricePromise) {
+      getPricePromise
+        .then((data: any) => {
+          const usdValue: number = data["internet-computer"]["usd"]
+          const Icp: any = {
+            currentICPrice: Number(usdValue),
+          }
+          dispatch(updateICP(Icp))
+          console.log(`The current price of ICP is $${usdValue}`)
+        })
+        .catch((error) => {
+          console.error("Error fetching the price:", error)
+        })
     }
   }
 
@@ -252,7 +277,7 @@ export const useGameblocHooks = () => {
       console.log("Balance:", Balance)
       if (Balance) {
         const value = Object.values(Balance)[0]
-        const Icp: IcpBalanceState = {
+        const Icp: any = {
           balance: Number(value),
         }
         dispatch(updateBalance(Icp))
@@ -316,6 +341,7 @@ export const useGameblocHooks = () => {
     updating,
     noData,
     isAccount,
+    getICPrice,
     createAccount,
     createTournament,
     getProfile,
