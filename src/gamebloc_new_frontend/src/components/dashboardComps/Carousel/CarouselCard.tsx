@@ -10,7 +10,7 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
-  // const IC = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  
   // useEffect(() => {
   //   getICPrice()
   //   console.log("IC price", IC)
