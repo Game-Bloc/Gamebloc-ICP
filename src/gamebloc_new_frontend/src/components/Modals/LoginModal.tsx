@@ -47,7 +47,7 @@ const LoginModal = ({ modal }: Props) => {
                     className="  justify-center  w-full px-6 text-[.6rem] sm:text-base text-black  mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[9999px] items-center cursor-pointer py-3"
                   >
                     <img
-                      src={`internet-computer-logo.png`}
+                      src={`Icp.svg`}
                       alt=""
                       className="m-0 w-[.75rem] sm:w-6"
                     />

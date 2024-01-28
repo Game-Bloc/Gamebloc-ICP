@@ -10,7 +10,7 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
-  
+
   // useEffect(() => {
   //   getICPrice()
   //   console.log("IC price", IC)
@@ -37,35 +37,35 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 Price Pool
               </p>
               <div className="flex flex-row justify-center items-center">
-                <img
-                  src={`Icp.png`}
-                  alt=""
-                  className=" w-[1.5rem] sm:w-[2.5rem] m-0 "
-                />
-                <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
+                <p className="sm:font-[500] ml-1  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
                   17
                 </p>
+                <img
+                  src={`Icp.svg`}
+                  alt=""
+                  className=" w-[1rem] ml-[.4rem] sm:w-[2rem] m-0 "
+                />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
                 $200
               </p>
             </div>
-            <div className=" flex flex-col">
-              <p className="mt-4 ml-[1rem] text-[0.6rem] sm:text-sm text-white">
+            <div className=" flex ml-4 flex-col">
+              <p className="mt-4  text-[0.6rem] sm:text-sm text-white">
                 Registration
               </p>
-              <div className="flex flex-row justify-center items-center">
-                <img
-                  src={`Icp.png`}
-                  alt=""
-                  className="w-[1.5rem] sm:w-[2.5rem] m-0"
-                />
-                <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  Free
+              <div className="flex flex-row justify-start items-center">
+                <p className="sm:font-[500]  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
+                  0
                 </p>
+                <img
+                  src={`Icp.svg`}
+                  alt=""
+                  className=" w-[1rem] ml-[.4rem] sm:w-[2rem] m-0 "
+                />
               </div>
-              <p className="font-normal ml-[1rem] text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
-                Free
+              <p className="font-normal  text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
+                $0
               </p>
             </div>
           </div>

@@ -82,11 +82,7 @@ const Profile = () => {
                           <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
                             {balance}
                           </p>
-                          <img
-                            src={`Internet-Computer-logo.png`}
-                            className="w-6 h-6 m-0"
-                            alt=""
-                          />
+                          <img src={`Icp.svg`} className="w-6 h-6 m-0" alt="" />
                         </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
