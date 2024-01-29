@@ -335,6 +335,38 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const sendICP = async (
+    to: string,
+    amount: number,
+    created_at_time: any,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      const tokens = {
+        e8s: BigInt(amount),
+      }
+      const timeStamp = {
+        timestamp_nanos: BigInt(created_at_time),
+      }
+      const send = await whoamiActor.transferICP(to, tokens, timeStamp)
+      if (send) {
+        setIsLoading(false)
+        popUp(successMsg, route)
+      } else {
+        setIsLoading(false)
+        errorPopUp(errorMsg)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      errorPopUp(errorMsg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -350,5 +382,6 @@ export const useGameblocHooks = () => {
     getICPBalance,
     joinSquad,
     joinTournamentSqaud,
+    sendICP,
   }
 }

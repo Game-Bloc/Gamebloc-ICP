@@ -10,6 +10,7 @@ import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { useGetAllSquad } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
+import TransferModal from "../components/Modals/TransferModal"
 
 const items: TabsProps["items"] = [
   {
@@ -21,6 +22,7 @@ const items: TabsProps["items"] = [
 
 const Profile = () => {
   const navigate = useNavigate()
+  const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
@@ -34,6 +36,9 @@ const Profile = () => {
 
   const onChange = (key: string) => {
     console.log(key)
+  }
+  const handleModal = () => {
+    setTransferModal(!transferModal)
   }
   useEffect(() => {
     getProfile()
@@ -63,7 +68,7 @@ const Profile = () => {
                     Your profile
                   </h1>
                   <div className=" flex flex-col w-full sm:w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
-                    <div className="flex ">
+                    <div className="flex">
                       <Avatar
                         style={{
                           backgroundColor: "#f6b8fc",
@@ -90,19 +95,27 @@ const Profile = () => {
                             Member since {date}
                           </p>
                         </div>
+
+                        <button
+                          onClick={() => setTransferModal(!transferModal)}
+                          className="pt-1 pb-[.25rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
+                        >
+                          <p className="font-semibold mr-2">Send </p>
+                          <img src={`Icp.svg`} className="w-6 h-6 m-0" alt="" />
+                        </button>
                       </div>
                     </div>
 
                     <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
-                    <div className="mt-[.5rem] gap-4 flex flex-col md:flex-row md:flex-wrap ">
+                    <div className="mt-[.5rem]  gap-6 flex flex-col md:flex-row md:flex-wrap ">
                       <div className="flex flex-col justify-start">
                         <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                           Principal I.D{" "}
                         </p>
-                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
+                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-[12rem] md:w-[15rem] rounded-md">
                           <Copy textToCopy={principalID} />
-                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem]">
+                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
                             {principal
                               ? principal.substring(0, 7) +
                                 "......" +
@@ -115,9 +128,9 @@ const Profile = () => {
                         <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                           Wallet Address{" "}
                         </p>
-                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
+                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
                           <Copy textToCopy={accountId} />
-                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
+                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                             {accountId
                               ? accountId.substring(0, 7) +
                                 "......" +
@@ -132,9 +145,9 @@ const Profile = () => {
                           <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                             Squad I.D{" "}
                           </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md">
+                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
                             <Copy textToCopy={squadId} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] w-[15rem] md:w-[10rem] whitespace-nowrap overflow-hidden text-ellipsis">
+                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                               {squadId
                                 ? squadId.substring(0, 7) +
                                   "......" +
@@ -170,6 +183,7 @@ const Profile = () => {
             </div>
           </div>
         </section>
+        {transferModal && <TransferModal modal={handleModal} />}
       </div>
     )
   }
