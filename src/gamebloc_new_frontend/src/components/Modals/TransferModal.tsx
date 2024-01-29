@@ -20,7 +20,7 @@ const TransferModal = ({ modal }: Props) => {
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
   const { isLoading, sendICP } = useGameblocHooks()
-  const testing = true
+  
 
   const onSendChange = (e: any) => {
     e.preventDefault()
