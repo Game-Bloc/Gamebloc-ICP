@@ -289,6 +289,7 @@ fn join_squad(member: Member, principal: Principal, id: String) {
         match squad.status {
             SquadType::Open => {
                 squad.members.push(member.clone());
+                let mut tournaments:Vec<TournamentAccount> = Vec::new();
                 TOURNAMENT_STORE.with(|tournament_store| {
                     tournament_store.borrow().iter().for_each(|tournament| {
                         let mut tournament_joined = tournament.1.clone();
@@ -298,7 +299,10 @@ fn join_squad(member: Member, principal: Principal, id: String) {
                                 tournament_joined.squad[position].members.push(member.clone());
                             }
                         });
-                        tournament_store.borrow_mut().insert(tournament_joined.id_hash.clone(), tournament_joined.clone());
+                        tournaments.push(tournament_joined);
+                    });
+                    tournaments.iter().for_each(|tournament| {
+                        tournament_store.borrow_mut().insert(tournament.id_hash.clone(), tournament.clone());
                     });
                 });
                 squad_store.borrow_mut().insert(id, squad.clone());
