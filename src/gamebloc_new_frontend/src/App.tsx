@@ -12,6 +12,7 @@ import ActiveTournament from "./pages/ActiveTournament"
 import Profile from "./pages/Profile"
 import Category from "./pages/Category"
 import TournamentDetails from "./pages/TournamentDetails"
+import AdminProtectedRoute from "./AdminProtectedRoute"
 
 const App = () => {
   const auth = useAppSelector((state) => state.authenticationClient.auth)
@@ -32,7 +33,11 @@ const App = () => {
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
           </Route>
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}
+          >
+            <Route path="/admin-dashboard" element={<Admin />} />
+          </Route>
         </Routes>
       </React.Suspense>
     </div>

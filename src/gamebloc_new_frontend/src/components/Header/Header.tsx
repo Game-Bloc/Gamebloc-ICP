@@ -8,14 +8,19 @@ import { FaAngleDown } from "react-icons/fa"
 import { Avatar } from "antd"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { CiUser } from "react-icons/ci"
+import { PiSignOutThin } from "react-icons/pi"
+import { useAuth } from "../../Auth/use-auth-client"
 
 const Header = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(false)
+  const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
-  const { getProfile, isLoadingProfile } = useGameblocHooks()
+  const { getProfile } = useGameblocHooks()
+  const { logout } = useAuth()
 
   useEffect(() => {
     getProfile()
@@ -48,8 +53,8 @@ const Header = () => {
           onClick={() => setOpen(!open)}
         />
         <div
-          onClick={() => navigate("/profile")}
-          className="flex items-center cursor-pointer rounded-[9999px] bg-[#fff]/10"
+          onClick={() => setProfileModal(!profileModal)}
+          className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
         >
           <Avatar
             style={{
@@ -65,6 +70,24 @@ const Header = () => {
           <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
             {username}
           </p>
+          {profileModal && (
+            <div className="absolute w-60 bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+              <div
+                onClick={() => navigate("/profile")}
+                className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+              >
+                <CiUser className="text-white" />
+                <p className=" ml-4 text-base text-white "> Profile</p>
+              </div>
+              <div
+                onClick={() => logout()}
+                className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+              >
+                <PiSignOutThin className="text-white" />
+                <p className=" ml-4 text-base text-white "> Sign out</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {open && (

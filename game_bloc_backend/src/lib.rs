@@ -1,4 +1,3 @@
-
 use candid::{CandidType, Deserialize, Principal};
 use serde::Serialize;
 use ic_cdk::{post_upgrade, pre_upgrade, query, update, init, storage};
@@ -9,8 +8,11 @@ use ic_cdk_macros::*;
 use ic_websocket_cdk::*;
 
 mod model;
+
 use model::*;
+
 mod serialization_memory_ids;
+
 use serialization_memory_ids::*;
 
 
@@ -159,10 +161,10 @@ fn join_tournament_with_squad(squad_id: String, id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
-        let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-        tournament.squad.push(squad);
-    });
-     tournament_store.borrow_mut().insert(id, tournament);
+            let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+            tournament.squad.push(squad);
+        });
+        tournament_store.borrow_mut().insert(id, tournament);
     });
 }
 
@@ -273,7 +275,6 @@ fn open_squad(id: String, names: Vec<String>, principal: Principal) {
                     SquadType::Open
                 }
             };
-
             squad_store.borrow_mut().insert(id, squad);
         } else {
             println!("you're not admin");
@@ -282,17 +283,31 @@ fn open_squad(id: String, names: Vec<String>, principal: Principal) {
 }
 
 #[update]
-fn join_squad(member: Member, principal:Principal, id: String) {
+fn join_squad(member: Member, principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         match squad.status {
-            SquadType::Open => { squad.members.push(member);
+            SquadType::Open => {
+                squad.members.push(member.clone());
+                TOURNAMENT_STORE.with(|tournament_store| {
+                    tournament_store.borrow().iter().for_each(|tournament| {
+                        let mut tournament_joined = tournament.1.clone();
+                        tournament.1.squad.iter().for_each(|squad| {
+                            if squad.clone().id_hash == id {
+                                let position = tournament.1.squad.iter().position(|r| r.id_hash == id).unwrap();
+                                tournament_joined.squad[position].members.push(member.clone());
+                            }
+                        });
+                        tournament_store.borrow_mut().insert(tournament_joined.id_hash.clone(), tournament_joined.clone());
+                    });
+                });
                 squad_store.borrow_mut().insert(id, squad.clone());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
                     user.squad_badge = squad.id_hash.clone();
                     profile_store.borrow_mut().insert(principal.to_text(), user);
-                }) },
+                })
+            }
             SquadType::Closed => println!("You can't join a closed squad"),
         }
     });
@@ -312,7 +327,8 @@ fn leave_or_remove_squad_member(principal: Principal, id: String) {
                     let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap_or_default();
                     user.squad_badge = "".to_string();
                     profile_store.borrow_mut().insert(principal.to_text(), user);
-                }) },
+                })
+            }
             SquadType::Closed => println!("You can't join a closed squad"),
         }
     });
