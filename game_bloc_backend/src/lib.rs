@@ -291,7 +291,7 @@ fn join_squad(member: Member, principal: Principal, id: String) {
                 squad.members.push(member.clone());
                 TOURNAMENT_STORE.with(|tournament_store| {
                     tournament_store.borrow().iter().for_each(|tournament| {
-                        let mut tournament_joined = tournament_store.borrow().get(&tournament.1.id_hash).cloned().unwrap();
+                        let mut tournament_joined = tournament.1.clone();
                         tournament.1.squad.iter().for_each(|squad| {
                             if squad.clone().id_hash == id {
                                 let position = tournament.1.squad.iter().position(|r| r.id_hash == id).unwrap();
