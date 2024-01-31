@@ -3,6 +3,8 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { RiCloseFill } from "react-icons/ri"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { ulid } from "ulid"
+import withReactContent from "sweetalert2-react-content"
+import Swal from "sweetalert2"
 
 interface Props {
   modal: () => void
@@ -21,6 +23,7 @@ const WelcomeModal = ({ modal }: Props) => {
   const [color, setColor] = useState("#ffffff")
   const [idHash, setIdHash] = useState<string>("")
   const { createAccount, isLoading } = useGameblocHooks()
+  const MySwal = withReactContent(Swal)
   const Squad_badge = ""
 
   const generateDate = () => {
@@ -31,6 +34,17 @@ const WelcomeModal = ({ modal }: Props) => {
     let date = currentMonth + ", " + currentYear + "."
     console.log(date)
     setJoinDate(date)
+  }
+
+  const errorPopUp = (errorMsg: string) => {
+    MySwal.fire({
+      position: "center",
+      icon: "error",
+      text: errorMsg,
+      showConfirmButton: true,
+      background: "#01070E",
+      color: "#fff",
+    })
   }
 
   const generateId = () => {
@@ -51,6 +65,23 @@ const WelcomeModal = ({ modal }: Props) => {
     e.preventDefault()
     const ageInput = e.target.value
     setAge(ageInput)
+  }
+
+  const submit = () => {
+    if (userName.trim() === "" || age.trim() === "") {
+      errorPopUp("Field is empty !")
+    } else {
+      createAccount(
+        idHash,
+        +age,
+        userName,
+        joinDate,
+        Squad_badge,
+        "Account Created",
+        "Error, try again",
+        "/dashboard",
+      )
+    }
   }
 
   useEffect(() => {
@@ -117,18 +148,7 @@ const WelcomeModal = ({ modal }: Props) => {
                   </div>
                   <div className="mt-8">
                     <button
-                      onClick={() =>
-                        createAccount(
-                          idHash,
-                          +age,
-                          userName,
-                          joinDate,
-                          Squad_badge,
-                          "Account Created",
-                          "Error, try again",
-                          "/dashboard",
-                        )
-                      }
+                      onClick={() => submit()}
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
                       <p className="text-[0.65rem] font-bold sm:text-[.85rem]">

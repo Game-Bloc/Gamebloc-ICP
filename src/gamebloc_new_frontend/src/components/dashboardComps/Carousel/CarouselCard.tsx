@@ -1,5 +1,7 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import SoonModal from "../../../components/Modals/SoonModal"
+import { useAppSelector } from "../../../redux/hooks"
+import { useGameblocHooks } from "../../../Functions/gameblocHooks"
 
 interface Props {
   list: any
@@ -7,6 +9,18 @@ interface Props {
 }
 
 const CarouselCard = ({ list, setModal }: Props) => {
+  const { getICPrice } = useGameblocHooks()
+
+  // useEffect(() => {
+  //   getICPrice()
+  //   console.log("IC price", IC)
+  // }, [])
+
+  // const ICvalue = (dollar: number) => {
+  //   const currentICP = (1 / IC) * dollar
+  //   return currentICP.toFixed(2)
+  // }
+
   return (
     <div className="flex">
       <div className="flex flex-col mt-[.8rem] sm:mt-[1.5rem] w-[75%] sm:w-[50%]  mb-4 bg-gradient-to-r from-[#111101]">
@@ -23,35 +37,35 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 Price Pool
               </p>
               <div className="flex flex-row justify-center items-center">
-                <img
-                  src={`Icp.png`}
-                  alt=""
-                  className=" w-[1.5rem] sm:w-[2.5rem] m-0 "
-                />
-                <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  31
+                <p className="sm:font-[500] ml-1  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
+                  17
                 </p>
+                <img
+                  src={`Icp.svg`}
+                  alt=""
+                  className=" w-[1rem] ml-[.4rem] sm:w-[2rem] m-0 "
+                />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                $400
+                $200
               </p>
             </div>
-            <div className=" flex flex-col">
-              <p className="mt-4 ml-[1rem] text-[0.6rem] sm:text-sm text-white">
+            <div className=" flex ml-4 flex-col">
+              <p className="mt-4  text-[0.6rem] sm:text-sm text-white">
                 Registration
               </p>
-              <div className="flex flex-row justify-center items-center">
-                <img
-                  src={`Icp.png`}
-                  alt=""
-                  className="w-[1.5rem] sm:w-[2.5rem] m-0"
-                />
-                <p className="sm:font-[500] ml-[.2rem] text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  Free
+              <div className="flex flex-row justify-start items-center">
+                <p className="sm:font-[500]  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
+                  0
                 </p>
+                <img
+                  src={`Icp.svg`}
+                  alt=""
+                  className=" w-[1rem] ml-[.4rem] sm:w-[2rem] m-0 "
+                />
               </div>
-              <p className="font-normal ml-[1rem] text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
-                Free
+              <p className="font-normal  text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
+                $0
               </p>
             </div>
           </div>
