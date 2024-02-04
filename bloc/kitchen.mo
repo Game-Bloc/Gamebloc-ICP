@@ -12,6 +12,8 @@ import Debug "mo:base/Debug";
 import Nat "mo:base/Nat";
 import Hash "mo:base/Hash";
 import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
+import Array "mo:base/Array";
 
 import AccountIdentifier "mo:principal/AccountIdentifier";
 import AccountID "mo:principal/blob/AccountIdentifier";
@@ -44,17 +46,40 @@ shared ({ caller }) actor class Kitchen() {
 
     /// stabilizing the motoko backup
     system func preupgrade() {
-
+        ProfileEntries := Iter.toArray(ProfileHashMap.entries());
+        TournamentEntries := Iter.toArray(TournamentHashMap.entries());
+        IDEntries := Iter.toArray(ID_STORE.entries());
+        SquadEntries := Iter.toArray(SQUAD_STORE.entries());
     };
 
     system func postupgrade() {
+        TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
+        ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
+        ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals() ,Text.equal, Text.hash);
+        SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
+
+        // clear the states
+        ProfileEntries := [];
+        TournamentEntries:= [];
+        IDEntries:= [];
+        SquadEntries:= [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal) {
         // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""))
     };
+
+    // public func update_users() : async () {
+
+    //     let result = await RustBloc.get_all_user();
+    //     var users : [(Principal, Bloctypes.UserProfile)] = [];
+    //     for (i in Iter.fromArray(result)){
+    //         users := Array.append(users, [(i.principal_id, i)]);
+    //     };
+    //      := [] := users;
+    // };
 
     public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text) : async Result.Result<Text, Text> {
         // call the balnce function to get and set the balance of newly registered users
@@ -120,6 +145,7 @@ shared ({ caller }) actor class Kitchen() {
             return #err(Error.message(err))
         }
     };
+    
 
     // get icp balance of user
     public shared ({ caller }) func icp_balance() : async ICP {
@@ -569,7 +595,7 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func get_all_user() : async [Bloctypes.UserProfile] {
+    public func get_all_user() : async [Bloctypes.UserProfile] {
         // assert(caller == userCanisterId);
         try {
             return let result = await RustBloc.get_all_user()
@@ -714,5 +740,7 @@ shared ({ caller }) actor class Kitchen() {
     public func get_total_number_of_squads() : async Nat {
         SQUAD_STORE.size()
     }
+
+
 
 }
