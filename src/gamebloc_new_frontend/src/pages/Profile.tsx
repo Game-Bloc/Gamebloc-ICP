@@ -149,9 +149,9 @@ const Profile = () => {
                             <Copy textToCopy={squadId} />
                             <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                               {squadId
-                                ? squadId.substring(0, 7) +
+                                ? squadId.substring(0, 5) +
                                   "......" +
-                                  squadId.substring(19, 26)
+                                  squadId.substring(20, 26)
                                 : null}
                             </h2>
                           </div>

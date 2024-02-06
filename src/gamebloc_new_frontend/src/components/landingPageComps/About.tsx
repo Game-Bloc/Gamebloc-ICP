@@ -11,7 +11,7 @@ const About = ({ setModal }: Props) => {
         className="text-primary-second text-center text-[1.1rem] sm:text-[2rem] flex w-full justify-center lg:text-[3rem] 
               xl:text-[3rem] h-fit  2xl:text-[3rem] font-valorant mt-4 "
       >
-        STILL THINKING ABOUT GAMBLOC?
+        STILL THINKING ABOUT GAMEBLOC?
       </p>
       <p className="text-primary-second text-center text-[0.6rem] sm:text-[0.8rem] 2xl:text-base flex w-full  mt-[0.5rem] md:mb-[1rem]">
         Game_bloc have the potential to draw the attention of gamers to web3
