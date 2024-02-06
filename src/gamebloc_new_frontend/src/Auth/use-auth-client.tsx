@@ -1,20 +1,26 @@
-import { AuthClient } from "@dfinity/auth-client";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { canisterId, createActor } from "../../../declarations/kitchen";
-import { ActorSubclass } from "@dfinity/agent";
-import { _SERVICE } from "../../../declarations/kitchen/kitchen.did";
-import { useAppDispatch } from "../redux/hooks";
-import { updateAuth } from "../redux/slice/authClient";
+import { AuthClient } from "@dfinity/auth-client"
+import React, { createContext, useContext, useEffect, useState } from "react"
+import { canisterId, createActor } from "../../../declarations/kitchen"
+import {
+  canisterId as canisterId2,
+  createActor as createActor2,
+} from "../../../declarations/game_bloc_backend"
+import { ActorSubclass } from "@dfinity/agent"
+import { _SERVICE } from "../../../declarations/kitchen/kitchen.did"
+import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
+import { useAppDispatch } from "../redux/hooks"
+import { updateAuth } from "../redux/slice/authClient"
 
 const AuthContext = React.createContext<{
-  isAuthenticated: boolean;
-  login: any;
-  loginNFID: any;
-  logout: any;
-  authClient: any;
-  identity: any;
-  principal: any;
-  whoamiActor: ActorSubclass<_SERVICE> | undefined;
+  isAuthenticated: boolean
+  login: any
+  loginNFID: any
+  logout: any
+  authClient: any
+  identity: any
+  principal: any
+  whoamiActor: ActorSubclass<_SERVICE> | undefined
+  whoamiActor2: ActorSubclass<_SERVICE2> | undefined
 }>({
   isAuthenticated: false,
   login: undefined,
@@ -24,9 +30,10 @@ const AuthContext = React.createContext<{
   identity: undefined,
   principal: undefined,
   whoamiActor: undefined,
-});
-const APPLICATION_NAME = "GameBloc";
-const APPLICATION_LOGO_URL = "https://i.postimg.cc/zBMQpTJn/Asset-51.png";
+  whoamiActor2: undefined,
+})
+const APPLICATION_NAME = "GameBloc"
+const APPLICATION_LOGO_URL = "https://i.postimg.cc/zBMQpTJn/Asset-51.png"
 
 //127.0.0.1:4943/?canisterId=bkyz2-fmaaa-aaaaa-qaaaq-cai
 
@@ -35,7 +42,7 @@ const AUTH_PATH =
   APPLICATION_NAME +
   "&applicationLogo=" +
   APPLICATION_LOGO_URL +
-  "#authorize";
+  "#authorize"
 
 const defaultOptions = {
   /**
@@ -62,7 +69,7 @@ const defaultOptions = {
         ? "https://nfid.one" + AUTH_PATH
         : "https://nfid.one" + AUTH_PATH,
   },
-};
+}
 
 /**
  *
@@ -72,69 +79,78 @@ const defaultOptions = {
  * @returns
  */
 export const useAuthClient = (options = defaultOptions) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authClient, setAuthClient] = useState(null);
-  const [identity, setIdentity] = useState(null);
-  const [principal, setPrincipal] = useState(null);
-  const dispatch = useAppDispatch();
-  const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>();
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [authClient, setAuthClient] = useState(null)
+  const [identity, setIdentity] = useState(null)
+  const [principal, setPrincipal] = useState(null)
+  const dispatch = useAppDispatch()
+  const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
+  const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
 
   useEffect(() => {
     // Initialize AuthClient
     AuthClient.create(options.createOptions).then(async (client) => {
-      updateClient(client);
-    });
-  }, []);
+      updateClient(client)
+    })
+  }, [])
 
   const login = () => {
     authClient.login({
       ...options.loginOptions,
       onSuccess: () => {
-        updateClient(authClient);
+        updateClient(authClient)
       },
-    });
-  };
+    })
+  }
 
   const loginNFID = () => {
     authClient.login({
       ...options.loginNFID,
       onSuccess: () => {
-        updateClient(authClient);
+        updateClient(authClient)
       },
-    });
-  };
+    })
+  }
 
   async function updateClient(client) {
-    const isAuthenticated = await client.isAuthenticated();
-    setIsAuthenticated(isAuthenticated);
+    const isAuthenticated = await client.isAuthenticated()
+    setIsAuthenticated(isAuthenticated)
 
-    const identity = client.getIdentity();
-    setIdentity(identity);
-    console.log("identity", identity);
-    const principal = identity.getPrincipal();
-    setPrincipal(principal);
-    console.log("Principal", principal.toString());
-    setAuthClient(client);
+    const identity = client.getIdentity()
+    setIdentity(identity)
+    console.log("identity", identity)
+    const principal = identity.getPrincipal()
+    setPrincipal(principal)
+    console.log("Principal", principal.toString())
+    setAuthClient(client)
 
     const actor = createActor(canisterId, {
       agentOptions: {
         identity,
       },
-    });
+    })
+
+    const actor2 = createActor2(canisterId2, {
+      agentOptions: {
+        identity,
+      },
+    })
 
     dispatch(
       updateAuth({
         type: "authenticationClient/updateAuth",
         payload: actor,
-      })
-    );
-    console.log("Actor....", actor);
-    setWhoamiActor(actor);
+      }),
+    )
+    console.log("Actor....", actor)
+    console.log("Actor2....", actor2)
+    setWhoamiActor(actor)
+    setWhoamiActor2(actor2)
   }
 
   async function logout() {
-    await authClient?.logout();
-    await updateClient(authClient);
+    await authClient?.logout()
+    await updateClient(authClient)
   }
 
   return {
@@ -146,16 +162,17 @@ export const useAuthClient = (options = defaultOptions) => {
     identity,
     principal,
     whoamiActor,
-  };
-};
+    whoamiActor2,
+  }
+}
 
 /**
  * @type {React.FC}
  */
 export const AuthProvider = ({ children }) => {
-  const auth = useAuthClient();
+  const auth = useAuthClient()
 
-  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
-};
+  return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>
+}
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext)

@@ -11,6 +11,7 @@ import { useGetAllSquad } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
+import ClipLoader from "react-spinners/ClipLoader"
 
 const items: TabsProps["items"] = [
   {
@@ -20,8 +21,15 @@ const items: TabsProps["items"] = [
   },
 ]
 
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
+}
+
 const Profile = () => {
   const navigate = useNavigate()
+  const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
@@ -31,7 +39,8 @@ const Profile = () => {
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
-  const { getProfile, isLoadingProfile, getICPBalance } = useGameblocHooks()
+  const { getProfile, isLoadingProfile, fetching, getICPBalance } =
+    useGameblocHooks()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -84,10 +93,29 @@ const Profile = () => {
                           {username}
                         </h2>
                         <div className="flex items-center  mt-2">
-                          <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
-                            {balance}
-                          </p>
-                          <img src={`Icp.svg`} className="w-6 h-6 m-0" alt="" />
+                          {fetching ? (
+                            <div>
+                              <ClipLoader
+                                color={color}
+                                loading={fetching}
+                                cssOverride={override}
+                                size={10}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                              />
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
+                                {balance / 100000000}
+                              </p>
+                              <img
+                                src={`Icp.svg`}
+                                className="w-6 h-6 m-0"
+                                alt=""
+                              />
+                            </>
+                          )}
                         </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />

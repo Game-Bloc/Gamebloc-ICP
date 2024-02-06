@@ -18,6 +18,7 @@ export const useGameblocHooks = () => {
   const { whoamiActor } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
+  const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
@@ -273,6 +274,7 @@ export const useGameblocHooks = () => {
 
   const getICPBalance = async () => {
     try {
+      setFetching(true)
       const Balance = await whoamiActor.icp_balance()
       console.log("Balance:", Balance)
       if (Balance) {
@@ -281,9 +283,13 @@ export const useGameblocHooks = () => {
           balance: Number(value),
         }
         dispatch(updateBalance(Icp))
+        setFetching(false)
       }
     } catch (err) {
+      setFetching(false)
       console.log("Error getting Balance:", err)
+    } finally {
+      setFetching(false)
     }
   }
 
@@ -346,7 +352,7 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const tokens = {
-        e8s: BigInt(amount),
+        e8s: BigInt(amount * 100000000),
       }
       const timeStamp = {
         timestamp_nanos: BigInt(created_at_time),
@@ -355,12 +361,10 @@ export const useGameblocHooks = () => {
       if (send) {
         setIsLoading(false)
         popUp(successMsg, route)
-      } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
       }
     } catch (err) {
       setIsLoading(false)
+      console.log(err)
       errorPopUp(errorMsg)
     } finally {
       setIsLoading(false)
@@ -373,6 +377,7 @@ export const useGameblocHooks = () => {
     updating,
     noData,
     isAccount,
+    fetching,
     getICPrice,
     createAccount,
     createTournament,
