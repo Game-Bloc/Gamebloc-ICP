@@ -151,7 +151,7 @@ const Profile = () => {
                               {squadId
                                 ? squadId.substring(0, 7) +
                                   "......" +
-                                  squadId.substring(58, 64)
+                                  squadId.substring(19, 26)
                                 : null}
                             </h2>
                           </div>
