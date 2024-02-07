@@ -9,10 +9,11 @@ import GameblocTournaments from "../components/dashboardComps/Tournament/Gameblo
 import { useGameblocHooks } from "../Functions/gameblocHooks"
 
 const Dashboard = () => {
-  const { getProfile } = useGameblocHooks()
+  const { getProfile, getProfile2 } = useGameblocHooks()
 
   useEffect(() => {
     getProfile()
+    getProfile2()
   }, [])
 
   return (

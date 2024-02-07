@@ -15,7 +15,7 @@ import {
 } from "../redux/slice/icpBalanceSlice"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor } = useAuth()
+  const { whoamiActor, whoamiActor2, principal } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -141,6 +141,15 @@ export const useGameblocHooks = () => {
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
+    }
+  }
+
+  const getProfile2 = async () => {
+    try {
+      const profile = await whoamiActor2.getSelf(principal)
+      console.log("Profile - actor2:", profile)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -382,6 +391,7 @@ export const useGameblocHooks = () => {
     createAccount,
     createTournament,
     getProfile,
+    getProfile2,
     joinTournament,
     createSquad,
     getICPBalance,
