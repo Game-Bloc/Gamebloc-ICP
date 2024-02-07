@@ -187,7 +187,7 @@ shared ({ caller }) actor class Kitchen() {
             fee = { e8s = 10_000 }; //0.0001 ICP
             memo = 0;
             from_subaccount = null;
-            created_at_time = ?created_at_time;
+            created_at_time = ?{timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))};
             amount = amount
         })
     };
