@@ -380,6 +380,39 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const sendFeedBack = async (
+    content: string,
+    title: string,
+    time: string,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      const feedback = await whoamiActor.send_feedback(content, title, time)
+      setIsLoading(false)
+      popUp(successMsg, route)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const getFeedBacks = async () => {
+    try {
+      const messages = await whoamiActor.get_all_feedback()
+      if (messages) {
+        console.log("Feedback:", messages)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -398,5 +431,7 @@ export const useGameblocHooks = () => {
     joinSquad,
     joinTournamentSqaud,
     sendICP,
+    sendFeedBack,
+    getFeedBacks,
   }
 }

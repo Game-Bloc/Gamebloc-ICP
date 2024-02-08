@@ -127,18 +127,18 @@ const WelcomeModal = ({ modal }: Props) => {
                   </p>
 
                   <div className="flex flex-col w-[80%] mt-4">
-                    <div className="flex items-center pl-[.5rem] h-[2rem] border-[#F6B8FC] bg-[#f6b8fc7a] border border-solid rounded-[8px] w-full">
+                    <div className="flex items-center pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
-                        className="border-none bg-[transparent] text-white placeholder:text-[0.8rem] placeholder:text-white focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
                         placeholder="Username"
                         onChange={onChangeUsername}
                         value={userName}
                       />
                     </div>
-                    <div className="flex items-center mt-8 pl-[.5rem] h-[2rem] border-[#F6B8FC] bg-[#f6b8fc7a] border border-solid rounded-[8px] w-full">
+                    <div className="flex items-center mt-8 pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
-                        className="border-none bg-[transparent] text-white placeholder:text-[0.8rem] placeholder:text-white focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
                         placeholder="Age"
                         value={age}

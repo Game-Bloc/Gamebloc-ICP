@@ -1,6 +1,7 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
-
+import ClipLoader from "react-spinners/ClipLoader"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
 interface Props {
   modal: () => void
 }
@@ -12,6 +13,48 @@ const override = {
 }
 
 const FeedbackModal = ({ modal }: Props) => {
+  const [title, setTitle] = useState<string>("")
+  const [content, setContent] = useState<string>("")
+  const [date, setDate] = useState<string>("")
+  const [color, setColor] = useState("#ffffff")
+  const { isLoading, sendFeedBack } = useGameblocHooks()
+
+  const generateDate = () => {
+    const currentDate = new Date()
+    const date =
+      currentDate.getDate() +
+      "/" +
+      (currentDate.getMonth() + 1) +
+      "/" +
+      currentDate.getFullYear() +
+      " @ " +
+      currentDate.getHours() +
+      ":" +
+      currentDate.getMinutes() +
+      ":" +
+      currentDate.getSeconds()
+    setDate(date)
+  }
+
+  const onTitleChange = (e: any) => {
+    e.preventDefault()
+    const input = e.target.value
+    setTitle(input)
+  }
+  const onContentChange = (e: any) => {
+    e.preventDefault()
+    const input = e.target.value
+    setContent(input)
+  }
+
+  useEffect(() => {
+    generateDate()
+  }, [])
+
+  const submit = () => {
+    sendFeedBack(content, title, date, "Submitted", "Failed", "/")
+  }
+
   return (
     <div>
       <div
@@ -40,7 +83,7 @@ const FeedbackModal = ({ modal }: Props) => {
                     Submit Feedback
                   </h1>
 
-                  <div className="flex flex-col w-[80%] mt-4">
+                  <div className="flex flex-col w-[100%] md:w-[80%] mt-4">
                     <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
                       Title
                     </p>
@@ -49,8 +92,8 @@ const FeedbackModal = ({ modal }: Props) => {
                         className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
                         placeholder="Title"
-                        // onChange={onSendChange}
-                        // value={amountToSend}
+                        onChange={onTitleChange}
+                        value={title}
                       />
                     </div>
                     <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
@@ -62,14 +105,27 @@ const FeedbackModal = ({ modal }: Props) => {
                         className="r border-none w-full text-white/80 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white/80  appearance-none text-[0.9rem] bg-[transparent]"
                         placeholder="Description"
                         rows={4}
+                        onChange={onContentChange}
+                        value={content}
                       />
                     </div>
                   </div>
                   <button
-                    // onClick={() => transferICP()}
+                    onClick={() => submit()}
                     className="justify-center w-[10rem] px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second/70 hover:bg-primary-second rounded-[9999px] items-center cursor-pointer py-3"
                   >
-                    Submit
+                    {isLoading ? (
+                      <ClipLoader
+                        color={color}
+                        loading={isLoading}
+                        cssOverride={override}
+                        size={10}
+                        aria-label="Loading Spinner"
+                        data-testid="loader"
+                      />
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </div>
               </div>
