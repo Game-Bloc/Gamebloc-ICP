@@ -568,14 +568,15 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func send_feedback(content : Text) : async () {
+    public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
         FEED_BACK_STORE.put(
             feedback_id,
             {
                 id = feedback_id;
+                title = title;
                 user = caller;
                 content = content;
-                time = Int.abs(Time.now());
+                time = time;
                 read = false
             },
         );

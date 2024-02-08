@@ -18,9 +18,10 @@ module {
 
     public type Feedback = {
         id : Nat;
+        title : Text;
         user : Principal;
         content : Text;
-        time : Int;
+        time : Text;
         read : Bool;
     };
 
