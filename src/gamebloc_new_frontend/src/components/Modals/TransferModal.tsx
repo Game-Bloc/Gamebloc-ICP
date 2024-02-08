@@ -76,13 +76,13 @@ const TransferModal = ({ modal }: Props) => {
                     Transfer ICP
                   </h1>
 
-                  <div className="flex flex-col w-[80%] mt-4">
+                  <div className="flex flex-col w-[100%] md:w-[80%] mt-4">
                     <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
                       Amount to send
                     </p>
-                    <div className="flex flex-col items-center pt-[.6rem] pl-[.5rem] h-[2.5rem] border-[#F6B8FC] bg-[#f6b8fc7a] border border-solid rounded-[8px] w-full">
+                    <div className="flex flex-col items-center pt-[.6rem] pl-[.5rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
-                        className="border-none bg-[transparent] text-white placeholder:text-[0.8rem] placeholder:text-white focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="number"
                         placeholder="0.00"
                         onChange={onSendChange}
@@ -92,9 +92,9 @@ const TransferModal = ({ modal }: Props) => {
                     <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
                       To
                     </p>
-                    <div className="flex items-center  pl-[.5rem] h-[2.5rem] border-[#F6B8FC] bg-[#f6b8fc7a] border border-solid rounded-[8px] w-full">
+                    <div className="flex items-center  pl-[.5rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
-                        className="border-none bg-[transparent] text-white placeholder:text-[0.8rem] placeholder:text-white focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
                         placeholder="Recipient IC address or principal"
                         value={recipient}
