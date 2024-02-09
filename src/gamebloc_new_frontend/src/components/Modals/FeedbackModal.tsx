@@ -79,7 +79,7 @@ const FeedbackModal = ({ modal }: Props) => {
                       alt=""
                     />
                   </div>
-                  <h1 className="font-valorant mt-4 text-primary-second text-[1.1rem] text-semibold">
+                  <h1 className="font-bold mt-4 text-primary-second text-[1.1rem] text-semibold">
                     Submit Feedback
                   </h1>
 

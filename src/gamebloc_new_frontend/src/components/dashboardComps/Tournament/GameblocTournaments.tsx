@@ -73,7 +73,7 @@ const GameblocTournaments = () => {
         <div className="flex w-full mt-4 justify-center items-center">
           <button
             onClick={() => setModal(true)}
-            className="pt-1 pb-[.15rem]  px-[.6rem] w-[6rem]   sm:w-[10rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+            className="pt-1 pb-[.25rem]  px-[.6rem] w-[6rem]   sm:w-[10rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
             <p>See All</p>
             <img src={`details.png`} alt="" className="m-0 w-4 sm:w-6" />

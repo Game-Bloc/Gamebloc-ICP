@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import { NavLink } from "react-router-dom"
 import {
   Link,
   Button,
@@ -7,8 +7,8 @@ import {
   Events,
   animateScroll as scroll,
   scrollSpy,
-} from "react-scroll";
-import LoginModal from "../Modals/LoginModal";
+} from "react-scroll"
+import LoginModal from "../Modals/LoginModal"
 
 const CircleIndicator = ({ isActive }) => (
   <span
@@ -16,59 +16,59 @@ const CircleIndicator = ({ isActive }) => (
       isActive ? "opacity-100" : "opacity-0"
     } transition-opacity duration-300`}
   ></span>
-);
+)
 
 interface Props {
-  setModal: any;
+  setModal: any
 }
 
 const Hero = ({ setModal }: Props) => {
-  const [activeLink, setActiveLink] = useState(null);
+  const [activeLink, setActiveLink] = useState(null)
 
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
+      const scrollY = window.scrollY
 
       // Manually determine the active link based on scroll position
-      const aboutSection = document.getElementById("about");
-      const featuresSection = document.getElementById("features");
-      const socialSection = document.getElementById("social");
+      const aboutSection = document.getElementById("about")
+      const featuresSection = document.getElementById("features")
+      const socialSection = document.getElementById("social")
 
       if (
         aboutSection &&
         scrollY >= aboutSection.offsetTop &&
         scrollY < featuresSection.offsetTop
       ) {
-        setActiveLink("about");
+        setActiveLink("about")
       } else if (
         featuresSection &&
         scrollY >= featuresSection.offsetTop &&
         scrollY < socialSection.offsetTop
       ) {
-        setActiveLink("features");
+        setActiveLink("features")
       } else if (socialSection && scrollY >= socialSection.offsetTop) {
-        setActiveLink("social");
+        setActiveLink("social")
       }
-    };
+    }
 
     Events.scrollEvent.register("begin", (to) => {
-      setActiveLink(to);
-    });
+      setActiveLink(to)
+    })
 
-    scrollSpy.update();
+    scrollSpy.update()
 
     // Listen for scroll events and update the active link dynamically
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll)
 
     return () => {
-      Events.scrollEvent.remove("begin");
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+      Events.scrollEvent.remove("begin")
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   const handleSetActive = (to) => {
-    console.log(to);
-  };
+    console.log(to)
+  }
 
   return (
     <div className=" fixed top-0 left-0 w-full h-[72px] flex bg-[#08010E] z-10  py-8 px-4 sm:p-8 justify-between items-center">
@@ -123,13 +123,13 @@ const Hero = ({ setModal }: Props) => {
         </p>
         <button
           onClick={() => setModal(true)}
-          className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center hover:bg-primary-second/70   flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
+          className="pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center hover:bg-primary-second/70   flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
         >
           <p className="font-semibold">Create Account</p>
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Hero;
+export default Hero

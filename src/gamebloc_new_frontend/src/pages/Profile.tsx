@@ -70,7 +70,7 @@ const Profile = () => {
             className="flex flex-col
            w-full"
           >
-            <div className="m-4 mt-24  ">
+            <div className="m-4 mt-24">
               <div className="">
                 <div className=" sm:ml-4 mt-4  flex flex-col ">
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">

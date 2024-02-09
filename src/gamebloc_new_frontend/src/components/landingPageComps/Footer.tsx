@@ -1,5 +1,5 @@
-import React from "react";
-import { Element } from "react-scroll";
+import React from "react"
+import { Element } from "react-scroll"
 
 const Footer = () => {
   return (
@@ -17,7 +17,7 @@ const Footer = () => {
                 />
               </div>
 
-              <button className="pt-1 pb-[.15rem] ml-6   px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-primary-second justify-center  flex bg-primary-first rounded-lg items-center cursor-pointer sm:py-2">
+              <button className="pt-1 pb-[.25rem] ml-6   px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-primary-second justify-center  flex bg-primary-first rounded-lg items-center cursor-pointer sm:py-2">
                 <p className="font-semibold">Subscribe</p>
               </button>
             </div>
@@ -116,7 +116,7 @@ const Footer = () => {
         </div>
       </div>
     </Element>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

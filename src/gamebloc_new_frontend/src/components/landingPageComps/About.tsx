@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
 interface Props {
-  setModal: any;
+  setModal: any
 }
 
 const About = ({ setModal }: Props) => {
@@ -23,13 +23,13 @@ const About = ({ setModal }: Props) => {
       <div className="flex w-full justify-center items-center">
         <button
           onClick={() => setModal(true)}
-          className="pt-1 pb-[.15rem] hover:bg-primary-second/70  px-[.6rem] mt-[3rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
+          className="pt-1 pb-[.25rem] hover:bg-primary-second/70  px-[.6rem] mt-[3rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
         >
           <p className="font-semibold">Create Account</p>
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default About;
+export default About
