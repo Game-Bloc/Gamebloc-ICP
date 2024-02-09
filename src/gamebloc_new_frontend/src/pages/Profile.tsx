@@ -11,6 +11,7 @@ import { useGetAllSquad } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
+import ClipLoader from "react-spinners/ClipLoader"
 
 const items: TabsProps["items"] = [
   {
@@ -20,8 +21,15 @@ const items: TabsProps["items"] = [
   },
 ]
 
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
+}
+
 const Profile = () => {
   const navigate = useNavigate()
+  const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
@@ -31,7 +39,8 @@ const Profile = () => {
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
-  const { getProfile, isLoadingProfile, getICPBalance } = useGameblocHooks()
+  const { getProfile, isLoadingProfile, fetching, getICPBalance } =
+    useGameblocHooks()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -61,7 +70,7 @@ const Profile = () => {
             className="flex flex-col
            w-full"
           >
-            <div className="m-4 mt-24  ">
+            <div className="m-4 mt-24">
               <div className="">
                 <div className=" sm:ml-4 mt-4  flex flex-col ">
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
@@ -84,10 +93,29 @@ const Profile = () => {
                           {username}
                         </h2>
                         <div className="flex items-center  mt-2">
-                          <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
-                            {balance}
-                          </p>
-                          <img src={`Icp.svg`} className="w-6 h-6 m-0" alt="" />
+                          {fetching ? (
+                            <div>
+                              <ClipLoader
+                                color={color}
+                                loading={fetching}
+                                cssOverride={override}
+                                size={10}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                              />
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
+                                {balance / 100000000}
+                              </p>
+                              <img
+                                src={`Icp.svg`}
+                                className="w-6 h-6 m-0"
+                                alt=""
+                              />
+                            </>
+                          )}
                         </div>
                         <div className="flex items-center">
                           <img src={`calender.svg`} className="m-0" alt="" />
@@ -149,9 +177,9 @@ const Profile = () => {
                             <Copy textToCopy={squadId} />
                             <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                               {squadId
-                                ? squadId.substring(0, 7) +
+                                ? squadId.substring(0, 5) +
                                   "......" +
-                                  squadId.substring(58, 64)
+                                  squadId.substring(20, 26)
                                 : null}
                             </h2>
                           </div>

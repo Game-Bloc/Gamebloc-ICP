@@ -1,18 +1,18 @@
-import React from "react";
-import { RiCloseFill } from "react-icons/ri";
-import { FaUserFriends } from "react-icons/fa";
-import { PiPowerBold } from "react-icons/pi";
-import { GiMoneyStack } from "react-icons/gi";
+import React from "react"
+import { RiCloseFill } from "react-icons/ri"
+import { FaUserFriends } from "react-icons/fa"
+import { PiPowerBold } from "react-icons/pi"
+import { GiMoneyStack } from "react-icons/gi"
 
 type model = {
-  modal: () => void;
-  name: any;
-  gameName: any;
-  startDate: any;
-  entryPrize: any;
-  gameType: any;
-  playersCount: any;
-};
+  modal: () => void
+  name: any
+  gameName: any
+  startDate: any
+  entryPrize: any
+  gameType: any
+  playersCount: any
+}
 
 const NewModal = ({
   modal,
@@ -31,7 +31,7 @@ const NewModal = ({
         role="dialog"
         aria-modal="true"
       >
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity">
+        <div className="fixed inset-0 bg-[#fff]/20  bg-opacity-75 transition-opacity">
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-full ">
               <div className="relative bg-white w-[55%] rounded-[25px] overflow-hidden">
@@ -114,7 +114,7 @@ const NewModal = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NewModal;
+export default NewModal

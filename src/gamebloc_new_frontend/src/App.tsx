@@ -13,6 +13,8 @@ import Profile from "./pages/Profile"
 import Category from "./pages/Category"
 import TournamentDetails from "./pages/TournamentDetails"
 import AdminProtectedRoute from "./AdminProtectedRoute"
+// import {Assistant} from 'nexai-assistant'
+
 
 const App = () => {
   const auth = useAppSelector((state) => state.authenticationClient.auth)
@@ -20,6 +22,7 @@ const App = () => {
   return (
     <div>
       <React.Suspense fallback={<FallBackLoader />}>
+      {/* <Assistant actor={whoamiActor} companyId={1} companyName={'Gamebloc'} color={'blue'}/> */}
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route element={<ProtectedRoutes userAuthState={isAuthenticated} />}>

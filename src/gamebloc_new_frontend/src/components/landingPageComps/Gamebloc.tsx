@@ -1,8 +1,8 @@
-import React from "react";
-import { Element } from "react-scroll";
+import React from "react"
+import { Element } from "react-scroll"
 
 interface Props {
-  setModal: any;
+  setModal: any
 }
 
 const Gamebloc = ({ setModal }: Props) => {
@@ -40,7 +40,7 @@ const Gamebloc = ({ setModal }: Props) => {
         <div className=" h-full w-full hidden md:flex justify-end items-end">
           <button
             onClick={() => setModal(true)}
-            className="pt-1 pb-[.15rem] hover:bg-primary-second/70   px-[.6rem] w-[6rem]  sm:w-[10rem] lg:w-[15rem] sm:px-6 text-[.6rem] sm:text-base text-black justify-between mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+            className="pt-1 pb-[.25rem] hover:bg-primary-second/70   px-[.6rem] w-[6rem]  sm:w-[10rem] lg:w-[15rem] sm:px-6 text-[.6rem] sm:text-base text-black justify-between mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
             <p className="text-[0.65rem] sm:text-[.85rem]">Learn More</p>
             <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
@@ -48,7 +48,7 @@ const Gamebloc = ({ setModal }: Props) => {
         </div>
       </div>
     </Element>
-  );
-};
+  )
+}
 
-export default Gamebloc;
+export default Gamebloc

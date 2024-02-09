@@ -160,7 +160,7 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="text-[.8rem]  text-white">1st</p>
                     <img src={`price1.svg`} className="mt-4" alt="" />
                     <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                      {`$${data.total_prize * 0.5}`}
+                      {`$${(data.total_prize * 0.5).toFixed(2)}`}
                     </h1>
                   </div>
                 </div>
@@ -169,7 +169,7 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="text-[.8rem]  text-white">2nd</p>
                     <img src={`price2.svg`} className="mt-4" alt="" />
                     <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                      {`$${data.total_prize * 0.3}`}
+                      {`$${(data.total_prize * 0.3).toFixed(2)}`}
                     </h1>
                   </div>
                 </div>
@@ -178,7 +178,7 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="text-[.8rem]  text-white">3rd</p>
                     <img src={`price3.svg`} className="mt-4" alt="" />
                     <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
-                      {`$${data.total_prize * 0.2}`}
+                      {`$${(data.total_prize * 0.2).toFixed(2)}`}
                     </h1>
                   </div>
                 </div>

@@ -1,3 +1,4 @@
+import Principal "mo:base/Principal";
 module {
     public type UserProfile = {
         id_hash: Text;
@@ -13,6 +14,15 @@ module {
         canister_id: Text;
         squad_badge: Text;
         // ico_balance : Nat64;
+    };
+
+    public type Feedback = {
+        id : Nat;
+        title : Text;
+        user : Principal;
+        content : Text;
+        time : Text;
+        read : Bool;
     };
 
     public type Squad = {

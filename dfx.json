@@ -35,7 +35,7 @@
     },
 
     "gamebloc_new_frontend": {
-      "dependencies": ["kitchen", "game_bloc_backend"],
+      "dependencies": ["kitchen", "game_bloc_backend", "icp_index", "icp_ledger"],
       "frontend": {
         "entrypoint": "src/gamebloc_new_frontend/src/index.html"
       },

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import Carousel from "../components/dashboardComps/Carousel/Carousell"
@@ -7,13 +7,22 @@ import Recommended from "../components/dashboardComps/Recommended/Recommended"
 import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
 import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
+import { ConfigProvider, FloatButton, theme } from "antd"
+import { VscFeedback } from "react-icons/vsc"
+import FeedbackModal from "../components/Modals/FeedbackModal"
 
 const Dashboard = () => {
-  const { getProfile } = useGameblocHooks()
+  const { getProfile, getProfile2, getFeedBacks } = useGameblocHooks()
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
     getProfile()
+    getFeedBacks()
   }, [])
+
+  const handleModal = () => {
+    setOpenModal(!openModal)
+  }
 
   return (
     <div className="">
@@ -32,6 +41,24 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm,
+          token: {
+            colorPrimary: "#F6B8FC",
+          },
+        }}
+      >
+        <FloatButton
+          shape="circle"
+          type="primary"
+          tooltip="Feedback"
+          style={{ right: 15, bottom: 15 }}
+          icon={<VscFeedback className="text-black" />}
+          onClick={() => setOpenModal(!openModal)}
+        />
+      </ConfigProvider>
+      {openModal && <FeedbackModal modal={handleModal} />}
     </div>
   )
 }

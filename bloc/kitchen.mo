@@ -12,6 +12,8 @@ import Debug "mo:base/Debug";
 import Nat "mo:base/Nat";
 import Hash "mo:base/Hash";
 import Buffer "mo:base/Buffer";
+import Iter "mo:base/Iter";
+import Array "mo:base/Array";
 
 import AccountIdentifier "mo:principal/AccountIdentifier";
 import AccountID "mo:principal/blob/AccountIdentifier";
@@ -31,30 +33,59 @@ shared ({ caller }) actor class Kitchen() {
     private stable var userCanisterId : Principal = caller;
 
     /// Backuo for the Gamebloc backend in the kitchen canister
-    stable var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
-    stable var TournamentEntries : [(Principal, Bloctypes.TournamentAccount)] = [];
-    stable var IDEntries : [(Text, Text)] = [];
-    stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
+    private stable var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+    private stable var TournamentEntries : [(Principal, Bloctypes.TournamentAccount)] = [];
+    private stable var IDEntries : [(Text, Text)] = [];
+    private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
+    private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
+    private stable var feedback_id : Nat = 0;
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
+    var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
 
     /// stabilizing the motoko backup
     system func preupgrade() {
-
+        ProfileEntries := Iter.toArray(ProfileHashMap.entries());
+        TournamentEntries := Iter.toArray(TournamentHashMap.entries());
+        IDEntries := Iter.toArray(ID_STORE.entries());
+        SquadEntries := Iter.toArray(SQUAD_STORE.entries());
+        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries())
     };
 
     system func postupgrade() {
+        TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
+        ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
+        ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
+        SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
+        FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
+
+        // clear the states
+        ProfileEntries := [];
+        TournamentEntries := [];
+        IDEntries := [];
+        SquadEntries := [];
+        FeedbackEntries := []
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal) {
         // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""))
     };
+
+    // public func update_users() : async () {
+
+    //     let result = await RustBloc.get_all_user();
+    //     var users : [(Principal, Bloctypes.UserProfile)] = [];
+    //     for (i in Iter.fromArray(result)){
+    //         users := Array.append(users, [(i.principal_id, i)]);
+    //     };
+    //      := [] := users;
+    // };
 
     public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text) : async Result.Result<Text, Text> {
         // call the balnce function to get and set the balance of newly registered users
@@ -161,7 +192,9 @@ shared ({ caller }) actor class Kitchen() {
             fee = { e8s = 10_000 }; //0.0001 ICP
             memo = 0;
             from_subaccount = null;
-            created_at_time = ?created_at_time;
+            created_at_time = ?{
+                timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
+            };
             amount = amount
         })
     };
@@ -535,6 +568,45 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
+        FEED_BACK_STORE.put(
+            feedback_id,
+            {
+                id = feedback_id;
+                title = title;
+                user = caller;
+                content = content;
+                time = time;
+                read = false
+            },
+        );
+        feedback_id := feedback_id + 1
+    };
+
+    public func get_feedback(id : Nat) : async ?Bloctypes.Feedback {
+        FEED_BACK_STORE.get(id)
+    };
+
+    public query func get_unread_feedbacks() : async ?[Bloctypes.Feedback] {
+        do ? {
+            var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
+            for ((i, j) in FEED_BACK_STORE.entries()) {
+                if (j.read == true) {
+                    buffer.add(j)
+                }
+            };
+            buffer.toArray()
+        }
+    };
+
+    public func get_all_feedback() : async [Bloctypes.Feedback] {
+        var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
+        for ((i, j) in FEED_BACK_STORE.entries()) {
+            buffer.add(j)
+        };
+        buffer.toArray()
+    };
+
     public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
             TournamentHashMap.put(caller, tournamentAccount);
@@ -569,7 +641,7 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func get_all_user() : async [Bloctypes.UserProfile] {
+    public func get_all_user() : async [Bloctypes.UserProfile] {
         // assert(caller == userCanisterId);
         try {
             return let result = await RustBloc.get_all_user()

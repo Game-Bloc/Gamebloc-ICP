@@ -15,9 +15,10 @@ import {
 } from "../redux/slice/icpBalanceSlice"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor } = useAuth()
+  const { whoamiActor, whoamiActor2, principal } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
+  const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
@@ -140,6 +141,15 @@ export const useGameblocHooks = () => {
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
+    }
+  }
+
+  const getProfile2 = async () => {
+    try {
+      const profile = await whoamiActor2.getSelf(principal)
+      console.log("Profile - actor2:", profile)
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -273,6 +283,7 @@ export const useGameblocHooks = () => {
 
   const getICPBalance = async () => {
     try {
+      setFetching(true)
       const Balance = await whoamiActor.icp_balance()
       console.log("Balance:", Balance)
       if (Balance) {
@@ -281,9 +292,13 @@ export const useGameblocHooks = () => {
           balance: Number(value),
         }
         dispatch(updateBalance(Icp))
+        setFetching(false)
       }
     } catch (err) {
+      setFetching(false)
       console.log("Error getting Balance:", err)
+    } finally {
+      setFetching(false)
     }
   }
 
@@ -346,7 +361,7 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const tokens = {
-        e8s: BigInt(amount),
+        e8s: BigInt(amount * 100000000),
       }
       const timeStamp = {
         timestamp_nanos: BigInt(created_at_time),
@@ -355,15 +370,46 @@ export const useGameblocHooks = () => {
       if (send) {
         setIsLoading(false)
         popUp(successMsg, route)
-      } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
       }
     } catch (err) {
       setIsLoading(false)
+      console.log(err)
       errorPopUp(errorMsg)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const sendFeedBack = async (
+    content: string,
+    title: string,
+    time: string,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      const feedback = await whoamiActor.send_feedback(content, title, time)
+      setIsLoading(false)
+      popUp(successMsg, route)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const getFeedBacks = async () => {
+    try {
+      const messages = await whoamiActor.get_all_feedback()
+      if (messages) {
+        console.log("Feedback:", messages)
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
 
@@ -373,15 +419,19 @@ export const useGameblocHooks = () => {
     updating,
     noData,
     isAccount,
+    fetching,
     getICPrice,
     createAccount,
     createTournament,
     getProfile,
+    getProfile2,
     joinTournament,
     createSquad,
     getICPBalance,
     joinSquad,
     joinTournamentSqaud,
     sendICP,
+    sendFeedBack,
+    getFeedBacks,
   }
 }

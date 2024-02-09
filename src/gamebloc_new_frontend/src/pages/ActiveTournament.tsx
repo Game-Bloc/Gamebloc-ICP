@@ -60,7 +60,7 @@ const ActiveTournament = () => {
                 <div className="w-full flex mt-8 justify-end">
                   <button
                     onClick={() => navigate("/game-category")}
-                    className="border border-primary-second hover:text-black hover:bg-primary-second border-solid pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] text-primary-second sm:text-sm rounded-lg items-center justify-center cursor-pointer sm:py-2"
+                    className="border border-primary-second hover:text-black hover:bg-primary-second border-solid pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] text-primary-second sm:text-sm rounded-lg items-center justify-center cursor-pointer sm:py-2"
                   >
                     <p className="font-semibold">Create Tournament</p>
                   </button>

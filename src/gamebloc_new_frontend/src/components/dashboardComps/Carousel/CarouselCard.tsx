@@ -76,7 +76,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
           </p>
           <button
             onClick={() => setModal(true)}
-            className="pt-1 pb-[.15rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+            className="pt-1 pb-[.25rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
             Join now
             <img src={`details.png`} alt="" className=" ml-[.6rem] sm:ml-6" />
