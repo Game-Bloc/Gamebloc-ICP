@@ -54,6 +54,7 @@ type UserProfile = record {
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
   close_squad : (text, vec text, principal) -> ();
+  count_all_users : () -> (nat) query;
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
@@ -73,4 +74,5 @@ service : () -> {
   open_squad : (text, vec text, principal) -> ();
   set_mod : (text, principal) -> ();
   start_tournament : (text) -> ();
+  update_squad_details : (text) -> ();
 }

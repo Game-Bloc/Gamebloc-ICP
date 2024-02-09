@@ -56,6 +56,16 @@ fn get_all_user() -> Vec<UserProfile> {
         all_users
     })
 }
+#[query]
+fn count_all_users() -> u128 {
+    PROFILE_STORE.with(|profile_store| {
+        let mut users_vec: Vec<UserProfile> = Vec::new();
+        profile_store.borrow().iter().for_each(|user| {
+            users_vec.push((*user.1).clone().try_into().unwrap())
+        });
+        users_vec.len()
+    }) as u128
+}
 
 #[query]
 fn get_profile(name: String) -> UserProfile {
@@ -316,6 +326,38 @@ fn join_squad(member: Member, principal: Principal, id: String) {
         }
     });
 }
+
+#[update]
+fn update_squad_details(id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        SQUAD_STORE.with(|squad_store| {
+            squad_store.borrow().iter().for_each(|squad| {
+                tournament.squad.push((*squad.1).clone().try_into().unwrap())
+            });
+            tournament.squad.sort();
+            tournament.squad.dedup();
+        });
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+
+
+#[update]
+fn send_message_tournament(id: String, message:Chat) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        if tournament.messages.is_none() {
+            tournament.messages = Some(Vec::new());
+        }
+        tournament.messages.clone().unwrap().push(message);
+    tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+
+
+
+
 
 #[update]
 fn leave_or_remove_squad_member(principal: Principal, id: String) {
