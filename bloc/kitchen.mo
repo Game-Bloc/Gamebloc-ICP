@@ -617,6 +617,15 @@ shared ({ caller }) actor class Kitchen() {
 
     };
 
+    public func count_all_squad() : async Nat {
+        await RustBloc.count_all_squad();
+    };
+
+    public func count_all_users() : async Nat {
+        await RustBloc.count_all_users();
+    };
+
+
     public shared ({ caller }) func end_tournament(id : Text, name : [Text]) : () {
         try {
             await RustBloc.end_tournament(id, name, caller)

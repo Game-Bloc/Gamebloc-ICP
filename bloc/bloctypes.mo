@@ -54,6 +54,7 @@ module {
     public type TournamentAccount = {
         id_hash : Text;
         creator : Text;
+        creator_id : ?Text;
         status : TournamentStatus;
         idx : Nat8;
         starting_date : Text;
@@ -61,6 +62,7 @@ module {
         tournament_type : TournamentType;
         game : Text;
         squad : [Squad];
+        messages : ?[Chat];
         user : [Text];
         winers : [Text];
         total_prize : Nat;
@@ -71,6 +73,8 @@ module {
         end_date: Text;
         title: Text;
     };
+
+    public type Chat = { name : Text; time : Text; message : Text; };
 
     public type Result =  { #Ok : Nat8; #Err: Nat8 };
 
