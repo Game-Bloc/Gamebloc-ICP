@@ -54,13 +54,15 @@ impl Storable for UserProfile {
 pub struct TournamentAccount {
     pub id_hash: String,
     pub creator: String,
+    pub creator_id: Option<String>,
     pub status: TournamentStatus,
     pub idx: u8,
     pub starting_date: String,
     pub tournament_rules: String,
     pub tournament_type: TournamentType,
     pub game: String,
-    pub squad :Vec<Squad>,
+    pub squad:Vec<Squad>,
+    pub messages: Option<Vec<Chat>>,
     pub user: Vec<String>,
     pub winers: Vec<String>,
     pub entry_prize: u8,
@@ -130,14 +132,14 @@ pub struct TokenState {
     pub amount: u64,
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+#[derive(Clone, Debug,  PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
 pub enum SquadType {
     #[default]
      Open,
      Closed,
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
 pub struct Squad {
     pub id_hash: String,
     pub captain: String,
@@ -148,8 +150,15 @@ pub struct Squad {
     pub requests: Vec<String>,
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
 pub struct Member {
     pub name: String,
     pub principal_id: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
+pub struct Chat {
+    pub name: String,
+    pub time: String,
+    pub message: String,
 }
