@@ -54,6 +54,7 @@ impl Storable for UserProfile {
 pub struct TournamentAccount {
     pub id_hash: String,
     pub creator: String,
+    pub creator_id: Option<String>,
     pub status: TournamentStatus,
     pub idx: u8,
     pub starting_date: String,

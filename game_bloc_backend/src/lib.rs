@@ -111,6 +111,17 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
     })
 }
 
+#[query]
+fn count_all_tournament() -> u128 {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_tournament: Vec<TournamentAccount> = Vec::new();
+        tournament_store.borrow().iter().for_each(|tournament| {
+            all_tournament.push((*tournament.1).clone().try_into().unwrap())
+        });
+        all_tournament.len()
+    })  as u128
+}
+
 #[update]
 fn create_tournament(tournament: TournamentAccount) -> Result<u8, u8> {
     let id_hash = tournament.clone().id_hash;
@@ -221,6 +232,17 @@ fn get_all_squad() -> Vec<Squad> {
         });
         all_squads
     })
+}
+
+#[query]
+fn count_all_squad() -> u128 {
+    SQUAD_STORE.with(|squad_store| {
+        let mut all_squads : Vec<Squad>  = Vec::new();
+        squad_store.borrow().iter().for_each(|squad| {
+            all_squads.push((*squad.1).clone().try_into().unwrap())
+        });
+        all_squads.len()
+    }) as u128
 }
 
 #[update]
