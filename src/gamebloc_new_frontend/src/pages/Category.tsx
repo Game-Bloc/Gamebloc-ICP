@@ -35,7 +35,7 @@ const Category = () => {
             <Header />
             <Sidebar />
             <div className="flex flex-col w-full">
-              <div className="m-4 mt-24  ">
+              <div className="m-4 mt-24">
                 <div className="">
                   <div
                     onClick={() => navigate(-1)}
