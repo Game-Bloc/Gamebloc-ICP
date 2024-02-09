@@ -1,3 +1,4 @@
+type Chat = record { name : text; time : text; message : text };
 type Member = record { name : text; principal_id : text };
 type Result = variant { Ok : nat8; Err : nat8 };
 type Squad = record {
@@ -17,6 +18,8 @@ type TournamentAccount = record {
   status : TournamentStatus;
   title : text;
   creator : text;
+  messages : opt vec Chat;
+  creator_id : opt text;
   game : text;
   user : vec text;
   winers : vec text;
@@ -54,6 +57,8 @@ type UserProfile = record {
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
   close_squad : (text, vec text, principal) -> ();
+  count_all_squad : () -> (nat) query;
+  count_all_tournament : () -> (nat) query;
   count_all_users : () -> (nat) query;
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
@@ -72,6 +77,7 @@ service : () -> {
   join_tournament_with_squad : (text, text) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
   open_squad : (text, vec text, principal) -> ();
+  send_message_tournament : (text, Chat) -> ();
   set_mod : (text, principal) -> ();
   start_tournament : (text) -> ();
   update_squad_details : (text) -> ();
