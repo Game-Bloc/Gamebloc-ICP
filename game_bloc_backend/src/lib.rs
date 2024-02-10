@@ -370,9 +370,14 @@ fn send_message_tournament(id: String, message:Chat) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         if tournament.messages.is_none() {
-            tournament.messages = Some(Vec::new());
+            let mut chats:Vec<Chat> = Vec::new();
+            chats.push(message);
+            tournament.messages = Some(chats);
         }
-        tournament.messages.clone().unwrap().push(message);
+        else {
+            tournament.messages.clone().unwrap().push(message);
+        }
+
     tournament_store.borrow_mut().insert(id, tournament);
     });
 }
