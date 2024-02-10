@@ -9,6 +9,7 @@ import Players from "../components/tournament/Players"
 import TournamentInfo from "../components/tournament/TournamentInfo"
 import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
+import Chat from "../components/tournament/Chat"
 
 const TournamentDetail = () => {
   const { id } = useParams()
@@ -19,7 +20,7 @@ const TournamentDetail = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: `Tournament Info`,
+      label: `Info`,
       children: tournamentData
         .filter((list: any) => list.id_hash == id)
         .map((data: any) => <TournamentInfo key={data.id_hash} data={data} />),
@@ -38,6 +39,13 @@ const TournamentDetail = () => {
         .filter((list: any) => list.id_hash == id)
         .map((data: any) => <Players key={data.id_hash} data={data} />),
     },
+    {
+      key: "4",
+      label: `Chat`,
+      children: tournamentData
+        .filter((list: any) => list.id_hash == id)
+        .map((data: any) => <Chat key={data.id_hash} data={data} />),
+    },
   ]
 
   const onChange = (key: string) => {
@@ -47,7 +55,7 @@ const TournamentDetail = () => {
   useEffect(() => {
     const timeOut = setInterval(() => {
       setLoading(false)
-    }, 4000)
+    }, 3000)
     return () => clearTimeout(timeOut)
   }, [])
 

@@ -13,6 +13,7 @@ import {
   updateBalance,
   updateICP,
 } from "../redux/slice/icpBalanceSlice"
+import { message } from "antd"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, principal } = useAuth()
@@ -158,6 +159,8 @@ export const useGameblocHooks = () => {
     id_hash: string,
     status: any,
     creator: string,
+    messages: [],
+    owner_id: string,
     game: string,
     squad: any,
     user: string[],
@@ -178,11 +181,15 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
+      const creator_id: [string] = [owner_id]
+
       const tournamentData = {
         idx,
         id_hash,
         status: status,
         creator,
+        messages,
+        creator_id,
         game,
         squad,
         user,
@@ -413,6 +420,24 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const sendTournamentMessage = async (
+    id: string,
+    name: string,
+    time: string,
+    message: string,
+  ) => {
+    try {
+      const chat = {
+        name,
+        time,
+        message,
+      }
+      const send = whoamiActor2.send_message_tournament(id, chat)
+    } catch (err) {
+      console.log("Error Sending message:", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -433,5 +458,6 @@ export const useGameblocHooks = () => {
     sendICP,
     sendFeedBack,
     getFeedBacks,
+    sendTournamentMessage,
   }
 }

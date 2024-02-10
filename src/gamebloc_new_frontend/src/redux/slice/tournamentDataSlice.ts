@@ -3,6 +3,8 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface TournamentState {
   creator: string
+  creator_id: string[]
+  messages: any[]
   end_date: string
   entry_prize: number
   game: string
