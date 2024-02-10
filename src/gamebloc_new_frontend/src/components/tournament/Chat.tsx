@@ -5,6 +5,8 @@ import { ulid } from "ulid"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { useGetTournamentMessages } from "../../Functions/blochooks"
 import { useAppSelector } from "../../redux/hooks"
+import ChatCard1 from "./ChatCard1"
+import ChatCard2 from "./ChatCard2"
 
 interface Props {
   data: any
@@ -13,7 +15,7 @@ interface Props {
 const Chat = ({ data }: Props) => {
   const scrollContainerRef = useRef(null)
   const [time, setTime] = useState<string>("")
-  const [id, setId] = useState<string>("")
+  const id = data.id_hash
   const [message, setMessage] = useState<string>("")
   const { sendTournamentMessage } = useGameblocHooks()
   const { updateMessages } = useGetTournamentMessages()
@@ -34,14 +36,6 @@ const Chat = ({ data }: Props) => {
     return formattedTime
   }
 
-  const generateULID = () => {
-    const date = new Date()
-    let day = date.getDate()
-    const id = ulid(day)
-    setId(id)
-    console.log("ulid:", id)
-  }
-
   const onMessageChange = (e: any) => {
     e.preventDefault()
     const input = e.target.value
@@ -55,7 +49,6 @@ const Chat = ({ data }: Props) => {
       scrollContainer.scrollTop = scrollContainer.scrollHeight
     }
     setTime(getTimeIn12HourFormat())
-    generateULID()
   }, [data])
 
   useEffect(() => {
@@ -68,47 +61,17 @@ const Chat = ({ data }: Props) => {
     sendTournamentMessage(id, username, time, message)
   }
 
-  const list = "Deonorla"
   return (
     <div>
       <div
         ref={scrollContainerRef}
         className="flex  flex-col h-[27rem] max-h-[50rem] overflow-x-hidden overflow-y-scroll"
       >
-        <div className="flex items-center mb-6">
-          <Avatar
-            style={{
-              backgroundColor: "#fde3cf",
-              color: "#f56a00",
-            }}
-          >
-            {list.substring(0, 2).toUpperCase()}
-          </Avatar>
-          <div className="ml-2 bg-white/10 rounded-xl p-3 w-fit  max-w-[27rem]">
-            <div className="flex items-center  mb-3">
-              <p className="text-sm text-gray font-bold">Deonorla</p>{" "}
-              <p className="text-[.65rem] ml-2 mr-2 text-gray/80">12:00 pm</p>
-            </div>
-            <p className="text-gray">
-              I need some help to with getting the best team memmbers for this
-              tournament. I currently have just 4 players in my team.
-            </p>
-          </div>
-        </div>
-        <div className="flex justify-end items-center mb-6">
-          <div className=" bg-primary-second/20 rounded-xl p-3 w-fit  max-w-[27rem]">
-            <div className="flex items-center  mb-3">
-              <p className="text-sm text-gray font-bold">Deonorla</p>{" "}
-              <p className="text-[.65rem] ml-2 mr-2 text-gray/80">12:00 pm</p>
-            </div>
-            <p className="text-gray">Hi</p>
-          </div>
-          <div className="ml-2">
-            <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
-              {list.substring(0, 2).toUpperCase()}
-            </Avatar>
-          </div>
-        </div>
+        {data.messages.map((message: any, index: any) => (
+          <ChatCard1 key={index} tourData={data} message={message} />
+        ))}
+
+        {/* <ChatCard2 /> */}
       </div>
       <div className="w-full mt-2 flex justify-center items-center">
         <div className=" w-full justify-center items-center p-4 bg-[#fff]/10 rounded-full flex">

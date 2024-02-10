@@ -375,7 +375,7 @@ fn send_message_tournament(id: String, message:Chat) {
             tournament.messages = Some(chats);
         }
         else {
-            tournament.messages.clone().unwrap().push(message);
+             tournament.messages.clone().unwrap().push(message);
         }
 
     tournament_store.borrow_mut().insert(id, tournament);
