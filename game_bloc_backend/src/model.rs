@@ -159,6 +159,7 @@ pub struct Member {
 #[derive(Clone, Debug, Default, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
 pub struct Chat {
     pub name: String,
+    pub id: String,
     pub time: String,
     pub message: String,
 }
