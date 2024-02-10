@@ -369,13 +369,15 @@ fn update_squad_details(id: String) {
 fn send_message_tournament(id: String, message:Chat) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        if tournament.messages.is_none() {
+        if tournament.messages.is_none() && !tournament.messages.clone().is_some(){
             let mut chats:Vec<Chat> = Vec::new();
             chats.push(message);
             tournament.messages = Some(chats);
         }
         else {
-             tournament.messages.clone().unwrap().push(message);
+            if tournament.messages.clone().is_some() || !tournament.messages.clone().is_none(){
+                tournament.messages.clone().unwrap().push(message);
+            }
         }
 
     tournament_store.borrow_mut().insert(id, tournament);
