@@ -9,11 +9,12 @@ interface Props {
 
 const ChatCard1 = ({ message, tourData }: Props) => {
   const userId = useAppSelector((state) => state.userProfile.id_hash)
+  const username = useAppSelector((state) => state.userProfile.username)
 
   return (
     <>
       {message.map((data: any, index: any) =>
-        tourData.creator_id[0] == userId ? (
+        data.name == username ? (
           <div key={index} className="flex justify-end items-center mb-6">
             <div className=" bg-primary-second/20 rounded-xl p-3 w-fit  max-w-[27rem]">
               <div className="flex items-center  mb-3">

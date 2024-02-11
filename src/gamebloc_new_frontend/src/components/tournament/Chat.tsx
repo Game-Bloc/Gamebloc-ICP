@@ -7,15 +7,16 @@ import { useGetTournamentMessages } from "../../Functions/blochooks"
 import { useAppSelector } from "../../redux/hooks"
 import ChatCard1 from "./ChatCard1"
 import ChatCard2 from "./ChatCard2"
+import ClipLoader from "react-spinners/ClipLoader"
 
 interface Props {
   data: any
 }
 
 const Chat = ({ data }: Props) => {
+  const id = data.id_hash
   const scrollContainerRef = useRef(null)
   const [time, setTime] = useState<string>("")
-  const id = data.id_hash
   const [message, setMessage] = useState<string>("")
   const { sendTournamentMessage } = useGameblocHooks()
   const { updateMessages } = useGetTournamentMessages()
@@ -90,6 +91,7 @@ const Chat = ({ data }: Props) => {
             onClick={() => {
               setTime(getTimeIn12HourFormat())
               sendMessage()
+              setMessage("")
             }}
             className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
           />
