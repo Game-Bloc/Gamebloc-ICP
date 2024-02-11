@@ -375,11 +375,8 @@ fn send_message_tournament(id: String, message:Chat) {
             tournament.messages = Some(chats);
         }
         else {
-            if tournament.messages.clone().is_some() || !tournament.messages.clone().is_none(){
-                tournament.messages.clone().unwrap().push(message.clone());
-            }
-            let mut chats:Vec<Chat> = Vec::new();
-            chats.push(message.clone());
+            let mut chats:Vec<Chat> = tournament.messages.clone().unwrap();
+            chats.push(message);
             tournament.messages = Some(chats);
         }
          
