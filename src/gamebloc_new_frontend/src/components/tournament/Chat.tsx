@@ -43,14 +43,14 @@ const Chat = ({ data }: Props) => {
     setMessage(input)
   }
 
-  useEffect(() => {
-    // Scroll to the bottom of the container when new messages are added
-    if (scrollContainerRef.current) {
-      const scrollContainer = scrollContainerRef.current
-      scrollContainer.scrollTop = scrollContainer.scrollHeight
-    }
-    setTime(getTimeIn12HourFormat())
-  }, [data])
+  //   useEffect(() => {
+  //     // Scroll to the bottom of the container when new messages are added
+  //     if (scrollContainerRef.current) {
+  //       const scrollContainer = scrollContainerRef.current
+  //       scrollContainer.scrollTop = scrollContainer.scrollHeight
+  //     }
+  //     setTime(getTimeIn12HourFormat())
+  //   }, [data])
 
   useEffect(() => {
     setInterval(() => {
