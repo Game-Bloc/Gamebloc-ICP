@@ -17,7 +17,7 @@ import { message } from "antd"
 // import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor, whoamiActor2, ledgerActor, principal } = useAuth()
+  const { whoamiActor, whoamiActor2, principal } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -385,12 +385,12 @@ export const useGameblocHooks = () => {
         from_subaccount: [],
         created_at_time: [],
       }
-      // const tokens = {
-      //   e8s: BigInt(amount * 100000000),
-      // }
+      const tokens = {
+        e8s: BigInt(amount * 100000000),
+      }
 
-      // const send = await whoamiActor.transferICP(to, tokens, timeStamp)
-      const send = await ledgerActor.send_dfx(args)
+      const send = await whoamiActor.transferICP(to, tokens, timeStamp)
+      // const send = await ledgerActor.send_dfx(args)
       if (send) {
         setIsLoading(false)
         popUp(successMsg, route)
