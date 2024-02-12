@@ -439,12 +439,14 @@ export const useGameblocHooks = () => {
 
   const sendTournamentMessage = async (
     id: string,
+    chatId: string,
     name: string,
     time: string,
     message: string,
   ) => {
     try {
       const chat = {
+        id: chatId,
         name,
         time,
         message,

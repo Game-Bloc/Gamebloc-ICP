@@ -216,38 +216,38 @@ const CreateTournament = () => {
     ) {
       errorPopUp("Field Input is invalid !")
     } else {
-      if (
-        (tourType === "Prepaid" && balance > +poolPrize) ||
-        (tourType === "Crowdfunded" && balance > +entryPrice)
-      ) {
-        createTournament(
-          1,
-          tournamentID,
-          { AcceptingPlayers: null },
-          name,
-          [],
-          creator_id,
-          game_name,
-          [],
-          [],
-          [],
-          BigInt(+poolPrize),
-          tournamentRules,
-          startingDate,
-          variantType,
-          +entryPrice,
-          noOfWinners,
-          BigInt(noOfUsers),
-          gameType,
-          endDate,
-          title,
-          "You have successfully created a Tournament",
-          "Try again something went wrong",
-          "/dashboard",
-        )
-      } else {
-        errorPopUp("Your ICP balance is low, pls fund your account.")
-      }
+      // if (
+      //   (tourType === "Prepaid" && balance > +poolPrize) ||
+      //   (tourType === "Crowdfunded" && balance > +entryPrice)
+      // ) {
+      createTournament(
+        1,
+        tournamentID,
+        { AcceptingPlayers: null },
+        name,
+        [],
+        creator_id,
+        game_name,
+        [],
+        [],
+        [],
+        BigInt(+poolPrize),
+        tournamentRules,
+        startingDate,
+        variantType,
+        +entryPrice,
+        noOfWinners,
+        BigInt(noOfUsers),
+        gameType,
+        endDate,
+        title,
+        "You have successfully created a Tournament",
+        "Try again something went wrong",
+        "/dashboard",
+      )
+      // } else {
+      //   errorPopUp("Your ICP balance is low, pls fund your account.")
+      // }
     }
   }
 
