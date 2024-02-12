@@ -354,11 +354,11 @@ fn update_squad_details(id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
+            let mut squads:Vec<Squad> = Vec::new();
             squad_store.borrow().iter().for_each(|squad| {
-                tournament.squad.push((*squad.1).clone().try_into().unwrap())
+                squads.push((*squad.1).clone().try_into().unwrap())
             });
-            tournament.squad.sort();
-            tournament.squad.dedup();
+            tournament.squad = squads;
         });
         tournament_store.borrow_mut().insert(id, tournament);
     });
