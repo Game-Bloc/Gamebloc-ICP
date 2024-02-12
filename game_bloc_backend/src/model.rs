@@ -72,7 +72,6 @@ pub struct TournamentAccount {
     pub game_type: String,
     pub end_date: String,
     pub title: String,
-
 }
 
 impl Storable for TournamentAccount {
