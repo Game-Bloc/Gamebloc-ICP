@@ -14,7 +14,7 @@ import {
   updateICP,
 } from "../redux/slice/icpBalanceSlice"
 import { message } from "antd"
-import { AccountIdentifier, SendArgs } from "./ledger.int"
+// import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, principal } = useAuth()
@@ -359,7 +359,7 @@ export const useGameblocHooks = () => {
   }
 
   const sendICP = async (
-    to: AccountIdentifier,
+    to: string,
     amount: number,
     created_at_time: any,
     successMsg: string,
@@ -377,7 +377,7 @@ export const useGameblocHooks = () => {
         timestamp_nanos: BigInt(created_at_time),
       }
 
-      const args: SendArgs = {
+      const args: any = {
         to: to,
         amount: { e8s: BigInt(amount * 100000000) },
         fee: { e8s: defaultArgs.fee },
