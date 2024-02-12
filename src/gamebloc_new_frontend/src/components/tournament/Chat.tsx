@@ -54,6 +54,7 @@ const Chat = ({ data }: Props) => {
 
   useEffect(() => {
     setInterval(() => {
+      setTime(getTimeIn12HourFormat())
       updateMessages()
     }, 2000)
   }, [])
@@ -89,7 +90,6 @@ const Chat = ({ data }: Props) => {
         ) : (
           <IoSend
             onClick={() => {
-              setTime(getTimeIn12HourFormat())
               sendMessage()
               setMessage("")
             }}

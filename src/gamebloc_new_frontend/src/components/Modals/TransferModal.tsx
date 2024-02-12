@@ -3,7 +3,9 @@ import { RiCloseFill } from "react-icons/ri"
 import { IoSend } from "react-icons/io5"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import ClipLoader from "react-spinners/ClipLoader"
+import { useAppSelector } from "../../redux/hooks"
 
+// export const ALPHANUM_REGEX = /^[a-zA-Z0-9]+$/
 interface Props {
   modal: () => void
 }
@@ -16,10 +18,12 @@ const override = {
 
 const TransferModal = ({ modal }: Props) => {
   const [recipient, setRecipient] = useState<string>("")
+  const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
-  const { isLoading, sendICP } = useGameblocHooks()
+  const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
+  const balance = useAppSelector((state) => state.IcpBalance.balance)
 
   const onSendChange = (e: any) => {
     e.preventDefault()
@@ -27,6 +31,9 @@ const TransferModal = ({ modal }: Props) => {
     setAmountToSend(input)
   }
 
+  const validateAccountId = (text): boolean => {
+    return text.length === 64
+  }
   const onRecipientChange = (e: any) => {
     e.preventDefault()
     const input = e.target.value
@@ -34,10 +41,26 @@ const TransferModal = ({ modal }: Props) => {
   }
 
   useEffect(() => {
+    getICPBalance()
     setDate(Date.now())
   }, [])
 
   const transferICP = () => {
+    if (recipient == "" || !validateAccountId(recipient)) {
+      console.log("result", validateAccountId(recipient))
+      setWarning("Invalid wallet address")
+      return
+    }
+
+    if (isNaN(amountToSend)) {
+      setWarning("Invalid amount")
+      return
+    }
+
+    if (balance < amountToSend) {
+      setWarning("Insufficient balance")
+      return
+    }
     sendICP(
       recipient,
       amountToSend,
@@ -96,7 +119,7 @@ const TransferModal = ({ modal }: Props) => {
                       <input
                         className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
-                        placeholder="Recipient IC address or principal"
+                        placeholder="Wallet address"
                         value={recipient}
                         onChange={onRecipientChange}
                       />
@@ -119,6 +142,13 @@ const TransferModal = ({ modal }: Props) => {
                       </p>
                     </div>
                   </div>
+                  {warning != "" ? (
+                    <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                      {warning}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
 
                   <button
                     onClick={() => transferICP()}

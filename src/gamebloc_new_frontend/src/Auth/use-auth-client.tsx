@@ -5,9 +5,14 @@ import {
   canisterId as canisterId2,
   createActor as createActor2,
 } from "../../../declarations/game_bloc_backend"
+import {
+  canisterId as ledgerId,
+  createActor as createLedgerActor,
+} from "../../../declarations/icp_ledger"
 import { ActorSubclass } from "@dfinity/agent"
 import { _SERVICE } from "../../../declarations/kitchen/kitchen.did"
 import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
+import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
 import { useAppDispatch } from "../redux/hooks"
 import { updateAuth } from "../redux/slice/authClient"
 
@@ -21,6 +26,7 @@ const AuthContext = React.createContext<{
   principal: any
   whoamiActor: ActorSubclass<_SERVICE> | undefined
   whoamiActor2: ActorSubclass<_SERVICE2> | undefined
+  ledgerActor: ActorSubclass<_SERVICE3> | undefined
 }>({
   isAuthenticated: false,
   login: undefined,
@@ -31,6 +37,7 @@ const AuthContext = React.createContext<{
   principal: undefined,
   whoamiActor: undefined,
   whoamiActor2: undefined,
+  ledgerActor: undefined,
 })
 const APPLICATION_NAME = "GameBloc"
 const APPLICATION_LOGO_URL = "https://i.postimg.cc/zBMQpTJn/Asset-51.png"
@@ -86,6 +93,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const dispatch = useAppDispatch()
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
+  const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
 
   useEffect(() => {
     // Initialize AuthClient
@@ -136,16 +144,22 @@ export const useAuthClient = (options = defaultOptions) => {
       },
     })
 
+    const actor3 = createLedgerActor(ledgerId, {
+      agentOptions: {
+        identity,
+      },
+    })
+
     dispatch(
       updateAuth({
         type: "authenticationClient/updateAuth",
         payload: actor,
       }),
     )
-    console.log("Actor....", actor)
-    console.log("Actor2....", actor2)
+    console.log("Actor3....", actor3)
     setWhoamiActor(actor)
     setWhoamiActor2(actor2)
+    setLedgerAcor(actor3)
   }
 
   async function logout() {
@@ -163,6 +177,7 @@ export const useAuthClient = (options = defaultOptions) => {
     principal,
     whoamiActor,
     whoamiActor2,
+    ledgerActor,
   }
 }
 
