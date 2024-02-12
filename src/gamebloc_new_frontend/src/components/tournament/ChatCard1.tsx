@@ -14,7 +14,7 @@ const ChatCard1 = ({ message, tourData }: Props) => {
   return (
     <>
       {message.map((data: any, index: any) =>
-        data.name == username ? (
+        data.name == username && data.id == userId ? (
           <div key={index} className="flex justify-end items-center mb-6">
             <div className=" bg-primary-second/20 rounded-xl p-3 w-fit  max-w-[27rem]">
               <div className="flex items-center  mb-3">

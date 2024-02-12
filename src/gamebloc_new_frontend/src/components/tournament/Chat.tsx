@@ -18,17 +18,18 @@ const Chat = ({ data }: Props) => {
   const scrollContainerRef = useRef(null)
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
-  const [chatId, setChatId] = useState<string>("")
+  // const [chatId, setChatId] = useState<string>("")
   const { sendTournamentMessage } = useGameblocHooks()
   const { updateMessages } = useGetTournamentMessages()
+  const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
 
-  const generateULID = () => {
-    const date = new Date()
-    let day = date.getDate()
-    const id = ulid(day)
-    setChatId(id)
-  }
+  // const generateULID = () => {
+  //   const date = new Date()
+  //   let day = date.getDate()
+  //   const id = ulid(day)
+  //   setChatId(id)
+  // }
 
   const getTimeIn12HourFormat = () => {
     const date = new Date()
@@ -61,7 +62,7 @@ const Chat = ({ data }: Props) => {
   //   }, [data])
 
   useEffect(() => {
-    generateULID()
+    // generateULID()
     setInterval(() => {
       setTime(getTimeIn12HourFormat())
       updateMessages()
