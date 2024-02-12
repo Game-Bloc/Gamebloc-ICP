@@ -34,6 +34,8 @@ export const useFetchAllTournaments = () => {
           for (const data of tour) {
             const tournamentData = {
               creator: data.creator,
+              creator_id: data.creator_id,
+              messages: data.messages.map((message: any) => message),
               end_date: data.end_date,
               entry_prize: data.entry_prize,
               game: data.game,
@@ -42,15 +44,15 @@ export const useFetchAllTournaments = () => {
               idx: data.idx,
               no_of_participants: Number(data.no_of_participants),
               no_of_winners: data.no_of_winners,
-              squad: data.squad.map((squad) => squad),
+              squad: data.squad.map((squad: any) => squad),
               starting_date: data.starting_date,
               status: data.status,
               title: data.title,
               total_prize: Number(data.total_prize),
               tournament_rules: data.tournament_rules,
               tournament_type: data.tournament_type,
-              users: data.user.map((user) => user),
-              winners: data.winers.map((winner) => winner),
+              users: data.user.map((user: any) => user),
+              winners: data.winers.map((winner: any) => winner),
             }
             console.log(tournamentData)
             dispatch(addToActiveTournament(tournamentData))
@@ -88,6 +90,8 @@ export const useUpdateTournament = () => {
           for (const data of update) {
             const tournamentData = {
               creator: data.creator,
+              creator_id: data.creator_id,
+              messages: data.messages.map((message: any) => message),
               end_date: data.end_date,
               entry_prize: data.entry_prize,
               game: data.game,
@@ -96,15 +100,15 @@ export const useUpdateTournament = () => {
               idx: data.idx,
               no_of_participants: Number(data.no_of_participants),
               no_of_winners: data.no_of_winners,
-              squad: data.squad.map((squad) => squad),
+              squad: data.squad.map((squad: any) => squad),
               starting_date: data.starting_date,
               status: data.status,
               title: data.title,
               total_prize: Number(data.total_prize),
               tournament_rules: data.tournament_rules,
               tournament_type: data.tournament_type,
-              users: data.user.map((user) => user),
-              winners: data.winers.map((winner) => winner),
+              users: data.user.map((user: any) => user),
+              winners: data.winers.map((winner: any) => winner),
             }
             console.log(tournamentData)
             dispatch(updateActiveTournament(tournamentData))
@@ -124,6 +128,61 @@ export const useUpdateTournament = () => {
   }
 
   return { updateTournament, updating, setNoData }
+}
+export const useGetTournamentMessages = () => {
+  const { whoamiActor, isAuthenticated } = useAuth()
+  const dispatch = useAppDispatch()
+  const [updating, setUpdating] = useState<boolean>(false)
+  const [noData, setNoData] = useState<boolean>(false)
+
+  const updateMessages = async () => {
+    if (isAuthenticated) {
+      try {
+        setUpdating(true)
+        const update: any = await whoamiActor.get_all_tournament()
+        if (update && update.length !== 0) {
+          console.log("message function working")
+          for (const data of update) {
+            const tournamentData = {
+              creator: data.creator,
+              creator_id: data.creator_id,
+              messages: data.messages.map((message: any) => message),
+              end_date: data.end_date,
+              entry_prize: data.entry_prize,
+              game: data.game,
+              game_type: data.game_type,
+              id_hash: data.id_hash,
+              idx: data.idx,
+              no_of_participants: Number(data.no_of_participants),
+              no_of_winners: data.no_of_winners,
+              squad: data.squad.map((squad: any) => squad),
+              starting_date: data.starting_date,
+              status: data.status,
+              title: data.title,
+              total_prize: Number(data.total_prize),
+              tournament_rules: data.tournament_rules,
+              tournament_type: data.tournament_type,
+              users: data.user.map((user: any) => user),
+              winners: data.winers.map((winner: any) => winner),
+            }
+            console.log(tournamentData)
+            dispatch(updateActiveTournament(tournamentData))
+          }
+          setUpdating(false)
+        } else {
+          setNoData(true)
+        }
+      } catch (err) {
+        console.log("Error getting messages:", err)
+      } finally {
+        setUpdating(false)
+      }
+    } else {
+      console.log("User not authenticated")
+    }
+  }
+
+  return { updateMessages }
 }
 
 export const useGetAllSquad = () => {

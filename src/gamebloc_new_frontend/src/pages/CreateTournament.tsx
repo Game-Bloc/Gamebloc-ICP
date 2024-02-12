@@ -44,6 +44,7 @@ const CreateTournament = () => {
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const creator_id = useAppSelector((state) => state.userProfile.id_hash)
 
   const override = {
     display: "block",
@@ -224,6 +225,8 @@ const CreateTournament = () => {
           tournamentID,
           { AcceptingPlayers: null },
           name,
+          [],
+          creator_id,
           game_name,
           [],
           [],

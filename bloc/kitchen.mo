@@ -614,7 +614,6 @@ shared ({ caller }) actor class Kitchen() {
         } catch err {
             throw (err)
         }
-
     };
 
     public func count_all_squad() : async Nat {
@@ -625,14 +624,12 @@ shared ({ caller }) actor class Kitchen() {
         await RustBloc.count_all_users();
     };
 
-
     public shared ({ caller }) func end_tournament(id : Text, name : [Text]) : () {
         try {
             await RustBloc.end_tournament(id, name, caller)
         } catch err {
             throw (err)
         }
-
     };
 
     public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {

@@ -13,6 +13,8 @@ import {
   updateBalance,
   updateICP,
 } from "../redux/slice/icpBalanceSlice"
+import { message } from "antd"
+// import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, principal } = useAuth()
@@ -158,6 +160,8 @@ export const useGameblocHooks = () => {
     id_hash: string,
     status: any,
     creator: string,
+    messages: [],
+    owner_id: string,
     game: string,
     squad: any,
     user: string[],
@@ -178,11 +182,15 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
+      const creator_id: [string] = [owner_id]
+
       const tournamentData = {
         idx,
         id_hash,
         status: status,
         creator,
+        messages,
+        creator_id,
         game,
         squad,
         user,
@@ -358,15 +366,31 @@ export const useGameblocHooks = () => {
     errorMsg: string,
     route: string,
   ) => {
+    const defaultArgs = {
+      fee: BigInt(10_000),
+      memo: BigInt(0),
+    }
     try {
       setIsLoading(true)
-      const tokens = {
-        e8s: BigInt(amount * 100000000),
-      }
+
       const timeStamp = {
         timestamp_nanos: BigInt(created_at_time),
       }
+
+      // const args: any = {
+      //   to: to,
+      //   amount: { e8s: BigInt(amount * 100000000) },
+      //   fee: { e8s: defaultArgs.fee },
+      //   memo: defaultArgs.memo,
+      //   from_subaccount: [],
+      //   created_at_time: [timeStamp],
+      // }
+      const tokens = {
+        e8s: BigInt(amount * 100000000),
+      }
+
       const send = await whoamiActor.transferICP(to, tokens, timeStamp)
+      // const send = await ledgerActor.send_dfx(args)
       if (send) {
         setIsLoading(false)
         popUp(successMsg, route)
@@ -413,6 +437,24 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const sendTournamentMessage = async (
+    id: string,
+    name: string,
+    time: string,
+    message: string,
+  ) => {
+    try {
+      const chat = {
+        name,
+        time,
+        message,
+      }
+      const send = whoamiActor2.send_message_tournament(id, chat)
+    } catch (err) {
+      console.log("Error Sending message:", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -433,5 +475,6 @@ export const useGameblocHooks = () => {
     sendICP,
     sendFeedBack,
     getFeedBacks,
+    sendTournamentMessage,
   }
 }
