@@ -74,7 +74,7 @@ module {
         title: Text;
     };
 
-    public type Chat = { name : Text; time : Text; message : Text; };
+    public type Chat = { name : Text; id : Text; time : Text; message : Text; };
 
     public type Result =  { #Ok : Nat8; #Err: Nat8 };
 
