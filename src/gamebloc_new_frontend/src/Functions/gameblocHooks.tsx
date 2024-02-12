@@ -383,7 +383,7 @@ export const useGameblocHooks = () => {
         fee: { e8s: defaultArgs.fee },
         memo: defaultArgs.memo,
         from_subaccount: [],
-        created_at_time: [timeStamp],
+        created_at_time: [],
       }
       // const tokens = {
       //   e8s: BigInt(amount * 100000000),
@@ -439,12 +439,14 @@ export const useGameblocHooks = () => {
 
   const sendTournamentMessage = async (
     id: string,
+    chatId: string,
     name: string,
     time: string,
     message: string,
   ) => {
     try {
       const chat = {
+        id: chatId,
         name,
         time,
         message,
