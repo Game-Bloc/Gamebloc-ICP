@@ -1,4 +1,4 @@
-type Chat = record { name : text; time : text; message : text };
+type Chat = record { id : text; name : text; time : text; message : text };
 type Member = record { name : text; principal_id : text };
 type Result = variant { Ok : nat8; Err : nat8 };
 type Squad = record {
