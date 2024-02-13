@@ -427,7 +427,7 @@ shared ({ caller }) actor class Kitchen() {
     private stable var connectionID : Nat = 0;
     private stable var messageID : Nat = 0;
 
-    private stable var conversationEntries : [(Text, Conversation)] = [];
+    // private stable var conversationEntries : [(Text, Conversation)] = [];
     private stable var connectionEntries : [(Nat, ConnectionEntry)] = [];
     private stable var messageEntries : [(Nat, MessageEntry)] = [];
 
@@ -438,13 +438,7 @@ shared ({ caller }) actor class Kitchen() {
         id : Nat;
         customer : Principal;
         body : Text;
-        company : Principal;
         time : Int
-    };
-
-    type Conversation = {
-        conversationID : ?Text;
-        messages : [Message]
     };
 
     var messages : [Message] = [];
