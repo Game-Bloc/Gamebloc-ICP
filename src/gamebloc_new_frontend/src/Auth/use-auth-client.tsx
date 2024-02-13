@@ -156,7 +156,10 @@ export const useAuthClient = (options = defaultOptions) => {
         payload: actor,
       }),
     )
-    console.log("Actor3....", actor3)
+    console.log("canisterId 1:", canisterId)
+    console.log("canisterId 2:", canisterId2)
+    console.log("ledger canisterId :", ledgerId)
+    console.log("ledgerActor:", actor3)
     setWhoamiActor(actor)
     setWhoamiActor2(actor2)
     setLedgerAcor(actor3)

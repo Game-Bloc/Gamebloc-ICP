@@ -10,6 +10,7 @@ export MINT_ACC
 
 dfx identity use default
 
+
 LEDGER_ACC=$(dfx ledger account-id)
 export LEDGER_ACC
 
