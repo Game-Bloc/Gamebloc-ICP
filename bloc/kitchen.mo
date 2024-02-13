@@ -411,118 +411,85 @@ shared ({ caller }) actor class Kitchen() {
 
     public type MessageEntry = {
         id : Nat;
-        connectionId : Nat;
         sender : Principal;
         body : Text;
-        createdAt : Int
+        time : Int
     };
 
-    public type ConnectionEntry = {
-        id : Nat;
-        account1 : Principal;
-        account2 : Principal;
-        createdAt : Int
-    };
 
     private stable var connectionID : Nat = 0;
     private stable var messageID : Nat = 0;
 
     // private stable var conversationEntries : [(Text, Conversation)] = [];
-    private stable var connectionEntries : [(Nat, ConnectionEntry)] = [];
     private stable var messageEntries : [(Nat, MessageEntry)] = [];
 
-    var ConnectionHashMap : HashMap.HashMap<Nat, ConnectionEntry> = HashMap.fromIter<Nat, ConnectionEntry>(connectionEntries.vals(), 10, Nat.equal, Hash.hash);
-    var MessageHashMap_ : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+    // var ConnectionHashMap : HashMap.HashMap<Nat, ConnectionEntry> = HashMap.fromIter<Nat, ConnectionEntry>(connectionEntries.vals(), 10, Nat.equal, Hash.hash);
+    var MessageHashMap : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
 
     type Message = {
         id : Nat;
-        customer : Principal;
+        sender : Principal;
         body : Text;
         time : Int
     };
 
     var messages : [Message] = [];
 
-    public shared ({ caller }) func sendMessage(account : Principal, body : Text) : async ?() {
+    public shared ({ caller }) func sendMessage(account : Principal, body : Text) : async MessageEntry {
         var sent : Bool = false;
-        do ? {
-            var size = ConnectionHashMap.size();
-            Debug.print(debug_show (size));
-            if (size == 0) {
-                var newConnection : ConnectionEntry = createConnection(connectionID, account, caller, Time.now());
-                ConnectionHashMap.put(connectionID, newConnection);
-                connectionID := connectionID + 1;
-                //create message with the connection Id
-                var newMessage = createMessage(messageID, newConnection.id, caller, body, Time.now());
-                MessageHashMap_.put(messageID, newMessage);
-                messageID := messageID + 1;
-                sent := true
-            } else {
-                for ((i, j) in ConnectionHashMap.entries()) {
-                    if (((j.account1 == caller) and (j.account2 == account)) or ((j.account1 == account) and (j.account2 == caller))) {
-                        // THERE IS A CONNCETION PAIRING THIER CONVERSATION ALREADY
-                        var newMessage = createMessage(messageID, j.id, caller, body, Time.now());
-                        MessageHashMap_.put(messageID, newMessage);
-                        messageID := messageID + 1;
-                        sent := true;
+        var newMessage : MessageEntry = createMessage(messageID, caller, body, Time.now());
+        MessageHashMap.put(messageID, newMessage);
+        messageID := messageID + 1;
+        sent := true;
+        return newMessage;
 
-                    }
-                }
-            };
-            if (sent == false) {
-                // NO CONNECTION; NEW USER
-                //create a new connetion
-                var newConnection : ConnectionEntry = createConnection(connectionID, account, caller, Time.now());
-                ConnectionHashMap.put(connectionID, newConnection);
-                connectionID := connectionID + 1;
-                //create message with the connection Id
-                var newMessage = createMessage(messageID, newConnection.id, caller, body, Time.now());
-                MessageHashMap_.put(messageID, newMessage);
-                messageID := messageID + 1;
 
-            }
-        }
     };
 
-    func createConnection(id : Nat, account1 : Principal, account2 : Principal, createdAt : Int) : ConnectionEntry {
+    func createMessage(id : Nat, sender : Principal, body : Text, time : Int) : MessageEntry {
         {
             id;
-            account1;
-            account2;
-            createdAt
-        }
-    };
-
-    func createMessage(id : Nat, connectionId : Nat, sender : Principal, body : Text, createdAt : Int) : MessageEntry {
-        {
-            id;
-            connectionId;
             sender;
             body;
-            createdAt
+            time
         }
     };
 
     public func getMessage(id : Nat) : async ?MessageEntry {
-        MessageHashMap_.get(id)
+        MessageHashMap.get(id)
     };
 
-    public shared query ({ caller }) func getMessages(account : Principal) : async [MessageEntry] {
+    public shared query ({ caller }) func getMessages(from : Nat, to : Nat) : async [MessageEntry] {
         // var checkForConnection = await checkConnection(account, caller);
         //  if (checkForConnection == true) {
         var msgs = Buffer.Buffer<MessageEntry>(0);
-        for ((i, j) in ConnectionHashMap.entries()) {
-            if (((j.account1 == caller) and (j.account2 == account)) or ((j.account1 == account) and (j.account2 == caller))) {
-                for ((k, l) in MessageHashMap_.entries()) {
-                    if (l.connectionId == j.id) {
-                        msgs.add(l)
-                    }
-                }
-            }
+        for ((i, j) in MessageHashMap.entries()) {
+            if ((j.id >= from) and (j.id <= to)) {
+                msgs.add(j);
+            };
         };
         msgs.toArray();
         //  }
     };
+
+    public shared query ({ caller }) func getUpdatedMessages(check : Nat) : async [MessageEntry] {
+        // var checkForConnection = await checkConnection(account, caller);
+        //  if (checkForConnection == true) {
+        var msgs = Buffer.Buffer<MessageEntry>(0);
+        var len = MessageHashMap.size();
+        for ((i, j) in MessageHashMap.entries()) {
+            var pip = len - check;
+            if (pip > 0){
+                if ((j.id >= pip) and (j.id <= len)) {
+                    msgs.add(j);
+                };
+            };
+        };
+        msgs.toArray();
+        //  }
+    };
+
+    
 
     public shared ({ caller }) func createUser(user : Principal) : async Principal {
         assert (caller == userCanisterId);
