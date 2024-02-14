@@ -15,11 +15,13 @@ function initCanisterEnv() {
   let localCanisters, prodCanisters
   try {
     localCanisters = require(path.resolve(".dfx", "local", "canister_ids.json"))
+    console.log("local canister", localCanisters)
   } catch (error) {
     console.log("No local canister_ids.json found. Continuing production")
   }
   try {
     prodCanisters = require(path.resolve("canister_ids.json"))
+    console.log("Production canister", prodCanisters)
   } catch (error) {
     console.log("No production canister_ids.json found. Continuing with local")
   }

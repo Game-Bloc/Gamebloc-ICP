@@ -410,10 +410,12 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public type MessageEntry = {
+        f_id : Text;
         id : Nat;
         sender : Principal;
+        username : Text;
         body : Text;
-        time : Int
+        time : Text
     };
 
 
@@ -427,28 +429,30 @@ shared ({ caller }) actor class Kitchen() {
     var MessageHashMap : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
 
     type Message = {
+        f_id : Text;
         id : Nat;
         sender : Principal;
+        username : Text;
         body : Text;
-        time : Int
+        time : Text
     };
 
     var messages : [Message] = [];
 
-    public shared ({ caller }) func sendMessage(account : Principal, body : Text) : async MessageEntry {
+    public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
         var sent : Bool = false;
-        var newMessage : MessageEntry = createMessage(messageID, caller, body, Time.now());
+        var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
         MessageHashMap.put(messageID, newMessage);
         messageID := messageID + 1;
         sent := true;
         return newMessage;
-
-
     };
 
-    func createMessage(id : Nat, sender : Principal, body : Text, time : Int) : MessageEntry {
+    func createMessage(id : Nat, f_id : Text, username : Text, sender : Principal, body : Text, time : Text) : MessageEntry {
         {
             id;
+            f_id;
+            username;
             sender;
             body;
             time
@@ -459,7 +463,7 @@ shared ({ caller }) actor class Kitchen() {
         MessageHashMap.get(id)
     };
 
-    public shared query ({ caller }) func getMessages(from : Nat, to : Nat) : async [MessageEntry] {
+    public query func getMessages(from : Nat, to : Nat) : async [MessageEntry] {
         // var checkForConnection = await checkConnection(account, caller);
         //  if (checkForConnection == true) {
         var msgs = Buffer.Buffer<MessageEntry>(0);
@@ -472,7 +476,11 @@ shared ({ caller }) actor class Kitchen() {
         //  }
     };
 
-    public shared query ({ caller }) func getUpdatedMessages(check : Nat) : async [MessageEntry] {
+    public query func getAllMessages() : async [(Nat, MessageEntry)] {
+        Iter.toArray(MessageHashMap.entries());
+    };
+
+    public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
         // var checkForConnection = await checkConnection(account, caller);
         //  if (checkForConnection == true) {
         var msgs = Buffer.Buffer<MessageEntry>(0);
