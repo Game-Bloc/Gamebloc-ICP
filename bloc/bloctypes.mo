@@ -13,6 +13,7 @@ module {
         account_id : Text;
         canister_id: Text;
         squad_badge: Text;
+        // role : Text
         // ico_balance : Nat64;
     };
 
@@ -60,6 +61,7 @@ module {
         starting_date : Text;
         tournament_rules : Text;
         tournament_type : TournamentType;
+        // mods : [Text];
         game : Text;
         squad : [Squad];
         messages : ?[Chat];
