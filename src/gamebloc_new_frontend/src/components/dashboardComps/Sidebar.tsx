@@ -18,8 +18,8 @@ const Sidebar = () => {
       link: "",
       icon: MdVideogameAsset,
       subMenu: [
-        { name: "Prepaid", link: "" },
-        { name: "CrowdFunded", link: "" },
+        { name: "Prepaid", link: "/active-tournament" },
+        { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
     { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
