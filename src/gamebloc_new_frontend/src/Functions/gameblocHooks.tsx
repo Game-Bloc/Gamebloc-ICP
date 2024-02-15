@@ -457,6 +457,28 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const sendChatMessage = async (
+    body: string,
+    time: string,
+    username: string,
+    f_id: string,
+  ) => {
+    try {
+      const message = await whoamiActor.sendMessage(body, time, username, f_id)
+    } catch (err) {
+      console.log("Error Sending message:", err)
+    }
+  }
+
+  const getChatmessage = async () => {
+    try {
+      const messages = await whoamiActor.getAllMessages()
+      console.log("chat messages:", messages)
+    } catch (err) {
+      console.log("Error getting message:", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -478,5 +500,7 @@ export const useGameblocHooks = () => {
     sendFeedBack,
     getFeedBacks,
     sendTournamentMessage,
+    sendChatMessage,
+    getChatmessage,
   }
 }

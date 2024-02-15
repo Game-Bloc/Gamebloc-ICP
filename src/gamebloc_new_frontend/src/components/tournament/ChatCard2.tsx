@@ -10,7 +10,7 @@ const ChatCard2 = () => {
           <p className="text-sm text-gray font-bold">Deonorla</p>{" "}
           <p className="text-[.65rem] ml-2 mr-2 text-gray/80">12:00 pm</p>
         </div>
-        <p className="text-gray">Hi</p>
+        <p className="text-gray text-[.8rem]">Hi</p>
       </div>
       <div className="ml-2">
         <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
