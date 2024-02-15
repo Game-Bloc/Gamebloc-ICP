@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { HiMenuAlt3 } from "react-icons/hi";
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import { MdDashboard } from "react-icons/md";
-import { MdVideogameAsset } from "react-icons/md";
-import { FaAngleDown } from "react-icons/fa";
+import React, { useState } from "react"
+import { HiMenuAlt3 } from "react-icons/hi"
+import { NavLink, Link, useNavigate } from "react-router-dom"
+import { MdDashboard } from "react-icons/md"
+import { MdVideogameAsset } from "react-icons/md"
+import { FaAngleDown } from "react-icons/fa"
+import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 
 const Sidebar = () => {
-  const [open, setOpen] = useState<boolean>(false);
-  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false);
-  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false)
+  const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
+  const navigate = useNavigate()
 
   const menus = [
     { name: "Overview", link: "/dashboard", icon: MdDashboard },
@@ -21,7 +22,8 @@ const Sidebar = () => {
         { name: "CrowdFunded", link: "" },
       ],
     },
-  ];
+    { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
+  ]
 
   return (
     <div
@@ -44,10 +46,10 @@ const Sidebar = () => {
               onClick={() => {
                 !menu.subMenu
                   ? navigate(`${menu.link}`)
-                  : setOpenSubMenu(!openSubMenu);
+                  : setOpenSubMenu(!openSubMenu)
               }}
             >
-              <div>
+              <div onClick={() => setOpen(!open)}>
                 {React.createElement(menu.icon, {
                   size: "20",
                   color: "#F6B8FC",
@@ -98,7 +100,7 @@ const Sidebar = () => {
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

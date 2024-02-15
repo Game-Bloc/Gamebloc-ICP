@@ -11,6 +11,7 @@ import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { CiUser } from "react-icons/ci"
 import { PiSignOutThin } from "react-icons/pi"
 import { useAuth } from "../../Auth/use-auth-client"
+import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 
 const Header = () => {
   const navigate = useNavigate()
@@ -37,6 +38,7 @@ const Header = () => {
         { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
+    { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
   ]
 
   return (
