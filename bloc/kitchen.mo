@@ -502,8 +502,6 @@ shared ({ caller }) actor class Kitchen() {
         };
     };
 
-    
-
     public shared ({ caller }) func createUser(user : Principal) : async Principal {
         assert (caller == userCanisterId);
         userCanisterId := user;
@@ -562,7 +560,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public query func get_unread_feedbacks() : async ?[Bloctypes.Feedback] {
-        do ? {
+        do ?{
             var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
             for ((i, j) in FEED_BACK_STORE.entries()) {
                 if (j.read == true) {
@@ -572,6 +570,10 @@ shared ({ caller }) actor class Kitchen() {
             buffer.toArray()
         }
     };
+
+    // public func mark_feedback_read() : async Bool {
+
+    // };
 
     public func get_all_feedback() : async [Bloctypes.Feedback] {
         var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
