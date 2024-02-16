@@ -11,9 +11,11 @@ const ChatContainer = () => {
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
   // const [chatId, setChatId] = useState<string>("")
-  const { sendChatMessage, getChatmessage } = useGameblocHooks()
+  const { sendChatMessage, getChatmessage, updateChatmessage } =
+    useGameblocHooks()
   const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
+  const chats = useAppSelector((state) => state.chat)
 
   const getTimeIn12HourFormat = () => {
     const date = new Date()
@@ -29,7 +31,7 @@ const ChatContainer = () => {
     }${minutes} ${ampm}`
     return formattedTime
   }
-
+  console.log("chats", chats)
   const onMessageChange = (e: any) => {
     e.preventDefault()
     const input = e.target.value
@@ -38,8 +40,8 @@ const ChatContainer = () => {
 
   useEffect(() => {
     setInterval(() => {
+      getChatmessage(20)
       setTime(getTimeIn12HourFormat())
-      getChatmessage()
     }, 2000)
   }, [])
 
@@ -53,35 +55,15 @@ const ChatContainer = () => {
         // ref={scrollContainerRef}
         className="flex w-full h-full max-h-full p-2 flex-col border border-white/10 border-solid rounded-lg overflow-x-hidden overflow-y-scroll"
       >
-        {/* {data.messages.map((message: any, index: any) => (
-            <ChatCard1 key={index} tourData={data} message={message} />
-          ))} */}
-
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
-        <ChatCard2 />
+        {chats.map((message: any, index: any) => (
+          <ChatCard2 key={index} message={message} />
+        ))}
       </div>
       <div className=" w-full mt-2 flex justify-end items-center">
-        <div className=" w-full justify-center items-center p-4 bg-[#fff]/10 rounded-full flex">
+        <div className=" w-full justify-center items-center py-2 px-4 bg-[#fff]/10 rounded-full flex">
           <textarea
-            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.9rem] bg-[transparent]"
-            placeholder="Message"
+            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+            placeholder="Leave a comment"
             rows={1}
             value={message}
             onChange={onMessageChange}

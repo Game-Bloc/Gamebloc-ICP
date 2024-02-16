@@ -5,6 +5,7 @@ import tournamentReducer from "./slice/tournamentDataSlice"
 import authReducer from "./slice/authClient"
 import squadReducer from "./slice/squadSlice"
 import icpReducer from "./slice/icpBalanceSlice"
+import chatReducer from "./slice/chatSlice"
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     authenticationClient: authReducer,
     squad: squadReducer,
     IcpBalance: icpReducer,
+    chat: chatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

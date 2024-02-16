@@ -12,12 +12,14 @@ import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 
 const Dashboard = () => {
-  const { getProfile, getProfile2, getFeedBacks } = useGameblocHooks()
+  const { getProfile, getProfile2, getFeedBacks, getChatmessage } =
+    useGameblocHooks()
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
     getProfile()
     getFeedBacks()
+    getChatmessage(20)
   }, [])
 
   const handleModal = () => {

@@ -14,6 +14,12 @@ import {
   updateICP,
 } from "../redux/slice/icpBalanceSlice"
 import { message } from "antd"
+import {
+  chatState,
+  clearChat,
+  pushToChat,
+  updateChat,
+} from "../redux/slice/chatSlice"
 // import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
@@ -465,15 +471,55 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       const message = await whoamiActor.sendMessage(body, time, username, f_id)
+      if (message) {
+        console.log("Success message")
+      }
     } catch (err) {
       console.log("Error Sending message:", err)
     }
   }
 
-  const getChatmessage = async () => {
+  const getChatmessage = async (value: number) => {
+    let num = BigInt(value)
     try {
       const messages = await whoamiActor.getAllMessages()
-      console.log("chat messages:", messages)
+      if (messages) {
+        console.log("chat fetched")
+        for (const data of messages) {
+          const chats = {
+            body: data[1].body,
+            f_id: data[1].f_id,
+            sender: data[1].sender.toString(),
+            id: data[1].id,
+            time: data[1].time,
+            username: data[1].username,
+          }
+          dispatch(pushToChat(chats))
+        }
+      }
+    } catch (err) {
+      console.log("Error getting message:", err)
+    }
+  }
+  const updateChatmessage = async (value: number) => {
+    let num = BigInt(value)
+    try {
+      const messages = await whoamiActor.getAllMessages()
+      // dispatch(clearChat())
+      if (messages) {
+        for (const data of messages) {
+          const chats = {
+            body: data[1].body,
+            f_id: data[1].f_id,
+            sender: data[1].sender.toString(),
+            id: data[1].id,
+            time: data[1].time,
+            username: data[1].username,
+          }
+
+          dispatch(updateChat(chats))
+        }
+      }
     } catch (err) {
       console.log("Error getting message:", err)
     }
@@ -502,5 +548,6 @@ export const useGameblocHooks = () => {
     sendTournamentMessage,
     sendChatMessage,
     getChatmessage,
+    updateChatmessage,
   }
 }
