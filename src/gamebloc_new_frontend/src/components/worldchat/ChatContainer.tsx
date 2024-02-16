@@ -31,7 +31,7 @@ const ChatContainer = () => {
     }${minutes} ${ampm}`
     return formattedTime
   }
-  console.log("chats", chats)
+  // console.log("chats", chats)
   const onMessageChange = (e: any) => {
     e.preventDefault()
     const input = e.target.value

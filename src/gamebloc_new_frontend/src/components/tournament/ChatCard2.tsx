@@ -10,8 +10,6 @@ const ChatCard2 = ({ message }: Props) => {
   const userId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
 
-  console.log("body:", message.body)
-
   return (
     <>
       {message.username == username && message.f_id == userId ? (
