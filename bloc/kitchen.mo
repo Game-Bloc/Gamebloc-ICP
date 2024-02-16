@@ -485,16 +485,21 @@ shared ({ caller }) actor class Kitchen() {
         //  if (checkForConnection == true) {
         var msgs = Buffer.Buffer<MessageEntry>(0);
         var len = MessageHashMap.size();
-        for ((i, j) in MessageHashMap.entries()) {
-            var pip = len - check;
-            if (pip > 0){
+        var pip : Int = len - check;
+        if (pip < 0){
+            var msgs = Buffer.Buffer<MessageEntry>(0);
+            for ((i, j) in MessageHashMap.entries()) {
+                msgs.add(j);
+            };
+            return msgs.toArray();
+        } else{
+            for ((i, j) in MessageHashMap.entries()) { 
                 if ((j.id >= pip) and (j.id <= len)) {
                     msgs.add(j);
                 };
             };
+            return msgs.toArray();
         };
-        msgs.toArray();
-        //  }
     };
 
     
