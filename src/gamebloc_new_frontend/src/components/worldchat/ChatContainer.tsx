@@ -39,7 +39,7 @@ const ChatContainer = () => {
   useEffect(() => {
     setInterval(() => {
       setTime(getTimeIn12HourFormat())
-      //   updateMessages()
+      getChatmessage()
     }, 2000)
   }, [])
 
