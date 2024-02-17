@@ -555,7 +555,7 @@ shared ({ caller }) actor class Kitchen() {
         feedback_id := feedback_id + 1
     };
 
-    public func get_feedback(id : Nat) : async ?Bloctypes.Feedback {
+    public query func get_feedback(id : Nat) : async ?Bloctypes.Feedback {
         FEED_BACK_STORE.get(id)
     };
 
@@ -575,7 +575,7 @@ shared ({ caller }) actor class Kitchen() {
 
     // };
 
-    public func get_all_feedback() : async [Bloctypes.Feedback] {
+    public query func get_all_feedback() : async [Bloctypes.Feedback] {
         var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
         for ((i, j) in FEED_BACK_STORE.entries()) {
             buffer.add(j)
@@ -753,19 +753,19 @@ shared ({ caller }) actor class Kitchen() {
 
     // };
 
-    public func get_number_of_squads() : async Nat {
+    public query func get_number_of_squads() : async Nat {
         ID_STORE.size()
     };
 
-    public func get_number_of_unique_users() : async Nat {
+    public query func get_number_of_unique_users() : async Nat {
         ProfileHashMap.size()
     };
 
-    public func get_total_number_of_tournament() : async Nat {
+    public query func get_total_number_of_tournament() : async Nat {
         TournamentHashMap.size()
     };
 
-    public func get_total_number_of_squads() : async Nat {
+    public query func get_total_number_of_squads() : async Nat {
         SQUAD_STORE.size()
     }
 
