@@ -49,6 +49,12 @@ const ChatContainer = () => {
     sendChatMessage(message, time, username, chatId)
   }
 
+  const handleKeyPress = (e: any) => {
+    if (e.key === "Enter") {
+      sendMessage()
+    }
+  }
+
   return (
     <div className="flex flex-col h-[75vh]">
       <div
@@ -67,6 +73,7 @@ const ChatContainer = () => {
             rows={1}
             value={message}
             onChange={onMessageChange}
+            onKeyDown={handleKeyPress}
           />
         </div>
         {message === "" ? (

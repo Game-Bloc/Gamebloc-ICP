@@ -400,6 +400,9 @@ export const useGameblocHooks = () => {
       if (send) {
         setIsLoading(false)
         popUp(successMsg, route)
+        setInterval(() => {
+          window.location.reload()
+        }, 2000)
       }
     } catch (err) {
       setIsLoading(false)
