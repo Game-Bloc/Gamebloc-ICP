@@ -14,6 +14,7 @@ import Hash "mo:base/Hash";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
+import Blob "mo:base/Blob";
 
 import AccountIdentifier "mo:principal/AccountIdentifier";
 import AccountID "mo:principal/blob/AccountIdentifier";
@@ -27,6 +28,7 @@ import Bloctypes "bloctypes";
 import LedgerTypes "ledgertypes";
 import Utils "utils";
 import Ledgertypes "ledgertypes";
+import HTTP "http";
 
 shared ({ caller }) actor class Kitchen() {
 
@@ -38,6 +40,7 @@ shared ({ caller }) actor class Kitchen() {
     private stable var IDEntries : [(Text, Text)] = [];
     private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
     private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
+    private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
     private stable var feedback_id : Nat = 0;
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -46,12 +49,14 @@ shared ({ caller }) actor class Kitchen() {
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
     var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
+    var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
     /// stabilizing the motoko backup
     system func preupgrade() {
         ProfileEntries := Iter.toArray(ProfileHashMap.entries());
         TournamentEntries := Iter.toArray(TournamentHashMap.entries());
         IDEntries := Iter.toArray(ID_STORE.entries());
+        UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
         FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries())
     };
@@ -62,10 +67,12 @@ shared ({ caller }) actor class Kitchen() {
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
         SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
+        USER_TRACK_STORE := TrieMap.fromEntries<Principal, Bloctypes.UserTrack>(UserTrackEntries.vals(), Principal.equal, Principal.hash);
         FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
 
         // clear the states
         ProfileEntries := [];
+        UserTrackEntries := [];
         TournamentEntries := [];
         IDEntries := [];
         SquadEntries := [];
@@ -540,6 +547,125 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    // 
+    // User activities
+    // 
+
+    public func create_usertrack(caller : Principal) : async () {
+        USER_TRACK_STORE.put(
+            caller,
+            {
+                user = caller;
+                tournaments_created = 0;
+                tournaments_joined = 0;
+                tournaments_won = 0;
+                messages_sent = 0;
+                feedbacks_sent = 0;
+                total_point = 0;
+            }
+        );
+    };
+
+    public func update_tournaments_created(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch(tracker) {
+            case (null){};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;  
+                    tournaments_created = tracker.tournaments_created + 1;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
+            }
+        }
+    };
+
+    public func update_tournaments_joined(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch(tracker) {
+            case (null){};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;  
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined + 1;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
+            }
+        }
+    };
+
+    public func update_tournaments_won(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch(tracker) {
+            case (null){};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;  
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won + 1;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
+            }
+        }
+    };
+
+    public func update_messages_sent(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch(tracker) {
+            case (null){};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;  
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent + 1;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
+            }
+        }
+    };
+
+
+    // 
+    // Feedbacks
+    // 
+
+    public func update_feedbacks_sent(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch(tracker) {
+            case (null){};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;  
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent + 1;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
+            }
+        }
+    };
+
     public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
         FEED_BACK_STORE.put(
             feedback_id,
@@ -582,6 +708,11 @@ shared ({ caller }) actor class Kitchen() {
         };
         buffer.toArray()
     };
+
+
+    // 
+    // Tournaments
+    // 
 
     public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
@@ -748,6 +879,92 @@ shared ({ caller }) actor class Kitchen() {
             throw (err)
         }
     };
+
+    // 
+    // HTTP outcalls
+    // 
+
+    public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
+      let transformed : HTTP.CanisterHttpResponsePayload = {
+          status = raw.response.status;
+          body = raw.response.body;
+          headers = [
+              {
+                  name = "Content-Security-Policy";
+                  value = "default-src 'self'";
+              },
+              { 
+                name = "Referrer-Policy"; 
+                value = "strict-origin" 
+              },
+              { 
+                name = "Permissions-Policy"; 
+                value = "geolocation=(self)" },
+              {
+                  name = "Strict-Transport-Security";
+                  value = "max-age=63072000";
+              },
+              { 
+                name = "X-Frame-Options"; 
+                value = "DENY" 
+              },
+              { 
+                name = "X-Content-Type-Options"; 
+                value = "nosniff" 
+              },
+          ];
+      };
+      transformed;
+  };
+
+
+   public func send_http_get_request(url_ : Text, player_tag : Text) : async Text {
+
+    let ic : HTTP.IC = actor ("aaaa-aa");
+
+
+    // let host : Text = "";
+    let url = "https://api.clashroyale.com/v1/players/" # player_tag;
+    let api_key = "ey-xxx";
+
+    let transform_context : HTTP.TransformContext = {
+      function = transform;
+      context = Blob.fromArray([]);
+    };
+
+    // let idempotency_key: Text = generateUUID();
+    let request_headers = [
+        { name = "Authorization"; value = "Bearer " # api_key},
+        { name = "User-Agent"; value = "gamebloc_canister" },
+        { name= "Content-Type"; value = "application/json" },
+        // { name = "x-api-key"; value = "" },
+    ];
+    Debug.print("Loading......." # url);
+
+    let http_request : HTTP.HttpRequestArgs = {
+        url = url;
+        max_response_bytes = null; //optional for request
+        headers = request_headers;
+        body = null; //optional styll
+        method = #get;
+        transform = ?transform_context;
+    };
+
+    Cycles.add(230_850_258_000);
+
+    let http_response : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+    let response_body: Blob = Blob.fromArray(http_response.body);
+    let decoded_text: Text = switch (Text.decodeUtf8(response_body)) {
+        case (null) { "No value returned" };
+        case (?y) { y };
+    };
+
+    //6. RETURN RESPONSE OF THE BODY
+    let result: Text = decoded_text # ". See more info of the request sent at: " # url # "/inspect";
+    return result;
+  };
+
 
     // public func start_tournament(id : Text) : (){
 
