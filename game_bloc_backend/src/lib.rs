@@ -28,6 +28,62 @@ type TournamentStore = BTreeMap<String, TournamentAccount>;
 type SquadStore = BTreeMap<String, Squad>;
 
 
+// method called by the WS Gateway after receiving FirstMessage from the client
+#[update]
+fn ws_open(args: CanisterWsOpenArguments) -> CanisterWsOpenResult {
+    ic_websocket_cdk::ws_open(args)
+}
+
+// method called by the Ws Gateway when closing the IcWebSocket connection
+#[update]
+fn ws_close(args: CanisterWsCloseArguments) -> CanisterWsCloseResult {
+    ic_websocket_cdk::ws_close(args)
+}
+
+// method called by the WS Gateway to send a message of type GatewayMessage to the canister
+#[update]
+fn ws_message(
+    args: CanisterWsMessageArguments,
+    msg_type: Option<AppMessage>,
+) -> CanisterWsMessageResult {
+    ic_websocket_cdk::ws_message(args, msg_type)
+}
+
+// method called by the WS Gateway to get messages for all the clients it serves
+#[query]
+fn ws_get_messages(args: CanisterWsGetMessagesArguments) -> CanisterWsGetMessagesResult {
+    ic_websocket_cdk::ws_get_messages(args)
+}
+
+//// Debug/tests methods
+// send a message to the client, usually called by the canister itself
+#[update]
+fn send(client_principal: ClientPrincipal, messages: Vec<Vec<u8>>) -> CanisterSendResult {
+    for msg_bytes in messages {
+        match ic_websocket_cdk::send(client_principal, msg_bytes) {
+            Ok(_) => {},
+            Err(e) => return Err(e),
+        }
+    }
+    Ok(())
+}
+
+// close the connection with a client, usually called by the canister itself
+#[update]
+fn close(client_principal: ClientPrincipal) -> CanisterCloseResult {
+    ic_websocket_cdk::close(client_principal)
+}
+
+// wipes the internal state
+#[update]
+fn wipe(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
+    ic_websocket_cdk::wipe();
+
+    init(max_number_of_returned_messages, send_ack_interval_ms);
+}
+
+
+
 thread_local! {
     static PROFILE_STORE: RefCell<ProfileStore> = RefCell::default();
     static TOURNAMENT_STORE: RefCell<TournamentStore> = RefCell::default();
@@ -166,6 +222,18 @@ fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
     } else {
         println!("you're not admin");
     }
+}
+#[update]
+fn archive_tournament(id: String, names: Vec<String>, principal: Principal) {
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+            tournament.status = match tournament.status {
+                TournamentStatus::AcceptingPlayers => TournamentStatus::Archived,
+                _ => {
+                    TournamentStatus::Archived
+                }
+            };
+        });
 }
 
 #[update]
@@ -411,11 +479,22 @@ fn leave_or_remove_squad_member(principal: Principal, id: String) {
 
 
 #[init]
-fn init() {
+fn init(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID);
+    let handlers = WsHandlers {
+        on_open: Some(on_open),
+        on_message: Some(on_message),
+        on_close: Some(on_close),
+    };
+
+    let params = WsInitParams::new(handlers)
+        .with_max_number_of_returned_messages(max_number_of_returned_messages)
+        .with_send_ack_interval_ms(send_ack_interval_ms);
+
+    ic_websocket_cdk::init(params)
 }
 
 #[pre_upgrade]
