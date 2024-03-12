@@ -10,7 +10,6 @@ import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
-import { useFetchAllTournaments } from "../Functions/blochooks"
 
 const Dashboard = () => {
   const {
