@@ -1,7 +1,13 @@
 import React, { useState } from "react"
 import SoonModal from "../../../components/Modals/SoonModal"
+import { DotChartOutlined } from "@ant-design/icons"
+import { Skeleton } from "antd"
 
-const GameblocTournaments = () => {
+interface props {
+  loading: boolean
+}
+
+const GameblocTournaments = ({ loading }: props) => {
   const [modal, setModal] = useState<boolean>(false)
 
   const handleModal = () => {
@@ -27,45 +33,113 @@ const GameblocTournaments = () => {
               onClick={() => setModal(true)}
               className="relative flex cursor-pointer "
             >
-              <img src={`Gcard1.png`} alt="" />
-              <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
-                <p className="text-white text-[0.7rem] sm:text-sm ">
-                  Registration: Coming
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex flex-col w-full h-full justify-center items-center">
+                  <Skeleton.Node className=" bg-[#505050] " active={true}>
+                    <DotChartOutlined
+                      style={{ fontSize: 40, color: "#bfbfbf" }}
+                    />
+                  </Skeleton.Node>
+                  <Skeleton.Input
+                    className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                    active={true}
+                    size={"small"}
+                  />
+                </div>
+              ) : (
+                <>
+                  <img src={`Gcard1.png`} />
+                  <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
+                    <p className="text-white text-[0.7rem] sm:text-sm ">
+                      Registration: Coming
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <div
               onClick={() => setModal(true)}
               className="relative cursor-pointer "
             >
-              <img src={`Gcard2.png`} alt="" />
-              <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
-                <p className="text-white text-[0.7rem] sm:text-sm ">
-                  Registration: Coming
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex flex-col w-full h-full justify-center items-center">
+                  <Skeleton.Node className=" bg-[#505050] " active={true}>
+                    <DotChartOutlined
+                      style={{ fontSize: 40, color: "#bfbfbf" }}
+                    />
+                  </Skeleton.Node>
+                  <Skeleton.Input
+                    className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                    active={true}
+                    size={"small"}
+                  />
+                </div>
+              ) : (
+                <>
+                  <img src={`Gcard2.png`} />
+                  <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
+                    <p className="text-white text-[0.7rem] sm:text-sm ">
+                      Registration: Coming
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <div
               onClick={() => setModal(true)}
               className="relative  cursor-pointer"
             >
-              <img src={`Gcard3.png`} alt="" />
-              <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
-                <p className="text-white text-[0.7rem] sm:text-sm ">
-                  Registration: Coming
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex flex-col w-full h-full justify-center items-center">
+                  <Skeleton.Node className=" bg-[#505050] " active={true}>
+                    <DotChartOutlined
+                      style={{ fontSize: 40, color: "#bfbfbf" }}
+                    />
+                  </Skeleton.Node>
+                  <Skeleton.Input
+                    className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                    active={true}
+                    size={"small"}
+                  />
+                </div>
+              ) : (
+                <>
+                  <img src={`Gcard3.png`} />
+                  <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
+                    <p className="text-white text-[0.7rem] sm:text-sm ">
+                      Registration: Coming
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <div
               onClick={() => setModal(true)}
               className="relative cursor-pointer"
             >
-              <img src={`Gcard4.png`} alt="" />
-              <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
-                <p className="text-white text-[0.7rem] sm:text-sm ">
-                  Registration: Coming
-                </p>
-              </div>
+              {loading ? (
+                <div className="flex flex-col w-full h-full justify-center items-center">
+                  <Skeleton.Node className=" bg-[#505050] " active={true}>
+                    <DotChartOutlined
+                      style={{ fontSize: 40, color: "#bfbfbf" }}
+                    />
+                  </Skeleton.Node>
+                  <Skeleton.Input
+                    className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                    active={true}
+                    size={"small"}
+                  />
+                </div>
+              ) : (
+                <>
+                  <img src={`Gcard4.png`} />
+                  <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
+                    <p className="text-white text-[0.7rem] sm:text-sm ">
+                      Registration: Coming
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

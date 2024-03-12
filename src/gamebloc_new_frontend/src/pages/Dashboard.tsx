@@ -10,10 +10,17 @@ import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
+import { useFetchAllTournaments } from "../Functions/blochooks"
 
 const Dashboard = () => {
-  const { getProfile, getProfile2, getFeedBacks, getChatmessage } =
-    useGameblocHooks()
+  const {
+    getProfile,
+    isLoadingProfile,
+    getProfile2,
+    getFeedBacks,
+    getChatmessage,
+  } = useGameblocHooks()
+
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -39,7 +46,7 @@ const Dashboard = () => {
             <Carousel />
             {/* <Recommended /> */}
             <FreeRegistration />
-            <GameblocTournaments />
+            <GameblocTournaments loading={isLoadingProfile} />
           </div>
         </div>
       </section>
