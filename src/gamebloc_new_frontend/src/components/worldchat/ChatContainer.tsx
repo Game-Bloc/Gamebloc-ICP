@@ -6,7 +6,7 @@ import { IoSend } from "react-icons/io5"
 import ChatCard2 from "../tournament/ChatCard2"
 
 const ChatContainer = () => {
-  // const id = data.id_hash
+  
   const scrollContainerRef = useRef(null)
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")

@@ -5,9 +5,29 @@ use ic_stable_structures::{
 };
 use std::{borrow::Cow, cell::RefCell};
 use crate::*;
+use ic_cdk::print;
 
+use ic_websocket_cdk::{OnCloseCallbackArgs, OnMessageCallbackArgs, OnOpenCallbackArgs};
+
+pub fn on_open(args: OnOpenCallbackArgs) {
+    print(format!("Opened websocket: {:?}", args.client_principal));
+}
+
+pub fn on_message(args: OnMessageCallbackArgs) {
+    print(format!("Received message: {:?}", args.client_principal));
+}
+
+pub fn on_close(args: OnCloseCallbackArgs) {
+    print(format!("Client {:?} disconnected", args.client_principal));
+}
 
 const MAX_VALUE_SIZE: u32 = 100;
+
+#[derive(CandidType, Serialize, Deserialize)]
+pub struct AppMessage {
+    pub text: String,
+}
+
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct UserProfile {
     pub id_hash: String,
@@ -116,6 +136,7 @@ pub enum TournamentStatus {
     AcceptingPlayers,
     GameInProgress,
     GameCompleted,
+    Archived,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
