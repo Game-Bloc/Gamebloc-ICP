@@ -53,7 +53,7 @@ const Category = () => {
 
               <div className="mx-4 mt-4  flex flex-col">
                 <h1 className="text-white sm:ml-4 font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
-                  Choose a game
+                  Game Category
                 </h1>
                 <div className="mt-8 gap-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 xl:gap-8 w-full">
                   {images.map((category) => (

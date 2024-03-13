@@ -23,9 +23,13 @@ const CategoryCard = ({ category }: Props) => {
         category.title,
       )}`}
       key={category.id}
+      className="w-fit h-fit"
     >
-      <div className="rounded-[10px] w-full relative cursor-pointer">
-        <div style={{ display: isImageLoaded ? "none" : "inline" }}>
+      <div className="rounded-[10px] w-full h-fit relative cursor-pointer">
+        <div
+          className="flex justify-center items-center w-full h-full"
+          style={{ display: isImageLoaded ? "none" : "inline" }}
+        >
           <Blurhash
             hash={category.hash}
             resolutionX={32}
@@ -40,7 +44,7 @@ const CategoryCard = ({ category }: Props) => {
           className="border hover:scale-105 m-0 border-white/15 border-solid rounded-[10px]  "
           alt=""
         />
-        <h2 className="absolute top-[1.1rem] left-4 text-sm text-white md:text-base  lg:text-lg ">
+        <h2 className="absolute top-[1.1rem] left-4 text-[.72rem] sm:text-sm text-white md:text-base  lg:text-lg ">
           {category.title}
         </h2>
       </div>
