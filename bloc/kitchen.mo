@@ -42,6 +42,7 @@ shared ({ caller }) actor class Kitchen() {
     private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
     private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
     private stable var feedback_id : Nat = 0;
+    private stable var SupportedGames : [Text] = [];
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -98,6 +99,7 @@ shared ({ caller }) actor class Kitchen() {
         // call the balnce function to get and set the balance of newly registered users
         let balance = 10;
         let checkUsername = usernameChecker(username);
+
         if (checkUsername == false) {
             #err("This username exist! Please enter another")
         } else {
@@ -450,6 +452,7 @@ shared ({ caller }) actor class Kitchen() {
         var sent : Bool = false;
         var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
         MessageHashMap.put(messageID, newMessage);
+        await update_messages_sent(caller);
         messageID := messageID + 1;
         sent := true;
         return newMessage;
@@ -540,6 +543,7 @@ shared ({ caller }) actor class Kitchen() {
     public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge);
         try {
+            await create_usertrack(caller);
             ProfileHashMap.put(caller, profile);
             return await RustBloc.create_profile(profile, caller)
         } catch err {
@@ -667,6 +671,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
+        await update_feedbacks_sent(caller);
         FEED_BACK_STORE.put(
             feedback_id,
             {
@@ -714,8 +719,9 @@ shared ({ caller }) actor class Kitchen() {
     // Tournaments
     // 
 
-    public func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
+    public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
+            await update_tournaments_created(caller);
             TournamentHashMap.put(caller, tournamentAccount);
             await RustBloc.create_tournament(tournamentAccount)
         } catch err {
@@ -823,8 +829,9 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public func join_tournament_with_squad(squad_id : Text, id : Text) : async () {
+    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text) : async () {
         try {
+            await update_tournaments_joined(caller);
             return await RustBloc.join_tournament_with_squad(squad_id, id)
         } catch err {
             throw (err)
@@ -864,8 +871,10 @@ shared ({ caller }) actor class Kitchen() {
 
     };
 
-    public func join_tournament(name : Text, id : Text) : async () {
+    public shared ({ caller }) func join_tournament(name : Text, id : Text) : async () {
+        
         try {
+            await update_tournaments_joined(caller);
             return await RustBloc.join_tournament(name, id)
         } catch err {
             throw (err)
