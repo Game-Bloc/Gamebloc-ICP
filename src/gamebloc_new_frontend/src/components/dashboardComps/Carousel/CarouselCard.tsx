@@ -110,7 +110,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
         <img
           src={list.img}
           alt=""
-          style={{ display: isImageLoaded ? "inline" : "nonne" }}
+          style={{ display: isImageLoaded ? "inline" : "none" }}
           className="sm:w-[60vw]  sm:h-[28rem]  h-[15rem] "
         />
       </div>
