@@ -79,7 +79,7 @@ fn close(client_principal: ClientPrincipal) -> CanisterCloseResult {
 fn wipe(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
     ic_websocket_cdk::wipe();
 
-    init(max_number_of_returned_messages, send_ack_interval_ms);
+    // init(max_number_of_returned_messages, send_ack_interval_ms);
 }
 
 
@@ -479,7 +479,7 @@ fn leave_or_remove_squad_member(principal: Principal, id: String) {
 
 
 #[init]
-fn init(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
+fn init() {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
@@ -490,11 +490,11 @@ fn init(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
         on_close: Some(on_close),
     };
 
-    let params = WsInitParams::new(handlers)
-        .with_max_number_of_returned_messages(max_number_of_returned_messages)
-        .with_send_ack_interval_ms(send_ack_interval_ms);
+    // let params = WsInitParams::new(handlers)
+    //     .with_max_number_of_returned_messages(max_number_of_returned_messages)
+    //     .with_send_ack_interval_ms(send_ack_interval_ms);
 
-    ic_websocket_cdk::init(params)
+    // ic_websocket_cdk::init(params)
 }
 
 #[pre_upgrade]
