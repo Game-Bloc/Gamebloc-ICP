@@ -21,6 +21,7 @@ const Carousell = () => {
       name: "E Football 2022 ",
       Host: "Gamesoft",
       img: `img1.png`,
+      hash: "LCD]Va0t~dn3^}0DIcIL-#%Fxp-z",
       tags: ["Football", "Sport", "Multiplayer"],
     },
     {
@@ -28,6 +29,7 @@ const Carousell = () => {
       name: "Clash Royale",
       Host: "Gamesoft",
       img: `img2.png`,
+      hash: "L9EA%0{p-a#Q1bwFES5kO7gDEcE*",
       tags: ["RPG", "Card", "Strategy", "Multiplayer"],
     },
     {
@@ -35,6 +37,7 @@ const Carousell = () => {
       name: "EA Sports FC 24",
       Host: "EA Sports",
       img: `img3.png`,
+      hash: "L28hE@~VQm.m8yyBJ|$-0000s@ne",
       tags: ["Sport", "Strategy", "Multiplayer"],
     },
     {
@@ -42,6 +45,7 @@ const Carousell = () => {
       name: "Mortal Kombat 1",
       Host: "Kobra Kia",
       img: `img4.png`,
+      hash: "LMKnl5t7_2oI.TRjVXofxvt6RPWB",
       tags: ["Fighting", "Action", "Battle Royle", "Multiplayer"],
     },
     {
@@ -49,6 +53,7 @@ const Carousell = () => {
       name: "Call of Duty: Mobile",
       Host: "Gamebloc",
       img: `img5.png`,
+      hash: "LJF5yU-.~KV=-gRkxsWZ0ToeE4WU",
       tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
     },
     {
@@ -56,6 +61,7 @@ const Carousell = () => {
       name: "Fortnite",
       Host: "Dealth Ream",
       img: `img6.png`,
+      hash: "LUF=z3XmJRt6uPaeNFR+xvaKRjRj",
       tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
     },
   ]

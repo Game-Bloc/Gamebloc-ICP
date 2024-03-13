@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
-import SoonModal from "../../../components/Modals/SoonModal"
-import { useAppSelector } from "../../../redux/hooks"
+import { Blurhash } from "react-blurhash"
 import { useGameblocHooks } from "../../../Functions/gameblocHooks"
 
 interface Props {
@@ -10,11 +9,15 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
+  const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   getICPrice()
-  //   console.log("IC price", IC)
-  // }, [])
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setImageLoaded(true)
+    }
+    img.src = list.img
+  }, [list.img])
 
   // const ICvalue = (dollar: number) => {
   //   const currentICP = (1 / IC) * dollar
@@ -93,10 +96,21 @@ const CarouselCard = ({ list, setModal }: Props) => {
           </div>
         </div>
       </div>
-      <div className="">
+      <div className="sm:w-[60vw]  sm:h-[28rem]  h-[15rem]">
+        <div style={{ display: isImageLoaded ? "none" : "inline" }}>
+          <Blurhash
+            hash={list.hash}
+            resolutionX={32}
+            resolutionY={32}
+            punch={1}
+            style={{ width: "100%", height: "100%" }}
+          />
+        </div>
+
         <img
           src={list.img}
           alt=""
+          style={{ display: isImageLoaded ? "inline" : "nonne" }}
           className="sm:w-[60vw]  sm:h-[28rem]  h-[15rem] "
         />
       </div>

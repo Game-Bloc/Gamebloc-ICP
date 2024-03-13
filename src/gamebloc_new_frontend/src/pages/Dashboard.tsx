@@ -12,8 +12,14 @@ import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 
 const Dashboard = () => {
-  const { getProfile, getProfile2, getFeedBacks, getChatmessage } =
-    useGameblocHooks()
+  const {
+    getProfile,
+    isLoadingProfile,
+    getProfile2,
+    getFeedBacks,
+    getChatmessage,
+  } = useGameblocHooks()
+
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -39,7 +45,7 @@ const Dashboard = () => {
             <Carousel />
             {/* <Recommended /> */}
             <FreeRegistration />
-            <GameblocTournaments />
+            <GameblocTournaments loading={isLoadingProfile} />
           </div>
         </div>
       </section>
