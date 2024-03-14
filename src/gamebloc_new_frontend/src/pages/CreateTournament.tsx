@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react"
 import Header from "../components/Header/Header"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import { IoIosArrowRoundBack } from "react-icons/io"
-import { Select, DatePicker, TimePicker, ConfigProvider, theme } from "antd"
+import {
+  Select,
+  DatePicker,
+  TimePicker,
+  ConfigProvider,
+  theme,
+  Skeleton,
+} from "antd"
 import { useNavigate } from "react-router-dom"
 import { useParams, useLocation } from "react-router-dom"
 import { useAppSelector } from "../redux/hooks"
@@ -15,6 +22,11 @@ import type { Dayjs } from "dayjs"
 import type { DatePickerProps } from "antd"
 import type { RangePickerProps } from "antd/es/date-picker"
 import ClipLoader from "react-spinners/ClipLoader"
+import { DotChartOutlined } from "@ant-design/icons"
+const loader = require("../../assets/category1.svg").default
+const loader1 = require("../../assets/category2.svg").default
+const loader2 = require("../../assets/category3.svg").default
+const loader3 = require("../../assets/category4.svg").default
 
 const CreateTournament = () => {
   const navigate = useNavigate()
@@ -41,6 +53,7 @@ const CreateTournament = () => {
   const [active, setActive] = useState<string>("first")
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { isLoading, createTournament } = useGameblocHooks()
+  const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
@@ -90,6 +103,14 @@ const CreateTournament = () => {
       setOpenModal(false)
     }
   }, [close])
+
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setImageLoaded(true)
+    }
+    img.src = loader
+  }, [loader])
 
   const filterOption = (
     input: string,
@@ -269,23 +290,39 @@ const CreateTournament = () => {
               <div className="flex flex-col lg:flex-row ">
                 <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                   <div className="flex w-full justify-center items-center">
-                    <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
-                      <img
-                        src={
-                          id == "1"
-                            ? `category1.svg`
-                            : id == "2"
-                            ? `category2.svg`
-                            : id == "3"
-                            ? `category3.svg`
-                            : id == "4"
-                            ? `category4.svg`
-                            : `gamepad.png`
-                        }
-                        alt=""
-                        className="rounded-[0.625rem]"
-                      />
-                    </div>
+                    {!isImageLoaded && (
+                      <div className="flex flex-col w-full h-full justify-center items-center">
+                        <Skeleton.Node className=" bg-[#505050] " active={true}>
+                          <DotChartOutlined
+                            style={{ fontSize: 40, color: "#bfbfbf" }}
+                          />
+                        </Skeleton.Node>
+                        <Skeleton.Input
+                          className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                          active={true}
+                          size={"small"}
+                        />
+                      </div>
+                    )}
+                    {isImageLoaded && (
+                      <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
+                        <img
+                          src={
+                            id == "1"
+                              ? loader
+                              : id == "2"
+                              ? loader1
+                              : id == "3"
+                              ? loader2
+                              : id == "4"
+                              ? loader3
+                              : `gamepad.png`
+                          }
+                          alt=""
+                          className="rounded-[0.625rem]"
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
                     <div className="flex justify-between my-[.9rem] mx-4 items-center">

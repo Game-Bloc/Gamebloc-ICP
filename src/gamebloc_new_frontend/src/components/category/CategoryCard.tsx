@@ -1,6 +1,10 @@
+import { DotChartOutlined } from "@ant-design/icons"
+import { Skeleton } from "antd"
 import React, { useEffect, useState } from "react"
 import { Blurhash } from "react-blurhash"
 import { Link } from "react-router-dom"
+
+// const loader = require("../../../assets/category1.svg").default
 
 interface Props {
   category: any
@@ -23,30 +27,33 @@ const CategoryCard = ({ category }: Props) => {
         category.title,
       )}`}
       key={category.id}
-      className="w-fit h-fit"
     >
-      <div className="rounded-[10px] w-full h-fit relative cursor-pointer">
-        <div
-          className="flex justify-center items-center w-full h-full"
-          style={{ display: isImageLoaded ? "none" : "inline" }}
-        >
-          <Blurhash
-            hash={category.hash}
-            resolutionX={32}
-            resolutionY={32}
-            punch={1}
-            style={{ width: "100%", height: "100%" }}
-          />
-        </div>
-        <img
-          style={{ display: isImageLoaded ? "inline" : "none" }}
-          src={category.img}
-          className="border hover:scale-105 m-0 border-white/15 border-solid rounded-[10px]  "
-          alt=""
-        />
-        <h2 className="absolute top-[1.1rem] left-4 text-[.72rem] sm:text-sm text-white md:text-base  lg:text-lg ">
-          {category.title}
-        </h2>
+      <div className="rounded-[10px] flex w-full h-full relative cursor-pointer">
+        {!isImageLoaded && (
+          <div className="flex flex-col w-full h-full justify-center items-center">
+            <Skeleton.Node className=" bg-[#505050] " active={true}>
+              <DotChartOutlined style={{ fontSize: 40, color: "#bfbfbf" }} />
+            </Skeleton.Node>
+            <Skeleton.Input
+              className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+              active={true}
+              size={"small"}
+            />
+          </div>
+        )}
+        {isImageLoaded && (
+          <>
+            <img
+              style={{ display: isImageLoaded ? "inline" : "none" }}
+              src={category.img}
+              className="border hover:scale-105 m-0 border-white/15 border-solid rounded-[10px]  "
+              alt=""
+            />
+            <h2 className="absolute top-[1.1rem] left-4 text-[.72rem] sm:text-sm text-white md:text-base  lg:text-lg ">
+              {category.title}
+            </h2>
+          </>
+        )}
       </div>
     </Link>
   )

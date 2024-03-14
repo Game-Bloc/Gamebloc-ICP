@@ -4,31 +4,35 @@ import Sidebar from "../components/dashboardComps/Sidebar"
 import { Link, useNavigate } from "react-router-dom"
 import { IoIosArrowRoundBack } from "react-icons/io"
 import CategoryCard from "../components/category/CategoryCard"
+const loader = require("../../assets/category1.svg").default
+const loader1 = require("../../assets/category2.svg").default
+const loader2 = require("../../assets/category3.svg").default
+const loader3 = require("../../assets/category4.svg").default
 
 const Category = () => {
   const navigate = useNavigate()
 
   const images = [
     {
-      img: `category1.svg`,
+      img: loader,
       id: 1,
       title: "Call of Duty Mobile",
       hash: "L48D:--.~JV=?7NHxtWZ0RofE3WU",
     },
     {
-      img: `category2.svg`,
+      img: loader1,
       id: 2,
       title: "Apex Legends Mobile",
       hash: "L571TZ-Ux^xBTOR*RoaJt:T1W:R+",
     },
     {
-      img: `category3.svg`,
+      img: loader2,
       id: 3,
       title: "Call of Duty Modern Warfare",
       hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
     },
     {
-      img: `category4.svg`,
+      img: loader3,
       id: 4,
       title: "Valorant",
       hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
