@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import SoonModal from "../../../components/Modals/SoonModal"
 import { DotChartOutlined } from "@ant-design/icons"
 import { Skeleton } from "antd"
+const img1 = require("../../../../assets/category1.svg").default
 
 interface props {
   loading: boolean
@@ -9,10 +10,19 @@ interface props {
 
 const GameblocTournaments = ({ loading }: props) => {
   const [modal, setModal] = useState<boolean>(false)
+  const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
 
   const handleModal = () => {
     setModal(!modal)
   }
+
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setImageLoaded(true)
+    }
+    img.src = img1
+  }, [img1])
 
   return (
     <div className="bg-[#040D17] rounded-[1.5rem] w-full p-4 mt-14">
@@ -33,7 +43,7 @@ const GameblocTournaments = ({ loading }: props) => {
               onClick={() => setModal(true)}
               className="relative flex cursor-pointer "
             >
-              {loading ? (
+              {!isImageLoaded ? (
                 <div className="flex flex-col w-full h-full justify-center items-center">
                   <Skeleton.Node className=" bg-[#505050] " active={true}>
                     <DotChartOutlined
@@ -48,7 +58,7 @@ const GameblocTournaments = ({ loading }: props) => {
                 </div>
               ) : (
                 <>
-                  <img src={`Gcard1.png`} />
+                  <img src={"Gcard1.png"} />
                   <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
                     <p className="text-white text-[0.7rem] sm:text-sm ">
                       Registration: Coming
@@ -61,7 +71,7 @@ const GameblocTournaments = ({ loading }: props) => {
               onClick={() => setModal(true)}
               className="relative cursor-pointer "
             >
-              {loading ? (
+              {!isImageLoaded ? (
                 <div className="flex flex-col w-full h-full justify-center items-center">
                   <Skeleton.Node className=" bg-[#505050] " active={true}>
                     <DotChartOutlined
@@ -89,7 +99,7 @@ const GameblocTournaments = ({ loading }: props) => {
               onClick={() => setModal(true)}
               className="relative  cursor-pointer"
             >
-              {loading ? (
+              {!isImageLoaded ? (
                 <div className="flex flex-col w-full h-full justify-center items-center">
                   <Skeleton.Node className=" bg-[#505050] " active={true}>
                     <DotChartOutlined
@@ -117,7 +127,7 @@ const GameblocTournaments = ({ loading }: props) => {
               onClick={() => setModal(true)}
               className="relative cursor-pointer"
             >
-              {loading ? (
+              {!isImageLoaded ? (
                 <div className="flex flex-col w-full h-full justify-center items-center">
                   <Skeleton.Node className=" bg-[#505050] " active={true}>
                     <DotChartOutlined
