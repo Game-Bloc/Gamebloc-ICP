@@ -4,7 +4,7 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 import { _SERVICE } from "../../../../../.dfx/local/canisters/game_bloc_backend/service.did"
 
 export interface AuthState {
-  auth: ActorSubclass<_SERVICE> | undefined
+  auth: false
 }
 
 const initialState: AuthState = {

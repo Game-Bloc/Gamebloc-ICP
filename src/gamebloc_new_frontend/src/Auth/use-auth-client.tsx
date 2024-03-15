@@ -150,12 +150,12 @@ export const useAuthClient = (options = defaultOptions) => {
       },
     })
 
-    dispatch(
-      updateAuth({
-        type: "authenticationClient/updateAuth",
-        payload: actor,
-      }),
-    )
+    // dispatch(
+    //   updateAuth({
+    //     type: "authenticationClient/updateAuth",
+    //     payload: actor,
+    //   }),
+    // )
     console.log("Actor3....", actor3)
     setWhoamiActor(actor)
     setWhoamiActor2(actor2)

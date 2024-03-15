@@ -3,7 +3,6 @@ import { Skeleton } from "antd"
 import React, { useEffect, useState } from "react"
 import { Blurhash } from "react-blurhash"
 import { Link } from "react-router-dom"
-
 // const loader = require("../../../assets/category1.svg").default
 
 interface Props {

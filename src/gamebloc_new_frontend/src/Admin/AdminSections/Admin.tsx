@@ -1,9 +1,25 @@
-import React from "react";
-import Header from "../../components/Header/Header";
-import AdminSidebar from "../AdminComps/AdminSidebar";
-import AdminTabBar from "../AdminComps/AdminTabBar";
+import Swal from "sweetalert2"
+import React, { useEffect } from "react"
+import withReactContent from "sweetalert2-react-content"
+import Header from "../../components/Header/Header"
+import AdminSidebar from "../AdminComps/AdminSidebar"
+import AdminTabBar from "../AdminComps/AdminTabBar"
+import { useAppSelector } from "../../redux/hooks"
+import { useNavigate } from "react-router-dom"
 
 const Admin = () => {
+  const navigate = useNavigate()
+  const MySwal = withReactContent(Swal)
+  const auth = useAppSelector((state) => state.authenticationClient.auth)
+
+  console.log()
+
+  useEffect(() => {
+    if (localStorage.getItem("adminAuthState") === "true") {
+      navigate("/admin-login")
+    }
+  }, [])
+
   return (
     <div className="">
       <section className="flex ">
@@ -83,7 +99,7 @@ const Admin = () => {
         </div>
       </section>
     </div>
-  );
-};
+  )
+}
 
-export default Admin;
+export default Admin

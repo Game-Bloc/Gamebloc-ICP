@@ -20,6 +20,7 @@ import {
   pushToChat,
   updateChat,
 } from "../redux/slice/chatSlice"
+import { toNamespacedPath } from "path/posix"
 // import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
@@ -528,6 +529,23 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const isAdmin = async (name: string) => {
+    try {
+      setIsLoading(true)
+      const admin = await whoamiActor.is_mod(name)
+      if (admin) {
+        return true
+      } else {
+        return false
+      }
+    } catch (err) {
+      setIsLoading(false)
+      console.log("Error getting Admin state:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -535,6 +553,7 @@ export const useGameblocHooks = () => {
     noData,
     isAccount,
     fetching,
+    isAdmin,
     getICPrice,
     createAccount,
     createTournament,

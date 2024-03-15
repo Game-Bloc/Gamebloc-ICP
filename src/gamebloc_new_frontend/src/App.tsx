@@ -14,10 +14,10 @@ import Category from "./pages/Category"
 import TournamentDetails from "./pages/TournamentDetails"
 import AdminProtectedRoute from "./AdminProtectedRoute"
 import WorldChat from "./pages/WorldChat"
+import AdminLogin from "./Admin/AdminLogin"
 
 const App = () => {
-  const auth = useAppSelector((state) => state.authenticationClient.auth)
-  const { principal, isAuthenticated, whoamiActor } = useAuth()
+  const { isAuthenticated } = useAuth()
   return (
     <div>
       <React.Suspense fallback={<FallBackLoader />}>
@@ -38,6 +38,7 @@ const App = () => {
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}
           >
+            <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<Admin />} />
           </Route>
         </Routes>
