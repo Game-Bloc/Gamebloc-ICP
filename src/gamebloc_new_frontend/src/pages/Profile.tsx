@@ -12,10 +12,16 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
 import ClipLoader from "react-spinners/ClipLoader"
+import MyTournaments from "../components/profileComp/MyTournaments/MyTournaments"
 
 const items: TabsProps["items"] = [
   {
     key: "1",
+    label: `My Tournaments`,
+    children: <MyTournaments />,
+  },
+  {
+    key: "2",
     label: `Squad`,
     children: <Squad />,
   },
