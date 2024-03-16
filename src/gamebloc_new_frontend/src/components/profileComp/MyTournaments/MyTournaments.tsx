@@ -40,22 +40,23 @@ const MyTournaments = () => {
       .map((tour) => tour),
   )
 
-  useEffect(() => {
-    if (tour.length > 0) {
-      updateTournament()
-    } else {
-      fetchAllTournaments()
-    }
-  }, [])
+  //   useEffect(() => {
+  //     if (tour.length > 0) {
+  //       updateTournament()
+  //     } else {
+  //       fetchAllTournaments()
+  //     }
+  //   }, [])
 
   if (updating) {
+    //   ;
     ;<div className="w-full mt-8 h-[10vh] flex justify-center items-center">
       <FallbackLoading />
     </div>
   } else {
     return (
       <div className=" mt-8 h-full w-full">
-        {nodata ? (
+        {tour.length == 0 ? (
           <div className="w-full flex justify-center mt-[3rem]">
             <div className="flex flex-col mb-4 ">
               <img src={`empty.svg`} alt="" />
