@@ -60,8 +60,8 @@ const Category = () => {
                   Game Category
                 </h1>
                 <div className="mt-8 gap-4 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 xl:gap-8 w-full">
-                  {images.map((category) => (
-                    <CategoryCard category={category} />
+                  {images.map((category, index) => (
+                    <CategoryCard key={index} category={category} />
                   ))}
                 </div>
               </div>

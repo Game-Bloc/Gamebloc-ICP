@@ -107,7 +107,7 @@ const Profile = () => {
                           ) : (
                             <>
                               <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
-                                {balance / 100000000}
+                                {balance}
                               </p>
                               <img
                                 src={`Icp.svg`}

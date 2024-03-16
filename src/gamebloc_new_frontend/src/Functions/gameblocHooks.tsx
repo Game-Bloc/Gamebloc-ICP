@@ -304,7 +304,7 @@ export const useGameblocHooks = () => {
       if (Balance) {
         const value = Object.values(Balance)[0]
         const Icp: any = {
-          balance: Number(value),
+          balance: Number(value) / 100000000,
         }
         dispatch(updateBalance(Icp))
         setFetching(false)
