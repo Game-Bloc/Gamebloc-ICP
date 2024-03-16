@@ -1,33 +1,33 @@
-import React, { useState } from "react";
-import type { TableColumnsType } from "antd";
-import { Table } from "antd";
-import NewModal from "../../components/Modals/Newmodal";
+import React, { useState } from "react"
+import type { TableColumnsType } from "antd"
+import { Table } from "antd"
+import NewModal from "../../components/Modals/Newmodal"
 
 interface DataType {
-  key: React.Key;
-  username: any;
-  type: any;
-  game: any;
-  players: any;
-  prize: any;
-  date: any;
+  key: React.Key
+  username: any
+  type: any
+  game: any
+  players: any
+  prize: any
+  date: any
 }
 
 const OngoingTable = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<DataType | null>(null);
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   //   const dataState = useAppSelector((state) => state.tournamentData);
   //   console.log("dataState", dataState);
 
   const handleOpenModal = (record: DataType) => {
-    setSelectedRow(record);
-    setOpenModal(true);
-  };
+    setSelectedRow(record)
+    setOpenModal(true)
+  }
 
   const handleCloseModal = () => {
-    setSelectedRow(null);
-    setOpenModal(false);
-  };
+    setSelectedRow(null)
+    setOpenModal(false)
+  }
 
   const columns: TableColumnsType<DataType> = [
     {
@@ -54,10 +54,10 @@ const OngoingTable = () => {
       title: ".",
       key: "operation",
       render: (text, record) => (
-        <div>
+        <div key={record.key}>
           <p
             onClick={() => {
-              handleOpenModal(record);
+              handleOpenModal(record)
             }}
             className="hover:text-primary-second text-sm cursor-pointer text-white"
           >
@@ -78,7 +78,7 @@ const OngoingTable = () => {
         </div>
       ),
     },
-  ];
+  ]
 
   const data: any[] = [
     {
@@ -91,7 +91,7 @@ const OngoingTable = () => {
       date: "20.Feb.2024",
     },
     {
-      key: 1,
+      key: 2,
       username: "DFinisher",
       type: "CrowdFunded",
       game: "Spider",
@@ -99,7 +99,7 @@ const OngoingTable = () => {
       prize: "$5",
       date: "2.Feb.2024",
     },
-  ];
+  ]
   // const data = dataState.map((item, index) => ({
   //   key: index,
   //   username: item.username,
@@ -129,7 +129,7 @@ const OngoingTable = () => {
         />
       )}
     </div>
-  );
-};
+  )
+}
 
-export default OngoingTable;
+export default OngoingTable

@@ -4,8 +4,9 @@ import ClipLoader from "react-spinners/ClipLoader"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
-import { useAppDispatch } from "../redux/hooks"
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import { updateAuth } from "../redux/slice/authClient"
+import { useGameblocHooks } from "../Functions/gameblocHooks"
 
 const override = {
   display: "block",
@@ -16,10 +17,13 @@ const override = {
 const AdminLogin = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const MySwal = withReactContent(Swal)
+  const { isAdmin, isLoading } = useGameblocHooks()
+  const [color, setColor] = useState("#ffffff")
   const [userName, setUserName] = useState<string>("")
   const [password, setPassword] = useState<string>("")
-  const [color, setColor] = useState("#ffffff")
-  const MySwal = withReactContent(Swal)
+  const adminName = useAppSelector((state) => state.userProfile.username)
+  console.log("Normal username", adminName)
 
   const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
@@ -29,21 +33,6 @@ const AdminLogin = () => {
       showConfirmButton: true,
       background: "#01070E",
       color: "#fff",
-    })
-  }
-
-  const successPopUp = (successMsg: string, route: any) => {
-    MySwal.fire({
-      position: "center",
-      icon: "success",
-      text: successMsg,
-      showConfirmButton: true,
-      background: "#01070E",
-      color: "#fff",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        navigate(route)
-      }
     })
   }
 
@@ -62,13 +51,10 @@ const AdminLogin = () => {
   const submit = () => {
     if (userName.trim() === "") {
       errorPopUp("Username is empty !")
-    } else if (password.trim() !== process.env.ADMINPASSWORD) {
+    } else if (password.trim() !== "game-Bloc_@2024") {
       errorPopUp("Password incorrect !")
     } else {
-      localStorage.setItem("adminAuthState", "true")
-
-      dispatch(updateAuth(true))
-      successPopUp("you are logged in", "/admin-dashboard")
+      isAdmin(userName, "you are logged in", "/admin-dashboard")
     }
   }
 
@@ -133,20 +119,20 @@ const AdminLogin = () => {
                       onClick={() => submit()}
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
-                      <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
-                        {/* {isLoading ? (
+                      <p className="flex justify-center items-center text-[0.65rem] font-bold sm:text-[.85rem]">
+                        Login
+                        {isLoading && (
+                          <span className="ml-[.5rem]">
                             <ClipLoader
                               color={color}
                               loading={isLoading}
                               cssOverride={override}
-                              size={10}
+                              size={13}
                               aria-label="Loading Spinner"
                               data-testid="loader"
                             />
-                          ) : (
-                            "Login as Admin"
-                          )} */}
-                        Login
+                          </span>
+                        )}
                       </p>
                     </button>
                   </div>

@@ -83,7 +83,7 @@ export const useGameblocHooks = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
-        console.log("Account Created")
+        // console.log("Account Created")
       } else {
         setIsLoading(false)
         errorPopUp(errorMsg)
@@ -125,7 +125,7 @@ export const useGameblocHooks = () => {
       const user: any = await whoamiActor.getSelf()
       if (user.username != "") {
         setIsAccount(true)
-        console.log("user..:", user)
+        // console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -156,7 +156,7 @@ export const useGameblocHooks = () => {
   const getProfile2 = async () => {
     try {
       const profile = await whoamiActor2.getSelf(principal)
-      console.log("Profile - actor2:", profile)
+      // console.log("Profile - actor2:", profile)
     } catch (err) {
       console.log(err)
     }
@@ -300,7 +300,7 @@ export const useGameblocHooks = () => {
     try {
       setFetching(true)
       const Balance = await whoamiActor.icp_balance()
-      console.log("Balance:", Balance)
+      // console.log("Balance:", Balance)
       if (Balance) {
         const value = Object.values(Balance)[0]
         const Icp: any = {
@@ -529,11 +529,12 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const isAdmin = async (name: string) => {
+  const isAdmin = async (name: string, msg: string, route: string) => {
     try {
       setIsLoading(true)
       const admin = await whoamiActor.is_mod(name)
       if (admin) {
+        popUp(msg, route)
         return true
       } else {
         return false
@@ -541,6 +542,8 @@ export const useGameblocHooks = () => {
     } catch (err) {
       setIsLoading(false)
       console.log("Error getting Admin state:", err)
+      errorPopUp("You are not an Admin!")
+      window.location.replace("/admin-login")
     } finally {
       setIsLoading(false)
     }

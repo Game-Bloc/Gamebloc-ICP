@@ -70,7 +70,7 @@ const CreateTournament = () => {
     let day = date.getDate()
     const id = ulid(day)
     setTournamentID(id)
-    console.log("ulid:", id)
+    // console.log("ulid:", id)
   }
 
   useEffect(() => {

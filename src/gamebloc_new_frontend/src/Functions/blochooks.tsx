@@ -25,10 +25,10 @@ export const useFetchAllTournaments = () => {
     if (isAuthenticated) {
       try {
         setIsLoading(true)
-        console.log("get tournament was called")
+        // console.log("get tournament was called")
         dispatch(clearTournaments())
         const tour: any = await whoamiActor.get_all_tournament()
-        console.log("Tour:", tour)
+        // console.log("Tour:", tour)
         if (tour && tour.length !== 0) {
           console.log("went")
           for (const data of tour) {
@@ -54,7 +54,7 @@ export const useFetchAllTournaments = () => {
               users: data.user.map((user: any) => user),
               winners: data.winers.map((winner: any) => winner),
             }
-            console.log(tournamentData)
+            // console.log(tournamentData)
             dispatch(addToActiveTournament(tournamentData))
           }
           setIsLoading(false)
@@ -86,7 +86,7 @@ export const useUpdateTournament = () => {
         setUpdating(true)
         const update: any = await whoamiActor.get_all_tournament()
         if (update && update.length !== 0) {
-          console.log("update function working")
+          // console.log("update function working")
           for (const data of update) {
             const tournamentData = {
               creator: data.creator,
@@ -141,7 +141,7 @@ export const useGetTournamentMessages = () => {
         setUpdating(true)
         const update: any = await whoamiActor.get_all_tournament()
         if (update && update.length !== 0) {
-          console.log("message function working")
+          // console.log("message function working")
           for (const data of update) {
             const tournamentData = {
               creator: data.creator,
@@ -196,7 +196,7 @@ export const useGetAllSquad = () => {
       setUpdating(true)
       const fetchSquads: any = await whoamiActor.get_all_squad()
       dispatch(clearSquad())
-      console.log("All Squads", fetchSquads)
+      // console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
         for (const data of fetchSquads) {
           const squads: SquadState = {
@@ -236,7 +236,7 @@ export const useUpdateAllSquad = () => {
       setUpdating(true)
 
       const fetchSquads: any = await whoamiActor.get_all_squad()
-      console.log("update Squads", fetchSquads)
+      // console.log("update Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
         for (const data of fetchSquads) {
           const squads: SquadState = {

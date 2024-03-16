@@ -24,8 +24,10 @@ const Header = () => {
   const { logout } = useAuth()
 
   useEffect(() => {
-    getProfile()
-  }, [])
+    getProfile().then(() => {
+      localStorage.setItem("Username", username)
+    })
+  }, [username])
 
   const menus = [
     { name: "Overview", link: "/dashboard", icon: MdDashboard },
