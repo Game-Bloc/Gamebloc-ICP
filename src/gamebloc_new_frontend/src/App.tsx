@@ -15,6 +15,7 @@ import TournamentDetails from "./pages/TournamentDetails"
 import AdminProtectedRoute from "./AdminProtectedRoute"
 import WorldChat from "./pages/WorldChat"
 import AdminLogin from "./Admin/AdminLogin"
+import Prepaid from "./pages/Prepaid"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -27,6 +28,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
+            <Route path="/prepaid-tournament" element={<Prepaid />} />
             <Route
               path="/active-tournament/:id"
               element={<TournamentDetails />}

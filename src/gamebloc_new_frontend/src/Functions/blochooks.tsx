@@ -30,7 +30,7 @@ export const useFetchAllTournaments = () => {
         const tour: any = await whoamiActor.get_all_tournament()
         // console.log("Tour:", tour)
         if (tour && tour.length !== 0) {
-          console.log("went")
+          const tourArray: any[] = []
           for (const data of tour) {
             const tournamentData = {
               creator: data.creator,
@@ -56,7 +56,9 @@ export const useFetchAllTournaments = () => {
             }
             // console.log(tournamentData)
             dispatch(addToActiveTournament(tournamentData))
+            tourArray.push(tournamentData)
           }
+          sessionStorage.setItem("tournament", JSON.stringify(tourArray))
           setIsLoading(false)
         } else {
           setNoData(true)
@@ -87,6 +89,7 @@ export const useUpdateTournament = () => {
         const update: any = await whoamiActor.get_all_tournament()
         if (update && update.length !== 0) {
           // console.log("update function working")
+          const tourArray: any[] = []
           for (const data of update) {
             const tournamentData = {
               creator: data.creator,
@@ -112,7 +115,9 @@ export const useUpdateTournament = () => {
             }
             console.log(tournamentData)
             dispatch(updateActiveTournament(tournamentData))
+            tourArray.push(tournamentData)
           }
+          sessionStorage.setItem("tournament", JSON.stringify(tourArray))
           setUpdating(false)
         } else {
           setNoData(true)
@@ -166,6 +171,7 @@ export const useGetTournamentMessages = () => {
               winners: data.winers.map((winner: any) => winner),
             }
             console.log(tournamentData)
+
             dispatch(updateActiveTournament(tournamentData))
           }
           setUpdating(false)

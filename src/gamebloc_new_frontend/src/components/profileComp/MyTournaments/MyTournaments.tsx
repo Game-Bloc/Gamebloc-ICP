@@ -66,17 +66,11 @@ const MyTournaments = () => {
               </p>
               <div className=" flex justify-center  items-center mt-[3rem]">
                 <p
-                  //   onClick={() => setJoinModal(true)}
+                  onClick={() => navigate("/game-category")}
                   className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
                 >
                   Host a Tournament
                 </p>
-                {/* <button
-                    //   onClick={() => setModal(true)}
-                      className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
-                    >
-                      <p className="font-semibold">Create Squad</p>
-                    </button> */}
               </div>
             </div>
           </div>

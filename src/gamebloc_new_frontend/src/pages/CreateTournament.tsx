@@ -52,7 +52,7 @@ const CreateTournament = () => {
   const [tournamentID, setTournamentID] = useState<string>("")
   const [active, setActive] = useState<string>("first")
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const { isLoading, createTournament } = useGameblocHooks()
+  const { isLoading, createTournament, getICPBalance } = useGameblocHooks()
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
@@ -75,7 +75,7 @@ const CreateTournament = () => {
 
   useEffect(() => {
     generateULID()
-
+    getICPBalance()
     const getTimeDate = () => {
       const value = initialTime.concat(" ", initialDate)
       setStartingDate(value)
@@ -97,6 +97,7 @@ const CreateTournament = () => {
     startingDate,
     // getTournamentCount,
   ])
+  console.log(balance)
 
   useEffect(() => {
     if (close) {

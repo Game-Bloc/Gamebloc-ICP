@@ -5,38 +5,50 @@ import ReactPaginate from "react-paginate"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"
 import { useNavigate } from "react-router-dom"
 import TournamentCard from "../components/dashboardComps/Recommended/TournamentCard"
-import { useAppSelector } from "../redux/hooks"
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import {
   useFetchAllTournaments,
   useUpdateTournament,
 } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
+import { updateActiveTournament } from "../redux/slice/tournamentDataSlice"
 
 const ActiveTournament = () => {
-  const tournament = useAppSelector((state) => state.tournamentData)
+  const [tournament, setTournament] = useState([])
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
+
+  const crowdfundedTournament = tournament?.filter((list: any) => {
+    return list.tournament_type && list.tournament_type.Crowdfunded === null
+  })
+
   const [pageNumber, setPageNumber] = useState<number>(0)
+  const [nodata, setNodata] = useState<boolean>(false)
   const tournamentPerPage: number = window.innerWidth >= 1200 ? 15 : 10
   const tournamentViewed: number = pageNumber * tournamentPerPage
-  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
-  const { updateTournament, updating } = useUpdateTournament()
+  const { loading } = useFetchAllTournaments()
 
-  const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
+  const pageCount: number = Math.ceil(
+    crowdfundedTournament?.length / tournamentPerPage,
+  )
   const changePage = ({ selected }: any) => {
     setPageNumber(selected)
   }
-  const displayTournaments = tournament
+  const displayTournaments = crowdfundedTournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
     .map((data: any, index: any) => (
       <TournamentCard data={data} index={index} key={index} />
     ))
-
+  console.log(tournament)
   useEffect(() => {
-    if (tournament.length > 0) {
-      updateTournament()
-    } else {
-      fetchAllTournaments()
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setTournament(data)
     }
+    // if (crowdfundedTournament?.length == 0) {
+    //   setNodata(true)
+    // }
   }, [])
 
   if (loading) {
@@ -55,7 +67,7 @@ const ActiveTournament = () => {
             <div className="m-4 mt-24  ">
               <div className="sm:ml-4">
                 <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
-                  Active Tournaments
+                  Crowdfunded Tournaments
                 </h1>
                 <div className="w-full flex mt-8 justify-end">
                   <button
@@ -70,11 +82,11 @@ const ActiveTournament = () => {
                   {nodata ? (
                     <div className="w-full flex flex-col justify-center mt-20 bg-[#040D17] p-8 items-center rounded-[1.5rem] h-[15rem]">
                       <h2 className="font-valorant text-sm text-center sm:text-lg md:text-xl text-white">
-                        There is no active tournament yet !
+                        There is no crowdfunded tournament yet !
                       </h2>
                       <p className=" mb-4 mt-4 text-[0.7rem] text-center text-white xl:text-[1rem] ">
                         {" "}
-                        Be the First to create a tournamnent
+                        Be the First to create one
                       </p>
 
                       <button
@@ -96,7 +108,7 @@ const ActiveTournament = () => {
                         {displayTournaments}
                       </div>
                       <div className="flex h-[calc(20vh-5rem)] items-end justify-end">
-                        {tournament?.length >= 5 && (
+                        {crowdfundedTournament?.length >= 5 && (
                           <ReactPaginate
                             previousLabel={
                               <div className="bg-primary-first rounded-md group hover:bg-primary-second flex justify-between items-center p-[0.3rem] cursor-pointer border-primary-second border-solid border-[1px]">
