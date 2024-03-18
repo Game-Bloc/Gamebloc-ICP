@@ -44,10 +44,15 @@ const Prepaid = () => {
       const data = JSON.parse(storedTournament)
       setTournament(data)
     }
-    if (prepaidTournament?.length == 0) {
-      setNodata(true)
-    }
   }, [])
+
+  useEffect(() => {
+    if (prepaidTournament.length === 0) {
+      setNodata(true)
+    } else {
+      setNodata(false)
+    }
+  }, [prepaidTournament])
 
   if (loading) {
     return (

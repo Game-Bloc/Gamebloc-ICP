@@ -46,10 +46,15 @@ const ActiveTournament = () => {
       const data = JSON.parse(storedTournament)
       setTournament(data)
     }
-    // if (crowdfundedTournament?.length == 0) {
-    //   setNodata(true)
-    // }
   }, [])
+
+  useEffect(() => {
+    if (crowdfundedTournament.length === 0) {
+      setNodata(true)
+    } else {
+      setNodata(false)
+    }
+  }, [crowdfundedTournament])
 
   if (loading) {
     return (
