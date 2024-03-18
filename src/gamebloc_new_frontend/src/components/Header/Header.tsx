@@ -75,26 +75,28 @@ const Header = () => {
             {username}
           </p>
           {profileModal && (
-            <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
-              <div
-                onClick={() => navigate("/profile")}
-                className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-              >
-                <CiUser className="text-white" />
-                <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                  {" "}
-                  Profile
-                </p>
-              </div>
-              <div
-                onClick={() => logout()}
-                className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-              >
-                <PiSignOutThin className=" text-white" />
-                <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                  {" "}
-                  Sign out
-                </p>
+            <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
+              <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+                <div
+                  onClick={() => navigate("/profile")}
+                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                >
+                  <CiUser className="text-white" />
+                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                    {" "}
+                    Profile
+                  </p>
+                </div>
+                <div
+                  onClick={() => logout()}
+                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                >
+                  <PiSignOutThin className=" text-white" />
+                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                    {" "}
+                    Sign out
+                  </p>
+                </div>
               </div>
             </div>
           )}
