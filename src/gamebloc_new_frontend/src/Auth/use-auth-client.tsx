@@ -9,12 +9,17 @@ import {
   canisterId as ledgerId,
   createActor as createLedgerActor,
 } from "../../../declarations/icp_ledger"
+import {
+  canisterId as indexId,
+  createActor as createIndexActor,
+} from "../../../declarations/icp_index"
 import { ActorSubclass } from "@dfinity/agent"
 import { _SERVICE } from "../../../declarations/kitchen/kitchen.did"
 import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
 import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
+import { _SERVICE as _SERVICE4 } from "../../../declarations/icp_index/icp_index.did"
+
 import { useAppDispatch } from "../redux/hooks"
-import { updateAuth } from "../redux/slice/authClient"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
@@ -27,6 +32,7 @@ const AuthContext = React.createContext<{
   whoamiActor: ActorSubclass<_SERVICE> | undefined
   whoamiActor2: ActorSubclass<_SERVICE2> | undefined
   ledgerActor: ActorSubclass<_SERVICE3> | undefined
+  indexActor: ActorSubclass<_SERVICE4> | undefined
 }>({
   isAuthenticated: false,
   login: undefined,
@@ -38,6 +44,7 @@ const AuthContext = React.createContext<{
   whoamiActor: undefined,
   whoamiActor2: undefined,
   ledgerActor: undefined,
+  indexActor: undefined,
 })
 const APPLICATION_NAME = "GameBloc"
 const APPLICATION_LOGO_URL = "https://i.postimg.cc/zBMQpTJn/Asset-51.png"
@@ -94,6 +101,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
+  const [indexActor, setIndexAcor] = useState<ActorSubclass<_SERVICE4>>()
 
   useEffect(() => {
     // Initialize AuthClient
@@ -128,8 +136,9 @@ export const useAuthClient = (options = defaultOptions) => {
     setIdentity(identity)
     console.log("identity", identity)
     const principal = identity.getPrincipal()
+
     setPrincipal(principal)
-    console.log("Principal", principal.toString())
+    console.log("Principal", principal)
     setAuthClient(client)
 
     const actor = createActor(canisterId, {
@@ -149,7 +158,12 @@ export const useAuthClient = (options = defaultOptions) => {
         identity,
       },
     })
-
+    const actor4 = createIndexActor(indexId, {
+      agentOptions: {
+        identity,
+      },
+    })
+    console.log("index Actor:", actor4)
     // dispatch(
     //   updateAuth({
     //     type: "authenticationClient/updateAuth",
@@ -160,6 +174,7 @@ export const useAuthClient = (options = defaultOptions) => {
     setWhoamiActor(actor)
     setWhoamiActor2(actor2)
     setLedgerAcor(actor3)
+    setIndexAcor(actor4)
   }
 
   async function logout() {
@@ -178,6 +193,7 @@ export const useAuthClient = (options = defaultOptions) => {
     whoamiActor,
     whoamiActor2,
     ledgerActor,
+    indexActor,
   }
 }
 

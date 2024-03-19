@@ -45,8 +45,13 @@ const Profile = () => {
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
-  const { getProfile, isLoadingProfile, fetching, getICPBalance } =
-    useGameblocHooks()
+  const {
+    getProfile,
+    isLoadingProfile,
+    fetching,
+    getICPBalance,
+    getTransactions,
+  } = useGameblocHooks()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -58,6 +63,7 @@ const Profile = () => {
   useEffect(() => {
     getProfile()
     getICPBalance()
+    getTransactions()
   }, [])
 
   if (isLoadingProfile) {

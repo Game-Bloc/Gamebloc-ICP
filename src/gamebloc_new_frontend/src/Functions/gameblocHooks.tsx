@@ -24,7 +24,8 @@ import { toNamespacedPath } from "path/posix"
 // import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor, whoamiActor2, ledgerActor, principal } = useAuth()
+  const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
+    useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -549,6 +550,24 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const getTransactions = async () => {
+    try {
+      const account = {
+        owner: principal,
+        subaccount: [],
+      }
+      const args: any = {
+        max_results: BigInt(100),
+        start: [0],
+        account: account,
+      }
+      const history = await indexActor.get_account_transactions(args)
+      console.log("Transaction History:", history)
+    } catch (err) {
+      console.log("Error getting transaction history:", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -557,6 +576,7 @@ export const useGameblocHooks = () => {
     isAccount,
     fetching,
     isAdmin,
+    getTransactions,
     getICPrice,
     createAccount,
     createTournament,
