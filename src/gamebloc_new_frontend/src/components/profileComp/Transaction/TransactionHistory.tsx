@@ -1,11 +1,12 @@
 import { TableColumnsType, Table } from "antd"
 import React, { useState } from "react"
+import { useAppSelector } from "../../../redux/hooks"
 
 const TransactionHistory = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<any | null>(null)
-  //   const dataState = useAppSelector((state) => state.tournamentData);
-  //   console.log("dataState", dataState);
+  const dataState = useAppSelector((state) => state.transaction)
+  console.log("dataState", dataState)
 
   const handleOpenModal = (record: any) => {
     setSelectedRow(record)
@@ -23,8 +24,12 @@ const TransactionHistory = () => {
       dataIndex: "action",
       key: "action",
       render: (text, record) => (
-        <div key={record.key} className="flex items-center">
-          <img src={`send.png`} className="w-[1.5rem] m-0 h-[1.5rem]" alt="" />
+        <div key={record.id} className="flex items-center">
+          <img
+            src={record.action == "sent" ? `send.png` : `dollar-coins.png`}
+            className="w-[1.5rem] m-0 h-[1.5rem]"
+            alt=""
+          />
 
           <div className="ml-[.5rem] flex flex-col">
             <p className="text-[.7rem] font-semibold ">{record.action}</p>
@@ -38,7 +43,7 @@ const TransactionHistory = () => {
       dataIndex: "amount",
       key: "amount",
       render: (text, record) => (
-        <p key={record.key} className=" text-[.7rem]">
+        <p key={record.id} className=" text-[.7rem]">
           {record.amount}
         </p>
       ),
@@ -48,7 +53,7 @@ const TransactionHistory = () => {
       dataIndex: "from",
       key: "from",
       render: (text, record) => (
-        <p key={record.key} className=" text-[.7rem]">
+        <p key={record.id} className=" text-[.7rem]">
           {" "}
           {record.from
             ? record.from.substring(0, 7) +
@@ -63,7 +68,7 @@ const TransactionHistory = () => {
       dataIndex: "to",
       key: "to",
       render: (text, record) => (
-        <p key={record.key} className=" text-[.7rem]">
+        <p key={record.id} className=" text-[.7rem]">
           {" "}
           {record.to
             ? record.to.substring(0, 7) + "......" + record.to.substring(58, 64)
@@ -76,7 +81,7 @@ const TransactionHistory = () => {
       dataIndex: "date",
       key: "date",
       render: (text, record) => (
-        <p key={record.key} className=" text-[.7rem]">
+        <p key={record.id} className=" text-[.7rem]">
           {record.date}
         </p>
       ),
@@ -107,7 +112,7 @@ const TransactionHistory = () => {
       <Table
         rowClassName={() => "rowClassName1"}
         columns={columns}
-        dataSource={data}
+        dataSource={dataState}
         scroll={{ x: true }}
       />
       {/* {selectedRow && (

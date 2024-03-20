@@ -7,7 +7,7 @@ import {
   UserProfileState,
   updateUserProfile,
 } from "../redux/slice/userProfileSlice"
-import { useAppDispatch } from "../redux/hooks"
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import {
   IcpBalanceState,
   updateBalance,
@@ -21,6 +21,7 @@ import {
   updateChat,
 } from "../redux/slice/chatSlice"
 import { toNamespacedPath } from "path/posix"
+import { addTransactions } from "../redux/slice/transactionSlice"
 // import { AccountIdentifier, SendArgs } from "./ledger.int"
 
 export const useGameblocHooks = () => {
@@ -31,6 +32,7 @@ export const useGameblocHooks = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
+  const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
@@ -561,8 +563,31 @@ export const useGameblocHooks = () => {
         start: [],
         account: account,
       }
-      const history = await indexActor.get_account_transactions(args)
-      console.log("Transaction History:", history)
+      const history: any = await indexActor.get_account_transactions(args)
+      console.log("Transaction History:", history.Ok.transactions)
+      console.log(
+        history.Ok.transactions.map(
+          (i) => i.transaction.operation.Transfer.amount.e8s,
+        ),
+      )
+
+      if (history) {
+        for (const data of history.Ok.transactions) {
+          const action = data.transaction.operation.Transfer.from == accountId
+          const transaction = {
+            id: Number(data.id),
+            action: action ? "sent" : "received",
+            amount:
+              Number(data.transaction.operation.Transfer.amount.e8s) /
+              100000000,
+            from: data.transaction.operation.Transfer.from,
+            to: data.transaction.operation.Transfer.to,
+            date: Number(data.transaction.created_at_time[0].timestamp_nanos),
+          }
+          dispatch(addTransactions(transaction))
+          console.log(transaction)
+        }
+      }
     } catch (err) {
       console.log("Error getting transaction history:", err)
     }

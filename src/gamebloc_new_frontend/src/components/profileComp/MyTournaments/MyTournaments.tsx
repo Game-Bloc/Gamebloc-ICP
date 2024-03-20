@@ -40,16 +40,7 @@ const MyTournaments = () => {
       .map((tour) => tour),
   )
 
-  //   useEffect(() => {
-  //     if (tour.length > 0) {
-  //       updateTournament()
-  //     } else {
-  //       fetchAllTournaments()
-  //     }
-  //   }, [])
-
   if (updating) {
-    //   ;
     ;<div className="w-full mt-8 h-[10vh] flex justify-center items-center">
       <FallbackLoading />
     </div>
