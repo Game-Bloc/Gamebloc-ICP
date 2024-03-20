@@ -301,7 +301,7 @@ export const useGameblocHooks = () => {
     try {
       setFetching(true)
       const Balance = await whoamiActor.icp_balance()
-      // console.log("Balance:", Balance)
+      console.log("Balance:", Balance)
       if (Balance) {
         const value = Object.values(Balance)[0]
         const Icp: any = {
@@ -550,7 +550,7 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const getTransactions = async () => {
+  const getTransactions = async (accountIdentifier: string) => {
     try {
       const account = {
         owner: principal,
@@ -558,7 +558,7 @@ export const useGameblocHooks = () => {
       }
       const args: any = {
         max_results: BigInt(100),
-        start: [0],
+        start: [],
         account: account,
       }
       const history = await indexActor.get_account_transactions(args)

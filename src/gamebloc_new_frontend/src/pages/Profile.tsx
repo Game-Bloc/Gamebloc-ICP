@@ -13,6 +13,7 @@ import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
 import ClipLoader from "react-spinners/ClipLoader"
 import MyTournaments from "../components/profileComp/MyTournaments/MyTournaments"
+import TransactionHistory from "../components/profileComp/Transaction/TransactionHistory"
 
 const items: TabsProps["items"] = [
   {
@@ -22,6 +23,11 @@ const items: TabsProps["items"] = [
   },
   {
     key: "2",
+    label: `Transaction History`,
+    children: <TransactionHistory />,
+  },
+  {
+    key: "3",
     label: `Squad`,
     children: <Squad />,
   },
@@ -63,7 +69,7 @@ const Profile = () => {
   useEffect(() => {
     getProfile()
     getICPBalance()
-    getTransactions()
+    getTransactions(accountId)
   }, [])
 
   if (isLoadingProfile) {
@@ -208,6 +214,7 @@ const Profile = () => {
                           colorPrimary: "#F6B8FC",
                           colorPrimaryHover: "#F6B8FC",
                           colorText: "#fff",
+                          colorBgContainer: "#000",
                         },
                       }}
                     >
