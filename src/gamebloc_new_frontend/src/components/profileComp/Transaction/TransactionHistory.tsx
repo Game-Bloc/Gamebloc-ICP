@@ -87,7 +87,9 @@ const TransactionHistory = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render: (text, record) => <p className=" text-[.7rem]">{record.date}</p>,
+      render: (text, record) => (
+        <p className=" text-[.7rem] text-nowrap">{record.date}</p>
+      ),
     },
   ]
 
