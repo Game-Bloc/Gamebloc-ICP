@@ -21,8 +21,11 @@ import {
   updateChat,
 } from "../redux/slice/chatSlice"
 import { toNamespacedPath } from "path/posix"
-import { addTransactions } from "../redux/slice/transactionSlice"
-// import { AccountIdentifier, SendArgs } from "./ledger.int"
+import {
+  addTransactions,
+  clearTransaction,
+} from "../redux/slice/transactionSlice"
+const moment = require("moment")
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -32,7 +35,7 @@ export const useGameblocHooks = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
-  const accountId = useAppSelector((state) => state.userProfile.account_id)
+  const accountId = sessionStorage.getItem("accountId")
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
@@ -145,6 +148,7 @@ export const useGameblocHooks = () => {
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
+        sessionStorage.setItem("accountId", user.account_id)
       } else {
         setIsAccount(false)
         console.log("No account created yet")
@@ -572,8 +576,28 @@ export const useGameblocHooks = () => {
       )
 
       if (history) {
+        dispatch(clearTransaction())
         for (const data of history.Ok.transactions) {
           const action = data.transaction.operation.Transfer.from == accountId
+          const timestampNanos = BigInt(
+            Number(data.transaction.created_at_time[0].timestamp_nanos),
+          )
+          const timestampMillis = Number(timestampNanos / BigInt(1000000))
+
+          const date = new Date(timestampMillis)
+
+          // Format the date
+          const options: any = {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+          }
+          const formattedDate = date
+            .toLocaleString("en-US", options)
+            .replace(",", " at")
           const transaction = {
             id: Number(data.id),
             action: action ? "sent" : "received",
@@ -582,7 +606,7 @@ export const useGameblocHooks = () => {
               100000000,
             from: data.transaction.operation.Transfer.from,
             to: data.transaction.operation.Transfer.to,
-            date: Number(data.transaction.created_at_time[0].timestamp_nanos),
+            date: formattedDate,
           }
           dispatch(addTransactions(transaction))
           console.log(transaction)

@@ -7,7 +7,7 @@ export interface transactionState {
   amount: number
   from: string
   to: string
-  date: number
+  date: string
 }
 
 const initialState: transactionState[] = []
@@ -24,8 +24,11 @@ export const transactionSlice = createSlice({
         state[existingIndex] = payload
       }
     },
+    clearTransaction: () => {
+      return initialState
+    },
   },
 })
 
-export const { addTransactions } = transactionSlice.actions
+export const { addTransactions, clearTransaction } = transactionSlice.actions
 export default transactionSlice.reducer
