@@ -8,7 +8,7 @@ dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
-dfx identity use default
+dfx identity use deon
 LEDGER_ACC=$(dfx ledger account-id)
 export LEDGER_ACC
 

@@ -8,6 +8,8 @@ import { useAppSelector } from "../../redux/hooks"
 import ChatCard1 from "./ChatCard1"
 import ChatCard2 from "./ChatCard2"
 import ClipLoader from "react-spinners/ClipLoader"
+import { useAuth } from "../../Auth/use-auth-client"
+import { AppMessage } from "../../../../declarations/game_bloc_backend/game_bloc_backend.did"
 
 interface Props {
   data: any
@@ -16,6 +18,7 @@ interface Props {
 const Chat = ({ data }: Props) => {
   const id = data.id_hash
   const scrollContainerRef = useRef(null)
+  const { ws } = useAuth()
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
   // const [chatId, setChatId] = useState<string>("")
@@ -62,15 +65,37 @@ const Chat = ({ data }: Props) => {
   //   }, [data])
 
   useEffect(() => {
-    // generateULID()
-    setInterval(() => {
-      setTime(getTimeIn12HourFormat())
-      updateMessages()
-    }, 2000)
-  }, [])
+    if (!ws) {
+      return
+    }
+
+    ws.onopen = () => {
+      console.log("WebSocket connection established.")
+      // You can perform any additional actions here after the WebSocket connection is open
+      console.log("ws working")
+    }
+
+    ws.onclose = () => {
+      console.log("WebSocket connection closed.")
+    }
+
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error)
+    }
+
+    // Clean up function to close the WebSocket connection when component unmounts
+    return () => {
+      ws.close()
+    }
+  }, [ws])
 
   const sendMessage = () => {
-    sendTournamentMessage(id, chatId, username, time, message)
+    // sendTournamentMessage(id, chatId, username, time, message)
+    const msg: AppMessage = {
+      text: message,
+    }
+    console.log(msg)
+    ws.send(msg)
   }
 
   return (
