@@ -16,6 +16,7 @@ import AdminProtectedRoute from "./AdminProtectedRoute"
 import WorldChat from "./pages/WorldChat"
 import AdminLogin from "./Admin/AdminLogin"
 import Prepaid from "./pages/Prepaid"
+import AdminTournamentView from "./Admin/AdminSections/AdminTournamentView"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -42,6 +43,10 @@ const App = () => {
           >
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<Admin />} />
+            <Route
+              path="/admin-tournament-view"
+              element={<AdminTournamentView />}
+            />
           </Route>
         </Routes>
       </React.Suspense>

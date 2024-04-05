@@ -1,13 +1,12 @@
 import Swal from "sweetalert2"
 import React, { useEffect } from "react"
 import withReactContent from "sweetalert2-react-content"
-import Header from "../../components/Header/Header"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import AdminTabBar from "../AdminComps/AdminTabBar"
-import { useAppSelector } from "../../redux/hooks"
 import { useNavigate } from "react-router-dom"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
+import AdminHeader from "../AdminComps/AdminHeader"
 
 const Admin = () => {
   const navigate = useNavigate()
@@ -36,15 +35,15 @@ const Admin = () => {
     )
   } else {
     return (
-      <div className="">
-        <section className="flex ">
-          <Header />
+      <div className="bg-[#02070E]">
+        <section className="flex bg-[#02070E]">
+          <AdminHeader />
           <AdminSidebar />
           <div className="flex flex-col w-full">
             <div className="m-4 mt-24">
               <div className="ml-4">
                 <h1 className="text-primary-second font-bold mt-4  text-[2.5rem]">
-                  Tournaments
+                  Dashboard
                 </h1>
 
                 <div className="flex flex-col w-full mt-[3rem]">
@@ -106,14 +105,14 @@ const Admin = () => {
                     </div>
                   </div>
 
-                  <div className="mt-[5rem]">
+                  {/* <div className="mt-[5rem]">
                     <h2 className="text-white mb-[2rem] text-semibold text-[1.7rem]">
                       Tournaments
                     </h2>
                     <div className="">
                       <AdminTabBar />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

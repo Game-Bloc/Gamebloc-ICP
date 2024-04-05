@@ -76,17 +76,17 @@ const AdminLogin = () => {
         </div>
         <div className="w-[50%] flex flex-col justify-center items-center">
           <img src={`logo.png`} alt="" className="m-0 w-[15rem]" />
-          <div className="flex flex-col w-[80%] mt-4">
-            <div className="flex items-center pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+          <div className="flex flex-col w-[60%] mt-4">
+            <div className="flex items-center pl-[.5rem] h-[3rem] border-[#F6B8FC]/30 bg-[transparent] border border-solid rounded-[4px] w-full">
               <input
                 className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                 type="text"
-                placeholder="Username"
+                placeholder="Moderator Username"
                 onChange={onChangeUsername}
                 value={userName}
               />
             </div>
-            <div className="flex items-center mt-8 pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+            <div className="flex items-center mt-8 pl-[.5rem] h-[3rem] border-[#F6B8FC]/30 bg-[transparent] border border-solid rounded-[4px] w-full">
               <input
                 className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                 type="text"
@@ -96,6 +96,29 @@ const AdminLogin = () => {
               />
             </div>
           </div>
+
+          <div className="mt-8 w-[60%]">
+            <button
+              onClick={() => submit()}
+              className="justify-center h-[3rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[4px] items-center cursor-pointer py-3"
+            >
+              <p className="flex justify-center items-center text-[0.65rem] font-normal sm:text-[.85rem]">
+                Log In
+                {isLoading && (
+                  <span className="ml-[.5rem]">
+                    <ClipLoader
+                      color={color}
+                      loading={isLoading}
+                      cssOverride={override}
+                      size={13}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </span>
+                )}
+              </p>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -103,92 +126,3 @@ const AdminLogin = () => {
 }
 
 export default AdminLogin
-
-{
-  /* <div
-        className="relative z-10"
-        aria-labelledby="modal-title"
-        role="dialog"
-        aria-modal="true"
-      >
-        <div className="fixed inset-0 bg-[#fff]/20  bg-opacity-75 transition-opacity">
-          <div className="fixed z-10 inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-full ">
-              <div className="relative bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
-                <div className="bg-primary-first p-[2rem] flex flex-col justify-center items-center">
-                  <img
-                    src={`welcome.png`}
-                    alt=""
-                    className="rounded-t-[25px]"
-                  /> */
-}
-{
-  /* <RiCloseFill
-                    //   onClick={modal}
-                    className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
-                  /> */
-}
-{
-  /* <div className="">
-                    <img
-                      src={`gamelogo.png`}
-                      className="-mt-4 mb-[.3rem] w-[3rem] h-[3rem]"
-                      alt=""
-                    />
-                  </div>
-                  <h1 className="font-valorant mt-4 text-primary-second text-[1.1rem] text-semibold">
-                    LOGIN AS ADMIN
-                  </h1>
-                  <p className="text-[.7rem] lg:text-[.82rem] text-center text-primary-second/80 my-[.2rem]">
-                    Welcome
-                  </p>
-
-                  <div className="flex flex-col w-[80%] mt-4">
-                    <div className="flex items-center pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
-                      <input
-                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
-                        type="text"
-                        placeholder="Username"
-                        onChange={onChangeUsername}
-                        value={userName}
-                      />
-                    </div>
-                    <div className="flex items-center mt-8 pl-[.5rem] h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
-                      <input
-                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
-                        type="text"
-                        placeholder="Password"
-                        value={password}
-                        onChange={onChangePassword}
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-8">
-                    <button
-                      onClick={() => submit()}
-                      className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
-                    >
-                      <p className="flex justify-center items-center text-[0.65rem] font-bold sm:text-[.85rem]">
-                        Login
-                        {isLoading && (
-                          <span className="ml-[.5rem]">
-                            <ClipLoader
-                              color={color}
-                              loading={isLoading}
-                              cssOverride={override}
-                              size={13}
-                              aria-label="Loading Spinner"
-                              data-testid="loader"
-                            />
-                          </span>
-                        )}
-                      </p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> */
-}
