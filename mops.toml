@@ -9,3 +9,4 @@ license = "MIT"
 [dependencies]
 base = "0.9.1"
 ic-websocket-cdk = "0.3.2"
+account-identifier = "1.0.2"
