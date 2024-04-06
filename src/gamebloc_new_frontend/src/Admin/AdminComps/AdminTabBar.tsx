@@ -8,23 +8,18 @@ const AdminTabBar = () => {
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: `Ongoing`,
+      label: `New Tournaments`,
       children: <OngoingTable />,
     },
     {
       key: "2",
-      label: `New`,
+      label: `Ongoing Tournaments`,
       children: <div className="text-white">New</div>,
     },
     {
       key: "3",
-      label: `Pending`,
+      label: `Completed Tournaments`,
       children: <div className="text-white">Pending</div>,
-    },
-    {
-      key: "4",
-      label: `Concluded`,
-      children: <div className="text-white">Concluded</div>,
     },
   ]
   return (

@@ -10,13 +10,13 @@ const AdminTournamentView = () => {
         <AdminHeader />
         <AdminSidebar />
         <div className="flex flex-col w-full">
-          <div className="m-4 mt-24">
-            <div className="ml-4">
-              <div className="mt-[5rem]">
-                <h2 className="text-white mb-[2rem] text-semibold text-[1.7rem]">
+          <div className="m-4 ">
+            <div className="ml-[17rem]">
+              <div className="mt-[4rem]">
+                <h1 className="text-primary-second font-[600]  text-[2rem]">
                   Tournaments
-                </h2>
-                <div className="">
+                </h1>
+                <div className="mt-8">
                   <AdminTabBar />
                 </div>
               </div>

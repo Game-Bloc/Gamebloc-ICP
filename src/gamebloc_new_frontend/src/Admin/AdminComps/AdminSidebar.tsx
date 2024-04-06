@@ -4,11 +4,15 @@ import { NavLink, Link, useNavigate } from "react-router-dom"
 import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
+import { useAppSelector } from "../../redux/hooks"
+import Copy from "../../components/utils/Copy"
 
 const AdminSidebar = () => {
+  const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(true)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
-  const navigate = useNavigate()
+  const username = useAppSelector((state) => state.userProfile.username)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const menus = [
     { name: "Dashboard", link: "/admin-dashboard", icon: MdDashboard },
@@ -21,9 +25,9 @@ const AdminSidebar = () => {
 
   return (
     <div
-      className={` bg-[#050A11] min-h-screen sticky ${
-        open ? "w-72" : "w-[4.5rem]"
-      } duration-500 px-4 border-solid border-[1px] mt-[5rem] border-r-primary-second `}
+      className={`  bg-[#050A11] min-h-screen fixed ${
+        open ? "w-[13rem]" : "w-[4.5rem]"
+      } duration-500 px-4 mt-[5rem] `}
     >
       {/* <div className="py-3 flex justify-end ">
         <HiMenuAlt3
@@ -37,7 +41,7 @@ const AdminSidebar = () => {
           !open && "opacity-0 translate-x-10 overflow-hidden "
         } `}
       >
-        Chucky Jones
+        {username}
       </h2>
       <p
         className={`text-bold text-[.7rem]   text-primary-second ${
@@ -46,7 +50,18 @@ const AdminSidebar = () => {
       >
         Administrator
       </p>
-      <div className="my-[3rem] border border-white/20 border-b-[1px] border-solid " />
+
+      <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border px-[1rem] rounded-md">
+        {/* <Copy textToCopy={principal} /> */}
+        <h2 className="text-white p-[.2rem]  text-normal text-[.6rem]  ">
+          {principal
+            ? principal.substring(0, 12) +
+              "......" +
+              principal.substring(53, 64)
+            : null}
+        </h2>
+      </div>
+      <div className="mt-[1rem] mb-[3rem] border border-white/20 border-b-[1px] border-solid " />
 
       <div className="mt-8 flex flex-col gap-4 relative">
         {menus?.map((menu, i) => (

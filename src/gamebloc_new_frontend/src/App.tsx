@@ -17,6 +17,7 @@ import WorldChat from "./pages/WorldChat"
 import AdminLogin from "./Admin/AdminLogin"
 import Prepaid from "./pages/Prepaid"
 import AdminTournamentView from "./Admin/AdminSections/AdminTournamentView"
+// import "@tremor/react/dist/esm/tremor.css"
 
 const App = () => {
   const { isAuthenticated } = useAuth()

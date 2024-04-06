@@ -23,7 +23,10 @@
     "@dfinity/auth-client": "^0.20.2",
     "@dfinity/candid": "^0.20.2",
     "@dfinity/principal": "^0.20.2",
+    "@headlessui/react": "^1.7.18",
+    "@headlessui/tailwindcss": "^0.2.0",
     "@reduxjs/toolkit": "^2.0.1",
+    "@remixicon/react": "^4.2.0",
     "@tremor/react": "^3.15.0",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
@@ -55,6 +58,7 @@
     "url-loader": "^4.1.1"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "assert": "2.0.0",
     "autoprefixer": "^10.4.16",
     "buffer": "6.0.3",
