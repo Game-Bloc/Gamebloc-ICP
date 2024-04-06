@@ -1,7 +1,8 @@
 import React, { useState } from "react"
 import type { TableColumnsType } from "antd"
-import { Table } from "antd"
+import { ConfigProvider, Select, Table, theme } from "antd"
 import NewModal from "../../components/Modals/Newmodal"
+import Search, { SearchProps } from "antd/es/input/Search"
 
 interface DataType {
   key: React.Key
@@ -18,6 +19,9 @@ const OngoingTable = () => {
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   //   const dataState = useAppSelector((state) => state.tournamentData);
   //   console.log("dataState", dataState);
+
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
+    console.log(info?.source, value)
 
   const handleOpenModal = (record: DataType) => {
     setSelectedRow(record)
@@ -111,12 +115,68 @@ const OngoingTable = () => {
   // }));
 
   return (
-    <div>
-      <Table
-        rowClassName={() => "rowClassName1"}
-        columns={columns}
-        dataSource={data}
-      />
+    <div className="">
+      <div className="flex justify-between items-center my-8">
+        <div className="flex items-center">
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+            }}
+          >
+            <Select
+              className="mr-[2rem]"
+              placeholder="Game Type"
+              optionFilterProp="children"
+              options={[
+                {
+                  value: "Prepaid",
+                  label: "Prepaid",
+                },
+                {
+                  value: "Crowdfunded",
+                  label: "Crowdfunded",
+                },
+              ]}
+            />
+          </ConfigProvider>
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+            }}
+          >
+            <Select
+              className="mr-[2rem]"
+              placeholder="Game Mode"
+              optionFilterProp="children"
+              options={[
+                {
+                  value: "Solo",
+                  label: "Solo",
+                },
+                {
+                  value: "Duo",
+                  label: "Duo",
+                },
+                {
+                  value: "Squad",
+                  label: "Squad",
+                },
+              ]}
+            />
+          </ConfigProvider>
+        </div>
+      </div>
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm,
+        }}
+      >
+        <Table
+          rowClassName={() => "rowClassName1"}
+          columns={columns}
+          dataSource={data}
+        />
+      </ConfigProvider>
       {selectedRow && (
         <NewModal
           modal={handleCloseModal}

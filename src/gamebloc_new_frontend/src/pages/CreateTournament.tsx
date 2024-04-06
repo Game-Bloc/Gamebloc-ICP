@@ -417,7 +417,7 @@ const CreateTournament = () => {
                       </p>
                       <div className=" my-4 items-center pr-8 h-[2.15rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                           placeholder="Participants"
                           type="text"
                           onChange={onUserChange}
