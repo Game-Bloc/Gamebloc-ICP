@@ -6,14 +6,14 @@ import Nat8 "mo:base/Nat8";
 
 // import Array "mo:base-0.7.3/Array";
 import Array_ "mo:array/Array";
-import Binary "mo:encoding/Binary";
+import Binary "vessel/encoding/Binary";
 // import Blob "mo:base-0.7.3/Blob";
 import CRC32 "mo:hash/CRC32";
 import Hash "mo:base-0.7.3/Hash";
-import Hex "mo:encoding/Hex";
+import Hex "vessel/encoding/Hex";
 // import Principal "mo:base-0.7.3/Principal";
 import Result "mo:base-0.7.3/Result";
-import SHA224 "mo:crypto/SHA/SHA224";
+import SHA224 "vessel/crypto/SHA/SHA224";
 
 module {
 
