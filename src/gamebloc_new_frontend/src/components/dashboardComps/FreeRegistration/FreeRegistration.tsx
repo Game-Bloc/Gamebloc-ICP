@@ -12,8 +12,10 @@ import {
 } from "../../../Functions/blochooks"
 import { useAppSelector } from "../../../redux/hooks"
 import FallbackLoading from "../../../components/Modals/FallBackLoader"
+import { useAuth } from "../../../Auth/use-auth-client"
 
 const FreeRegistration = () => {
+  const { isAuthenticated } = useAuth()
   const tournament = useAppSelector((state) => state.tournamentData)
   const navigate = useNavigate()
   const [pageNumber, setPageNumber] = useState<number>(0)
@@ -23,8 +25,10 @@ const FreeRegistration = () => {
   const { updateTournament, updating } = useUpdateTournament()
 
   useEffect(() => {
-    if (tournament.length > 0) {
+    if (tournament.length > 0 || null || undefined) {
       updateTournament()
+    } else if (!isAuthenticated) {
+      fetchAllTournaments()
     } else {
       fetchAllTournaments()
     }

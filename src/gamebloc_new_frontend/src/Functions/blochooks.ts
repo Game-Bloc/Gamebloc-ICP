@@ -22,55 +22,55 @@ export const useFetchAllTournaments = () => {
   const [nodata, setNoData] = useState(false)
 
   const fetchAllTournaments = async () => {
-    if (isAuthenticated) {
-      try {
-        setIsLoading(true)
-        // console.log("get tournament was called")
-        dispatch(clearTournaments())
-        const tour: any = await whoamiActor.get_all_tournament()
-        // console.log("Tour:", tour)
-        if (tour && tour.length !== 0) {
-          const tourArray: any[] = []
-          for (const data of tour) {
-            const tournamentData = {
-              creator: data.creator,
-              creator_id: data.creator_id,
-              messages: data.messages.map((message: any) => message),
-              end_date: data.end_date,
-              entry_prize: data.entry_prize,
-              game: data.game,
-              game_type: data.game_type,
-              id_hash: data.id_hash,
-              idx: data.idx,
-              no_of_participants: Number(data.no_of_participants),
-              no_of_winners: data.no_of_winners,
-              squad: data.squad.map((squad: any) => squad),
-              starting_date: data.starting_date,
-              status: data.status,
-              title: data.title,
-              total_prize: Number(data.total_prize),
-              tournament_rules: data.tournament_rules,
-              tournament_type: data.tournament_type,
-              users: data.user.map((user: any) => user),
-              winners: data.winers.map((winner: any) => winner),
-            }
-            // console.log(tournamentData)
-            dispatch(addToActiveTournament(tournamentData))
-            tourArray.push(tournamentData)
+    // if (isAuthenticated) {
+    try {
+      setIsLoading(true)
+      // console.log("get tournament was called")
+      dispatch(clearTournaments())
+      const tour: any = await whoamiActor.get_all_tournament()
+      console.log("Tour:", tour)
+      if (tour && tour.length !== 0) {
+        const tourArray: any[] = []
+        for (const data of tour) {
+          const tournamentData = {
+            creator: data.creator,
+            creator_id: data.creator_id,
+            messages: data.messages.map((message: any) => message),
+            end_date: data.end_date,
+            entry_prize: data.entry_prize,
+            game: data.game,
+            game_type: data.game_type,
+            id_hash: data.id_hash,
+            idx: data.idx,
+            no_of_participants: Number(data.no_of_participants),
+            no_of_winners: data.no_of_winners,
+            squad: data.squad.map((squad: any) => squad),
+            starting_date: data.starting_date,
+            status: data.status,
+            title: data.title,
+            total_prize: Number(data.total_prize),
+            tournament_rules: data.tournament_rules,
+            tournament_type: data.tournament_type,
+            users: data.user.map((user: any) => user),
+            winners: data.winers.map((winner: any) => winner),
           }
-          sessionStorage.setItem("tournament", JSON.stringify(tourArray))
-          setIsLoading(false)
-        } else {
-          setNoData(true)
+          // console.log(tournamentData)
+          dispatch(addToActiveTournament(tournamentData))
+          tourArray.push(tournamentData)
         }
-      } catch (err) {
-        console.log("Error:", err)
-      } finally {
+        sessionStorage.setItem("tournament", JSON.stringify(tourArray))
         setIsLoading(false)
+      } else {
+        setNoData(true)
       }
-    } else {
-      console.log("err: User not authenticated")
+    } catch (err) {
+      console.log("Error:", err)
+    } finally {
+      setIsLoading(false)
     }
+    // } else {
+    //   console.log("err: User not authenticated")
+    // }
   }
 
   return { fetchAllTournaments, loading, nodata }
@@ -83,53 +83,53 @@ export const useUpdateTournament = () => {
   const [noData, setNoData] = useState<boolean>(false)
 
   const updateTournament = async () => {
-    if (isAuthenticated) {
-      try {
-        setUpdating(true)
-        const update: any = await whoamiActor.get_all_tournament()
-        if (update && update.length !== 0) {
-          // console.log("update function working")
-          const tourArray: any[] = []
-          for (const data of update) {
-            const tournamentData = {
-              creator: data.creator,
-              creator_id: data.creator_id,
-              messages: data.messages.map((message: any) => message),
-              end_date: data.end_date,
-              entry_prize: data.entry_prize,
-              game: data.game,
-              game_type: data.game_type,
-              id_hash: data.id_hash,
-              idx: data.idx,
-              no_of_participants: Number(data.no_of_participants),
-              no_of_winners: data.no_of_winners,
-              squad: data.squad.map((squad: any) => squad),
-              starting_date: data.starting_date,
-              status: data.status,
-              title: data.title,
-              total_prize: Number(data.total_prize),
-              tournament_rules: data.tournament_rules,
-              tournament_type: data.tournament_type,
-              users: data.user.map((user: any) => user),
-              winners: data.winers.map((winner: any) => winner),
-            }
-            console.log(tournamentData)
-            dispatch(updateActiveTournament(tournamentData))
-            tourArray.push(tournamentData)
+    // if (isAuthenticated) {
+    try {
+      setUpdating(true)
+      const update: any = await whoamiActor.get_all_tournament()
+      if (update && update.length !== 0) {
+        // console.log("update function working")
+        const tourArray: any[] = []
+        for (const data of update) {
+          const tournamentData = {
+            creator: data.creator,
+            creator_id: data.creator_id,
+            messages: data.messages.map((message: any) => message),
+            end_date: data.end_date,
+            entry_prize: data.entry_prize,
+            game: data.game,
+            game_type: data.game_type,
+            id_hash: data.id_hash,
+            idx: data.idx,
+            no_of_participants: Number(data.no_of_participants),
+            no_of_winners: data.no_of_winners,
+            squad: data.squad.map((squad: any) => squad),
+            starting_date: data.starting_date,
+            status: data.status,
+            title: data.title,
+            total_prize: Number(data.total_prize),
+            tournament_rules: data.tournament_rules,
+            tournament_type: data.tournament_type,
+            users: data.user.map((user: any) => user),
+            winners: data.winers.map((winner: any) => winner),
           }
-          sessionStorage.setItem("tournament", JSON.stringify(tourArray))
-          setUpdating(false)
-        } else {
-          setNoData(true)
+          console.log(tournamentData)
+          dispatch(updateActiveTournament(tournamentData))
+          tourArray.push(tournamentData)
         }
-      } catch (err) {
-        console.log("Error:", err)
-      } finally {
+        sessionStorage.setItem("tournament", JSON.stringify(tourArray))
         setUpdating(false)
+      } else {
+        setNoData(true)
       }
-    } else {
-      console.log("User not authenticated")
+    } catch (err) {
+      console.log("Error:", err)
+    } finally {
+      setUpdating(false)
     }
+    // } else {
+    //   console.log("User not authenticated")
+    // }
   }
 
   return { updateTournament, updating, setNoData }

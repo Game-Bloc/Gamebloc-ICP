@@ -1,12 +1,14 @@
 import React from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useAuth } from "../../Auth/use-auth-client"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   modal: () => void
 }
 
 const LoginModal = ({ modal }: Props) => {
+  const navigate = useNavigate()
   const { login, loginNFID } = useAuth()
 
   return (
@@ -39,6 +41,22 @@ const LoginModal = ({ modal }: Props) => {
                   <p className="text-[.7rem] lg:text-[.82rem] text-center text-primary-second/80 my-[.2rem]">
                     The future of next gen Web3 gaming at your finger tips
                   </p>
+                  <button
+                    onClick={() => {
+                      modal()
+                      navigate("/dashboard")
+                    }}
+                    className="  justify-center  w-full px-6 text-[.6rem] sm:text-base text-black  mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[9999px] items-center cursor-pointer py-3"
+                  >
+                    <img
+                      src={`guest.png`}
+                      alt=""
+                      className="m-0 w-[.8rem] sm:w-6"
+                    />
+                    <p className="text-[0.65rem] ml-4  font-bold sm:text-[.85rem]">
+                      Sign in as a Guest
+                    </p>
+                  </button>
                   <button
                     onClick={() => {
                       modal()
