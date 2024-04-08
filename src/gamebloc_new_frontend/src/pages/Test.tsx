@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from "react"
 
 import { useAuth } from "../Auth/use-auth-client"
-import { InfinitySpin } from "react-loader-spinner"
+// import { InfinitySpin } from "react-loader-spinner"
 import React from "react"
 // import { handleWebSocketMessage } from "../service"
 interface GroupChatMessage {
@@ -161,7 +161,7 @@ const Chat = () => {
         {wsIsConnecting && (
           <h3 className="text-center flex items-center text-2xl font-semibold">
             Websocket connecting...{" "}
-            {<InfinitySpin width="150" color="#2196F3" />}
+            {/* {<InfinitySpin width="150" color="#2196F3" />} */}
           </h3>
         )}
       </div>

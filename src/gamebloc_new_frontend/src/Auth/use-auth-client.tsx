@@ -1,6 +1,6 @@
 import { AuthClient } from "@dfinity/auth-client"
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { canisterId, createActor } from "../../../declarations/kitchen"
+import { canisterId, createActor, kitchen } from "../../../declarations/kitchen"
 import {
   canisterId as canisterId2,
   createActor as createActor2,
@@ -11,11 +11,8 @@ import {
   createActor as createLedgerActor,
 } from "../../../declarations/icp_ledger"
 import { ActorSubclass, SignIdentity } from "@dfinity/agent"
-import { _SERVICE } from "../../../declarations/kitchen/kitchen.did"
-import {
-  _SERVICE as _SERVICE2,
-  AppMessage,
-} from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
+import { _SERVICE, AppMessage } from "../../../declarations/kitchen/kitchen.did"
+import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
 import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
 import {
   gatewayUrl,
@@ -35,7 +32,7 @@ const AuthContext = React.createContext<{
   authClient: any
   identity: any
   principal: any
-  ws: IcWebSocket<_SERVICE2, AppMessage> | null
+  ws: IcWebSocket<_SERVICE, AppMessage> | null
   whoamiActor: ActorSubclass<_SERVICE> | null
   whoamiActor2: ActorSubclass<_SERVICE2> | null
   ledgerActor: ActorSubclass<_SERVICE3> | null
@@ -105,7 +102,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [identity, setIdentity] = useState(null)
   const [principal, setPrincipal] = useState(null)
   const dispatch = useAppDispatch()
-  const [ws, setWs] = useState<IcWebSocket<_SERVICE2, AppMessage> | null>(null)
+  const [ws, setWs] = useState<IcWebSocket<_SERVICE, AppMessage> | null>(null)
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
@@ -170,8 +167,8 @@ export const useAuthClient = (options = defaultOptions) => {
         network === "local" ? localGatewayUrl : gatewayUrl,
         undefined,
         {
-          canisterId: canisterId2,
-          canisterActor: game_bloc_backend,
+          canisterId: canisterId,
+          canisterActor: kitchen,
           identity: identity as SignIdentity,
           networkUrl: network === "local" ? localICUrl : icUrl,
         },
