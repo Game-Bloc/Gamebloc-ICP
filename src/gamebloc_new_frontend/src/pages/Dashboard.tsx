@@ -11,16 +11,14 @@ import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import {
-  useFetchAllTournaments,
-  useUpdateTournament,
-} from "../Functions/blochooks"
+import LoginModal from "../components/Modals/LoginModal"
+import WelcomeModal from "../components/Modals/WelcomeModal"
+import { useAuth } from "../Auth/use-auth-client"
+import { useNavigate } from "react-router-dom"
 
 const Dashboard = () => {
   const dispatch = useAppDispatch()
-  const tournament = useAppSelector((state) => state.tournamentData)
-  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
-  const { updateTournament, updating } = useUpdateTournament()
+  const { isAuthenticated } = useAuth()
   const {
     getProfile,
     isLoadingProfile,
@@ -28,15 +26,32 @@ const Dashboard = () => {
     getFeedBacks,
     getChatmessage,
   } = useGameblocHooks()
-
+  const navigate = useNavigate()
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
+  const state = useAppSelector((state) => state.userProfile.initializeState)
 
   useEffect(() => {
-    getProfile()
-    getFeedBacks()
-    getChatmessage(20)
+    if (isAuthenticated) {
+      getProfile()
+      getFeedBacks()
+      getChatmessage(20)
+      if (state) {
+        navigate("/dashboard")
+        // window.location.reload()
+      } else {
+        setAccountModal(true)
+      }
+    }
   }, [])
 
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
   const handleModal = () => {
     setOpenModal(!openModal)
   }
@@ -76,6 +91,8 @@ const Dashboard = () => {
         />
       </ConfigProvider>
       {openModal && <FeedbackModal modal={handleModal} />}
+      {openLoginModal && <LoginModal modal={handleLoginModal} />}
+      {accountModal && <WelcomeModal modal={handleAccModal} />}
     </div>
   )
 }

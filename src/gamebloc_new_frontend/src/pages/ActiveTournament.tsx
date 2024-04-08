@@ -12,11 +12,17 @@ import {
 } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { updateActiveTournament } from "../redux/slice/tournamentDataSlice"
+import LoginModal2 from "../components/Modals/LoginModal2"
+import WelcomeModal from "../components/Modals/WelcomeModal"
+import { useAuth } from "../Auth/use-auth-client"
 
 const ActiveTournament = () => {
   const [tournament, setTournament] = useState([])
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
 
   const crowdfundedTournament = tournament?.filter((list: any) => {
     return list.tournament_type && list.tournament_type.Crowdfunded === null
@@ -39,7 +45,9 @@ const ActiveTournament = () => {
     .map((data: any, index: any) => (
       <TournamentCard data={data} index={index} key={index} />
     ))
+
   console.log(tournament)
+
   useEffect(() => {
     const storedTournament = sessionStorage.getItem("tournament")
     if (storedTournament) {
@@ -55,6 +63,13 @@ const ActiveTournament = () => {
       setNodata(false)
     }
   }, [crowdfundedTournament])
+
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
 
   if (loading) {
     return (
@@ -76,7 +91,11 @@ const ActiveTournament = () => {
                 </h1>
                 <div className="w-full flex mt-8 justify-end">
                   <button
-                    onClick={() => navigate("/game-category")}
+                    onClick={
+                      !isAuthenticated
+                        ? () => handleLoginModal()
+                        : () => navigate("/game-category")
+                    }
                     className="border border-primary-second hover:text-black hover:bg-primary-second border-solid pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] text-primary-second sm:text-sm rounded-lg items-center justify-center cursor-pointer sm:py-2"
                   >
                     <p className="font-semibold">Create Tournament</p>
@@ -95,7 +114,11 @@ const ActiveTournament = () => {
                       </p>
 
                       <button
-                        onClick={() => navigate("/game-category")}
+                        onClick={
+                          !isAuthenticated
+                            ? () => handleLoginModal()
+                            : () => navigate("/game-category")
+                        }
                         className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
                       >
                         <span className="glowing-txt text-[.8rem] md:text-base">
@@ -139,6 +162,8 @@ const ActiveTournament = () => {
             </div>
           </div>
         </section>
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )
   }

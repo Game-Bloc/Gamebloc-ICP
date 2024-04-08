@@ -11,9 +11,13 @@ import {
   useUpdateTournament,
 } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
+import LoginModal2 from "../components/Modals/LoginModal2"
+import WelcomeModal from "../components/Modals/WelcomeModal"
+import { useAuth } from "../Auth/use-auth-client"
 
 const Prepaid = () => {
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [nodata, setNodata] = useState<boolean>(false)
   const [tournament, setTournament] = useState([])
   const prepaidTournament = tournament?.filter((list: any) => {
@@ -23,6 +27,8 @@ const Prepaid = () => {
   const tournamentPerPage: number = window.innerWidth >= 1200 ? 15 : 10
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const { loading } = useFetchAllTournaments()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
 
   const pageCount: number = Math.ceil(
     prepaidTournament?.length / tournamentPerPage,
@@ -54,6 +60,13 @@ const Prepaid = () => {
     }
   }, [prepaidTournament])
 
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
+
   if (loading) {
     return (
       <div className="w-full mt-8 h-screen flex justify-center items-center">
@@ -74,7 +87,11 @@ const Prepaid = () => {
                 </h1>
                 <div className="w-full flex mt-8 justify-end">
                   <button
-                    onClick={() => navigate("/game-category")}
+                    onClick={
+                      !isAuthenticated
+                        ? () => handleLoginModal()
+                        : () => navigate("/game-category")
+                    }
                     className="border border-primary-second hover:text-black hover:bg-primary-second border-solid pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] text-primary-second sm:text-sm rounded-lg items-center justify-center cursor-pointer sm:py-2"
                   >
                     <p className="font-semibold">Create Tournament</p>
@@ -93,7 +110,11 @@ const Prepaid = () => {
                       </p>
 
                       <button
-                        onClick={() => navigate("/game-category")}
+                        onClick={
+                          !isAuthenticated
+                            ? () => handleLoginModal()
+                            : () => navigate("/game-category")
+                        }
                         className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
                       >
                         <span className="glowing-txt text-[.8rem] md:text-base">
@@ -137,6 +158,8 @@ const Prepaid = () => {
             </div>
           </div>
         </section>
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )
   }

@@ -13,6 +13,9 @@ import {
 import { useAppSelector } from "../../../redux/hooks"
 import FallbackLoading from "../../../components/Modals/FallBackLoader"
 import { useAuth } from "../../../Auth/use-auth-client"
+import LoginModal from "../../../components/Modals/LoginModal"
+import WelcomeModal from "../../../components/Modals/WelcomeModal"
+import LoginModal2 from "../../../components/Modals/LoginModal2"
 
 const FreeRegistration = () => {
   const { isAuthenticated } = useAuth()
@@ -23,6 +26,8 @@ const FreeRegistration = () => {
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
   const { updateTournament, updating } = useUpdateTournament()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
     if (tournament.length > 0 || null || undefined) {
@@ -33,6 +38,13 @@ const FreeRegistration = () => {
       fetchAllTournaments()
     }
   }, [])
+
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
   const changePage = ({ selected }: any) => {
@@ -65,7 +77,11 @@ const FreeRegistration = () => {
             </p>
 
             <button
-              onClick={() => navigate("/game-category")}
+              onClick={
+                !isAuthenticated
+                  ? () => handleLoginModal()
+                  : () => navigate("/game-category")
+              }
               className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
             >
               <span className="glowing-txt text-[.8rem] md:text-base">
@@ -117,6 +133,8 @@ const FreeRegistration = () => {
             </div>
           </div>
         )}
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )
   }

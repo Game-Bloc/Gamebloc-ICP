@@ -21,7 +21,7 @@ const Header = () => {
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
   const { getProfile } = useGameblocHooks()
-  const { logout } = useAuth()
+  const { logout, isAuthenticated } = useAuth()
 
   useEffect(() => {
     getProfile().then(() => {
@@ -56,51 +56,68 @@ const Header = () => {
           className="text-primary-second block lg:hidden"
           onClick={() => setOpen(!open)}
         />
-        <div
-          onClick={() => setProfileModal(!profileModal)}
-          className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
-        >
-          <Avatar
-            style={{
-              backgroundColor: "#f6b8fc",
-              color: "#01070E",
-              fontSize: ".8rem",
-            }}
-            size={40}
+        {!isAuthenticated ? (
+          <div className=" flex justify-between items-center">
+            <p
+              // onClick={() => setModal(true)}
+              className="text-primary-second hover:text-primary-second/70  text-[0.85rem] sm:text-sm cursor-pointer"
+            >
+              Login
+            </p>
+            <button
+              // onClick={() => setModal(true)}
+              className="pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center hover:bg-primary-second/70   flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
+            >
+              <p className="font-semibold">Create Account</p>
+            </button>
+          </div>
+        ) : (
+          <div
+            onClick={() => setProfileModal(!profileModal)}
+            className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
           >
-            {initials}
-          </Avatar>
+            <Avatar
+              style={{
+                backgroundColor: "#f6b8fc",
+                color: "#01070E",
+                fontSize: ".8rem",
+              }}
+              size={40}
+            >
+              {initials}
+            </Avatar>
 
-          <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
-            {username}
-          </p>
-          {profileModal && (
-            <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
-              <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
-                <div
-                  onClick={() => navigate("/profile")}
-                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                >
-                  <CiUser className="text-white" />
-                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                    {" "}
-                    Profile
-                  </p>
-                </div>
-                <div
-                  onClick={() => logout()}
-                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                >
-                  <PiSignOutThin className=" text-white" />
-                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                    {" "}
-                    Sign out
-                  </p>
+            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
+              {username}
+            </p>
+            {profileModal && (
+              <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
+                <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+                  <div
+                    onClick={() => navigate("/profile")}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <CiUser className="text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Profile
+                    </p>
+                  </div>
+                  <div
+                    onClick={() => logout()}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <PiSignOutThin className=" text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Sign out
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
       </div>
       {open && (
         <div className="bg-primary-second duration-500  absolute left-0 top-0 w-[60%] h-screen">
