@@ -1,0 +1,11 @@
+[dependencies]
+"base-0.7.3" = "https://github.com/dfinity/motoko-base#aafcdee0c8328087aeed506e64aa2ff4ed329b47"
+array = "https://github.com/aviate-labs/array.mo#v0.2.1"
+
+[package]
+name = "hash"
+version = "1.0.0"
+description = "This package provides hash functions."
+repository = "https://github.com/aviate-labs/hash.mo"
+keywords = [ "crc32", "hash", "aviate", "labs", "crc" ]
+license = "Apache-2.0"
