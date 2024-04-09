@@ -37,7 +37,7 @@ const AuthContext = React.createContext<{
   authClient: any
   identity: any
   principal: any
-  ws: ActorSubclass<_SERVICE, AppMessage> | null
+  ws: IcWebSocket<_SERVICE, AppMessage> | null
   whoamiActor: ActorSubclass<_SERVICE> | null
   whoamiActor2: ActorSubclass<_SERVICE2> | null
   ledgerActor: ActorSubclass<_SERVICE3> | null
