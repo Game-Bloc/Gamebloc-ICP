@@ -15,6 +15,7 @@ import LoginModal from "../components/Modals/LoginModal"
 import WelcomeModal from "../components/Modals/WelcomeModal"
 import { useAuth } from "../Auth/use-auth-client"
 import { useNavigate } from "react-router-dom"
+import FallbackLoading from "../components/Modals/FallBackLoader"
 
 const Dashboard = () => {
   const dispatch = useAppDispatch()
@@ -30,21 +31,21 @@ const Dashboard = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
-  const state = useAppSelector((state) => state.userProfile.initializeState)
+  const userSession = localStorage.getItem("userSession")
 
   useEffect(() => {
+    const userState = localStorage.getItem("userState")
     if (isAuthenticated) {
       getProfile()
       getFeedBacks()
       getChatmessage(20)
-      if (state) {
-        navigate("/dashboard")
-        // window.location.reload()
+      if (userSession === "true") {
+        setAccountModal(false)
       } else {
         setAccountModal(true)
       }
     }
-  }, [])
+  }, [isAuthenticated, userSession])
 
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
@@ -55,46 +56,53 @@ const Dashboard = () => {
   const handleModal = () => {
     setOpenModal(!openModal)
   }
-
-  return (
-    <div className="">
-      <section className="flex gap-6">
-        <Header />
-        <Sidebar />
-        <div className="flex flex-col w-full ">
-          <div className="m-4 mt-24 ">
-            <h2 className="text-base text-white sm:text-lg my-4">
-              Featured and Hot
-            </h2>
-            <Carousel />
-            {/* <Recommended /> */}
-            <FreeRegistration />
-            <GameblocTournaments loading={isLoadingProfile} />
+  if (isLoadingProfile) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <FallbackLoading />
+      </div>
+    )
+  } else {
+    return (
+      <div className="">
+        <section className="flex gap-6">
+          <Header />
+          <Sidebar />
+          <div className="flex flex-col w-full ">
+            <div className="m-4 mt-24 ">
+              <h2 className="text-base text-white sm:text-lg my-4">
+                Featured and Hot
+              </h2>
+              <Carousel />
+              {/* <Recommended /> */}
+              <FreeRegistration />
+              <GameblocTournaments loading={isLoadingProfile} />
+            </div>
           </div>
-        </div>
-      </section>
-      <ConfigProvider
-        theme={{
-          algorithm: theme.darkAlgorithm,
-          token: {
-            colorPrimary: "#F6B8FC",
-          },
-        }}
-      >
-        <FloatButton
-          shape="circle"
-          type="primary"
-          tooltip="Feedback"
-          style={{ right: 15, bottom: 15 }}
-          icon={<VscFeedback className="text-black" />}
-          onClick={() => setOpenModal(!openModal)}
-        />
-      </ConfigProvider>
-      {openModal && <FeedbackModal modal={handleModal} />}
-      {openLoginModal && <LoginModal modal={handleLoginModal} />}
-      {accountModal && <WelcomeModal modal={handleAccModal} />}
-    </div>
-  )
+        </section>
+        <ConfigProvider
+          theme={{
+            algorithm: theme.darkAlgorithm,
+            token: {
+              colorPrimary: "#F6B8FC",
+            },
+          }}
+        >
+          <FloatButton
+            shape="circle"
+            type="primary"
+            tooltip="Feedback"
+            style={{ right: 15, bottom: 15 }}
+            icon={<VscFeedback className="text-black" />}
+            onClick={() => setOpenModal(!openModal)}
+          />
+        </ConfigProvider>
+        {openModal && <FeedbackModal modal={handleModal} />}
+        {openLoginModal && <LoginModal modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
+      </div>
+    )
+  }
 }
 
 export default Dashboard

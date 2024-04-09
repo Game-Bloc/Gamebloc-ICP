@@ -4,15 +4,20 @@ import { useAppSelector } from "../../redux/hooks"
 import ChatCard1 from "../tournament/ChatCard1"
 import { IoSend } from "react-icons/io5"
 import ChatCard2 from "../tournament/ChatCard2"
+import { useAuth } from "../../Auth/use-auth-client"
+import LoginModal2 from "../Modals/LoginModal2"
+import WelcomeModal from "../Modals/WelcomeModal"
 
 const ChatContainer = () => {
-  
   const scrollContainerRef = useRef(null)
+  const { isAuthenticated } = useAuth()
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
   // const [chatId, setChatId] = useState<string>("")
   const { sendChatMessage, getChatmessage, updateChatmessage } =
     useGameblocHooks()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
   const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
   const chats = useAppSelector((state) => state.chat)
@@ -49,6 +54,13 @@ const ChatContainer = () => {
     sendChatMessage(message, time, username, chatId)
   }
 
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
+
   const handleKeyPress = (e: any) => {
     if (e.key === "Enter") {
       sendMessage()
@@ -80,14 +92,20 @@ const ChatContainer = () => {
           <></>
         ) : (
           <IoSend
-            onClick={() => {
-              sendMessage()
-              setMessage("")
-            }}
+            onClick={
+              !isAuthenticated
+                ? () => handleLoginModal()
+                : () => {
+                    sendMessage()
+                    setMessage("")
+                  }
+            }
             className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
           />
         )}
       </div>
+      {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+      {accountModal && <WelcomeModal modal={handleAccModal} />}
     </div>
   )
 }

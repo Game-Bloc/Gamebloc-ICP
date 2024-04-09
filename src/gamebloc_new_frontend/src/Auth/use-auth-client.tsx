@@ -20,6 +20,7 @@ import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledg
 import { _SERVICE as _SERVICE4 } from "../../../declarations/icp_index/icp_index.did"
 
 import { useAppDispatch } from "../redux/hooks"
+import { useNavigate } from "react-router-dom"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
@@ -97,7 +98,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [authClient, setAuthClient] = useState(null)
   const [identity, setIdentity] = useState(null)
   const [principal, setPrincipal] = useState(null)
-  const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
@@ -115,6 +116,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginOptions,
       onSuccess: () => {
         updateClient(authClient)
+        navigate("/dashboard")
       },
     })
   }
@@ -124,6 +126,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginNFID,
       onSuccess: () => {
         updateClient(authClient)
+        navigate("/dashboard")
       },
     })
   }
@@ -180,6 +183,7 @@ export const useAuthClient = (options = defaultOptions) => {
   async function logout() {
     await authClient?.logout()
     await updateClient(authClient)
+    localStorage.setItem("userState", "false")
   }
 
   return {

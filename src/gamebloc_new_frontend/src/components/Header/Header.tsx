@@ -12,6 +12,8 @@ import { CiUser } from "react-icons/ci"
 import { PiSignOutThin } from "react-icons/pi"
 import { useAuth } from "../../Auth/use-auth-client"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
+import LoginModal2 from "../Modals/LoginModal2"
+import WelcomeModal from "../Modals/WelcomeModal"
 
 const Header = () => {
   const navigate = useNavigate()
@@ -22,6 +24,8 @@ const Header = () => {
   const initials = username!.substring(0, 2).toUpperCase()
   const { getProfile } = useGameblocHooks()
   const { logout, isAuthenticated } = useAuth()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
     getProfile().then(() => {
@@ -43,6 +47,13 @@ const Header = () => {
     { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
   ]
 
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
+
   return (
     <div className="flex fixed justify-between lg:px-4 items-center w-full h-[5rem] bg-primary-first border-solid border-b-4 border-[#f6b8fc13] z-10 ">
       <div className="m-4 flex w-full justify-between items-center lg:my-4 lg:mx-0">
@@ -59,13 +70,13 @@ const Header = () => {
         {!isAuthenticated ? (
           <div className=" flex justify-between items-center">
             <p
-              // onClick={() => setModal(true)}
+              onClick={() => handleLoginModal()}
               className="text-primary-second hover:text-primary-second/70  text-[0.85rem] sm:text-sm cursor-pointer"
             >
               Login
             </p>
             <button
-              // onClick={() => setModal(true)}
+              onClick={() => handleLoginModal()}
               className="pt-1 pb-[.25rem] ml-4  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm text-black justify-center hover:bg-primary-second/70   flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
             >
               <p className="font-semibold">Create Account</p>
@@ -176,6 +187,8 @@ const Header = () => {
           </div>
         </div>
       )}
+      {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+      {accountModal && <WelcomeModal modal={handleAccModal} />}
     </div>
   )
 }

@@ -89,6 +89,10 @@ export const useGameblocHooks = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
+        if (window.location.pathname === "/dashboard") {
+          window.location.reload()
+        }
+        localStorage.setItem("userState", "true")
         // console.log("Account Created")
       } else {
         setIsLoading(false)
@@ -149,11 +153,13 @@ export const useGameblocHooks = () => {
         }
         dispatch(updateUserProfile(profileData))
         sessionStorage.setItem("accountId", user.account_id)
+        localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
         console.log("No account created yet")
       }
     } catch (err) {
+      localStorage.setItem("userSession", "false")
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
