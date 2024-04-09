@@ -21,26 +21,29 @@ use canister_tools::{
     localkey::refcell::{with, with_mut},
     Serializable,
 };
+use ic_cdk_macros::*;
 
-type IdStore = BTreeMap<String, String>;
-type ProfileStore = BTreeMap<String, UserProfile>;
-type TournamentStore = BTreeMap<String, TournamentAccount>;
-type SquadStore = BTreeMap<String, Squad>;
+use model::{on_close, on_message, on_open, AppMessage};
+use ic_websocket_cdk::{
+    CanisterWsCloseArguments, CanisterWsCloseResult, CanisterWsGetMessagesArguments,
+    CanisterWsGetMessagesResult, CanisterWsMessageArguments, CanisterWsMessageResult,
+    CanisterWsOpenArguments, CanisterWsOpenResult, WsHandlers, WsInitParams,
+};
 
 
-// method called by the WS Gateway after receiving FirstMessage from the client
+// method called by the client to open a WS connection to the canister (relayed by the WS Gateway)
 #[update]
 fn ws_open(args: CanisterWsOpenArguments) -> CanisterWsOpenResult {
     ic_websocket_cdk::ws_open(args)
 }
 
-// method called by the Ws Gateway when closing the IcWebSocket connection
+// method called by the Ws Gateway when closing the IcWebSocket connection for a client
 #[update]
 fn ws_close(args: CanisterWsCloseArguments) -> CanisterWsCloseResult {
     ic_websocket_cdk::ws_close(args)
 }
 
-// method called by the WS Gateway to send a message of type GatewayMessage to the canister
+// method called by the client to send a message to the canister (relayed by the WS Gateway)
 #[update]
 fn ws_message(
     args: CanisterWsMessageArguments,
@@ -55,33 +58,10 @@ fn ws_get_messages(args: CanisterWsGetMessagesArguments) -> CanisterWsGetMessage
     ic_websocket_cdk::ws_get_messages(args)
 }
 
-//// Debug/tests methods
-// send a message to the client, usually called by the canister itself
-#[update]
-fn send(client_principal: ClientPrincipal, messages: Vec<Vec<u8>>) -> CanisterSendResult {
-    for msg_bytes in messages {
-        match ic_websocket_cdk::send(client_principal, msg_bytes) {
-            Ok(_) => {},
-            Err(e) => return Err(e),
-        }
-    }
-    Ok(())
-}
-
-// close the connection with a client, usually called by the canister itself
-#[update]
-fn close(client_principal: ClientPrincipal) -> CanisterCloseResult {
-    ic_websocket_cdk::close(client_principal)
-}
-
-// wipes the internal state
-#[update]
-fn wipe(max_number_of_returned_messages: usize, send_ack_interval_ms: u64) {
-    ic_websocket_cdk::wipe();
-
-    // init(max_number_of_returned_messages, send_ack_interval_ms);
-}
-
+type IdStore = BTreeMap<String, String>;
+type ProfileStore = BTreeMap<String, UserProfile>;
+type TournamentStore = BTreeMap<String, TournamentAccount>;
+type SquadStore = BTreeMap<String, Squad>;
 
 
 thread_local! {
@@ -222,18 +202,6 @@ fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
     } else {
         println!("you're not admin");
     }
-}
-#[update]
-fn archive_tournament(id: String, names: Vec<String>, principal: Principal) {
-        TOURNAMENT_STORE.with(|tournament_store| {
-            let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-            tournament.status = match tournament.status {
-                TournamentStatus::AcceptingPlayers => TournamentStatus::Archived,
-                _ => {
-                    TournamentStatus::Archived
-                }
-            };
-        });
 }
 
 #[update]
@@ -447,8 +415,8 @@ fn send_message_tournament(id: String, message:Chat) {
             chats.push(message);
             tournament.messages = Some(chats);
         }
-         
-    tournament_store.borrow_mut().insert(id, tournament);
+
+        tournament_store.borrow_mut().insert(id, tournament);
     });
 }
 
@@ -490,11 +458,9 @@ fn init() {
         on_close: Some(on_close),
     };
 
-    // let params = WsInitParams::new(handlers)
-    //     .with_max_number_of_returned_messages(max_number_of_returned_messages)
-    //     .with_send_ack_interval_ms(send_ack_interval_ms);
+    let params = WsInitParams::new(handlers);
 
-    // ic_websocket_cdk::init(params)
+    ic_websocket_cdk::init(params);
 }
 
 #[pre_upgrade]
@@ -508,6 +474,15 @@ fn post_upgrade() {
     canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
     canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
     canister_tools::post_upgrade(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(SquadStore) -> SquadStore>);
+    let handlers = WsHandlers {
+        on_open: Some(on_open),
+        on_message: Some(on_message),
+        on_close: Some(on_close),
+    };
+
+    let params = WsInitParams::new(handlers);
+
+    ic_websocket_cdk::init(params);
 }
 
 

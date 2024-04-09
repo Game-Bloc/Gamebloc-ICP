@@ -1,25 +1,33 @@
 import { AuthClient } from "@dfinity/auth-client"
 import React, { createContext, useContext, useEffect, useState } from "react"
-import { canisterId, createActor } from "../../../declarations/kitchen"
+import { canisterId, createActor, kitchen } from "../../../declarations/kitchen"
 import {
   canisterId as canisterId2,
   createActor as createActor2,
+  game_bloc_backend,
 } from "../../../declarations/game_bloc_backend"
 import {
   canisterId as ledgerId,
   createActor as createLedgerActor,
 } from "../../../declarations/icp_ledger"
+import { ActorSubclass, SignIdentity } from "@dfinity/agent"
+import { _SERVICE, AppMessage } from "../../../declarations/kitchen/kitchen.did"
+import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
+import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
+import { _SERVICE as _SERVICE4 } from "../../../declarations/icp_index/icp_index.did"
+import {
+  gatewayUrl,
+  icUrl,
+  localGatewayUrl,
+  localICUrl,
+} from "../components/utils/ws"
+import { useAppDispatch } from "../redux/hooks"
+import { updateAuth } from "../redux/slice/authClient"
+import IcWebSocket from "ic-websocket-js"
 import {
   canisterId as indexId,
   createActor as createIndexActor,
 } from "../../../declarations/icp_index"
-import { ActorSubclass } from "@dfinity/agent"
-import { _SERVICE } from "../../../declarations/kitchen/kitchen.did"
-import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
-import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
-import { _SERVICE as _SERVICE4 } from "../../../declarations/icp_index/icp_index.did"
-
-import { useAppDispatch } from "../redux/hooks"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
@@ -29,23 +37,26 @@ const AuthContext = React.createContext<{
   authClient: any
   identity: any
   principal: any
-  whoamiActor: ActorSubclass<_SERVICE> | undefined
-  whoamiActor2: ActorSubclass<_SERVICE2> | undefined
-  ledgerActor: ActorSubclass<_SERVICE3> | undefined
-  indexActor: ActorSubclass<_SERVICE4> | undefined
+  ws: IcWebSocket<_SERVICE, AppMessage> | null
+  whoamiActor: ActorSubclass<_SERVICE> | null
+  whoamiActor2: ActorSubclass<_SERVICE2> | null
+  ledgerActor: ActorSubclass<_SERVICE3> | null
+  indexActor: ActorSubclass<_SERVICE4> | null
 }>({
   isAuthenticated: false,
-  login: undefined,
-  loginNFID: undefined,
-  logout: undefined,
-  authClient: undefined,
-  identity: undefined,
-  principal: undefined,
-  whoamiActor: undefined,
-  whoamiActor2: undefined,
-  ledgerActor: undefined,
-  indexActor: undefined,
+  login: null,
+  loginNFID: null,
+  logout: null,
+  authClient: null,
+  identity: null,
+  principal: null,
+  ws: null,
+  whoamiActor: null,
+  whoamiActor2: null,
+  ledgerActor: null,
+  indexActor: null,
 })
+const network = process.env.DFX_NETWORK || "local"
 const APPLICATION_NAME = "GameBloc"
 const APPLICATION_LOGO_URL = "https://i.postimg.cc/zBMQpTJn/Asset-51.png"
 
@@ -98,6 +109,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [identity, setIdentity] = useState(null)
   const [principal, setPrincipal] = useState(null)
   const dispatch = useAppDispatch()
+  const [ws, setWs] = useState<IcWebSocket<_SERVICE, AppMessage> | null>(null)
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
@@ -129,52 +141,71 @@ export const useAuthClient = (options = defaultOptions) => {
   }
 
   async function updateClient(client) {
-    const isAuthenticated = await client.isAuthenticated()
-    setIsAuthenticated(isAuthenticated)
+    try {
+      const isAuthenticated = await client.isAuthenticated()
+      setIsAuthenticated(isAuthenticated)
 
-    const identity = client.getIdentity()
-    setIdentity(identity)
-    console.log("identity", identity)
-    const principal = identity.getPrincipal()
+      const identity = client.getIdentity()
+      setIdentity(identity)
+      console.log("identity", identity)
+      const principal = identity.getPrincipal()
 
-    setPrincipal(principal)
-    console.log("Principal", principal)
-    setAuthClient(client)
+      setPrincipal(principal)
+      console.log("Principal", principal)
+      setAuthClient(client)
 
-    const actor = createActor(canisterId, {
-      agentOptions: {
-        identity,
-      },
-    })
+      const actor = createActor(canisterId, {
+        agentOptions: {
+          identity,
+        },
+      })
 
-    const actor2 = createActor2(canisterId2, {
-      agentOptions: {
-        identity,
-      },
-    })
+      const actor2 = createActor2(canisterId2, {
+        agentOptions: {
+          identity,
+        },
+      })
 
-    const actor3 = createLedgerActor(ledgerId, {
-      agentOptions: {
-        identity,
-      },
-    })
-    const actor4 = createIndexActor(indexId, {
-      agentOptions: {
-        identity,
-      },
-    })
-    console.log("index Actor:", actor4)
-    // dispatch(
-    //   updateAuth({
-    //     type: "authenticationClient/updateAuth",
-    //     payload: actor,
-    //   }),
-    // )
-    console.log("Actor3....", actor3)
-    setWhoamiActor(actor)
-    setWhoamiActor2(actor2)
-    setLedgerAcor(actor3)
-    setIndexAcor(actor4)
+      const actor3 = createLedgerActor(ledgerId, {
+        agentOptions: {
+          identity,
+        },
+      })
+
+      const actor4 = createIndexActor(indexId, {
+        agentOptions: {
+          identity,
+        },
+      })
+
+      const _ws = new IcWebSocket(
+        network === "local" ? localGatewayUrl : gatewayUrl,
+        undefined,
+        {
+          canisterId: canisterId,
+          canisterActor: kitchen,
+          identity: identity as SignIdentity,
+          networkUrl: network === "local" ? localICUrl : icUrl,
+        },
+      )
+
+      _ws.onopen = () => {
+        console.log(
+          "WebSocket state:",
+          ws.readyState,
+          "is open:",
+          ws.readyState === ws.OPEN,
+        )
+      }
+
+      setWs(_ws)
+      setWhoamiActor(actor)
+      setWhoamiActor2(actor2)
+      setLedgerAcor(actor3)
+      setIndexAcor(actor4)
+    } catch (err) {
+      console.log("Error on auth:", err)
+    }
   }
 
   async function logout() {
@@ -190,6 +221,7 @@ export const useAuthClient = (options = defaultOptions) => {
     authClient,
     identity,
     principal,
+    ws,
     whoamiActor,
     whoamiActor2,
     ledgerActor,

@@ -60,6 +60,12 @@ const AdminHeader = () => {
           <ConfigProvider
             theme={{
               algorithm: theme.darkAlgorithm,
+              token: {
+                colorPrimaryActive: "#F6B8FC",
+                colorPrimary: "#F6B8FC",
+                colorPrimaryHover: "#F6B8FC",
+                colorText: "#fff",
+              },
             }}
           >
             <Select

@@ -87,7 +87,7 @@ const FeedbackModal = ({ modal }: Props) => {
                     <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
                       Title
                     </p>
-                    <div className="flex flex-col items-center pt-[.6rem] pl-[.5rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+                    <div className="flex flex-col items-center  h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
                         className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
@@ -100,7 +100,7 @@ const FeedbackModal = ({ modal }: Props) => {
                       Description
                     </p>
 
-                    <div className=" mb-4 items-center pt-2 pl-2 border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border-solid border rounded-lg flex">
+                    <div className=" mb-4 items-center  border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border-solid border rounded-lg flex">
                       <textarea
                         className="r border-none w-full text-white/80 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-white/80  appearance-none text-[0.9rem] bg-[transparent]"
                         placeholder="Description"
