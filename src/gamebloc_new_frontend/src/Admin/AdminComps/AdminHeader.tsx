@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
-import { Avatar } from "antd"
+import { Avatar, ConfigProvider, Select, theme } from "antd"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { CiUser } from "react-icons/ci"
@@ -13,7 +13,7 @@ import { PiSignOutThin } from "react-icons/pi"
 import { useAuth } from "../../Auth/use-auth-client"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 
-const Header = () => {
+const AdminHeader = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(false)
   const [profileModal, setProfileModal] = useState<boolean>(false)
@@ -44,62 +44,87 @@ const Header = () => {
   ]
 
   return (
-    <div className="flex fixed justify-between lg:px-4 items-center w-full h-[5rem] bg-primary-first border-solid border-b-4 border-[#f6b8fc13] z-10 ">
+    <div className="flex fixed justify-between lg:px-4 items-center w-full h-[5rem] bg-primary-first  z-10 ">
       <div className="m-4 flex w-full justify-between items-center lg:my-4 lg:mx-0">
         <img
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/admin-dashboard")}
           src={`logo.png`}
           alt=""
-          className="w-32 m-0 hidden cursor-pointer lg:block"
+          className="w-32 m-0  cursor-pointer "
         />
-        <IoMenu
+        {/* <IoMenu
           className="text-primary-second block lg:hidden"
           onClick={() => setOpen(!open)}
-        />
-        <div
-          onClick={() => setProfileModal(!profileModal)}
-          className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
-        >
-          <Avatar
-            style={{
-              backgroundColor: "#f6b8fc",
-              color: "#01070E",
-              fontSize: ".8rem",
+        /> */}
+        <div className="flex items-center">
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
+              token: {
+                colorPrimaryActive: "#F6B8FC",
+                colorPrimary: "#F6B8FC",
+                colorPrimaryHover: "#F6B8FC",
+                colorText: "#fff",
+              },
             }}
-            size={40}
           >
-            {initials}
-          </Avatar>
+            <Select
+              className="mr-[2rem]"
+              placeholder="Game"
+              optionFilterProp="children"
+              options={[
+                {
+                  value: "Call of Duty: Mobile",
+                  label: "Call of Duty: Mobile",
+                },
+              ]}
+            />
+          </ConfigProvider>
+          <div
+            onClick={() => setProfileModal(!profileModal)}
+            className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
+          >
+            <Avatar
+              style={{
+                backgroundColor: "#f6b8fc",
+                color: "#01070E",
+                fontSize: ".8rem",
+              }}
+              size={40}
+            >
+              {initials}
+            </Avatar>
 
-          <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
-            {username}
-          </p>
-          {profileModal && (
-            <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
-              <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
-                <div
-                  onClick={() => navigate("/profile")}
-                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                >
-                  <CiUser className="text-white" />
-                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                    {" "}
-                    Profile
-                  </p>
-                </div>
-                <div
-                  onClick={() => logout()}
-                  className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                >
-                  <PiSignOutThin className=" text-white" />
-                  <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                    {" "}
-                    Sign out
-                  </p>
+            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
+              {username}
+            </p>
+            {profileModal && (
+              <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
+                <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+                  <div
+                    onClick={() => navigate("/profile")}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <CiUser className="text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Profile
+                    </p>
+                  </div>
+                  <div
+                    onClick={() => logout()}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <PiSignOutThin className=" text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Sign out
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
       {open && (
@@ -163,4 +188,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default AdminHeader

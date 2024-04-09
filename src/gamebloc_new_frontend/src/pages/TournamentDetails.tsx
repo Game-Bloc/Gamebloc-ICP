@@ -3,18 +3,21 @@ import Header from "../components/Header/Header"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import { useNavigate, useParams } from "react-router-dom"
 import { IoIosArrowRoundBack } from "react-icons/io"
-import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd"
+import { Avatar, ConfigProvider, Skeleton, Tabs, TabsProps } from "antd"
 import Rules from "../components/tournament/Rules"
 import Players from "../components/tournament/Players"
 import TournamentInfo from "../components/tournament/TournamentInfo"
 import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Chat from "../components/tournament/Chat"
+import { DotChartOutlined } from "@ant-design/icons"
+const gameImage = require("../../assets/category1.svg").default
 
 const TournamentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(true)
+  const [isImageLoaded, setImageLoaded] = useState(false)
   const tournamentData = useAppSelector((state) => state.tournamentData)
 
   const items: TabsProps["items"] = [
@@ -59,6 +62,14 @@ const TournamentDetail = () => {
     return () => clearTimeout(timeOut)
   }, [])
 
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setImageLoaded(true)
+    }
+    img.src = gameImage
+  }, [gameImage])
+
   return (
     <div className="">
       {loading ? (
@@ -88,71 +99,91 @@ const TournamentDetail = () => {
                     >
                       <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                         <div className="flex w-full justify-center items-center">
-                          <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
-                            <img
-                              src={
-                                //   id == "1"
-                                //     ? `category1.svg`
-                                //     : id == "2"
-                                //     ? `category2.svg`
-                                //     : id == "3"
-                                //     ? `category3.svg`
-                                //     : id == "4"
-                                //     ? `category4.svg`
-                                //                                           :
-                                `category1.svg
-                          `
-                              }
-                              alt=""
-                              className="rounded-[0.625rem]"
-                            />
-                            <div className="absolute flex top-4 left-4 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md sm:rounded-xl py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+                          {isImageLoaded && (
+                            <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                               <img
-                                src={`mdi_crowd.png`}
-                                className="m-0"
+                                src={
+                                  //   id == "1"
+                                  //     ? `category1.svg`
+                                  //     : id == "2"
+                                  //     ? `category2.svg`
+                                  //     : id == "3"
+                                  //     ? `category3.svg`
+                                  //     : id == "4"
+                                  //     ? `category4.svg`
+                                  //                                           :
+                                  // `category1.svg`
+                                  gameImage
+                                }
                                 alt=""
+                                className="rounded-[0.625rem]"
                               />
-                              <p className=" ml-[.5rem]  text-[0.6rem]  sm:text-[.6rem] text-white">
-                                {Object.keys(
-                                  data.tournament_type,
-                                )[0].toUpperCase()}
-                              </p>
-                            </div>
-                            <div className="flex absolute left-4 bottom-4 items-center">
-                              <img
-                                src={`windows.png`}
-                                className="w-4 h-4 sm:w-6 sm:h-6"
-                                alt=""
-                              />
-                              <img
-                                src={`playstation.png`}
-                                className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
-                                alt=""
-                              />
-                              <img
-                                src={`xbox.png`}
-                                className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
-                                alt=""
-                              />
-                            </div>
-                            <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
-                              <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
-                                <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  Action
+
+                              <div className="absolute flex top-4 left-4 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md sm:rounded-xl py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+                                <img
+                                  src={`mdi_crowd.png`}
+                                  className="m-0"
+                                  alt=""
+                                />
+                                <p className=" ml-[.5rem]  text-[0.6rem]  sm:text-[.6rem] text-white">
+                                  {Object.keys(
+                                    data.tournament_type,
+                                  )[0].toUpperCase()}
                                 </p>
                               </div>
-                              <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FFD98F] border-none">
-                                <p className=" text-[#B88217] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  Adventure
-                                </p>
+                              <div className="flex absolute left-4 bottom-4 items-center">
+                                <img
+                                  src={`windows.png`}
+                                  className="w-4 h-4 sm:w-6 sm:h-6"
+                                  alt=""
+                                />
+                                <img
+                                  src={`playstation.png`}
+                                  className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
+                                  alt=""
+                                />
+                                <img
+                                  src={`xbox.png`}
+                                  className="ml-2 w-4 h-4 sm:w-6 sm:h-6"
+                                  alt=""
+                                />
                               </div>
-                              <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#D1FADF] border-none">
-                                <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  Shooting
-                                </p>
+                              <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
+                                <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
+                                  <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                                    Action
+                                  </p>
+                                </div>
+                                <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FFD98F] border-none">
+                                  <p className=" text-[#B88217] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                                    Adventure
+                                  </p>
+                                </div>
+                                <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#D1FADF] border-none">
+                                  <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
+                                    Shooting
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
+                          )}
+                          {!isImageLoaded && (
+                            <div className="flex flex-col w-full h-full justify-center items-center">
+                              <Skeleton.Node
+                                className=" bg-[#505050] "
+                                active={true}
+                              >
+                                <DotChartOutlined
+                                  style={{ fontSize: 40, color: "#bfbfbf" }}
+                                />
+                              </Skeleton.Node>
+                              <Skeleton.Input
+                                className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                                active={true}
+                                size={"small"}
+                              />
+                            </div>
+                          )}
                         </div>
                         <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
                           <div className="flex flex-col my-[.9rem] mx-4 ">

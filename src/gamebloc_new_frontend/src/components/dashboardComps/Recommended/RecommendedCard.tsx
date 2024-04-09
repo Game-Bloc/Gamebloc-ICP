@@ -1,6 +1,9 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { CodImgs } from "../../../data/Index"
 import { useNavigate } from "react-router-dom"
+import { Skeleton } from "antd"
+import { DotChartOutlined } from "@ant-design/icons"
+const cardImg = require("../../../../assets/cyber.svg").default
 interface Props {
   data: any
   index: any
@@ -8,13 +11,31 @@ interface Props {
 
 const RecommendedCard = ({ data, index }: Props) => {
   const navigate = useNavigate()
+  const [isImageLoaded, setIsimageLoaded] = useState<boolean>(false)
+
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setIsimageLoaded(true)
+    }
+    img.src = cardImg
+  }, [cardImg])
 
   return (
     <div
       onClick={() => navigate(`/active-tournament/${data.id_hash}`)}
       className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
     >
-      <img src={`reloaded.svg`} alt="" className="rounded-[12px] m-0  w-full" />
+      {!isImageLoaded ? (
+        <div className="flex flex-col w-full h-full justify-center items-center">
+          <Skeleton.Node className=" bg-[#505050] mt-[.5rem]" active={true}>
+            <DotChartOutlined style={{ fontSize: 40, color: "#bfbfbf" }} />
+          </Skeleton.Node>
+        </div>
+      ) : (
+        <img src={cardImg} alt="" className="rounded-[12px] m-0  w-full" />
+      )}
+
       <div className="mt-[.5rem] p-[.5rem] flex flex-col w-full">
         <div className="flex mb-2 items-center">
           <img src={`check-yellow.png`} alt="" className=" w-[1rem]  m-0" />

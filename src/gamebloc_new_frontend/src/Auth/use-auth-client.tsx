@@ -14,6 +14,7 @@ import { ActorSubclass, SignIdentity } from "@dfinity/agent"
 import { _SERVICE, AppMessage } from "../../../declarations/kitchen/kitchen.did"
 import { _SERVICE as _SERVICE2 } from "../../../declarations/game_bloc_backend/game_bloc_backend.did"
 import { _SERVICE as _SERVICE3 } from "../../../declarations/icp_ledger/icp_ledger.did"
+import { _SERVICE as _SERVICE4 } from "../../../declarations/icp_index/icp_index.did"
 import {
   gatewayUrl,
   icUrl,
@@ -23,6 +24,10 @@ import {
 import { useAppDispatch } from "../redux/hooks"
 import { updateAuth } from "../redux/slice/authClient"
 import IcWebSocket from "ic-websocket-js"
+import {
+  canisterId as indexId,
+  createActor as createIndexActor,
+} from "../../../declarations/icp_index"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
@@ -32,10 +37,11 @@ const AuthContext = React.createContext<{
   authClient: any
   identity: any
   principal: any
-  ws: IcWebSocket<_SERVICE, AppMessage> | null
+  ws: ActorSubclass<_SERVICE, AppMessage> | null
   whoamiActor: ActorSubclass<_SERVICE> | null
   whoamiActor2: ActorSubclass<_SERVICE2> | null
   ledgerActor: ActorSubclass<_SERVICE3> | null
+  indexActor: ActorSubclass<_SERVICE4> | null
 }>({
   isAuthenticated: false,
   login: null,
@@ -48,6 +54,7 @@ const AuthContext = React.createContext<{
   whoamiActor: null,
   whoamiActor2: null,
   ledgerActor: null,
+  indexActor: null,
 })
 const network = process.env.DFX_NETWORK || "local"
 const APPLICATION_NAME = "GameBloc"
@@ -106,6 +113,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
+  const [indexActor, setIndexAcor] = useState<ActorSubclass<_SERVICE4>>()
 
   useEffect(() => {
     // Initialize AuthClient
@@ -141,8 +149,9 @@ export const useAuthClient = (options = defaultOptions) => {
       setIdentity(identity)
       console.log("identity", identity)
       const principal = identity.getPrincipal()
+
       setPrincipal(principal)
-      console.log("Principal", principal.toString())
+      console.log("Principal", principal)
       setAuthClient(client)
 
       const actor = createActor(canisterId, {
@@ -163,6 +172,12 @@ export const useAuthClient = (options = defaultOptions) => {
         },
       })
 
+      const actor4 = createIndexActor(indexId, {
+        agentOptions: {
+          identity,
+        },
+      })
+
       const _ws = new IcWebSocket(
         network === "local" ? localGatewayUrl : gatewayUrl,
         undefined,
@@ -173,6 +188,7 @@ export const useAuthClient = (options = defaultOptions) => {
           networkUrl: network === "local" ? localICUrl : icUrl,
         },
       )
+
       _ws.onopen = () => {
         console.log(
           "WebSocket state:",
@@ -186,6 +202,7 @@ export const useAuthClient = (options = defaultOptions) => {
       setWhoamiActor(actor)
       setWhoamiActor2(actor2)
       setLedgerAcor(actor3)
+      setIndexAcor(actor4)
     } catch (err) {
       console.log("Error on auth:", err)
     }
@@ -208,6 +225,7 @@ export const useAuthClient = (options = defaultOptions) => {
     whoamiActor,
     whoamiActor2,
     ledgerActor,
+    indexActor,
   }
 }
 

@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react"
 import Header from "../components/Header/Header"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import { IoIosArrowRoundBack } from "react-icons/io"
-import { Select, DatePicker, TimePicker, ConfigProvider, theme } from "antd"
+import {
+  Select,
+  DatePicker,
+  TimePicker,
+  ConfigProvider,
+  theme,
+  Skeleton,
+} from "antd"
 import { useNavigate } from "react-router-dom"
 import { useParams, useLocation } from "react-router-dom"
 import { useAppSelector } from "../redux/hooks"
@@ -15,6 +22,11 @@ import type { Dayjs } from "dayjs"
 import type { DatePickerProps } from "antd"
 import type { RangePickerProps } from "antd/es/date-picker"
 import ClipLoader from "react-spinners/ClipLoader"
+import { DotChartOutlined } from "@ant-design/icons"
+const loader = require("../../assets/category1.svg").default
+const loader1 = require("../../assets/category2.svg").default
+const loader2 = require("../../assets/category3.svg").default
+const loader3 = require("../../assets/category4.svg").default
 
 const CreateTournament = () => {
   const navigate = useNavigate()
@@ -40,7 +52,8 @@ const CreateTournament = () => {
   const [tournamentID, setTournamentID] = useState<string>("")
   const [active, setActive] = useState<string>("first")
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const { isLoading, createTournament } = useGameblocHooks()
+  const { isLoading, createTournament, getICPBalance } = useGameblocHooks()
+  const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
@@ -57,12 +70,12 @@ const CreateTournament = () => {
     let day = date.getDate()
     const id = ulid(day)
     setTournamentID(id)
-    console.log("ulid:", id)
+    // console.log("ulid:", id)
   }
 
   useEffect(() => {
     generateULID()
-
+    getICPBalance()
     const getTimeDate = () => {
       const value = initialTime.concat(" ", initialDate)
       setStartingDate(value)
@@ -84,12 +97,21 @@ const CreateTournament = () => {
     startingDate,
     // getTournamentCount,
   ])
+  console.log(balance)
 
   useEffect(() => {
     if (close) {
       setOpenModal(false)
     }
   }, [close])
+
+  useEffect(() => {
+    const img = new Image()
+    img.onload = () => {
+      setImageLoaded(true)
+    }
+    img.src = loader
+  }, [loader])
 
   const filterOption = (
     input: string,
@@ -216,38 +238,38 @@ const CreateTournament = () => {
     ) {
       errorPopUp("Field Input is invalid !")
     } else {
-      // if (
-      //   (tourType === "Prepaid" && balance > +poolPrize) ||
-      //   (tourType === "Crowdfunded" && balance > +entryPrice)
-      // ) {
-      createTournament(
-        1,
-        tournamentID,
-        { AcceptingPlayers: null },
-        name,
-        [],
-        creator_id,
-        game_name,
-        [],
-        [],
-        [],
-        BigInt(+poolPrize),
-        tournamentRules,
-        startingDate,
-        variantType,
-        +entryPrice,
-        noOfWinners,
-        BigInt(noOfUsers),
-        gameType,
-        endDate,
-        title,
-        "You have successfully created a Tournament",
-        "Try again something went wrong",
-        "/dashboard",
-      )
-      // } else {
-      //   errorPopUp("Your ICP balance is low, pls fund your account.")
-      // }
+      if (
+        (tourType === "Prepaid" && balance > +poolPrize) ||
+        (tourType === "Crowdfunded" && balance > +entryPrice)
+      ) {
+        createTournament(
+          1,
+          tournamentID,
+          { AcceptingPlayers: null },
+          name,
+          [],
+          creator_id,
+          game_name,
+          [],
+          [],
+          [],
+          BigInt(+poolPrize),
+          tournamentRules,
+          startingDate,
+          variantType,
+          +entryPrice,
+          noOfWinners,
+          BigInt(noOfUsers),
+          gameType,
+          endDate,
+          title,
+          "You have successfully created a Tournament",
+          "Try again something went wrong",
+          "/dashboard",
+        )
+      } else {
+        errorPopUp("Your ICP balance is low, pls fund your account.")
+      }
     }
   }
 
@@ -269,23 +291,39 @@ const CreateTournament = () => {
               <div className="flex flex-col lg:flex-row ">
                 <div className=" w-full lg:w-[50%] mt-4 sm:mt-8 lg:mx-4 flex flex-col">
                   <div className="flex w-full justify-center items-center">
-                    <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
-                      <img
-                        src={
-                          id == "1"
-                            ? `category1.svg`
-                            : id == "2"
-                            ? `category2.svg`
-                            : id == "3"
-                            ? `category3.svg`
-                            : id == "4"
-                            ? `category4.svg`
-                            : `gamepad.png`
-                        }
-                        alt=""
-                        className="rounded-[0.625rem]"
-                      />
-                    </div>
+                    {!isImageLoaded && (
+                      <div className="flex flex-col w-full h-full justify-center items-center">
+                        <Skeleton.Node className=" bg-[#505050] " active={true}>
+                          <DotChartOutlined
+                            style={{ fontSize: 40, color: "#bfbfbf" }}
+                          />
+                        </Skeleton.Node>
+                        <Skeleton.Input
+                          className="mt-[1rem] bg-[#505050] h-[1.2rem]"
+                          active={true}
+                          size={"small"}
+                        />
+                      </div>
+                    )}
+                    {isImageLoaded && (
+                      <div className="border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
+                        <img
+                          src={
+                            id == "1"
+                              ? loader
+                              : id == "2"
+                              ? loader1
+                              : id == "3"
+                              ? loader2
+                              : id == "4"
+                              ? loader3
+                              : `gamepad.png`
+                          }
+                          alt=""
+                          className="rounded-[0.625rem]"
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
                     <div className="flex justify-between my-[.9rem] mx-4 items-center">
@@ -379,7 +417,7 @@ const CreateTournament = () => {
                       </p>
                       <div className=" my-4 items-center pr-8 h-[2.15rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                           placeholder="Participants"
                           type="text"
                           onChange={onUserChange}

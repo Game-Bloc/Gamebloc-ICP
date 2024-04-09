@@ -10,8 +10,17 @@ import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
+import { useAppDispatch, useAppSelector } from "../redux/hooks"
+import {
+  useFetchAllTournaments,
+  useUpdateTournament,
+} from "../Functions/blochooks"
 
 const Dashboard = () => {
+  const dispatch = useAppDispatch()
+  const tournament = useAppSelector((state) => state.tournamentData)
+  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
+  const { updateTournament, updating } = useUpdateTournament()
   const {
     getProfile,
     isLoadingProfile,

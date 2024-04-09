@@ -68,7 +68,7 @@ const WelcomeModal = ({ modal }: Props) => {
   }
 
   const submit = () => {
-    if (userName.trim() === "" || age.trim() === "") {
+    if (userName.trim() === "" && age.trim() === "") {
       errorPopUp("Field is empty !")
     } else {
       createAccount(
