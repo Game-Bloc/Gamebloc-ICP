@@ -12,54 +12,6 @@ import {
 } from "../../../../declarations/kitchen/kitchen.did"
 
 const ChatContainer = () => {
-  // const scrollContainerRef = useRef(null)
-  // const [time, setTime] = useState<string>("")
-  // // const [message, setMessage] = useState<string>("")
-  // // const [chatId, setChatId] = useState<string>("")
-  // const { sendChatMessage, getChatmessage, updateChatmessage } =
-  //   useGameblocHooks()
-  // const chatId = useAppSelector((state) => state.userProfile.id_hash)
-  // const username = useAppSelector((state) => state.userProfile.username)
-  // const chats = useAppSelector((state) => state.chat)
-
-  // const getTimeIn12HourFormat = () => {
-  //   const date = new Date()
-  //   let hours = date.getHours()
-  //   const minutes = date.getMinutes()
-  //   const ampm = hours >= 12 ? "pm" : "am"
-
-  //   hours %= 12
-  //   hours = hours || 12 // Handle midnight (0 hours)
-
-  //   const formattedTime = `${hours}:${
-  //     minutes < 10 ? "0" : ""
-  //   }${minutes} ${ampm}`
-  //   return formattedTime
-  // }
-  // // console.log("chats", chats)
-  // const onMessageChange = (e: any) => {
-  //   e.preventDefault()
-  //   const input = e.target.value
-  //   setMessage(input)
-  // }
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     getChatmessage(20)
-  //     setTime(getTimeIn12HourFormat())
-  //   }, 2000)
-  // }, [])
-
-  // const sendMessage = () => {
-  //   sendChatMessage(message, time, username, chatId)
-  // }
-
-  // const handleKeyPress = (e: any) => {
-  //   if (e.key === "Enter") {
-  //     sendMessage()
-  //   }
-  // }
-
   const { ws } = useAuth()
   const [wsIsConnecting, setWsIsConnecting] = useState(true)
   const [wsIsConnected, setWsIsConnected] = useState(false)
@@ -194,9 +146,9 @@ const ChatContainer = () => {
       >
         {isTyping && (
           <div
-            className={`w-fit fit bg-gray-600 px-3 py-1 rounded-md text-white transition-opacity duration-500 ease-in-out z-10 fixed top-4`}
+            className={`w-fit fit bg-gray-600 px-3 py-1 rounded-md text-white transition-opacity duration-500 ease-in-out z-10 `}
           >
-            <h3 className="">{typingUser} is typing</h3>
+            <p className="text-gray text-[.7rem]">{typingUser} is typing</p>
           </div>
         )}
         {messages.map((message: any, index: any) => (
@@ -204,10 +156,6 @@ const ChatContainer = () => {
         ))}
       </div>
       <div className=" w-full mt-2 flex justify-end items-center">
-        {/* <form
-          className=" flex-row flex  w-full items-center"
-          onSubmit={sendGroupChatMessage}
-        > */}
         <div className=" w-full justify-center items-center py-2 px-4 bg-[#fff]/10 rounded-full flex">
           <textarea
             className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
@@ -221,14 +169,11 @@ const ChatContainer = () => {
         {message === "" ? (
           <></>
         ) : (
-          // <button type="submit">
           <IoSend
-            // type="submit"
             onClick={sendGroupChatMessage}
             className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
           />
         )}
-        {/* </form> */}
       </div>
     </div>
   )
