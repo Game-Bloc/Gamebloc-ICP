@@ -8,8 +8,6 @@ import { useAppSelector } from "../../redux/hooks"
 import ChatCard1 from "./ChatCard1"
 import ChatCard2 from "./ChatCard2"
 import ClipLoader from "react-spinners/ClipLoader"
-import { useAuth } from "../../Auth/use-auth-client"
-import { AppMessage } from "../../../../declarations/game_bloc_backend/game_bloc_backend.did"
 
 interface Props {
   data: any
@@ -18,7 +16,6 @@ interface Props {
 const Chat = ({ data }: Props) => {
   const id = data.id_hash
   const scrollContainerRef = useRef(null)
-  const { ws } = useAuth()
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
   // const [chatId, setChatId] = useState<string>("")
@@ -65,37 +62,15 @@ const Chat = ({ data }: Props) => {
   //   }, [data])
 
   useEffect(() => {
-    if (!ws) {
-      return
-    }
-
-    ws.onopen = () => {
-      console.log("WebSocket connection established.")
-      // You can perform any additional actions here after the WebSocket connection is open
-      console.log("ws working")
-    }
-
-    ws.onclose = () => {
-      console.log("WebSocket connection closed.")
-    }
-
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error)
-    }
-
-    // Clean up function to close the WebSocket connection when component unmounts
-    return () => {
-      ws.close()
-    }
-  }, [ws])
+    // generateULID()
+    setInterval(() => {
+      setTime(getTimeIn12HourFormat())
+      updateMessages()
+    }, 2000)
+  }, [])
 
   const sendMessage = () => {
-    // sendTournamentMessage(id, chatId, username, time, message)
-    const msg: AppMessage = {
-      text: message,
-    }
-    console.log(msg)
-    ws.send(msg)
+    sendTournamentMessage(id, chatId, username, time, message)
   }
 
   return (
@@ -111,10 +86,10 @@ const Chat = ({ data }: Props) => {
         {/* <ChatCard2 /> */}
       </div>
       <div className="w-full mt-2 flex justify-center items-center">
-        <div className=" w-full justify-center items-center p-4 bg-[#fff]/10 rounded-full flex">
+        <div className=" w-full justify-center items-center py-2 p-4 bg-[#fff]/10 rounded-full flex">
           <textarea
-            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.9rem] bg-[transparent]"
-            placeholder="Message"
+            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+            placeholder="Leave a comment"
             rows={1}
             value={message}
             onChange={onMessageChange}
