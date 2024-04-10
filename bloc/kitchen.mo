@@ -1,7 +1,14 @@
+import IcWebSocketCdk "mo:ic-websocket-cdk";
+import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
+import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
+// import AccountIdentifier "mo:account-identifier";
+// import AccountIdentifier "mo:account";
+
+import Bool "mo:base/Bool";
+import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
 import Error "mo:base/Error";
 import Time "mo:base/Time";
-import Principal "mo:base/Principal";
 import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
@@ -16,8 +23,8 @@ import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
 
-import AccountIdentifier "mo:principal/AccountIdentifier";
-import AccountID "mo:principal/blob/AccountIdentifier";
+import AccountIdentifier "utils";
+// import AccountID "mo:principal/blob/AccountIdentifier";
 
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
@@ -427,7 +434,6 @@ shared ({ caller }) actor class Kitchen() {
         time : Text
     };
 
-
     private stable var connectionID : Nat = 0;
     private stable var messageID : Nat = 0;
 
@@ -455,7 +461,7 @@ shared ({ caller }) actor class Kitchen() {
         await update_messages_sent(caller);
         messageID := messageID + 1;
         sent := true;
-        return newMessage;
+        return newMessage
     };
 
     func createMessage(id : Nat, f_id : Text, username : Text, sender : Principal, body : Text, time : Text) : MessageEntry {
@@ -479,15 +485,15 @@ shared ({ caller }) actor class Kitchen() {
         var msgs = Buffer.Buffer<MessageEntry>(0);
         for ((i, j) in MessageHashMap.entries()) {
             if ((j.id >= from) and (j.id <= to)) {
-                msgs.add(j);
-            };
+                msgs.add(j)
+            }
         };
         msgs.toArray();
         //  }
     };
 
     public query func getAllMessages() : async [(Nat, MessageEntry)] {
-        Iter.toArray(MessageHashMap.entries());
+        Iter.toArray(MessageHashMap.entries())
     };
 
     public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
@@ -496,20 +502,20 @@ shared ({ caller }) actor class Kitchen() {
         var msgs = Buffer.Buffer<MessageEntry>(0);
         var len = MessageHashMap.size();
         var pip : Int = len - check;
-        if (pip < 0){
+        if (pip < 0) {
             var msgs = Buffer.Buffer<MessageEntry>(0);
             for ((i, j) in MessageHashMap.entries()) {
-                msgs.add(j);
+                msgs.add(j)
             };
-            return msgs.toArray();
-        } else{
-            for ((i, j) in MessageHashMap.entries()) { 
+            return msgs.toArray()
+        } else {
+            for ((i, j) in MessageHashMap.entries()) {
                 if ((j.id >= pip) and (j.id <= len)) {
-                    msgs.add(j);
-                };
+                    msgs.add(j)
+                }
             };
-            return msgs.toArray();
-        };
+            return msgs.toArray()
+        }
     };
 
     public shared ({ caller }) func createUser(user : Principal) : async Principal {
@@ -551,9 +557,9 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    // 
+    //
     // User activities
-    // 
+    //
 
     public func create_usertrack(caller : Principal) : async () {
         USER_TRACK_STORE.put(
@@ -565,107 +571,106 @@ shared ({ caller }) actor class Kitchen() {
                 tournaments_won = 0;
                 messages_sent = 0;
                 feedbacks_sent = 0;
-                total_point = 0;
-            }
-        );
+                total_point = 0
+            },
+        )
     };
 
     public func update_tournaments_created(caller : Principal) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
-        switch(tracker) {
-            case (null){};
+        switch (tracker) {
+            case (null) {};
             case (?tracker) {
                 var update = {
-                    user = tracker.user;  
+                    user = tracker.user;
                     tournaments_created = tracker.tournaments_created + 1;
                     tournaments_joined = tracker.tournaments_joined;
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
     };
 
     public func update_tournaments_joined(caller : Principal) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
-        switch(tracker) {
-            case (null){};
+        switch (tracker) {
+            case (null) {};
             case (?tracker) {
                 var update = {
-                    user = tracker.user;  
+                    user = tracker.user;
                     tournaments_created = tracker.tournaments_created;
                     tournaments_joined = tracker.tournaments_joined + 1;
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
     };
 
     public func update_tournaments_won(caller : Principal) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
-        switch(tracker) {
-            case (null){};
+        switch (tracker) {
+            case (null) {};
             case (?tracker) {
                 var update = {
-                    user = tracker.user;  
+                    user = tracker.user;
                     tournaments_created = tracker.tournaments_created;
                     tournaments_joined = tracker.tournaments_joined;
                     tournaments_won = tracker.tournaments_won + 1;
                     messages_sent = tracker.messages_sent;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
     };
 
     public func update_messages_sent(caller : Principal) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
-        switch(tracker) {
-            case (null){};
+        switch (tracker) {
+            case (null) {};
             case (?tracker) {
                 var update = {
-                    user = tracker.user;  
+                    user = tracker.user;
                     tournaments_created = tracker.tournaments_created;
                     tournaments_joined = tracker.tournaments_joined;
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent + 1;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
     };
 
-
-    // 
+    //
     // Feedbacks
-    // 
+    //
 
     public func update_feedbacks_sent(caller : Principal) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
-        switch(tracker) {
-            case (null){};
+        switch (tracker) {
+            case (null) {};
             case (?tracker) {
                 var update = {
-                    user = tracker.user;  
+                    user = tracker.user;
                     tournaments_created = tracker.tournaments_created;
                     tournaments_joined = tracker.tournaments_joined;
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent + 1;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent;
+                    total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
     };
@@ -691,7 +696,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public query func get_unread_feedbacks() : async ?[Bloctypes.Feedback] {
-        do ?{
+        do ? {
             var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
             for ((i, j) in FEED_BACK_STORE.entries()) {
                 if (j.read == true) {
@@ -714,10 +719,9 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-
-    // 
+    //
     // Tournaments
-    // 
+    //
 
     public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
@@ -730,11 +734,11 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public func count_all_squad() : async Nat {
-        await RustBloc.count_all_squad();
+        await RustBloc.count_all_squad()
     };
 
     public func count_all_users() : async Nat {
-        await RustBloc.count_all_users();
+        await RustBloc.count_all_users()
     };
 
     public shared ({ caller }) func end_tournament(id : Text, name : [Text]) : () {
@@ -889,91 +893,90 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    // 
+    //
     // HTTP outcalls
-    // 
+    //
 
     public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
-      let transformed : HTTP.CanisterHttpResponsePayload = {
-          status = raw.response.status;
-          body = raw.response.body;
-          headers = [
-              {
-                  name = "Content-Security-Policy";
-                  value = "default-src 'self'";
-              },
-              { 
-                name = "Referrer-Policy"; 
-                value = "strict-origin" 
-              },
-              { 
-                name = "Permissions-Policy"; 
-                value = "geolocation=(self)" },
-              {
-                  name = "Strict-Transport-Security";
-                  value = "max-age=63072000";
-              },
-              { 
-                name = "X-Frame-Options"; 
-                value = "DENY" 
-              },
-              { 
-                name = "X-Content-Type-Options"; 
-                value = "nosniff" 
-              },
-          ];
-      };
-      transformed;
-  };
-
-
-   public func send_http_get_request(url_ : Text, player_tag : Text) : async Text {
-
-    let ic : HTTP.IC = actor ("aaaa-aa");
-
-
-    // let host : Text = "";
-    let url = "https://api.clashroyale.com/v1/players/" # player_tag;
-    let api_key = "ey-xxx";
-
-    let transform_context : HTTP.TransformContext = {
-      function = transform;
-      context = Blob.fromArray([]);
+        let transformed : HTTP.CanisterHttpResponsePayload = {
+            status = raw.response.status;
+            body = raw.response.body;
+            headers = [
+                {
+                    name = "Content-Security-Policy";
+                    value = "default-src 'self'"
+                },
+                {
+                    name = "Referrer-Policy";
+                    value = "strict-origin"
+                },
+                {
+                    name = "Permissions-Policy";
+                    value = "geolocation=(self)"
+                },
+                {
+                    name = "Strict-Transport-Security";
+                    value = "max-age=63072000"
+                },
+                {
+                    name = "X-Frame-Options";
+                    value = "DENY"
+                },
+                {
+                    name = "X-Content-Type-Options";
+                    value = "nosniff"
+                },
+            ]
+        };
+        transformed
     };
 
-    // let idempotency_key: Text = generateUUID();
-    let request_headers = [
-        { name = "Authorization"; value = "Bearer " # api_key},
-        { name = "User-Agent"; value = "gamebloc_canister" },
-        { name= "Content-Type"; value = "application/json" },
-        // { name = "x-api-key"; value = "" },
-    ];
-    Debug.print("Loading......." # url);
 
-    let http_request : HTTP.HttpRequestArgs = {
-        url = url;
-        max_response_bytes = null; //optional for request
-        headers = request_headers;
-        body = null; //optional styll
-        method = #get;
-        transform = ?transform_context;
+    public func send_http_get_request(url_ : Text, player_tag : Text) : async Text {
+
+        let ic : HTTP.IC = actor ("aaaa-aa");
+
+        // let host : Text = "";
+        let url = "https://api.clashroyale.com/v1/players/" # player_tag;
+        let api_key = "ey-xxx";
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
+        // let idempotency_key: Text = generateUUID();
+        let request_headers = [
+            { name = "Authorization"; value = "Bearer " # api_key },
+            { name = "User-Agent"; value = "gamebloc_canister" },
+            { name = "Content-Type"; value = "application/json" },
+            // { name = "x-api-key"; value = "" },
+        ];
+        Debug.print("Loading......." # url);
+
+        let http_request : HTTP.HttpRequestArgs = {
+            url = url;
+            max_response_bytes = null; //optional for request
+            headers = request_headers;
+            body = null; //optional styll
+            method = #get;
+            transform = ?transform_context
+        };
+
+        Cycles.add(230_850_258_000);
+
+        let http_response : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let response_body : Blob = Blob.fromArray(http_response.body);
+        let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
+            case (null) { "No value returned" };
+            case (?y) { y }
+        };
+
+        //6. RETURN RESPONSE OF THE BODY
+        let result : Text = decoded_text # ". See more info of the request sent at: " # url # "/inspect";
+        return result
     };
-
-    Cycles.add(230_850_258_000);
-
-    let http_response : HTTP.HttpResponsePayload = await ic.http_request(http_request);
-
-    let response_body: Blob = Blob.fromArray(http_response.body);
-    let decoded_text: Text = switch (Text.decodeUtf8(response_body)) {
-        case (null) { "No value returned" };
-        case (?y) { y };
-    };
-
-    //6. RETURN RESPONSE OF THE BODY
-    let result: Text = decoded_text # ". See more info of the request sent at: " # url # "/inspect";
-    return result;
-  };
-
 
     // public func start_tournament(id : Text) : (){
 
@@ -993,6 +996,131 @@ shared ({ caller }) actor class Kitchen() {
 
     public query func get_total_number_of_squads() : async Nat {
         SQUAD_STORE.size()
-    }
+    };
+
+    
+
+    let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
+
+    type GroupChatMessage = {
+        name : Text;
+        message : Text;
+        isTyping : Bool
+    };
+
+    type AppMessage = {
+        #GroupMessage : GroupChatMessage;
+        #JoinedChat : Text
+    };
+
+    /// A custom function to send the message to the client
+    public func send_app_message(client_principal : IcWebSocketCdk.ClientPrincipal, msg : AppMessage) : async () {
+        switch (msg) {
+            case (#JoinedChat(message)) {
+                Debug.print("Sending message: " # debug_show (message));
+
+                // here we call the send from the CDK!!
+                switch (await IcWebSocketCdk.send(ws_state, client_principal, to_candid (msg))) {
+                    case (#Err(err)) {
+                        Debug.print("Could not send message:" # debug_show (#Err(err)))
+                    };
+                    case (_) {}
+                }
+            };
+            case (#GroupMessage(message)) {
+                switch (await IcWebSocketCdk.send(ws_state, client_principal, to_candid (msg))) {
+                    case (#Err(err)) {
+                        Debug.print("Could not send message:" # debug_show (#Err(err)))
+                    };
+                    case (_) {}
+                }
+            }
+        }
+    };
+
+    func on_open(args : IcWebSocketCdk.OnOpenCallbackArgs) : async () {
+        connected_clients.add(args.client_principal)
+    };
+
+    func on_message(args : IcWebSocketCdk.OnMessageCallbackArgs) : async () {
+        let app_msg : ?AppMessage = from_candid (args.message);
+        switch (app_msg) {
+            case (?msg) {
+                switch (msg) {
+                    case (#JoinedChat(message)) {
+                        let clients_to_send = Buffer.toArray<IcWebSocketCdk.ClientPrincipal>(connected_clients);
+
+                        for (client in clients_to_send.vals()) {
+                            await send_app_message(client, #JoinedChat(message))
+                        }
+                    };
+                    case (#GroupMessage(message)) {
+                        let clients_to_send = Buffer.toArray<IcWebSocketCdk.ClientPrincipal>(connected_clients);
+
+                        for (client in clients_to_send.vals()) {
+                            await send_app_message(client, #GroupMessage(message))
+                        }
+                    }
+                };
+
+            };
+            case (null) {
+                Debug.print("Could not deserialize message");
+                return
+            }
+        }
+    };
+
+    func on_close(args : IcWebSocketCdk.OnCloseCallbackArgs) : async () {
+        Debug.print("Client " # debug_show (args.client_principal) # " disconnected");
+
+        /// On close event we remove the client from the list of client
+        let index = Buffer.indexOf<IcWebSocketCdk.ClientPrincipal>(args.client_principal, connected_clients, Principal.equal);
+        switch (index) {
+            case (null) {
+                // Do nothing
+            };
+            case (?index) {
+                // remove the client at the given even
+                ignore connected_clients.remove(index)
+            }
+        }
+    };
+
+    // Returns an array of the the clients connect to the canister
+    public shared query func getAllConnectedClients() : async [IcWebSocketCdk.ClientPrincipal] {
+        return Buffer.toArray<IcWebSocketCdk.ClientPrincipal>(connected_clients)
+    };
+
+    let params = IcWebSocketCdkTypes.WsInitParams(null, null);
+    let ws_state = IcWebSocketCdkState.IcWebSocketState(params);
+
+    let handlers = IcWebSocketCdkTypes.WsHandlers(
+        ?on_open,
+        ?on_message,
+        ?on_close,
+    );
+
+    let ws = IcWebSocketCdk.IcWebSocket(ws_state, params, handlers);
+
+    // method called by the WS Gateway after receiving FirstMessage from the client
+    public shared ({ caller }) func ws_open(args : IcWebSocketCdk.CanisterWsOpenArguments) : async IcWebSocketCdk.CanisterWsOpenResult {
+        await ws.ws_open(caller, args)
+    };
+
+    // method called by the Ws Gateway when closing the IcWebSocket connection
+    public shared ({ caller }) func ws_close(args : IcWebSocketCdk.CanisterWsCloseArguments) : async IcWebSocketCdk.CanisterWsCloseResult {
+        await ws.ws_close(caller, args)
+    };
+
+    // method called by the frontend SDK to send a message to the canister
+    public shared ({ caller }) func ws_message(args : IcWebSocketCdk.CanisterWsMessageArguments, msg_type : ?AppMessage) : async IcWebSocketCdk.CanisterWsMessageResult {
+        await ws.ws_message(caller, args, msg_type)
+    };
+
+    // method called by the WS Gateway to get messages for all the clients it serves
+    public shared query ({ caller }) func ws_get_messages(args : IcWebSocketCdk.CanisterWsGetMessagesArguments) : async IcWebSocketCdk.CanisterWsGetMessagesResult {
+        ws.ws_get_messages(caller, args)
+    };
 
 }

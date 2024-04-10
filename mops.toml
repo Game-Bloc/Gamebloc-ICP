@@ -1,0 +1,13 @@
+[package]
+name = "websocket-motoko"
+version = "0.0.1"
+description = "IC WebSocket Motoko Impimentetion"
+repository = ""
+keywords = [ ]
+license = "MIT"
+
+[dependencies]
+base = "0.9.1"
+ic-websocket-cdk = "0.3.2"
+account-identifier = "1.0.2"
+account = "1.0.1"
