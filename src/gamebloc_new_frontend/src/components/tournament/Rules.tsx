@@ -5,12 +5,15 @@ import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { useParams } from "react-router-dom"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
+import { useAuth } from "../../Auth/use-auth-client"
+import LoginModal2 from "../Modals/LoginModal2"
 interface Props {
   data: any
 }
 
 const Rules = ({ data }: Props) => {
   const { id } = useParams()
+  const { isAuthenticated } = useAuth()
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
   const owner = useAppSelector((state) => state.userProfile.username)
@@ -18,6 +21,7 @@ const Rules = ({ data }: Props) => {
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_data = useAppSelector((state) => state.squad)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
 
   const override = {
     display: "block",
@@ -34,6 +38,9 @@ const Rules = ({ data }: Props) => {
       background: "#01070E",
       color: "#fff",
     })
+  }
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
   }
 
   const join = () => {
@@ -70,7 +77,7 @@ const Rules = ({ data }: Props) => {
           </button>
         ) : (
           <button
-            onClick={() => join()}
+            onClick={isAuthenticated ? () => join() : () => handleLoginModal()}
             className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
           >
             {isLoading ? (
@@ -88,6 +95,7 @@ const Rules = ({ data }: Props) => {
           </button>
         )}
       </div>
+      {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
     </div>
   )
 }

@@ -44,7 +44,11 @@ const Header = () => {
         { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
-    { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
+    {
+      name: "World Chat",
+      link: isAuthenticated ? "/world-chat" : "",
+      icon: HiChatBubbleOvalLeft,
+    },
   ]
 
   const handleLoginModal = () => {

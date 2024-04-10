@@ -11,22 +11,19 @@ import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import LoginModal from "../components/Modals/LoginModal"
 import WelcomeModal from "../components/Modals/WelcomeModal"
 import { useAuth } from "../Auth/use-auth-client"
 import { useNavigate } from "react-router-dom"
 import FallbackLoading from "../components/Modals/FallBackLoader"
+import { useFetchAllTournaments } from "../Functions/blochooks"
+import LoginModal2 from "../components/Modals/LoginModal2"
 
 const Dashboard = () => {
   const dispatch = useAppDispatch()
   const { isAuthenticated } = useAuth()
-  const {
-    getProfile,
-    isLoadingProfile,
-    getProfile2,
-    getFeedBacks,
-    getChatmessage,
-  } = useGameblocHooks()
+  const { getProfile, isLoadingProfile, getFeedBacks, getChatmessage } =
+    useGameblocHooks()
+  const { fetchAllTournaments } = useFetchAllTournaments()
   const navigate = useNavigate()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
@@ -94,11 +91,15 @@ const Dashboard = () => {
             tooltip="Feedback"
             style={{ right: 15, bottom: 15 }}
             icon={<VscFeedback className="text-black" />}
-            onClick={() => setOpenModal(!openModal)}
+            onClick={
+              isAuthenticated
+                ? () => setOpenModal(!openModal)
+                : () => handleLoginModal()
+            }
           />
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}
-        {openLoginModal && <LoginModal modal={handleLoginModal} />}
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
         {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )

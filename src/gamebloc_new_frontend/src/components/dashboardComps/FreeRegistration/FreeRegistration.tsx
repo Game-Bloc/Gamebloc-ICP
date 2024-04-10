@@ -18,9 +18,10 @@ import WelcomeModal from "../../../components/Modals/WelcomeModal"
 import LoginModal2 from "../../../components/Modals/LoginModal2"
 
 const FreeRegistration = () => {
-  const { isAuthenticated } = useAuth()
-  const tournament = useAppSelector((state) => state.tournamentData)
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const noTournamentData = sessionStorage.getItem("noTournament")
+  const tournament = useAppSelector((state) => state.tournamentData)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const tournamentPerPage: number = window.innerWidth >= 1200 ? 7 : 5
   const tournamentViewed: number = pageNumber * tournamentPerPage
@@ -66,7 +67,7 @@ const FreeRegistration = () => {
   } else {
     return (
       <div>
-        {nodata ? (
+        {nodata || noTournamentData === "true" ? (
           <div className="w-full flex flex-col justify-center mt-20 bg-[#040D17] p-8 items-center rounded-[1.5rem] h-[15rem]">
             <h2 className="font-valorant text-sm text-center sm:text-lg md:text-xl text-white">
               There is no active tournament yet !

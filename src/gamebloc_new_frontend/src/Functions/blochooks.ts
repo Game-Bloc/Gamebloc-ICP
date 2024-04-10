@@ -59,11 +59,13 @@ export const useFetchAllTournaments = () => {
           tourArray.push(tournamentData)
         }
         sessionStorage.setItem("tournament", JSON.stringify(tourArray))
+        sessionStorage.setItem("noTournament", "false")
         setIsLoading(false)
       } else {
         setNoData(true)
       }
     } catch (err) {
+      sessionStorage.setItem("noTournament", "true")
       console.log("Error:", err)
     } finally {
       setIsLoading(false)
@@ -118,11 +120,13 @@ export const useUpdateTournament = () => {
           tourArray.push(tournamentData)
         }
         sessionStorage.setItem("tournament", JSON.stringify(tourArray))
+        sessionStorage.setItem("noTournament", "false")
         setUpdating(false)
       } else {
         setNoData(true)
       }
     } catch (err) {
+      sessionStorage.setItem("noTournament", "true")
       console.log("Error:", err)
     } finally {
       setUpdating(false)

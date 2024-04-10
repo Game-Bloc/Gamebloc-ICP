@@ -8,6 +8,8 @@ import { useAppSelector } from "../../redux/hooks"
 import ChatCard1 from "./ChatCard1"
 import ChatCard2 from "./ChatCard2"
 import ClipLoader from "react-spinners/ClipLoader"
+import { useAuth } from "../../Auth/use-auth-client"
+import LoginModal2 from "../Modals/LoginModal2"
 
 interface Props {
   data: any
@@ -15,14 +17,15 @@ interface Props {
 
 const Chat = ({ data }: Props) => {
   const id = data.id_hash
+  const { isAuthenticated } = useAuth()
   const scrollContainerRef = useRef(null)
   const [time, setTime] = useState<string>("")
   const [message, setMessage] = useState<string>("")
-  // const [chatId, setChatId] = useState<string>("")
   const { sendTournamentMessage } = useGameblocHooks()
   const { updateMessages } = useGetTournamentMessages()
   const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
 
   // const generateULID = () => {
   //   const date = new Date()
@@ -44,6 +47,9 @@ const Chat = ({ data }: Props) => {
       minutes < 10 ? "0" : ""
     }${minutes} ${ampm}`
     return formattedTime
+  }
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
   }
 
   const onMessageChange = (e: any) => {
@@ -86,7 +92,7 @@ const Chat = ({ data }: Props) => {
         {/* <ChatCard2 /> */}
       </div>
       <div className="w-full mt-2 flex justify-center items-center">
-        <div className=" w-full justify-center items-center py-2 p-4 bg-[#fff]/10 rounded-full flex">
+        <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
           <textarea
             className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
             placeholder="Leave a comment"
@@ -99,14 +105,19 @@ const Chat = ({ data }: Props) => {
           <></>
         ) : (
           <IoSend
-            onClick={() => {
-              sendMessage()
-              setMessage("")
-            }}
+            onClick={
+              isAuthenticated
+                ? () => {
+                    sendMessage()
+                    setMessage("")
+                  }
+                : () => handleLoginModal()
+            }
             className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
           />
         )}
       </div>
+      {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
     </div>
   )
 }

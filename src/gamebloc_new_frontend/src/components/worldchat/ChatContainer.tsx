@@ -166,9 +166,9 @@ const ChatContainer = () => {
         ))}
       </div>
       <div className=" w-full mt-2 flex justify-end items-center">
-        <div className=" w-full justify-center items-center py-2 px-4 bg-[#fff]/10 rounded-full flex">
+        <div className=" w-full justify-center items-center  px-4 bg-[#fff]/10 rounded-full flex">
           <textarea
-            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+            className="border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
             placeholder="Leave a comment"
             rows={1}
             value={message}

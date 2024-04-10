@@ -181,6 +181,11 @@ export const useAuthClient = (options = defaultOptions) => {
           identity,
         },
       })
+      console.log("Actor", actor)
+      setWhoamiActor(actor)
+      setWhoamiActor2(actor2)
+      setLedgerAcor(actor3)
+      setIndexAcor(actor4)
 
       const _ws = new IcWebSocket(
         network === "local" ? localGatewayUrl : gatewayUrl,
@@ -203,10 +208,6 @@ export const useAuthClient = (options = defaultOptions) => {
       }
 
       setWs(_ws)
-      setWhoamiActor(actor)
-      setWhoamiActor2(actor2)
-      setLedgerAcor(actor3)
-      setIndexAcor(actor4)
     } catch (err) {
       console.log("Error on auth:", err)
     }
