@@ -415,9 +415,9 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Number of Participant
                       </p>
-                      <div className=" my-4 items-center pr-8 h-[2.15rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
+                          className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                           placeholder="Participants"
                           type="text"
                           onChange={onUserChange}
@@ -452,9 +452,9 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Tournament Title
                       </p>
-                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder="Tournament Title"
                           type="text"
                           onChange={onTitleChange}
@@ -579,9 +579,9 @@ const CreateTournament = () => {
                           ? " Pool Price in $"
                           : " Entry Price in $"}
                       </p>
-                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder={
                             tourType === "Prepaid"
                               ? " Pool Price ($)"
@@ -619,9 +619,9 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Tournament Description and Rules
                       </p>
-                      <div className=" my-4 items-center pt-4 pl-4 border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pl-2  border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <textarea
-                          className="r border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          className="pl-0 border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder="Enter Description"
                           rows={4}
                           value={tournamentRules}

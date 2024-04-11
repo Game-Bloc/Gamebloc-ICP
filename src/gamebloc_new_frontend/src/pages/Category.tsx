@@ -19,24 +19,24 @@ const Category = () => {
       title: "Call of Duty Mobile",
       hash: "L48D:--.~JV=?7NHxtWZ0RofE3WU",
     },
-    {
-      img: loader1,
-      id: 2,
-      title: "Apex Legends Mobile",
-      hash: "L571TZ-Ux^xBTOR*RoaJt:T1W:R+",
-    },
-    {
-      img: loader2,
-      id: 3,
-      title: "Call of Duty Modern Warfare",
-      hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
-    },
-    {
-      img: loader3,
-      id: 4,
-      title: "Valorant",
-      hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
-    },
+    // {
+    //   img: loader1,
+    //   id: 2,
+    //   title: "Apex Legends Mobile",
+    //   hash: "L571TZ-Ux^xBTOR*RoaJt:T1W:R+",
+    // },
+    // {
+    //   img: loader2,
+    //   id: 3,
+    //   title: "Call of Duty Modern Warfare",
+    //   hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
+    // },
+    // {
+    //   img: loader3,
+    //   id: 4,
+    //   title: "Valorant",
+    //   hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
+    // },
   ]
 
   return (

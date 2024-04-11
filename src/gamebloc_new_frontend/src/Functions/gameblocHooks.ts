@@ -25,7 +25,6 @@ import {
   addTransactions,
   clearTransaction,
 } from "../redux/slice/transactionSlice"
-import axios from "axios"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -114,39 +113,24 @@ export const useGameblocHooks = () => {
     )
     const getPricePromise: any = (await response).json()
     if (getPricePromise) {
-      getPricePromise
-        .then((data: any) => {
-          const usdValue: number = data["internet-computer"]["usd"]
-          const Icp: any = {
-            currentICPrice: Number(usdValue),
-          }
-          dispatch(updateICP(Icp))
-          sessionStorage.setItem("_icp2usd", `${usdValue}`)
-          console.log(`The current price of ICP is $${usdValue}`)
-        })
-        .catch((error) => {
-          console.error("Error fetching the price:", error)
-        })
+      try {
+        getPricePromise
+          .then((data: any) => {
+            const usdValue: number = data["internet-computer"]["usd"]
+            const Icp: any = {
+              currentICPrice: Number(usdValue),
+            }
+            dispatch(updateICP(Icp))
+            sessionStorage.setItem("_icp2usd", `${usdValue}`)
+            console.log(`The current price of ICP is $${usdValue}`)
+          })
+          .catch((error) => {
+            console.error("Error fetching the price:", error)
+          })
+      } catch (err) {
+        console.error("Error fetching the price:", err)
+      }
     }
-  }
-  const fetchIcpPrice = async () => {
-    return axios
-      .get("https://free.currconv.com/api/v7/convert", {
-        params: {
-          q: "ICP_USD",
-          compact: "ultra",
-          apiKey: "a1c06be0f451ca5a99d4",
-        },
-      })
-      .then((resp) => {
-        const _icp2usd = Number(resp.data.ICP_USD)
-        console.log("1 ICP => USD", _icp2usd)
-        return _icp2usd
-      })
-      .catch((err) => {
-        console.log(err)
-        // return _icp2usd
-      })
   }
 
   const getProfile = async () => {
@@ -669,6 +653,5 @@ export const useGameblocHooks = () => {
     sendChatMessage,
     getChatmessage,
     updateChatmessage,
-    fetchIcpPrice,
   }
 }
