@@ -10,6 +10,8 @@ import { useUpdateAllSquad } from "../../Functions/blochooks"
 import FallbackLoading from "../Modals/FallBackLoader"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
+import { useAuth } from "../../Auth/use-auth-client"
+import LoginModal2 from "../Modals/LoginModal2"
 interface Props {
   data: any
 }
@@ -17,6 +19,7 @@ interface Props {
 const TournamentInfo = ({ data }: Props) => {
   const { id } = useParams()
   const [count, setCount] = useState(0)
+  const { isAuthenticated } = useAuth()
   const MySwal = withReactContent(Swal)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
@@ -27,6 +30,7 @@ const TournamentInfo = ({ data }: Props) => {
   const squad_data = useAppSelector((state) => state.squad)
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
 
   const override = {
     display: "block",
@@ -43,6 +47,9 @@ const TournamentInfo = ({ data }: Props) => {
       background: "#01070E",
       color: "#fff",
     })
+  }
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
   }
 
   function convertToMilliseconds(inputDateString: string) {
@@ -130,7 +137,7 @@ const TournamentInfo = ({ data }: Props) => {
   } else {
     return (
       <div>
-        <div className="flex flex-col mx-4 h-[27rem] max-h-[50rem]  overflow-x-hidden overflow-y-scroll">
+        <div className="flex flex-col sm:mx-4 h-[27rem] max-h-[50rem]  overflow-x-hidden overflow-y-scroll">
           <div className="mt-8 w-full p-4 ">
             <div className="flex flex-col">
               <div className="flex gap-4 xl:gap-8">
@@ -328,7 +335,9 @@ const TournamentInfo = ({ data }: Props) => {
             </button>
           ) : (
             <button
-              onClick={() => join()}
+              onClick={
+                isAuthenticated ? () => join() : () => handleLoginModal()
+              }
               className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
             >
               {isLoading ? (
@@ -346,6 +355,7 @@ const TournamentInfo = ({ data }: Props) => {
             </button>
           )}
         </div>
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
       </div>
     )
   }

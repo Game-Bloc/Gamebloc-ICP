@@ -25,7 +25,7 @@ import {
   addTransactions,
   clearTransaction,
 } from "../redux/slice/transactionSlice"
-const moment = require("moment")
+import axios from "axios"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -89,6 +89,10 @@ export const useGameblocHooks = () => {
       if (user) {
         popUp(successMsg, route)
         setIsLoading(false)
+        if (window.location.pathname === "/dashboard") {
+          window.location.reload()
+        }
+        localStorage.setItem("userState", "true")
         // console.log("Account Created")
       } else {
         setIsLoading(false)
@@ -117,12 +121,32 @@ export const useGameblocHooks = () => {
             currentICPrice: Number(usdValue),
           }
           dispatch(updateICP(Icp))
+          sessionStorage.setItem("_icp2usd", `${usdValue}`)
           console.log(`The current price of ICP is $${usdValue}`)
         })
         .catch((error) => {
           console.error("Error fetching the price:", error)
         })
     }
+  }
+  const fetchIcpPrice = async () => {
+    return axios
+      .get("https://free.currconv.com/api/v7/convert", {
+        params: {
+          q: "ICP_USD",
+          compact: "ultra",
+          apiKey: "a1c06be0f451ca5a99d4",
+        },
+      })
+      .then((resp) => {
+        const _icp2usd = Number(resp.data.ICP_USD)
+        console.log("1 ICP => USD", _icp2usd)
+        return _icp2usd
+      })
+      .catch((err) => {
+        console.log(err)
+        // return _icp2usd
+      })
   }
 
   const getProfile = async () => {
@@ -149,11 +173,13 @@ export const useGameblocHooks = () => {
         }
         dispatch(updateUserProfile(profileData))
         sessionStorage.setItem("accountId", user.account_id)
+        localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
         console.log("No account created yet")
       }
     } catch (err) {
+      localStorage.setItem("userSession", "false")
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -643,5 +669,6 @@ export const useGameblocHooks = () => {
     sendChatMessage,
     getChatmessage,
     updateChatmessage,
+    fetchIcpPrice,
   }
 }

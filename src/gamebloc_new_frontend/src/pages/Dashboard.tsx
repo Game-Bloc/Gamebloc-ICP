@@ -11,73 +11,104 @@ import { ConfigProvider, FloatButton, theme } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import {
-  useFetchAllTournaments,
-  useUpdateTournament,
-} from "../Functions/blochooks"
+import WelcomeModal from "../components/Modals/WelcomeModal"
+import { useAuth } from "../Auth/use-auth-client"
+import { useNavigate } from "react-router-dom"
+import FallbackLoading from "../components/Modals/FallBackLoader"
+import { useFetchAllTournaments } from "../Functions/blochooks"
+import LoginModal2 from "../components/Modals/LoginModal2"
 
 const Dashboard = () => {
   const dispatch = useAppDispatch()
-  const tournament = useAppSelector((state) => state.tournamentData)
-  const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
-  const { updateTournament, updating } = useUpdateTournament()
+  const { isAuthenticated } = useAuth()
   const {
     getProfile,
     isLoadingProfile,
-    getProfile2,
     getFeedBacks,
     getChatmessage,
+    getICPrice,
   } = useGameblocHooks()
-
+  const { fetchAllTournaments } = useFetchAllTournaments()
+  const navigate = useNavigate()
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
+  const userSession = localStorage.getItem("userSession")
 
   useEffect(() => {
-    getProfile()
-    getFeedBacks()
-    getChatmessage(20)
-  }, [])
+    getICPrice()
+    if (isAuthenticated) {
+      getProfile()
+      getFeedBacks()
+      getChatmessage(20)
+      if (userSession === "true") {
+        setAccountModal(false)
+      } else {
+        setAccountModal(true)
+      }
+    }
+  }, [isAuthenticated, userSession])
 
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
   const handleModal = () => {
     setOpenModal(!openModal)
   }
-
-  return (
-    <div className="">
-      <section className="flex gap-6">
-        <Header />
-        <Sidebar />
-        <div className="flex flex-col w-full ">
-          <div className="m-4 mt-24 ">
-            <h2 className="text-base text-white sm:text-lg my-4">
-              Featured and Hot
-            </h2>
-            <Carousel />
-            {/* <Recommended /> */}
-            <FreeRegistration />
-            <GameblocTournaments loading={isLoadingProfile} />
+  if (isLoadingProfile) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <FallbackLoading />
+      </div>
+    )
+  } else {
+    return (
+      <div className="">
+        <section className="flex gap-6">
+          <Header />
+          <Sidebar />
+          <div className="flex flex-col w-full ">
+            <div className="m-4 mt-24 ">
+              <h2 className="text-base text-white sm:text-lg my-4">
+                Featured and Hot
+              </h2>
+              <Carousel />
+              {/* <Recommended /> */}
+              <FreeRegistration />
+              <GameblocTournaments loading={isLoadingProfile} />
+            </div>
           </div>
-        </div>
-      </section>
-      <ConfigProvider
-        theme={{
-          algorithm: theme.darkAlgorithm,
-          token: {
-            colorPrimary: "#F6B8FC",
-          },
-        }}
-      >
-        <FloatButton
-          shape="circle"
-          type="primary"
-          tooltip="Feedback"
-          style={{ right: 15, bottom: 15 }}
-          icon={<VscFeedback className="text-black" />}
-          onClick={() => setOpenModal(!openModal)}
-        />
-      </ConfigProvider>
-      {openModal && <FeedbackModal modal={handleModal} />}
-    </div>
-  )
+        </section>
+        <ConfigProvider
+          theme={{
+            algorithm: theme.darkAlgorithm,
+            token: {
+              colorPrimary: "#F6B8FC",
+            },
+          }}
+        >
+          <FloatButton
+            shape="circle"
+            type="primary"
+            tooltip="Feedback"
+            style={{ right: 15, bottom: 15 }}
+            icon={<VscFeedback className="text-black" />}
+            onClick={
+              isAuthenticated
+                ? () => setOpenModal(!openModal)
+                : () => handleLoginModal()
+            }
+          />
+        </ConfigProvider>
+        {openModal && <FeedbackModal modal={handleModal} />}
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
+      </div>
+    )
+  }
 }
 
 export default Dashboard

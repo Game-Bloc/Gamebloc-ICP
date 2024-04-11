@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import FallbackLoading from "./components/Modals/FallBackLoader";
+import React, { useEffect, useState } from "react"
+import { Outlet, useNavigate } from "react-router-dom"
+import FallbackLoading from "./components/Modals/FallBackLoader"
 
 interface Prop {
-  userAuthState: boolean;
+  userAuthState: boolean
 }
 
 const Redirect = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const timeOut = setInterval(() => {
-      setLoading(false);
-    }, 3000);
-    return () => clearTimeout(timeOut);
-  }, []);
+      setLoading(false)
+    }, 3000)
+    return () => clearTimeout(timeOut)
+  }, [])
 
   const handleLogin = () => {
-    navigate("/");
-  };
+    navigate("/")
+  }
 
   return (
     <div>
@@ -70,11 +70,11 @@ const Redirect = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 const ProtectedRoutes = ({ userAuthState }: Prop) => {
-  return userAuthState ? <Outlet /> : <Redirect />;
-};
+  return <Outlet />
+}
 
-export default ProtectedRoutes;
+export default ProtectedRoutes

@@ -5,11 +5,13 @@ import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
+import { useAuth } from "../../Auth/use-auth-client"
 
 const Sidebar = () => {
+  const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [open, setOpen] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
-  const navigate = useNavigate()
 
   const menus = [
     { name: "Overview", link: "/dashboard", icon: MdDashboard },
@@ -22,7 +24,11 @@ const Sidebar = () => {
         { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
-    { name: "World Chat", link: "/world-chat", icon: HiChatBubbleOvalLeft },
+    {
+      name: "World Chat",
+      link: isAuthenticated ? "/world-chat" : "",
+      icon: HiChatBubbleOvalLeft,
+    },
   ]
 
   return (

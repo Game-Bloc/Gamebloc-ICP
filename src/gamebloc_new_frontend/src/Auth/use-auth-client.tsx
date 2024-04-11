@@ -28,6 +28,7 @@ import {
   canisterId as indexId,
   createActor as createIndexActor,
 } from "../../../declarations/icp_index"
+import { useNavigate } from "react-router-dom"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
@@ -108,6 +109,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [authClient, setAuthClient] = useState(null)
   const [identity, setIdentity] = useState(null)
   const [principal, setPrincipal] = useState(null)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [ws, setWs] = useState<IcWebSocket<_SERVICE, AppMessage> | null>(null)
   const [whoamiActor, setWhoamiActor] = useState<ActorSubclass<_SERVICE>>()
@@ -127,6 +129,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginOptions,
       onSuccess: () => {
         updateClient(authClient)
+        navigate("/dashboard")
       },
     })
   }
@@ -136,6 +139,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginNFID,
       onSuccess: () => {
         updateClient(authClient)
+        navigate("/dashboard")
       },
     })
   }
@@ -177,6 +181,11 @@ export const useAuthClient = (options = defaultOptions) => {
           identity,
         },
       })
+      console.log("Actor", actor)
+      setWhoamiActor(actor)
+      setWhoamiActor2(actor2)
+      setLedgerAcor(actor3)
+      setIndexAcor(actor4)
 
       const _ws = new IcWebSocket(
         network === "local" ? localGatewayUrl : gatewayUrl,
@@ -199,10 +208,6 @@ export const useAuthClient = (options = defaultOptions) => {
       }
 
       setWs(_ws)
-      setWhoamiActor(actor)
-      setWhoamiActor2(actor2)
-      setLedgerAcor(actor3)
-      setIndexAcor(actor4)
     } catch (err) {
       console.log("Error on auth:", err)
     }
@@ -211,6 +216,7 @@ export const useAuthClient = (options = defaultOptions) => {
   async function logout() {
     await authClient?.logout()
     await updateClient(authClient)
+    localStorage.setItem("userState", "false")
   }
 
   return {

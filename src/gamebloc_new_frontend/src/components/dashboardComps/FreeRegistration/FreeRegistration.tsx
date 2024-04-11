@@ -12,23 +12,40 @@ import {
 } from "../../../Functions/blochooks"
 import { useAppSelector } from "../../../redux/hooks"
 import FallbackLoading from "../../../components/Modals/FallBackLoader"
+import { useAuth } from "../../../Auth/use-auth-client"
+import LoginModal from "../../../components/Modals/LoginModal"
+import WelcomeModal from "../../../components/Modals/WelcomeModal"
+import LoginModal2 from "../../../components/Modals/LoginModal2"
 
 const FreeRegistration = () => {
-  const tournament = useAppSelector((state) => state.tournamentData)
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  const noTournamentData = sessionStorage.getItem("noTournament")
+  const tournament = useAppSelector((state) => state.tournamentData)
   const [pageNumber, setPageNumber] = useState<number>(0)
   const tournamentPerPage: number = window.innerWidth >= 1200 ? 7 : 5
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
   const { updateTournament, updating } = useUpdateTournament()
+  const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
-    if (tournament.length > 0) {
+    if (tournament.length > 0 || null || undefined) {
       updateTournament()
+    } else if (!isAuthenticated) {
+      fetchAllTournaments()
     } else {
       fetchAllTournaments()
     }
   }, [])
+
+  const handleLoginModal = () => {
+    setOpenLoginModal(!openLoginModal)
+  }
+  const handleAccModal = () => {
+    setAccountModal(!accountModal)
+  }
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
   const changePage = ({ selected }: any) => {
@@ -50,7 +67,7 @@ const FreeRegistration = () => {
   } else {
     return (
       <div>
-        {nodata ? (
+        {nodata || noTournamentData === "true" ? (
           <div className="w-full flex flex-col justify-center mt-20 bg-[#040D17] p-8 items-center rounded-[1.5rem] h-[15rem]">
             <h2 className="font-valorant text-sm text-center sm:text-lg md:text-xl text-white">
               There is no active tournament yet !
@@ -61,7 +78,11 @@ const FreeRegistration = () => {
             </p>
 
             <button
-              onClick={() => navigate("/game-category")}
+              onClick={
+                !isAuthenticated
+                  ? () => handleLoginModal()
+                  : () => navigate("/game-category")
+              }
               className="glowing-btn w-[10rem] text-[.8rem] md:text-base md:w-[15rem]"
             >
               <span className="glowing-txt text-[.8rem] md:text-base">
@@ -113,6 +134,8 @@ const FreeRegistration = () => {
             </div>
           </div>
         )}
+        {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )
   }
