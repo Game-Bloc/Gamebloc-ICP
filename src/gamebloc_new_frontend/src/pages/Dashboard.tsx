@@ -21,8 +21,13 @@ import LoginModal2 from "../components/Modals/LoginModal2"
 const Dashboard = () => {
   const dispatch = useAppDispatch()
   const { isAuthenticated } = useAuth()
-  const { getProfile, isLoadingProfile, getFeedBacks, getChatmessage } =
-    useGameblocHooks()
+  const {
+    getProfile,
+    isLoadingProfile,
+    getFeedBacks,
+    getChatmessage,
+    getICPrice,
+  } = useGameblocHooks()
   const { fetchAllTournaments } = useFetchAllTournaments()
   const navigate = useNavigate()
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -31,7 +36,7 @@ const Dashboard = () => {
   const userSession = localStorage.getItem("userSession")
 
   useEffect(() => {
-    const userState = localStorage.getItem("userState")
+    getICPrice()
     if (isAuthenticated) {
       getProfile()
       getFeedBacks()

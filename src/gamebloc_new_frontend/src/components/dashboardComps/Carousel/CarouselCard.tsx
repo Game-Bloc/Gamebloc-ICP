@@ -9,6 +9,7 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
+  const _icp2Usd = sessionStorage.getItem("_icp2usd")
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
               </p>
               <div className="flex flex-row justify-center items-center">
                 <p className="sm:font-[500] ml-1  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  17
+                  5
                 </p>
                 <img
                   src={`Icp.svg`}
@@ -50,7 +51,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                $200
+                ${Number(+_icp2Usd) * 5}
               </p>
             </div>
             <div className=" flex ml-4 flex-col">
