@@ -51,7 +51,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                ${Number(+_icp2Usd) * 5}
+                ${(Number(+_icp2Usd) * 5).toFixed(2)}
               </p>
             </div>
             <div className=" flex ml-4 flex-col">

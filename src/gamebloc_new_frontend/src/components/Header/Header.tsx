@@ -34,9 +34,15 @@ const Header = () => {
   }, [username])
 
   const menus = [
-    { name: "Overview", link: "/dashboard", icon: MdDashboard },
+    {
+      name: "Overview",
+      action: () => {},
+      link: "/dashboard",
+      icon: MdDashboard,
+    },
     {
       name: "Tournament",
+      action: () => setOpenSubMenu(!openSubMenu),
       link: "",
       icon: MdVideogameAsset,
       subMenu: [
@@ -46,6 +52,7 @@ const Header = () => {
     },
     {
       name: "World Chat",
+      action: () => {},
       link: isAuthenticated ? "/world-chat" : "",
       icon: HiChatBubbleOvalLeft,
     },
@@ -145,7 +152,7 @@ const Header = () => {
             </div>
             <div className="relative flex flex-col gap-4 ml-[2rem]  mt-8">
               {menus.map((value, index) => (
-                <div key={index}>
+                <div onClick={value.action} key={index}>
                   <NavLink
                     key={index}
                     to={value.link}
