@@ -25,6 +25,7 @@ import {
   addTransactions,
   clearTransaction,
 } from "../redux/slice/transactionSlice"
+import axios from "axios"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -108,29 +109,42 @@ export const useGameblocHooks = () => {
   }
 
   const getICPrice = async () => {
-    const response = fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
-    )
-    const getPricePromise: any = (await response).json()
-    if (getPricePromise) {
-      try {
-        getPricePromise
-          .then((data: any) => {
-            const usdValue: number = data["internet-computer"]["usd"]
-            const Icp: any = {
-              currentICPrice: Number(usdValue),
-            }
-            dispatch(updateICP(Icp))
-            sessionStorage.setItem("_icp2usd", `${usdValue}`)
-            console.log(`The current price of ICP is $${usdValue}`)
-          })
-          .catch((error) => {
-            console.error("Error fetching the price:", error)
-          })
-      } catch (err) {
-        console.error("Error fetching the price:", err)
+    try {
+      const response = await axios.get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
+      )
+
+      // Extract the price from the response data
+      const price = response.data["internet-computer"].usd
+      const Icp: any = {
+        currentICPrice: Number(price),
       }
+      // Set the ICP price in state
+      dispatch(updateICP(Icp))
+      sessionStorage.setItem("_icp2usd", `${price}`)
+      console.log(`The current price of ICP is $${price}`)
+    } catch (error) {
+      console.error("Error fetching ICP price:", error)
     }
+
+    // const response = fetch(
+    //   "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
+    // )
+    // const getPricePromise: any = (await response).json()
+
+    // getPricePromise
+    //   .then((data: any) => {
+    //     const usdValue: number = data["internet-computer"]["usd"]
+    //     const Icp: any = {
+    //       currentICPrice: Number(usdValue),
+    //     }
+    //     dispatch(updateICP(Icp))
+    //     sessionStorage.setItem("_icp2usd", `${usdValue}`)
+    //     console.log(`The current price of ICP is $${usdValue}`)
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching the price:", error)
+    //   })
   }
 
   const getProfile = async () => {
