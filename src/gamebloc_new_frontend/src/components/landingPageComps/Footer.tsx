@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <Element name="social" id="social">
       <div className="w-full  bg-primary-second ">
-        <div className="flex bg-primary-second flex-col lg:flex-row  justify-between items-center  lg:mt-4 sm:py-[3rem] p-[1.5rem]  sm:p-[3rem]">
+        {/* <div className="flex bg-primary-second flex-col lg:flex-row  justify-between items-center  lg:mt-4 sm:py-[3rem] p-[1.5rem]  sm:p-[3rem]">
           <div className="flex flex-col lg:-mt-[2.5rem] ">
             <p className="text-base m-0">Subscribe to our E-mail newsletter</p>
             <div className="flex flex-row items-center">
@@ -81,8 +81,8 @@ const Footer = () => {
         </div>
         <div className="mx-[1.5rem] sm:mx-[3rem]">
           <div className="  border border-solid border-[#2E3438]/40 w-full" />
-        </div>
-        <div className="mt-3 mx-[1.5rem] sm:mx-[3rem] pb-[4rem]  flex justify-between items-center">
+        </div> */}
+        <div className="mt-3 mx-[1.5rem] sm:mx-[3rem] py-[1rem]  flex justify-between items-center">
           <div className="relative">
             <img
               src={`gamelogo2.svg`}
@@ -92,7 +92,7 @@ const Footer = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <img
+            {/* <img
               src={`mail.svg`}
               className="cursor-pointer w-[1.5rem] md:w-[2.5rem]"
               alt=""
@@ -101,17 +101,21 @@ const Footer = () => {
               src={`facebook.svg`}
               className="cursor-pointer w-[1.5rem] md:w-[2.5rem]"
               alt=""
-            />
-            <img
-              src={`twitter.svg`}
-              className="cursor-pointer w-[1.5rem] md:w-[2.5rem]"
-              alt=""
-            />
-            <img
-              src={`insta.svg`}
-              className="cursor-pointer w-[1.5rem]  md:w-[2.5rem]"
-              alt=""
-            />
+            /> */}
+            <a href="https://twitter.com/game_bloc">
+              <img
+                src={`twitter.svg`}
+                className="cursor-pointer w-[1.5rem] md:w-[2.5rem]"
+                alt=""
+              />
+            </a>
+            <a href="https://www.instagram.com/game_bloc">
+              <img
+                src={`insta.svg`}
+                className="cursor-pointer w-[1.5rem]  md:w-[2.5rem]"
+                alt=""
+              />
+            </a>
           </div>
         </div>
       </div>
