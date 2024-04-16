@@ -7,13 +7,12 @@ import { FiSearch } from "react-icons/fi"
 import { IoMdAdd } from "react-icons/io"
 
 interface DataType {
-  key: React.Key
-  username: any
-  type: any
-  game: any
-  players: any
-  prize: any
-  date: any
+  id: React.Key
+  creator: string
+  name: string
+  funding: string
+  game_mode: string
+  players: number
 }
 
 const OngoingTable = () => {
@@ -23,24 +22,22 @@ const OngoingTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   //   const dataState = useAppSelector((state) => state.tournamentData);
   //   console.log("dataState", dataState);
-  const [data, setData] = useState<DataType[]>([
+  const [data, setData] = useState<any[]>([
     {
-      key: 1,
-      username: "Deonorla",
-      type: "CrowdFunded",
-      game: "Call of Duty",
-      players: 34,
-      prize: "$2",
-      date: "20.Feb.2024",
+      id: "#23232",
+      creator: "Deonorla",
+      name: "The Clash of the greatest",
+      funding: "Crowdfunded",
+      game_mode: "Solo",
+      players: 100,
     },
     {
-      key: 2,
-      username: "DFinisher",
-      type: "CrowdFunded",
-      game: "Spider",
-      players: 94,
-      prize: "$5",
-      date: "2.Feb.2024",
+      id: "#32232",
+      creator: "Gamebloc",
+      name: "The Revenge",
+      funding: "Prepaid",
+      game_mode: "Squad",
+      players: 95,
     },
   ])
 
@@ -63,52 +60,40 @@ const OngoingTable = () => {
     setOpenModal(false)
   }
 
-  const columns: TableColumnsType<DataType> = [
+  const columns = [
     {
-      title: "Tournament Title",
-      dataIndex: "username",
-      key: "username",
-      render: (text, record) => (
-        <div key={record.key} className="flex items-center">
-          <img src={`avatar.svg`} className="w-[3rem] m-0 h-[3rem]" alt="" />
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+      // render: (text, record) => (
+      //   <div key={record.id} className="flex items-center">
+      //     <img src={`avatar.svg`} className="w-[3rem] m-0 h-[3rem]" alt="" />
 
-          <div className="ml-[.5rem] flex flex-col">
-            <p className="text-[.8rem] font-semibold ">{record.game}</p>
-            <p className=" text-[.7rem]">{record.username}</p>
-          </div>
-        </div>
-      ),
+      //     <div className="ml-[.5rem] flex flex-col">
+      //       <p className="text-[.8rem] font-semibold ">{record.game}</p>
+      //       <p className=" text-[.7rem]">{record.username}</p>
+      //     </div>
+      //   </div>
+      // ),
     },
-    { title: "Type", dataIndex: "type", key: "type" },
-    { title: "Game", dataIndex: "game", key: "game" },
+    { title: "Creator", dataIndex: "creator", key: "creator" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Funding", dataIndex: "funding", key: "funding" },
+    { title: "Game_mode", dataIndex: "game_mode", key: "game_mode" },
     { title: "Players", dataIndex: "players", key: "players" },
-    { title: "Prize", dataIndex: "prize", key: "prize" },
-    { title: "Date", dataIndex: "date", key: "date" },
     {
-      title: ".",
+      title: "",
       key: "operation",
       render: (text, record) => (
-        <div key={record.key}>
-          <p
+        <div key={record.id} className="flex items-center">
+          <img
             onClick={() => {
               handleOpenModal(record)
             }}
-            className="hover:text-primary-second text-sm cursor-pointer text-white"
-          >
-            View
-          </p>
-          {/* {openModal && (
-            <NewModal
-              key={record.key}
-              modal={setOpenModal}
-              name={record.username}
-              gameName={record.game}
-              startDate={record.date}
-              entryPrize={record.prize}
-              gameType={record.type}
-              playersCount={record.players}
-            />
-          )} */}
+            src={`view.png`}
+            alt=""
+          />
+          <img src={`delete-red.png`} className="ml-3" alt="" />
         </div>
       ),
     },
@@ -119,7 +104,7 @@ const OngoingTable = () => {
   }
 
   const handleDelete = () => {
-    const newData = data.filter((item) => !selectedRowKeys.includes(item.key))
+    const newData = data.filter((item) => !selectedRowKeys.includes(item.id))
     setData(newData)
     setSelectedRowKeys([])
   }
@@ -132,6 +117,15 @@ const OngoingTable = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
+  }
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string },
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+
+  const onDropDownChange = (value: string) => {
+    setSearch(value)
   }
 
   // const data = dataState.map((item, index) => ({
@@ -157,6 +151,8 @@ const OngoingTable = () => {
               className="mr-[2rem]"
               placeholder="Game Type"
               optionFilterProp="children"
+              filterOption={filterOption}
+              onChange={onDropDownChange}
               options={[
                 {
                   value: "Prepaid",
@@ -175,9 +171,11 @@ const OngoingTable = () => {
             }}
           >
             <Select
+              filterOption={filterOption}
               className="mr-[2rem]"
               placeholder="Game Mode"
               optionFilterProp="children"
+              onChange={onDropDownChange}
               options={[
                 {
                   value: "Solo",
@@ -198,7 +196,6 @@ const OngoingTable = () => {
           <div className=" flex items-center bg-[#141414] rounded-[6px]  border-solid border-[1px] border-[#4f4f4f] hover:border-primary-second ">
             <FiSearch className="text-[#4f4f4f] ml-2" />
             <input
-              value={search}
               onChange={onSearchChange}
               className="bg-[#141414] ml-2 h-[2rem] rounded-[6px] placeholder:text-[#4f4f4f] placeholder:text-[.85rem] text-[.85rem]  focus:outline-none border-none focus:border-[transparent]  focus:ring-[transparent]"
               placeholder="search"
@@ -229,9 +226,10 @@ const OngoingTable = () => {
           rowClassName={() => "rowClassName1"}
           columns={columns}
           dataSource={dataSearch}
+          rowKey={"id"}
         />
       </ConfigProvider>
-      {selectedRow && (
+      {/* {selectedRow && (
         <NewModal
           modal={handleCloseModal}
           name={selectedRow.username}
@@ -241,7 +239,7 @@ const OngoingTable = () => {
           gameType={selectedRow.type}
           playersCount={selectedRow.players}
         />
-      )}
+      )} */}
     </div>
   )
 }
