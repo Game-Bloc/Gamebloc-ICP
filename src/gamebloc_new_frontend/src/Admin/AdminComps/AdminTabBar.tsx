@@ -1,7 +1,7 @@
 import React from "react"
 import { ConfigProvider, Tabs } from "antd"
 import type { TabsProps } from "antd"
-import OngoingTable from "./OngoingTable"
+import NewTournamentTable from "./NewTournamentTable"
 
 const AdminTabBar = () => {
   const onChange = (key: string) => {}
@@ -9,7 +9,7 @@ const AdminTabBar = () => {
     {
       key: "1",
       label: `New Tournaments`,
-      children: <OngoingTable />,
+      children: <NewTournamentTable />,
     },
     {
       key: "2",

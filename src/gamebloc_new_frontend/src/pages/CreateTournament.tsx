@@ -390,7 +390,7 @@ const CreateTournament = () => {
                         }}
                       >
                         <Select
-                          placeholder="Tournament Type"
+                          placeholder="Select game play mode"
                           optionFilterProp="children"
                           onChange={handleGameTYpe}
                           filterOption={filterOption}

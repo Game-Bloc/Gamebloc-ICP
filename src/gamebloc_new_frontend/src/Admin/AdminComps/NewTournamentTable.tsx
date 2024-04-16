@@ -15,7 +15,7 @@ interface DataType {
   players: number
 }
 
-const OngoingTable = () => {
+const NewTournamentTable = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [search, setSearch] = useState<string>("")
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
@@ -85,7 +85,7 @@ const OngoingTable = () => {
       title: "",
       key: "operation",
       render: (text, record) => (
-        <div key={record.id} className="flex items-center">
+        <div key={record.id} className="flex items-center cursor-pointer">
           <img
             onClick={() => {
               handleOpenModal(record)
@@ -93,7 +93,7 @@ const OngoingTable = () => {
             src={`view.png`}
             alt=""
           />
-          <img src={`delete-red.png`} className="ml-3" alt="" />
+          <img src={`delete-red.png`} className="ml-3 cursor-pointer" alt="" />
         </div>
       ),
     },
@@ -244,4 +244,4 @@ const OngoingTable = () => {
   )
 }
 
-export default OngoingTable
+export default NewTournamentTable

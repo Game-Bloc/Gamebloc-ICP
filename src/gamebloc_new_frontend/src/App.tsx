@@ -17,7 +17,7 @@ import WorldChat from "./pages/WorldChat"
 import AdminLogin from "./Admin/AdminLogin"
 import Prepaid from "./pages/Prepaid"
 import AdminTournamentView from "./Admin/AdminSections/AdminTournamentView"
-// import "@tremor/react/dist/esm/tremor.css"
+import AdminCreateTournamentModal from "./Admin/AdminModals/AdminCreateTournamentModal"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -47,6 +47,10 @@ const App = () => {
             <Route
               path="/admin-tournament-view"
               element={<AdminTournamentView />}
+            />
+            <Route
+              path="/createTour"
+              element={<AdminCreateTournamentModal />}
             />
           </Route>
         </Routes>
