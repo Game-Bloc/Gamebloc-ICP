@@ -3,7 +3,7 @@ import Dashboard from "./pages/Dashboard"
 import { Routes, Route } from "react-router-dom"
 import CreateTournament from "./pages/CreateTournament"
 import LandingPage from "./pages/LandingPage"
-import Admin from "./Admin/AdminSections/Admin"
+import Admin from "./Admin/AdminPages/Admin"
 import { useAppSelector } from "./redux/hooks"
 import { useAuth } from "./Auth/use-auth-client"
 import ProtectedRoutes from "./ProtectedRoutes"
@@ -14,10 +14,11 @@ import Category from "./pages/Category"
 import TournamentDetails from "./pages/TournamentDetails"
 import AdminProtectedRoute from "./AdminProtectedRoute"
 import WorldChat from "./pages/WorldChat"
-import AdminLogin from "./Admin/AdminLogin"
+import AdminLogin from "./Admin/AdminPages/AdminLogin"
 import Prepaid from "./pages/Prepaid"
-import AdminTournamentView from "./Admin/AdminSections/AdminTournamentView"
+import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminCreateTournamentModal from "./Admin/AdminModals/AdminCreateTournamentModal"
+import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -50,7 +51,7 @@ const App = () => {
             />
             <Route
               path="/createTour"
-              element={<AdminCreateTournamentModal />}
+              element={<AdminViewTournamentDetails />}
             />
           </Route>
         </Routes>

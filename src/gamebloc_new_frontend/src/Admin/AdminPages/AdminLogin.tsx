@@ -4,9 +4,9 @@ import ClipLoader from "react-spinners/ClipLoader"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
-import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import { updateAuth } from "../redux/slice/authClient"
-import { useGameblocHooks } from "../Functions/gameblocHooks"
+import { useAppDispatch, useAppSelector } from "../../redux/hooks"
+import { updateAuth } from "../../redux/slice/authClient"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
 
 const override = {
   display: "block",

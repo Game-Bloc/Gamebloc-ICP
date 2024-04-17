@@ -14,10 +14,12 @@ import { useAuth } from "../../Auth/use-auth-client"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 import LoginModal2 from "../Modals/LoginModal2"
 import WelcomeModal from "../Modals/WelcomeModal"
+import SignOutModal from "../Modals/SignOutModal"
 
 const Header = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
@@ -63,6 +65,13 @@ const Header = () => {
   }
   const handleAccModal = () => {
     setAccountModal(!accountModal)
+  }
+  const handleSignOutModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const signOut = () => {
+    signOut()
   }
 
   return (
@@ -126,7 +135,7 @@ const Header = () => {
                     </p>
                   </div>
                   <div
-                    onClick={() => logout()}
+                    onClick={() => setOpenModal(true)}
                     className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
                   >
                     <PiSignOutThin className=" text-white" />
@@ -200,6 +209,9 @@ const Header = () => {
       )}
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
       {accountModal && <WelcomeModal modal={handleAccModal} />}
+      {openModal && (
+        <SignOutModal modal={handleSignOutModal} handleSignOut={signOut} />
+      )}
     </div>
   )
 }

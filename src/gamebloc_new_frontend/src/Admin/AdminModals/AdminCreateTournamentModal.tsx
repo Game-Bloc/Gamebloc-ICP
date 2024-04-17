@@ -276,6 +276,30 @@ const AdminCreateTournamentModal = () => {
                       </div>
                     </div>
 
+                    <div className="flex-col flex mt-4 ">
+                      <p className="text-sm sm:text-[.85rem] mt-[.8rem] font-normal text-white">
+                        Tournament Description and Rules
+                      </p>
+                      <div className=" my-4 items-center pl-2  border-[#595959] bg-[#141414] border-solid border rounded-[6px] hover:border-primary-second flex">
+                        <textarea
+                          className="pl-0 border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                          placeholder="Enter tournament description and Guidelines."
+                          rows={4}
+                          // value={tournamentRules}
+                          // onChange={onRuleChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="flex w-full justify-end items-center mt-8">
+                      <div className=" flex justify-between items-center">
+                        <p className="text-[#303B9C]/90 hover:text-[#303B9C]  py-2 px-[.9rem] text-[0.85rem] border border-solid border-[#303B9C] sm:text-sm cursor-pointer">
+                          Cancel
+                        </p>
+                        <button className=" ml-8   py-2 px-3  text-sm text-white justify-center hover:bg-[#303B9C]   flex bg-[#303B9C]/90 items-center cursor-pointer ">
+                          <p className="font-normal">Create Tournament</p>
+                        </button>
+                      </div>
+                    </div>
                     {/* END OF LINE */}
                   </div>
                 </div>

@@ -229,17 +229,17 @@ const NewTournamentTable = () => {
           rowKey={"id"}
         />
       </ConfigProvider>
-      {/* {selectedRow && (
+      {selectedRow && (
         <NewModal
           modal={handleCloseModal}
-          name={selectedRow.username}
-          gameName={selectedRow.game}
-          startDate={selectedRow.date}
-          entryPrize={selectedRow.prize}
-          gameType={selectedRow.type}
+          name={selectedRow.creator}
+          gameName={selectedRow.name}
+          startDate={selectedRow.funding}
+          entryPrize={selectedRow.players}
+          gameType={selectedRow.game_mode}
           playersCount={selectedRow.players}
         />
-      )} */}
+      )}
     </div>
   )
 }
