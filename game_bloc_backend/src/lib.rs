@@ -71,6 +71,7 @@ thread_local! {
     static SQUAD_STORE: RefCell<SquadStore> = RefCell::default();
 }
 
+//User struct crud functions
 #[query(name = "getSelf")]
 fn get_self(principal: Principal) -> UserProfile {
     // let id = ic_cdk::api::caller();
@@ -129,6 +130,7 @@ fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> 
     Ok(1)
 }
 
+//Tournament crud
 #[query]
 fn get_tournament(id: String) -> TournamentAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -225,6 +227,350 @@ fn join_tournament_with_squad(squad_id: String, id: String) {
     });
 }
 
+
+//Lobby (or sub tournament) CRUD
+#[query]
+fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.clone().lobbies.unwrap()[lobby_id as usize].clone()
+    })
+}
+
+#[query]
+fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.clone().lobbies.unwrap().iter().for_each(|lobby| {
+            all_lobbies.push(lobby.clone())
+        });
+        all_lobbies
+    })
+}
+
+#[query]
+fn count_tournament_lobbies(tournament_id: String,) -> u128 {
+    let mut all_lobbies:Vec<LobbyAccount> = Vec::new();
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.clone().lobbies.unwrap().iter().for_each(|lobby| {
+            all_lobbies.push(lobby.clone())
+        });
+        all_lobbies.len()
+    })  as u128
+}
+
+#[update]
+fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.status = match tournament.status {
+            TournamentStatus::AcceptingPlayers => TournamentStatus::GameInProgress,
+            _ => {
+                TournamentStatus::GameInProgress
+            }
+        };
+
+        // Matching arms for
+        // structuring the tournament into lobbies
+        match tournament.game_type {
+            GameType::Single =>{
+                let mut count = tournament.user.len() % 100;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: Vec::new(),
+                            messages: Some(Vec::new()),
+                            participants: tournament.user[..=100].to_owned(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Duo =>{
+                let mut count = tournament.squad.len() % 50;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: tournament.squad[..=50].to_owned(),
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Squad =>{
+                let mut count = tournament.squad.len() % 25;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: tournament.squad[..=25].to_owned(),
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::TeamvTeam =>{
+                tournament.clone().lobbies.unwrap().push(
+                    LobbyAccount{
+                        status: TournamentStatus::GameInProgress,
+                        lobby_status: LobbyStatus::readyToStart,
+                        idx: 0,
+                        starting_date: None,
+                        lobby_rules: tournament.tournament_rules.clone(),
+                        tournament_type: tournament.tournament_type.clone(),
+                        game: tournament.game.clone(),
+                        squads: tournament.squad.clone(),
+                        messages: Some(Vec::new()),
+                        participants: Vec::new(),
+                        winers: Vec::new(),
+                        no_of_winners: None,
+                        no_of_participants: tournament.no_of_participants.clone(),
+                        game_type: tournament.game_type.clone(),
+                        name: Some(tournament.title.clone()),
+                    })
+            },
+        }
+        tournament_store.borrow_mut().insert(tournament_id, tournament);
+    });
+    Ok(1)
+}
+
+#[update]
+fn structure_tournament_into_lobbies(tournament_id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.status = match tournament.status {
+            TournamentStatus::AcceptingPlayers => TournamentStatus::GameInProgress,
+            _ => {
+                TournamentStatus::GameInProgress
+            }
+        };
+
+        // Matching arms for
+        // structuring the tournament into lobbies
+        match tournament.game_type {
+            GameType::Single =>{
+                let mut count = tournament.user.len() % 100;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: Vec::new(),
+                            messages: Some(Vec::new()),
+                            participants: tournament.user[..=100].to_owned(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Duo =>{
+                let mut count = tournament.squad.len() % 50;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: tournament.squad[..=50].to_owned(),
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Squad =>{
+                let mut count = tournament.squad.len() % 25;
+                loop {
+                    tournament.clone().lobbies.unwrap().push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            lobby_status: LobbyStatus::readyToStart,
+                            idx: count as u8,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules.clone(),
+                            tournament_type: tournament.tournament_type.clone(),
+                            game: tournament.game.clone(),
+                            squads: tournament.squad[..=25].to_owned(),
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type.clone(),
+                            name: Some(tournament.title.clone()),
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::TeamvTeam =>{
+                tournament.clone().lobbies.unwrap().push(
+                    LobbyAccount{
+                        status: TournamentStatus::GameInProgress.clone(),
+                        lobby_status: LobbyStatus::readyToStart.clone(),
+                        idx: 0,
+                        starting_date: None,
+                        lobby_rules: tournament.tournament_rules.clone(),
+                        tournament_type: tournament.tournament_type.clone(),
+                        game: tournament.game.clone(),
+                        squads: tournament.squad.clone(),
+                        messages: Some(Vec::new()),
+                        participants: Vec::new(),
+                        winers: Vec::new(),
+                        no_of_winners: None,
+                        no_of_participants: tournament.no_of_participants.clone(),
+                        game_type: tournament.game_type.clone(),
+                        name: Some(tournament.title.clone()),
+                    })
+            },
+        }
+        tournament_store.borrow_mut().insert(tournament_id, tournament.clone());
+    });
+}
+
+#[update]
+fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_points: Vec<(String, u128)>, principal: Principal, lobby_id: u8) {
+    if get_self(principal).is_mod {
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+            let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+            tournament.clone().lobbies.unwrap()[lobby_id.clone() as usize].lobby_status = match tournament.clone().lobbies.unwrap()[lobby_id as usize].lobby_status {
+                LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
+                _ => LobbyStatus::GameCompleted,
+            };
+             squad_id_and_points.sort_by_key(|k| k.1);
+            tournament.squad_points = Some(squad_id_and_points);
+
+            tournament_store.borrow_mut().insert(tournament_id, tournament);
+        })
+    } else {
+        println!("you're not admin");
+    }
+}
+#[update]
+fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_points: Vec<(String, u128)>, principal: Principal, lobby_id: u8) {
+    if get_self(principal).is_mod {
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+            let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+            tournament.clone().lobbies.unwrap()[lobby_id.clone() as usize].lobby_status = match tournament.clone().lobbies.unwrap()[lobby_id as usize].lobby_status {
+                LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
+                _ => LobbyStatus::GameCompleted,
+            };
+           user_id_and_points.sort_by_key(|k| k.1);
+            tournament.points = Some(user_id_and_points);
+
+            tournament_store.borrow_mut().insert(tournament_id, tournament);
+        })
+    } else {
+        println!("you're not admin");
+    }
+}
+
+// #[update]
+// fn structure_tournament_into_duo_lobbies(name: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         tournament.user.push(name);
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
+//
+// #[update]
+// fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         SQUAD_STORE.with(|squad_store| {
+//             let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+//             tournament.squad.push(squad);
+//         });
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
+
+
+//setting mods and managing admins
 #[update]
 fn set_mod(name: String, identity: Principal) {
     ID_STORE.with(|id_store| {
