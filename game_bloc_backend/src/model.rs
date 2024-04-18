@@ -143,7 +143,7 @@ pub struct LobbyAccount {
     pub winers: Vec<String>,
     pub no_of_winners: Option<u8>,
     pub no_of_participants: u128,
-    pub game_type: String,
+    pub game_type: GameType,
     pub name: Option<String>,
 }
 
