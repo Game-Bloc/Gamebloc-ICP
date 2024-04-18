@@ -71,6 +71,7 @@ thread_local! {
     static SQUAD_STORE: RefCell<SquadStore> = RefCell::default();
 }
 
+//User struct crud functions
 #[query(name = "getSelf")]
 fn get_self(principal: Principal) -> UserProfile {
     // let id = ic_cdk::api::caller();
@@ -129,6 +130,7 @@ fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> 
     Ok(1)
 }
 
+//Tournament crud
 #[query]
 fn get_tournament(id: String) -> TournamentAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -225,6 +227,344 @@ fn join_tournament_with_squad(squad_id: String, id: String) {
     });
 }
 
+
+//Lobby (or sub tournament) CRUD
+#[query]
+fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.lobbies[lobby_id]
+    })
+}
+
+#[query]
+fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
+    let mut all_lobbies = Vec::new();
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.lobbies.iter().for_each(|lobby| {
+            all_lobbies.push((lobby))
+        });
+        all_lobbies
+    })
+}
+
+#[query]
+fn count_tournament_lobbies(tournament_id: String,) -> u128 {
+    let mut all_lobbies = Vec::new();
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.lobbies.iter().for_each(|lobby| {
+            all_lobbies.push((lobby))
+        });
+        all_lobbies.len()
+    })  as u128
+}
+
+#[update]
+fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.status = match tournament.status {
+            TournamentStatus::AcceptingPlayers => TournamentStatus::GameInProgress,
+            _ => {
+                TournamentStatus::GameInProgress
+            }
+        };
+
+        // Matching arms for
+        // structuring the tournament into lobbies
+        match tournament.game_type {
+            GameType::Single =>{
+                let count = tournament.user.len() % 100;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: Vec::new(),
+                            messages: Some(Vec::new()),
+                            participants: tournament.user[..=100],
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Duo =>{
+                let count = tournament.squad.len() % 50;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: tournament.squad[..=50],
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Squad =>{
+                let count = tournament.squad.len() % 25;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: tournament.squad[..=25],
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::TeamvTeam =>{
+                tournament.lobbies.push(
+                    LobbyAccount{
+                        status: TournamentStatus::GameInProgress,
+                        idx: count,
+                        starting_date: None,
+                        lobby_rules: tournament.tournament_rules,
+                        tournament_type: tournament.tournament_type,
+                        game: tournament.game,
+                        squads: tournament.squad,
+                        messages: Some(Vec::new()),
+                        participants: Vec::new(),
+                        winers: Vec::new(),
+                        no_of_winners: None,
+                        no_of_participants: tournament.no_of_participants,
+                        game_type: tournament.game_type,
+                        name: tournament.title,
+                    })
+            },
+        }
+        tournament_store.borrow_mut().insert(tournament_id, tournament);
+    });
+    Ok(1)
+}
+
+#[update]
+fn structure_tournament_into_lobbies(tournament_id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+        tournament.status = match tournament.status {
+            TournamentStatus::AcceptingPlayers => TournamentStatus::GameInProgress,
+            _ => {
+                TournamentStatus::GameInProgress
+            }
+        };
+
+        // Matching arms for
+        // structuring the tournament into lobbies
+        match tournament.game_type {
+            GameType::Single =>{
+                let count = tournament.user.len() % 100;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: Vec::new(),
+                            messages: Some(Vec::new()),
+                            participants: tournament.user[..=100],
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Duo =>{
+                let count = tournament.squad.len() % 50;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: tournament.squad[..=50],
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::Squad =>{
+                let count = tournament.squad.len() % 25;
+                loop {
+                    tournament.lobbies.push(
+                        LobbyAccount{
+                            status: TournamentStatus::GameInProgress,
+                            idx: count,
+                            starting_date: None,
+                            lobby_rules: tournament.tournament_rules,
+                            tournament_type: tournament.tournament_type,
+                            game: tournament.game,
+                            squads: tournament.squad[..=25],
+                            messages: Some(Vec::new()),
+                            participants: Vec::new(),
+                            winers: Vec::new(),
+                            no_of_winners: None,
+                            no_of_participants: tournament.no_of_participants,
+                            game_type: tournament.game_type,
+                            name: tournament.title,
+                        }
+                    );
+                    count = count - 1;
+                    if count == 0 {
+                        break;
+                    }
+                }
+            },
+            GameType::TeamvTeam =>{
+                tournament.lobbies.push(
+                    LobbyAccount{
+                        status: TournamentStatus::GameInProgress,
+                        idx: count,
+                        starting_date: None,
+                        lobby_rules: tournament.tournament_rules,
+                        tournament_type: tournament.tournament_type,
+                        game: tournament.game,
+                        squads: tournament.squad,
+                        messages: Some(Vec::new()),
+                        participants: Vec::new(),
+                        winers: Vec::new(),
+                        no_of_winners: None,
+                        no_of_participants: tournament.no_of_participants,
+                        game_type: tournament.game_type,
+                        name: tournament.title,
+                    })
+            },
+        }
+        tournament_store.borrow_mut().insert(tournament_id, tournament);
+    });
+}
+
+#[update]
+fn assign_squad_points_and_end_lobby(tournament_id: String, squad_id_and_points: Vec<(String,u8)>, principal: Principal, lobby_id: String) {
+    if get_self(principal).is_mod {
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+            let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+            tournament.lobbies[lobby_id] = match tournament.lobbies[lobby_id].lobby_status {
+                LobbyStatus::GameInProgress => LobbyStatus::GameComplete,
+                _ => {}
+            };
+            let sorted_squad_id_and_points = squad_id_and_points.sort_by_key(|k| k.1);
+            tournament.squad_points = Some(sorted_squad_id_and_points);
+
+            tournament_store.borrow_mut().insert(tournament_id, tournament);
+        })
+    } else {
+        println!("you're not admin");
+    }
+}
+#[update]
+fn assign_solo_points_and_end_lobby(tournament_id: String, user_id_and_points: Vec<(String,u8)>, principal: Principal, lobby_id: String) {
+    if get_self(principal).is_mod {
+        TOURNAMENT_STORE.with(|tournament_store| {
+            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
+            let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+            tournament.lobbies[lobby_id] = match tournament.lobbies[lobby_id].lobby_status {
+                LobbyStatus::GameInProgress => LobbyStatus::GameComplete,
+                _ => {}
+            };
+            let sorted_user_id_and_points = user_id_and_points.sort_by_key(|k| k.1);
+            tournament.points = Some(sorted_user_id_and_points);
+
+            tournament_store.borrow_mut().insert(tournament_id, tournament);
+        })
+    } else {
+        println!("you're not admin");
+    }
+}
+
+// #[update]
+// fn structure_tournament_into_duo_lobbies(name: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         tournament.user.push(name);
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
+//
+// #[update]
+// fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         SQUAD_STORE.with(|squad_store| {
+//             let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+//             tournament.squad.push(squad);
+//         });
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
+
+
+//setting mods and managing admins
 #[update]
 fn set_mod(name: String, identity: Principal) {
     ID_STORE.with(|id_store| {

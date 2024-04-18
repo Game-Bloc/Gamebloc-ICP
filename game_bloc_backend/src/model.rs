@@ -64,6 +64,7 @@ pub struct UserProfile {
     pub status: Status,
     pub wins: u8,
     pub tournaments_created:u8,
+    pub points: Option<u128>,
     pub username: String,
     pub is_mod: bool,
     pub principal_id: String,
@@ -110,6 +111,8 @@ pub struct TournamentAccount {
     pub tournament_type: TournamentType,
     pub game: String,
     pub squad:Vec<Squad>,
+    pub squad_points: Option<Vec<(String,u128)>>,
+    pub squad_in_game_names:Option<Vec<(String, String)>>,
     pub messages: Option<Vec<Chat>>,
     pub user: Vec<String>,
     pub winers: Vec<String>,
@@ -117,9 +120,31 @@ pub struct TournamentAccount {
     pub total_prize: u128,
     pub no_of_winners: u8,
     pub no_of_participants: u128,
-    pub game_type: String,
+    pub game_type: GameType,
     pub end_date: String,
     pub title: String,
+    pub in_game_names: Option<Vec<(String,String)>>,
+    pub points: Option<Vec<(String,u128)>>,
+    pub lobbies: Option<Vec<LobbyAccount>>
+}
+
+#[derive(Clone,Debug, Default, CandidType, Deserialize, Serialize)]
+pub struct LobbyAccount {
+    pub status: TournamentStatus,
+    pub lobby_status: LobbyStatus,
+    pub idx: u8,
+    pub starting_date: Option<String>,
+    pub lobby_rules: String,
+    pub tournament_type: TournamentType,
+    pub game: String,
+    pub squads:Vec<Squad>,
+    pub messages: Option<Vec<Chat>>,
+    pub participants: Vec<String>,
+    pub winers: Vec<String>,
+    pub no_of_winners: Option<u8>,
+    pub no_of_participants: u128,
+    pub game_type: String,
+    pub name: Option<String>,
 }
 
 impl Storable for TournamentAccount {
@@ -153,10 +178,10 @@ pub enum Status {
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum GameType {
     #[default]
-    MP1v1,
-    BRsingle,
-    BRDuo,
-    BRsquad
+    TeamvTeam,
+    Single,
+    Duo,
+    Squad
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentStatus {
@@ -165,6 +190,14 @@ pub enum TournamentStatus {
     GameInProgress,
     GameCompleted,
     Archived,
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub enum LobbyStatus {
+    #[default]
+    readyToStart,
+    GameInProgress,
+    GameCompleted,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
@@ -196,6 +229,7 @@ pub struct Squad {
     pub tag: String,
     pub members: Vec<Member>,
     pub requests: Vec<String>,
+    pub points: Option<u128>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
