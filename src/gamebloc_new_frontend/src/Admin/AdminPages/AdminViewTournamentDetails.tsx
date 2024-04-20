@@ -8,6 +8,8 @@ import { FiSearch } from "react-icons/fi"
 import { IoGrid } from "react-icons/io5"
 import TournamentGridView from "../AdminComps/TournamentGridView"
 import TournamentListView from "../AdminComps/TournamentListView"
+import { useParams } from "react-router-dom"
+import AssignPointsModal from "../AdminModals/AssignPointsModal"
 
 interface DataType {
   position: React.Key
@@ -19,6 +21,7 @@ interface DataType {
 }
 
 const AdminViewTournamentDetails = () => {
+  const { id } = useParams()
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
@@ -69,6 +72,7 @@ const AdminViewTournamentDetails = () => {
     {
       title: "Position Points",
       dataIndex: "position_points",
+
       key: "position_points",
     },
     { title: "Kill Points", dataIndex: "kill_points", key: "kill_points" },

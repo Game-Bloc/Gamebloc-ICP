@@ -5,6 +5,8 @@ import NewModal from "../../components/Modals/Newmodal"
 import Search, { SearchProps } from "antd/es/input/Search"
 import { FiSearch } from "react-icons/fi"
 import { IoMdAdd } from "react-icons/io"
+import { useNavigate } from "react-router-dom"
+import AdminCreateTournamentModal from "../AdminModals/AdminCreateTournamentModal"
 
 interface DataType {
   id: React.Key
@@ -16,7 +18,8 @@ interface DataType {
 }
 
 const NewTournamentTable = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const navigate = useNavigate()
+  const [openTournamentModal, setOpeTournamentnModal] = useState<boolean>(false)
   const [search, setSearch] = useState<string>("")
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -24,7 +27,7 @@ const NewTournamentTable = () => {
   //   console.log("dataState", dataState);
   const [data, setData] = useState<any[]>([
     {
-      id: "#23232",
+      id: "23232",
       creator: "Deonorla",
       name: "The Clash of the greatest",
       funding: "Crowdfunded",
@@ -32,7 +35,7 @@ const NewTournamentTable = () => {
       players: 100,
     },
     {
-      id: "#32232",
+      id: "32232",
       creator: "Gamebloc",
       name: "The Revenge",
       funding: "Prepaid",
@@ -50,14 +53,8 @@ const NewTournamentTable = () => {
     )
   })
 
-  const handleOpenModal = (record: DataType) => {
-    setSelectedRow(record)
-    setOpenModal(true)
-  }
-
-  const handleCloseModal = () => {
-    setSelectedRow(null)
-    setOpenModal(false)
+  const handleTournamenteModal = () => {
+    setOpeTournamentnModal(!openTournamentModal)
   }
 
   const columns = [
@@ -87,9 +84,7 @@ const NewTournamentTable = () => {
       render: (text, record) => (
         <div key={record.id} className="flex items-center cursor-pointer">
           <img
-            onClick={() => {
-              handleOpenModal(record)
-            }}
+            onClick={() => navigate(`/admin-tournament-view/${record.id}`)}
             src={`view.png`}
             alt=""
           />
@@ -205,7 +200,12 @@ const NewTournamentTable = () => {
         <div className="flex justify-center items-center ">
           <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
             <IoMdAdd className="text-white text-[1.1rem] mr-5" />
-            <p className="text-[.85rem] text-white">New Tournament</p>
+            <p
+              onClick={handleTournamenteModal}
+              className="text-[.85rem] text-white"
+            >
+              New Tournament
+            </p>
           </button>
           <button
             onClick={handleDelete}
@@ -229,16 +229,8 @@ const NewTournamentTable = () => {
           rowKey={"id"}
         />
       </ConfigProvider>
-      {selectedRow && (
-        <NewModal
-          modal={handleCloseModal}
-          name={selectedRow.creator}
-          gameName={selectedRow.name}
-          startDate={selectedRow.funding}
-          entryPrize={selectedRow.players}
-          gameType={selectedRow.game_mode}
-          playersCount={selectedRow.players}
-        />
+      {openTournamentModal && (
+        <AdminCreateTournamentModal modal={handleTournamenteModal} />
       )}
     </div>
   )
