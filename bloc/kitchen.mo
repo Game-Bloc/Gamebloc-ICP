@@ -89,7 +89,7 @@ shared ({ caller }) actor class Kitchen() {
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal) {
         // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-        ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), ""))
+        ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", ?0))
     };
 
     // public func update_users() : async () {
@@ -524,7 +524,7 @@ shared ({ caller }) actor class Kitchen() {
         await getOwner()
     };
 
-    func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : Bloctypes.UserProfile {
+    func makeProfile(id_hash : Text,  age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?Nat) : Bloctypes.UserProfile {
         {
             id_hash;
             age;
@@ -537,17 +537,18 @@ shared ({ caller }) actor class Kitchen() {
             principal_id;
             account_id;
             canister_id;
-            squad_badge
+            squad_badge;
+            points
         }
     };
 
     public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge);
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0);
         await RustBloc.create_profile(profile, caller)
     };
 
     public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge);
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, ?0);
         try {
             await create_usertrack(caller);
             ProfileHashMap.put(caller, profile);
