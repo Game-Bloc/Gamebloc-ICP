@@ -23,6 +23,7 @@ import type { DatePickerProps } from "antd"
 import type { RangePickerProps } from "antd/es/date-picker"
 import ClipLoader from "react-spinners/ClipLoader"
 import { DotChartOutlined } from "@ant-design/icons"
+import { GameType } from "../../../declarations/kitchen/kitchen.did"
 const loader = require("../../assets/category1.svg").default
 const loader1 = require("../../assets/category2.svg").default
 const loader2 = require("../../assets/category3.svg").default
@@ -38,7 +39,7 @@ const CreateTournament = () => {
   const [entryPrice, setEntryPrize] = useState("")
   const [noOfUsers, setNoOfUsers] = useState<number>(0)
   const [tournamentType, setTournamentType] = useState<string>("")
-  const [gameType, setGameType] = useState<string>("")
+  const [gameType, setGameType] = useState<GameType>({ Single: null })
   const [variantType, setVariantType] = useState(null)
   const [gameName, setGameName] = useState<string>("")
   const [noOfWinners, setNoOfWinners] = useState<number>(0)
@@ -192,7 +193,13 @@ const CreateTournament = () => {
   }
 
   const handleGameTYpe = (value: string) => {
-    setGameType(value)
+    value === "MP/BR Single"
+      ? setGameType({ Single: null })
+      : value === "BR Duo"
+      ? setGameType({ Duo: null })
+      : value === "BR Squad"
+      ? setGameType({ Squad: null })
+      : setGameType({ Single: null })
   }
 
   const handleWinnersChange = (value: string) => {

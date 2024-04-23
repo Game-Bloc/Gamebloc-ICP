@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import withReactContent from "sweetalert2-react-content"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import AdminTabBar from "../AdminComps/AdminTabBar"
@@ -13,7 +13,8 @@ import AdminDonutChart from "../AdminComps/AdminDonutChart"
 const Admin = () => {
   const navigate = useNavigate()
   const MySwal = withReactContent(Swal)
-  const { isAdmin, isLoading } = useGameblocHooks()
+  const { isAdmin, isLoading, getPlayers } = useGameblocHooks()
+  const [totalUsers, setTotalUsers] = useState<String>("")
 
   useEffect(() => {
     const adminName = localStorage.getItem("Username")
@@ -26,6 +27,11 @@ const Admin = () => {
     console.log("is admin:", authState)
     if (!authState) {
       navigate("/admin-login")
+    }
+    if (authState) {
+      getPlayers()
+      const players = sessionStorage.getItem("players")
+      setTotalUsers(players)
     }
   }, [])
 
@@ -93,7 +99,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad4.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {totalUsers}
+                          </p>
                         </div>
                       </div>
                     </div>

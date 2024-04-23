@@ -9,6 +9,7 @@ export interface SquadState {
   tag: string
   members: string[]
   requests: string[]
+  points: []
 }
 
 const initialState: SquadState[] = []

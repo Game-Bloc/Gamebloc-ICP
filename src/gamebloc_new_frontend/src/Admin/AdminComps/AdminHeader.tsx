@@ -25,7 +25,7 @@ const AdminHeader = () => {
 
   useEffect(() => {
     getProfile().then(() => {
-      localStorage.setItem("Username", username)
+      sessionStorage.setItem("Username", username)
     })
   }, [username])
 

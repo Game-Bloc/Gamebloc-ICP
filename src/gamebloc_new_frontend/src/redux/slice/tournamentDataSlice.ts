@@ -22,6 +22,11 @@ export interface TournamentState {
   tournament_type: any
   users: any[]
   winners: any[]
+  squad_points: []
+  squad_in_game_names: []
+  in_game_names: []
+  points: []
+  lobbies: []
 }
 
 const initialState: TournamentState[] = []

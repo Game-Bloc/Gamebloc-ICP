@@ -126,25 +126,16 @@ export const useGameblocHooks = () => {
     } catch (error) {
       console.error("Error fetching ICP price:", error)
     }
+  }
 
-    // const response = fetch(
-    //   "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
-    // )
-    // const getPricePromise: any = (await response).json()
-
-    // getPricePromise
-    //   .then((data: any) => {
-    //     const usdValue: number = data["internet-computer"]["usd"]
-    //     const Icp: any = {
-    //       currentICPrice: Number(usdValue),
-    //     }
-    //     dispatch(updateICP(Icp))
-    //     sessionStorage.setItem("_icp2usd", `${usdValue}`)
-    //     console.log(`The current price of ICP is $${usdValue}`)
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching the price:", error)
-    //   })
+  const getPlayers = async () => {
+    try {
+      const player = await whoamiActor.count_all_users()
+      console.log(player)
+      sessionStorage.setItem("players", Number(player).toString())
+    } catch (err) {
+      console.log("Error getting no_of_players")
+    }
   }
 
   const getProfile = async () => {
@@ -211,14 +202,14 @@ export const useGameblocHooks = () => {
     entry_prize: number,
     no_of_winners: number,
     no_of_participants: bigint,
-    game_type: string,
+    game_type: any,
     end_date: string,
     title: string,
-    squad_points: any[],
-    squad_in_game_names: any[],
-    in_game_names: any[],
-    points: any[],
-    lobbies: any[],
+    squad_points: [],
+    squad_in_game_names: [],
+    in_game_names: [],
+    points: [],
+    lobbies: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -300,6 +291,7 @@ export const useGameblocHooks = () => {
     tag: string,
     principal: string,
     requests: string[],
+    points: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -320,6 +312,7 @@ export const useGameblocHooks = () => {
         name,
         captain,
         requests,
+        points,
       }
       const _squad = await whoamiActor.create_squad(squad)
       if (_squad) {
@@ -659,6 +652,7 @@ export const useGameblocHooks = () => {
     isAccount,
     fetching,
     isAdmin,
+    getPlayers,
     getTransactions,
     getICPrice,
     createAccount,

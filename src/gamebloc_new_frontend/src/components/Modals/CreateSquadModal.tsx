@@ -55,6 +55,7 @@ const CreateSquadModal = ({ modal }: Props) => {
       tagName,
       principal,
       [],
+      [],
       "Squad Created",
       "Error, try again",
       "/dashboard",

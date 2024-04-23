@@ -11,6 +11,8 @@ import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Chat from "../components/tournament/Chat"
 import { DotChartOutlined } from "@ant-design/icons"
+import { useUpdateTournament } from "../Functions/blochooks"
+import { LocalStorage } from "@dfinity/auth-client"
 const gameImage = require("../../assets/category1.svg").default
 
 const TournamentDetail = () => {
@@ -18,7 +20,8 @@ const TournamentDetail = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
-  const tournamentData = useAppSelector((state) => state.tournamentData)
+  const [tournamentData, setTournamentData] = useState<any[]>([])
+  const { updating, updateTournament } = useUpdateTournament()
 
   const items: TabsProps["items"] = [
     {
@@ -56,13 +59,11 @@ const TournamentDetail = () => {
   }
 
   useEffect(() => {
-    const timeOut = setInterval(() => {
-      setLoading(false)
-    }, 3000)
-    return () => clearTimeout(timeOut)
-  }, [])
-
-  useEffect(() => {
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setTournamentData(data)
+    }
     const img = new Image()
     img.onload = () => {
       setImageLoaded(true)
@@ -72,7 +73,7 @@ const TournamentDetail = () => {
 
   return (
     <div className="">
-      {loading ? (
+      {updating ? (
         <div className="w-full h-screen flex justify-center items-center">
           <FallbackLoading />
         </div>
