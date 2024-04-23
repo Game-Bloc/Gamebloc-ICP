@@ -60,6 +60,35 @@ const Admin = () => {
     }
   }, [])
 
+  const countGamemode = (tournament: any) => {
+    const gameMode = {
+      BattleRoyale: 0,
+      multiplayer: 0,
+    }
+
+    tournament.forEach((tour: any) => {
+      if (tour.game_type.Squad === null || tour.game_type.Duo === null) {
+        gameMode.BattleRoyale++
+      } else if (tour.game_type.Single === null) {
+        gameMode.multiplayer++
+      }
+    })
+
+    const result = [
+      {
+        name: "Battle Royale",
+        sales: gameMode.BattleRoyale,
+      },
+      {
+        name: "Multiplayer",
+        sales: gameMode.multiplayer,
+      },
+    ]
+    return result
+  }
+
+  const gameMode = countGamemode(tournament)
+
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -143,12 +172,12 @@ const Admin = () => {
                       Game Analysis
                     </h2>
                     <div className="flex gap-16">
-                      <AdminChart />
+                      <AdminChart tournament={tournament} />
                       <div className="bg-[#070C12] p-8 rounded-lg">
                         <p className="text-white/70 font-[Open Sans] mb-[2rem] text-[.8rem]">
                           Game Type
                         </p>
-                        <AdminDonutChart />
+                        <AdminDonutChart gameMode={gameMode} />
 
                         <div className=" mt-4 flex justify-between items-center">
                           <p className="text-white/50 font-[Open Sans] text-[.75rem]">
@@ -167,7 +196,7 @@ const Admin = () => {
                             </p>
                           </div>
                           <p className="text-white/70 font-[Open Sans] ml-2 text-[.75rem]">
-                            10
+                            {gameMode[0].sales}
                           </p>
                         </div>
                         <div className=" mt-2 flex justify-between items-center ">
@@ -178,7 +207,7 @@ const Admin = () => {
                             </p>
                           </div>
                           <p className="text-white/70 font-[Open Sans] ml-2 text-[.75rem]">
-                            5
+                            {gameMode[1].sales}
                           </p>
                         </div>
                       </div>
