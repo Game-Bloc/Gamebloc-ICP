@@ -9,12 +9,32 @@ import FallbackLoading from "../../components/Modals/FallBackLoader"
 import AdminHeader from "../AdminComps/AdminHeader"
 import AdminChart from "../AdminComps/AdminChart"
 import AdminDonutChart from "../AdminComps/AdminDonutChart"
+import {
+  useFetchAllTournaments,
+  useUpdateTournament,
+} from "../../Functions/blochooks"
+import { useAppSelector } from "../../redux/hooks"
 
 const Admin = () => {
   const navigate = useNavigate()
   const MySwal = withReactContent(Swal)
-  const { isAdmin, isLoading, getPlayers } = useGameblocHooks()
+  const { updateTournament } = useUpdateTournament()
+  const tournament = useAppSelector((state) => state.tournamentData)
+  const { fetchAllTournaments } = useFetchAllTournaments()
   const [totalUsers, setTotalUsers] = useState<String>("")
+  const { isAdmin, isLoading, getPlayers } = useGameblocHooks()
+  const ongoingTournnamentCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "GAMEINPROGRESS",
+  ).length
+  const newTournnamentCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS",
+  ).length
+  const completedTournnamentsCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED",
+  ).length
 
   useEffect(() => {
     const adminName = localStorage.getItem("Username")
@@ -29,6 +49,11 @@ const Admin = () => {
       navigate("/admin-login")
     }
     if (authState) {
+      if (tournament.length > 0 || null || undefined) {
+        updateTournament()
+      } else {
+        fetchAllTournaments()
+      }
       getPlayers()
       const players = sessionStorage.getItem("players")
       setTotalUsers(players)
@@ -66,7 +91,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad1.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {ongoingTournnamentCount}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -77,7 +104,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad2.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {completedTournnamentsCount}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -88,7 +117,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad3.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {newTournnamentCount}
+                          </p>
                         </div>
                       </div>
                     </div>
