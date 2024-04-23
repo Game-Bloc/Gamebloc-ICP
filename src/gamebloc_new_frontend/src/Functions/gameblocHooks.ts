@@ -214,6 +214,11 @@ export const useGameblocHooks = () => {
     game_type: string,
     end_date: string,
     title: string,
+    squad_points: any[],
+    squad_in_game_names: any[],
+    in_game_names: any[],
+    points: any[],
+    lobbies: any[],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -223,28 +228,33 @@ export const useGameblocHooks = () => {
       const creator_id: [string] = [owner_id]
 
       const tournamentData = {
-        idx,
         id_hash,
-        status: status,
         creator,
-        messages,
         creator_id,
+        status: status,
+        idx,
+        starting_date,
+        tournament_rules,
+        tournament_type: tournament_type,
         game,
         squad,
+        squad_points,
+        squad_in_game_names,
+        messages,
         user,
         winers,
-        total_prize,
-        tournament_rules,
-        starting_date,
-        tournament_type: tournament_type,
         entry_prize,
+        total_prize,
         no_of_winners,
         no_of_participants,
         game_type,
         end_date,
         title,
+        in_game_names,
+        points,
+        lobbies,
       }
-      const create = await whoamiActor.create_tournament(tournamentData)
+      const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {
         popUp(successMsg, route)
         setIsLoading(false)
