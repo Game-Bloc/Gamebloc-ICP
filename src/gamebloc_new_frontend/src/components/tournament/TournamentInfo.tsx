@@ -52,7 +52,7 @@ const TournamentInfo = ({ data }: Props) => {
     setOpenLoginModal(!openLoginModal)
   }
 
-  function convertToMilliseconds(inputDateString: string) {
+  const convertToMilliseconds = (inputDateString: String) => {
     const dateTimeMatch = inputDateString.match(
       /(\d{1,2}:\d{2}\s*[APMapm]+)\s*(\d{4}-\d{2}-\d{2})/,
     )
@@ -97,6 +97,59 @@ const TournamentInfo = ({ data }: Props) => {
     const timestampInMilliseconds = dateObject.getTime()
 
     return timestampInMilliseconds
+  }
+
+  const formatDate = (inputDate) => {
+    // Split the input string by space
+    var parts = inputDate.split(" ")
+
+    // Extract time
+    var time = parts[0]
+
+    // Extract am/pm
+    var ampm = parts[1]
+
+    // Extract date
+    var dateParts = parts[2].split("-")
+    var year = dateParts[0]
+    var month = parseInt(dateParts[1])
+    var day = parseInt(dateParts[2])
+
+    // Convert month to word
+    var months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ]
+    var monthWord = months[month - 1]
+
+    // Convert day to word
+    var days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ]
+    var dayOfWeek = new Date(year, month - 1, day).getDay()
+    var dayWord = days[dayOfWeek]
+
+    // Create the formatted string
+    var formattedDate =
+      time + " " + ampm + " " + dayWord + " " + monthWord + " " + year
+
+    return formattedDate
   }
 
   const join = () => {
@@ -271,7 +324,7 @@ const TournamentInfo = ({ data }: Props) => {
                           : "text-[.85rem]  text-primary-second "
                       }
                     >
-                      {data.starting_date}
+                      {formatDate(data.starting_date)}
                     </p>
                   </div>
                   <div className="flex justify-between mt-4 items-center w-full">
@@ -308,7 +361,7 @@ const TournamentInfo = ({ data }: Props) => {
                           : "text-[.85rem]  text-[#2E3438]"
                       }
                     >
-                      {data.starting_date}
+                      {formatDate(data.starting_date)}
                     </p>
                   </div>
                 </div>
