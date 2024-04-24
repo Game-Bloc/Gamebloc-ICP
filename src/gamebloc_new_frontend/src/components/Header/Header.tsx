@@ -23,7 +23,7 @@ const Header = () => {
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const [username, setUsername] = useState<String>("")
-  const initials = username!.substring(0, 2).toUpperCase()
+  const initials = username?.substring(0, 2).toUpperCase()
   const { isAuthenticated } = useAuth()
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)

@@ -162,6 +162,7 @@ export const useGameblocHooks = () => {
         }
         dispatch(updateUserProfile(profileData))
         sessionStorage.setItem("accountId", user.account_id)
+        sessionStorage.setItem("Username", user.username)
         localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)

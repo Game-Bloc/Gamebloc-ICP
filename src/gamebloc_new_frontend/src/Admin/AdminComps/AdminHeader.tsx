@@ -22,6 +22,7 @@ const AdminHeader = () => {
   const initials = username!.substring(0, 2).toUpperCase()
   const { getProfile } = useGameblocHooks()
   const { logout } = useAuth()
+  const tournamentName: String[] = ["Call of Duty: Mobile", "Jiangsu"]
 
   useEffect(() => {
     getProfile().then(() => {
@@ -70,14 +71,13 @@ const AdminHeader = () => {
           >
             <Select
               className="mr-[2rem]"
-              placeholder="Game"
+              defaultValue={tournamentName[0]}
+              style={{ width: 120 }}
               optionFilterProp="children"
-              options={[
-                {
-                  value: "Call of Duty: Mobile",
-                  label: "Call of Duty: Mobile",
-                },
-              ]}
+              options={tournamentName.map((name) => ({
+                value: name,
+                label: name,
+              }))}
             />
           </ConfigProvider>
           <div
