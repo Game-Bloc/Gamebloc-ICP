@@ -11,40 +11,18 @@ const SquadList = ({ data }: Props) => {
     <>
       <div className="flex flex-col ">
         <div className="w-full border border-primary-second border-solid my-3" />
-        <h2 className="text-white text-sm mb-2">
-          {data.name} [{data.tag}]
-        </h2>
-
-        <ConfigProvider
-          theme={{
-            algorithm: theme.darkAlgorithm,
-          }}
-        >
-          <Avatar.Group
-            maxCount={3}
-            maxPopoverTrigger="click"
-            size="small"
-            maxStyle={{
-              color: "#f56a00",
-              backgroundColor: "#fde3cf",
-              cursor: "pointer",
+        <div className="flex gap-4 items-center">
+          <ConfigProvider
+            theme={{
+              algorithm: theme.darkAlgorithm,
             }}
           >
-            {data.members.map((list: any) => (
-              <Tooltip
-                key={list.principal_id}
-                title={list.name}
-                placement="top"
-              >
-                <Avatar
-                  style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
-                >
-                  {list.name.substring(0, 2).toUpperCase()}
-                </Avatar>
-              </Tooltip>
-            ))}
-          </Avatar.Group>
-        </ConfigProvider>
+            <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
+              {data.substring(0, 2).toUpperCase()}
+            </Avatar>
+          </ConfigProvider>
+          <h2 className="text-white text-sm mb-2">{data}</h2>
+        </div>
       </div>
     </>
   )
