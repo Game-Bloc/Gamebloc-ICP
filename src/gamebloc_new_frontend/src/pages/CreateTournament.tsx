@@ -399,6 +399,12 @@ const CreateTournament = () => {
                       <ConfigProvider
                         theme={{
                           algorithm: theme.darkAlgorithm,
+                          token: {
+                            colorPrimaryActive: "#F6B8FC",
+                            colorPrimary: "#F6B8FC",
+                            colorPrimaryHover: "#F6B8FC",
+                            colorText: "#fff",
+                          },
                         }}
                       >
                         <Select
@@ -427,7 +433,7 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Number of Participant
                       </p>
-                      <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#141414] border-solid border hover:border-primary-second rounded-lg flex">
                         <input
                           className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                           placeholder="Participants"
@@ -464,7 +470,7 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Tournament Title
                       </p>
-                      <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#141414] hover:border-primary-second border-solid border rounded-lg flex">
                         <input
                           className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder="Tournament Title"
@@ -483,6 +489,12 @@ const CreateTournament = () => {
                         <ConfigProvider
                           theme={{
                             algorithm: theme.darkAlgorithm,
+                            token: {
+                              colorPrimaryActive: "#F6B8FC",
+                              colorPrimary: "#F6B8FC",
+                              colorPrimaryHover: "#F6B8FC",
+                              colorText: "#fff",
+                            },
                           }}
                         >
                           <Select
@@ -510,6 +522,12 @@ const CreateTournament = () => {
                         <ConfigProvider
                           theme={{
                             algorithm: theme.darkAlgorithm,
+                            token: {
+                              colorPrimaryActive: "#F6B8FC",
+                              colorPrimary: "#F6B8FC",
+                              colorPrimaryHover: "#F6B8FC",
+                              colorText: "#fff",
+                            },
                           }}
                         >
                           <Select
@@ -544,6 +562,12 @@ const CreateTournament = () => {
                         <ConfigProvider
                           theme={{
                             algorithm: theme.darkAlgorithm,
+                            token: {
+                              colorPrimaryActive: "#F6B8FC",
+                              colorPrimary: "#F6B8FC",
+                              colorPrimaryHover: "#F6B8FC",
+                              colorText: "#fff",
+                            },
                           }}
                         >
                           <TimePicker
@@ -560,6 +584,12 @@ const CreateTournament = () => {
                         <ConfigProvider
                           theme={{
                             algorithm: theme.darkAlgorithm,
+                            token: {
+                              colorPrimaryActive: "#F6B8FC",
+                              colorPrimary: "#F6B8FC",
+                              colorPrimaryHover: "#F6B8FC",
+                              colorText: "#fff",
+                            },
                           }}
                         >
                           <DatePicker
@@ -576,6 +606,12 @@ const CreateTournament = () => {
                       <ConfigProvider
                         theme={{
                           algorithm: theme.darkAlgorithm,
+                          token: {
+                            colorPrimaryActive: "#F6B8FC",
+                            colorPrimary: "#F6B8FC",
+                            colorPrimaryHover: "#F6B8FC",
+                            colorText: "#fff",
+                          },
                         }}
                       >
                         <DatePicker
@@ -591,7 +627,7 @@ const CreateTournament = () => {
                           ? " Pool Price in $"
                           : " Entry Price in $"}
                       </p>
-                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#141414] hover:border-primary-second border-solid border rounded-lg flex">
                         <input
                           className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder={
@@ -631,7 +667,7 @@ const CreateTournament = () => {
                       <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                         Tournament Description and Rules
                       </p>
-                      <div className=" my-4 items-center pl-2  border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                      <div className=" my-4 items-center pl-2 hover:border-primary-second border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
                         <textarea
                           className="pl-0 border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                           placeholder="Enter Description"
