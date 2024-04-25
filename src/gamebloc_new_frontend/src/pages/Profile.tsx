@@ -42,7 +42,7 @@ const override = {
 
 const Profile = () => {
   const navigate = useNavigate()
-  const { principal: pri_id } = useAuth()
+  const { isAuthenticated } = useAuth()
   const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
@@ -72,9 +72,9 @@ const Profile = () => {
     getProfile()
     getICPBalance()
     getTransactions(accountId)
-  }, [pri_id])
+  }, [isAuthenticated])
 
-  if (!pri_id || isLoadingProfile) {
+  if (!isAuthenticated || isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <FallbackLoading />
