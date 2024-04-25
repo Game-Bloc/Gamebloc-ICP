@@ -77,7 +77,7 @@ const Players = ({ data }: Props) => {
 
   return (
     <div className="">
-      <div className="flex flex-col mx-4 max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
+      <div className="flex flex-col mx-4 h-[25rem] max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
         {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE" ? (
           data.users.length === 0 ? (
             <div className="w-full flex justify-center mt-[3rem]">
@@ -90,8 +90,8 @@ const Players = ({ data }: Props) => {
             </div>
           ) : (
             <div>
-              {data.users.map((data) => (
-                <SquadList key={data.id_hash} data={data} />
+              {data.users.map((list, index) => (
+                <SquadList key={index} list={list} data={data} />
               ))}
             </div>
           )
@@ -106,8 +106,8 @@ const Players = ({ data }: Props) => {
           </div>
         ) : (
           <div>
-            {data.squad.map((data) => (
-              <SquadList key={data.id_hash} data={data} />
+            {data.squad.map((list) => (
+              <SquadList key={list.id_hash} list={list} data={data} />
             ))}
           </div>
         )}

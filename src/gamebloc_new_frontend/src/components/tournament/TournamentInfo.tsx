@@ -54,7 +54,7 @@ const TournamentInfo = ({ data }: Props) => {
 
   const squadCount = () => {
     let totalCount = 0
-    data.squad.forEach((player: any) => (totalCount += player.length))
+    data.squad.forEach((player: any) => (totalCount += player.members.length))
     return totalCount
   }
 

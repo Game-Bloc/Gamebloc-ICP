@@ -74,7 +74,7 @@ const Rules = ({ data }: Props) => {
 
   return (
     <div className="">
-      <div className="flex flex-col mx-4 max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
+      <div className="flex flex-col mx-4 max-h-[27rem] h-[25rem]  overflow-x-hidden overflow-y-scroll">
         <p className="text-white">{data.tournament_rules}</p>
       </div>
       <div className="flex flex-col w-full justify-center items-center">

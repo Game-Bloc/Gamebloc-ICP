@@ -241,7 +241,9 @@ const CreateTournament = () => {
       tournamentType.trim() === "" ||
       startingDate.trim() === "" ||
       title.trim() === "" ||
-      endDate.trim() === ""
+      endDate.trim() === "" ||
+      initialDate.trim() === "" ||
+      initialTime.trim() === ""
     ) {
       errorPopUp("Field Input is invalid !")
     } else {
