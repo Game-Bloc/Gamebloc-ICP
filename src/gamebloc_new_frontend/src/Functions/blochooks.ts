@@ -97,7 +97,7 @@ export const useUpdateTournament = () => {
       setUpdating(true)
       const update: any = await whoamiActor.get_all_tournament()
       if (update && update.length !== 0) {
-        // console.log("update function working")
+        console.log("update function working")
         const tourArray: any[] = []
         for (const data of update) {
           const tournamentData = {

@@ -23,7 +23,7 @@ const FreeRegistration = () => {
   const noTournamentData = sessionStorage.getItem("noTournament")
   const tournament = useAppSelector((state) => state.tournamentData)
   const [pageNumber, setPageNumber] = useState<number>(0)
-  const tournamentPerPage: number = window.innerWidth >= 1200 ? 7 : 5
+  const tournamentPerPage: number = window.innerWidth > 1440 ? 10 : 6
   const tournamentViewed: number = pageNumber * tournamentPerPage
   const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
   const { updateTournament, updating } = useUpdateTournament()
@@ -31,14 +31,12 @@ const FreeRegistration = () => {
   const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
-    if (tournament.length > 0 || null || undefined) {
+    if (isAuthenticated && tournament.length > 0) {
       updateTournament()
-    } else if (!isAuthenticated) {
-      fetchAllTournaments()
     } else {
       fetchAllTournaments()
     }
-  }, [])
+  }, [isAuthenticated])
 
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)

@@ -27,6 +27,8 @@ const squadSlice = createSlice({
       )
       if (existingSquadIndex !== -1) {
         state[existingSquadIndex] = payload
+      } else {
+        state.push(payload)
       }
     },
     clearSquad: () => {

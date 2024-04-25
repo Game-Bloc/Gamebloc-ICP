@@ -82,6 +82,7 @@ const CreateTournament = () => {
     setTournamentID(id)
     // console.log("ulid:", id)
   }
+  console.log("game name", game_name)
 
   useEffect(() => {
     generateULID()
@@ -300,7 +301,7 @@ const CreateTournament = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
+      <div className="w-full mt-8 h-screen flex justify-center items-center">
         <FallbackLoading />
       </div>
     )

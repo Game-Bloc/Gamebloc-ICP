@@ -51,19 +51,24 @@ const TournamentCard = ({ data, index }: Props) => {
             </p>
           </div>
           <div className="absolute cursor-pointer bg-primary-first h-fit bottom-2 ml-3  p-[.7rem] justify-between items-center  rounded-xl  flex w-[85%]">
-            <div className="flex flex-col justify-start items-start">
-              <p className=" w-full font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
-                {data.game}
-              </p>
-              <div className="flex mt-[6px] justify-center items-center flex-row">
+            <div className="flex flex-col  w-full ">
+              <div className="flex items-center flex-row">
                 <img
                   src={`check-yellow.png`}
                   alt=""
                   className=" w-[.5rem] flex h-[.5rem]  m-0"
                 />
 
-                <p className="ml-1 text-white text-[.6rem] ">{data.creator}</p>
+                <p className="ml-1 text-white text-[.65rem] font-bold">
+                  {data.creator}
+                </p>
               </div>
+              <p className=" w-full text-center mt-2 font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
+                {data.title}
+              </p>
+              <p className=" w-full text-center font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
+                {data.game}
+              </p>
             </div>
             {/* <img
           src={`right.svg`}
