@@ -207,22 +207,35 @@ fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
 }
 
 #[update]
-fn join_tournament(name: String, id: String) {
+fn join_tournament(name: String, id: String, ign: (String,String),) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         tournament.user.push(name);
+        if tournament.clone().in_game_names == None {
+            tournament.in_game_names = Some(vec![ign.clone()]);
+        }
+        else{
+            tournament.to_owned().in_game_names.expect("List of tournament in game names is empty").push(ign);
+        }
         tournament_store.borrow_mut().insert(id, tournament);
     });
 }
 
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String) {
+fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
             let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
             tournament.squad.push(squad);
         });
+        if tournament.clone().squad_in_game_names == None {
+            tournament.squad_in_game_names = Some(vec![ign.clone()]);
+        }
+        else{
+            tournament.to_owned().squad_in_game_names.expect("List of tournament squad in game names is empty").push(ign);
+        }
+
         tournament_store.borrow_mut().insert(id, tournament);
     });
 }
@@ -572,29 +585,27 @@ fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_point
 
 //setting mods and managing admins
 #[update]
-fn set_mod(name: String, identity: Principal) {
-    ID_STORE.with(|id_store| {
-        PROFILE_STORE.with(|profile_store| {
-            let mut user = id_store
-                .borrow()
-                .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
-            user.is_mod = true;
-            profile_store.borrow_mut().insert(identity.to_text(), user);
-        })
+fn set_mod(identity: Principal) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
+        profile.role = match profile.role {
+            Role::Player => Role::Mod,
+            _ => {
+                Role::Mod
+            }
+        };
+        profile_store.borrow_mut().insert(identity.to_text(), profile);
     });
 }
 
 #[query]
-fn is_mod(name: String) -> bool {
-    ID_STORE.with(|id_store| {
-        PROFILE_STORE.with(|profile_store| {
-            let mut user = id_store
-                .borrow()
-                .get(&name)
-                .and_then(|id| profile_store.borrow().get(id).cloned()).unwrap();
-            user.is_mod
-        })
+fn is_mod(identity: Principal) -> bool {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
+        match profile.role {
+            Role::Player => return false,
+            Role::Mod => return true
+        }
     })
 }
 
