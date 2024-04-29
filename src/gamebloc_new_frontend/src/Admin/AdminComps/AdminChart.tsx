@@ -1,75 +1,69 @@
 import React, { useState } from "react"
 import { LineChart, EventProps } from "@tremor/react"
 
-const AdminChart = () => {
-  const chartdata = [
-    {
-      date: "Jan 23",
-      Crowdfunded: 45,
-      Prepaid: 78,
-    },
-    {
-      date: "Feb 23",
-      Crowdfunded: 52,
-      Prepaid: 71,
-    },
-    {
-      date: "Mar 23",
-      Crowdfunded: 48,
-      Prepaid: 80,
-    },
-    {
-      date: "Apr 23",
-      Crowdfunded: 61,
-      Prepaid: 65,
-    },
-    {
-      date: "May 23",
-      Crowdfunded: 55,
-      Prepaid: 58,
-    },
-    {
-      date: "Jun 23",
-      Crowdfunded: 67,
-      Prepaid: 62,
-    },
-    {
-      date: "Jul 23",
-      Crowdfunded: 60,
-      Prepaid: 54,
-    },
-    {
-      date: "Aug 23",
-      Crowdfunded: 72,
-      Prepaid: 49,
-    },
-    {
-      date: "Sep 23",
-      Crowdfunded: 65,
-      Prepaid: 52,
-    },
-    {
-      date: "Oct 23",
-      Crowdfunded: 68,
-      Prepaid: null,
-    },
-    {
-      date: "Nov 23",
-      Crowdfunded: 74,
-      Prepaid: null,
-    },
-    {
-      date: "Dec 23",
-      Crowdfunded: 71,
-      Prepaid: null,
-    },
-  ]
+interface prop {
+  tournament: any
+}
+
+const AdminChart = ({ tournament }: prop) => {
+  const countTournamentsByMonth = (tournament: any) => {
+    // Initialize an object to store counts for each month
+    const monthCounts = {}
+
+    // Iterate through each tour
+    tournament.forEach((tour: any) => {
+      const startingDate = new Date(tour.starting_date)
+      const month = startingDate.toLocaleString("default", { month: "short" }) // Get the month name (e.g., Jan, Feb, etc.)
+
+      // Initialize the count for this month if not already initialized
+      if (!monthCounts[month]) {
+        monthCounts[month] = {
+          Crowdfunded: 0,
+          Prepaid: 0,
+        }
+      }
+
+      // Check the tournament type and increment the respective count
+      if (tour.tournament_type.Crowdfunded === null) {
+        monthCounts[month].Crowdfunded++
+      } else if (tour.tournament_type.Prepaid == null) {
+        monthCounts[month].Prepaid++
+      }
+    })
+    const monthOrder = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ]
+
+    // Construct the result array from the monthCounts object
+    const result = monthOrder.map((month) => {
+      return {
+        date: month,
+        Crowdfunded: monthCounts[month]?.Crowdfunded || 0,
+        Prepaid: monthCounts[month]?.Prepaid || 0,
+      }
+    })
+
+    return result
+  }
+
+  const monthlyCounts = countTournamentsByMonth(tournament)
 
   const [value, setValue] = useState<EventProps>(null)
   return (
     <LineChart
       className="mt-4 h-72"
-      data={chartdata}
+      data={monthlyCounts}
       index="date"
       categories={["Crowdfunded", "Prepaid"]}
       colors={["red", "blue"]}

@@ -17,7 +17,7 @@ const override = {
   borderColor: "white",
 }
 
-const AdminCreateTournamentModal = () => {
+const AdminCreateTournamentModal = ({ modal }: Props) => {
   return (
     <div>
       <div
@@ -292,7 +292,10 @@ const AdminCreateTournamentModal = () => {
                     </div>
                     <div className="flex w-full justify-end items-center mt-8">
                       <div className=" flex justify-between items-center">
-                        <p className="text-[#303B9C]/90 hover:text-[#303B9C]  py-2 px-[.9rem] text-[0.85rem] border border-solid border-[#303B9C] sm:text-sm cursor-pointer">
+                        <p
+                          onClick={() => modal()}
+                          className="text-[#303B9C]/90 hover:text-[#303B9C]  py-2 px-[.9rem] text-[0.85rem] border border-solid border-[#303B9C] sm:text-sm cursor-pointer"
+                        >
                           Cancel
                         </p>
                         <button className=" ml-8   py-2 px-3  text-sm text-white justify-center hover:bg-[#303B9C]   flex bg-[#303B9C]/90 items-center cursor-pointer ">

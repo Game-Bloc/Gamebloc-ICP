@@ -19,6 +19,7 @@ import Prepaid from "./pages/Prepaid"
 import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminCreateTournamentModal from "./Admin/AdminModals/AdminCreateTournamentModal"
 import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
+import AssignPointsModal from "./Admin/AdminModals/AssignPointsModal"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -50,7 +51,7 @@ const App = () => {
               element={<AdminTournamentView />}
             />
             <Route
-              path="/createTour"
+              path="/admin-tournament-view/:id"
               element={<AdminViewTournamentDetails />}
             />
           </Route>

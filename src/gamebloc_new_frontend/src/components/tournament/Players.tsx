@@ -17,7 +17,10 @@ const Players = ({ data }: Props) => {
   const { isAuthenticated } = useAuth()
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
-  const owner = useAppSelector((state) => state.userProfile.username)
+  const owner =
+    useAppSelector((state) => state.userProfile.username) === ""
+      ? sessionStorage.getItem("Username")
+      : useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_data = useAppSelector((state) => state.squad)
@@ -62,10 +65,37 @@ const Players = ({ data }: Props) => {
     }
   }
 
+  const joinAsSoloPlayer = () => {
+    joinTournament(
+      owner,
+      id,
+      "You have successfully joined this tournament",
+      "Something went wrong try again",
+      "/",
+    )
+  }
+
   return (
     <div className="">
-      <div className="flex flex-col mx-4 max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
-        {data.squad.length == 0 ? (
+      <div className="flex flex-col mx-4 h-[25rem] max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
+        {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE" ? (
+          data.users.length === 0 ? (
+            <div className="w-full flex justify-center mt-[3rem]">
+              <div className="flex flex-col mb-4 ">
+                <img src={`empty.svg`} alt="" />
+                <p className="text-white text-[.8rem] mt-8 text-center">
+                  No player has joined this tournament.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {data.users.map((list, index) => (
+                <SquadList key={index} list={list} data={data} />
+              ))}
+            </div>
+          )
+        ) : data.squad.length == 0 ? (
           <div className="w-full flex justify-center mt-[3rem]">
             <div className="flex flex-col mb-4 ">
               <img src={`empty.svg`} alt="" />
@@ -76,8 +106,8 @@ const Players = ({ data }: Props) => {
           </div>
         ) : (
           <div>
-            {data.squad.map((data) => (
-              <SquadList key={data.id_hash} data={data} />
+            {data.squad.map((list) => (
+              <SquadList key={list.id_hash} list={list} data={data} />
             ))}
           </div>
         )}
@@ -95,8 +125,16 @@ const Players = ({ data }: Props) => {
           </button>
         ) : (
           <button
-            onClick={isAuthenticated ? () => join() : () => handleLoginModal()}
-            className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
+            onClick={
+              isAuthenticated
+                ? () => {
+                    Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                      ? joinAsSoloPlayer()
+                      : join()
+                  }
+                : () => handleLoginModal()
+            }
+            className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[18rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
           >
             {isLoading ? (
               <ClipLoader
@@ -108,7 +146,12 @@ const Players = ({ data }: Props) => {
                 data-testid="loader"
               />
             ) : (
-              <p className="font-semibold">Join Tournament</p>
+              <p className="font-semibold">
+                {" "}
+                {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                  ? "Join Solo Tournament"
+                  : "Join Tournament with Squad"}
+              </p>
             )}
           </button>
         )}

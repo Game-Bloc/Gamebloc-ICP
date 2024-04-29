@@ -1,5 +1,5 @@
 import Swal from "sweetalert2"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import withReactContent from "sweetalert2-react-content"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import AdminTabBar from "../AdminComps/AdminTabBar"
@@ -9,11 +9,32 @@ import FallbackLoading from "../../components/Modals/FallBackLoader"
 import AdminHeader from "../AdminComps/AdminHeader"
 import AdminChart from "../AdminComps/AdminChart"
 import AdminDonutChart from "../AdminComps/AdminDonutChart"
+import {
+  useFetchAllTournaments,
+  useUpdateTournament,
+} from "../../Functions/blochooks"
+import { useAppSelector } from "../../redux/hooks"
 
 const Admin = () => {
   const navigate = useNavigate()
   const MySwal = withReactContent(Swal)
-  const { isAdmin, isLoading } = useGameblocHooks()
+  const { updateTournament } = useUpdateTournament()
+  const tournament = useAppSelector((state) => state.tournamentData)
+  const { fetchAllTournaments } = useFetchAllTournaments()
+  const [totalUsers, setTotalUsers] = useState<String>("")
+  const { isAdmin, isLoading, getPlayers } = useGameblocHooks()
+  const ongoingTournnamentCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "GAMEINPROGRESS",
+  ).length
+  const newTournnamentCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS",
+  ).length
+  const completedTournnamentsCount = tournament.filter(
+    (tour: any) =>
+      Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED",
+  ).length
 
   useEffect(() => {
     const adminName = localStorage.getItem("Username")
@@ -27,7 +48,46 @@ const Admin = () => {
     if (!authState) {
       navigate("/admin-login")
     }
+    if (authState) {
+      if (tournament.length > 0 || null || undefined) {
+        updateTournament()
+      } else {
+        fetchAllTournaments()
+      }
+      getPlayers()
+      const players = sessionStorage.getItem("players")
+      setTotalUsers(players)
+    }
   }, [])
+
+  const countGamemode = (tournament: any) => {
+    const gameMode = {
+      BattleRoyale: 0,
+      multiplayer: 0,
+    }
+
+    tournament.forEach((tour: any) => {
+      if (tour.game_type.Squad === null || tour.game_type.Duo === null) {
+        gameMode.BattleRoyale++
+      } else if (tour.game_type.Single === null) {
+        gameMode.multiplayer++
+      }
+    })
+
+    const result = [
+      {
+        name: "Battle Royale",
+        sales: gameMode.BattleRoyale,
+      },
+      {
+        name: "Multiplayer",
+        sales: gameMode.multiplayer,
+      },
+    ]
+    return result
+  }
+
+  const gameMode = countGamemode(tournament)
 
   if (isLoading) {
     return (
@@ -60,7 +120,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad1.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {ongoingTournnamentCount}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -71,7 +133,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad2.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {completedTournnamentsCount}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -82,7 +146,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad3.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {newTournnamentCount}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -93,7 +159,9 @@ const Admin = () => {
                         </p>
                         <div className="flex mt-[1rem]   items-center">
                           <img src={`ad4.png`} className="m-0 h-8 w-8" alt="" />
-                          <p className="text-white ml-4 text-[1.5rem]">701</p>
+                          <p className="text-white ml-4 text-[1.5rem]">
+                            {totalUsers}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -104,12 +172,12 @@ const Admin = () => {
                       Game Analysis
                     </h2>
                     <div className="flex gap-16">
-                      <AdminChart />
+                      <AdminChart tournament={tournament} />
                       <div className="bg-[#070C12] p-8 rounded-lg">
                         <p className="text-white/70 font-[Open Sans] mb-[2rem] text-[.8rem]">
                           Game Type
                         </p>
-                        <AdminDonutChart />
+                        <AdminDonutChart gameMode={gameMode} />
 
                         <div className=" mt-4 flex justify-between items-center">
                           <p className="text-white/50 font-[Open Sans] text-[.75rem]">
@@ -128,7 +196,7 @@ const Admin = () => {
                             </p>
                           </div>
                           <p className="text-white/70 font-[Open Sans] ml-2 text-[.75rem]">
-                            10
+                            {gameMode[0].sales}
                           </p>
                         </div>
                         <div className=" mt-2 flex justify-between items-center ">
@@ -139,7 +207,7 @@ const Admin = () => {
                             </p>
                           </div>
                           <p className="text-white/70 font-[Open Sans] ml-2 text-[.75rem]">
-                            5
+                            {gameMode[1].sales}
                           </p>
                         </div>
                       </div>

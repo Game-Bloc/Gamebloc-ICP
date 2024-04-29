@@ -65,7 +65,7 @@ const Sidebar = () => {
                 style={{ transitionDelay: `${i + 3}00ms` }}
                 className={`text-[#fff]  whitespace-pre ${
                   !open && "opacity-0 translate-x-10 overflow-hidden "
-                } duration-500`}
+                } duration-300`}
               >
                 {menu.name}
               </h2>

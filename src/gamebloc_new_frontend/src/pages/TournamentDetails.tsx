@@ -11,6 +11,8 @@ import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Chat from "../components/tournament/Chat"
 import { DotChartOutlined } from "@ant-design/icons"
+import { useUpdateTournament } from "../Functions/blochooks"
+import { LocalStorage } from "@dfinity/auth-client"
 const gameImage = require("../../assets/category1.svg").default
 
 const TournamentDetail = () => {
@@ -18,7 +20,8 @@ const TournamentDetail = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
-  const tournamentData = useAppSelector((state) => state.tournamentData)
+  const [tournamentData, setTournamentData] = useState<any[]>([])
+  const { updating, updateTournament } = useUpdateTournament()
 
   const items: TabsProps["items"] = [
     {
@@ -56,13 +59,11 @@ const TournamentDetail = () => {
   }
 
   useEffect(() => {
-    const timeOut = setInterval(() => {
-      setLoading(false)
-    }, 3000)
-    return () => clearTimeout(timeOut)
-  }, [])
-
-  useEffect(() => {
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setTournamentData(data)
+    }
     const img = new Image()
     img.onload = () => {
       setImageLoaded(true)
@@ -72,7 +73,7 @@ const TournamentDetail = () => {
 
   return (
     <div className="">
-      {loading ? (
+      {updating ? (
         <div className="w-full h-screen flex justify-center items-center">
           <FallbackLoading />
         </div>
@@ -217,7 +218,8 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  Battle Royale: Squad
+                                  Battle Royale:{" "}
+                                  {Object.keys(data.game_type)[0]}
                                 </p>
                               </div>
                               <div className="flex justify-between items-center rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-gradient-to-r from-[#2A2D31] to-[#272A2F] border-none">
@@ -227,7 +229,7 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  3 Winners
+                                  {data.no_of_winners} Winners
                                 </p>
                               </div>
                               <div className="flex justify-between items-center rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-gradient-to-r from-[#2A2D31] to-[#272A2F] border-none">
@@ -237,7 +239,7 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  100 Team Slots
+                                  {data.no_of_participants} Team Slots
                                 </p>
                               </div>
                             </div>

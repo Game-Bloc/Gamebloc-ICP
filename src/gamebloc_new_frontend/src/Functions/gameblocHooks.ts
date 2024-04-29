@@ -126,25 +126,16 @@ export const useGameblocHooks = () => {
     } catch (error) {
       console.error("Error fetching ICP price:", error)
     }
+  }
 
-    // const response = fetch(
-    //   "https://api.coingecko.com/api/v3/simple/price?ids=internet-computer&vs_currencies=usd",
-    // )
-    // const getPricePromise: any = (await response).json()
-
-    // getPricePromise
-    //   .then((data: any) => {
-    //     const usdValue: number = data["internet-computer"]["usd"]
-    //     const Icp: any = {
-    //       currentICPrice: Number(usdValue),
-    //     }
-    //     dispatch(updateICP(Icp))
-    //     sessionStorage.setItem("_icp2usd", `${usdValue}`)
-    //     console.log(`The current price of ICP is $${usdValue}`)
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching the price:", error)
-    //   })
+  const getPlayers = async () => {
+    try {
+      const player = await whoamiActor.count_all_users()
+      console.log(player)
+      sessionStorage.setItem("players", Number(player).toString())
+    } catch (err) {
+      console.log("Error getting no_of_players")
+    }
   }
 
   const getProfile = async () => {
@@ -171,6 +162,7 @@ export const useGameblocHooks = () => {
         }
         dispatch(updateUserProfile(profileData))
         sessionStorage.setItem("accountId", user.account_id)
+        sessionStorage.setItem("Username", user.username)
         localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
@@ -211,9 +203,14 @@ export const useGameblocHooks = () => {
     entry_prize: number,
     no_of_winners: number,
     no_of_participants: bigint,
-    game_type: string,
+    game_type: any,
     end_date: string,
     title: string,
+    squad_points: [],
+    squad_in_game_names: [],
+    in_game_names: [],
+    points: [],
+    lobbies: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -223,28 +220,33 @@ export const useGameblocHooks = () => {
       const creator_id: [string] = [owner_id]
 
       const tournamentData = {
-        idx,
         id_hash,
-        status: status,
         creator,
-        messages,
         creator_id,
+        status: status,
+        idx,
+        starting_date,
+        tournament_rules,
+        tournament_type: tournament_type,
         game,
         squad,
+        squad_points,
+        squad_in_game_names,
+        messages,
         user,
         winers,
-        total_prize,
-        tournament_rules,
-        starting_date,
-        tournament_type: tournament_type,
         entry_prize,
+        total_prize,
         no_of_winners,
         no_of_participants,
         game_type,
         end_date,
         title,
+        in_game_names,
+        points,
+        lobbies,
       }
-      const create = await whoamiActor.create_tournament(tournamentData)
+      const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {
         popUp(successMsg, route)
         setIsLoading(false)
@@ -290,6 +292,7 @@ export const useGameblocHooks = () => {
     tag: string,
     principal: string,
     requests: string[],
+    points: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -310,6 +313,7 @@ export const useGameblocHooks = () => {
         name,
         captain,
         requests,
+        points,
       }
       const _squad = await whoamiActor.create_squad(squad)
       if (_squad) {
@@ -649,6 +653,7 @@ export const useGameblocHooks = () => {
     isAccount,
     fetching,
     isAdmin,
+    getPlayers,
     getTransactions,
     getICPrice,
     createAccount,

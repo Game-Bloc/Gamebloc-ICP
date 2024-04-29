@@ -12,7 +12,7 @@ import { MdChevronLeft, MdChevronRight } from "react-icons/md"
 
 const MyTournaments = () => {
   const creatorHash = useAppSelector((state) => state.userProfile.id_hash)
-  const tournament = useAppSelector((state) => state.tournamentData)
+  const [tournament, setTournament] = useState([])
   const tour = tournament
     .filter((hash) => hash.creator_id[0] == creatorHash)
     .map((tour) => tour)
@@ -32,6 +32,14 @@ const MyTournaments = () => {
     .map((data: any, index: any) => (
       <TournamentCard data={data} index={index} key={index} />
     ))
+
+  useEffect(() => {
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setTournament(data)
+    }
+  }, [])
 
   console.log(
     "Tour:",

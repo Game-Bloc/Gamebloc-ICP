@@ -1,7 +1,11 @@
 import React from "react"
 import { DonutChart, Legend } from "@tremor/react"
 
-const AdminDonutChart = () => {
+interface Prop {
+  gameMode: any[]
+}
+
+const AdminDonutChart = ({ gameMode }: Prop) => {
   const gameType = [
     {
       name: "Battle Royale",
@@ -20,11 +24,11 @@ const AdminDonutChart = () => {
     <>
       <div className="flex items-center justify-center space-x-6">
         <DonutChart
-          data={gameType}
+          data={gameMode}
           category="sales"
           index="name"
           //   valueFormatter={valueFormatter}
-          colors={["blue", "red"]}
+          colors={["red", "blue"]}
           className="w-40"
         />
         {/* <Legend
