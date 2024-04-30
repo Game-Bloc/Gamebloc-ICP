@@ -67,6 +67,7 @@ pub struct UserProfile {
     pub points: Option<u128>,
     pub username: String,
     pub is_mod: bool,
+    pub role: Role,
     pub principal_id: String,
     pub account_id : String,
     pub canister_id: String,
@@ -112,7 +113,7 @@ pub struct TournamentAccount {
     pub game: String,
     pub squad:Vec<Squad>,
     pub squad_points: Option<Vec<(String,u128)>>,
-    pub squad_in_game_names:Option<Vec<(String, String)>>,
+    pub squad_in_game_names:Option<Vec<Vec<(String, String)>>>,
     pub messages: Option<Vec<Chat>>,
     pub user: Vec<String>,
     pub winers: Vec<String>,
@@ -173,6 +174,13 @@ pub enum Status {
     #[default]
     Online,
     Offline,
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub enum Role {
+    #[default]
+    Player,
+    Mod,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
