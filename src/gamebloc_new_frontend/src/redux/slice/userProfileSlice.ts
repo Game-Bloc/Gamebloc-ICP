@@ -2,18 +2,20 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface UserProfileState {
-  age: number | undefined
-  canister_id: string | undefined
-  date: string | undefined
-  id_hash: string | undefined
+  age: number | null
+  canister_id: string | null
+  date: string | null
+  id_hash: string | null
   is_mod: boolean
-  account_id: string | undefined
-  principal_id: string | undefined
-  squad_badge: string | undefined
-  status: any | undefined
+  points: [] | null
+  role: any | null
+  account_id: string | null
+  principal_id: string | null
+  squad_badge: string | null
+  status: any | null
   tournaments_created: number
-  username: string | undefined
-  wins: number | undefined
+  username: string | null
+  wins: number | null
   initializeState: boolean
 }
 
@@ -25,6 +27,8 @@ const initialState: UserProfileState = {
   is_mod: false,
   account_id: "",
   principal_id: "",
+  points: [],
+  role: { Player: null },
   squad_badge: "",
   status: { Online: null },
   tournaments_created: 0,

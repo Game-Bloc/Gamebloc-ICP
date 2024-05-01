@@ -151,6 +151,8 @@ export const useGameblocHooks = () => {
           date: user.date,
           id_hash: user.id_hash,
           is_mod: false,
+          role: user.role,
+          points: user.points,
           account_id: user.account_id,
           principal_id: user.principal_id,
           squad_badge: user.squad_badge,
