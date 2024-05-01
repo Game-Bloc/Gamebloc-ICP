@@ -20,6 +20,7 @@ module {
         tournaments_created : Nat8;
         username : Text;
         is_mod : Bool;
+        role : Role;
         principal_id : Text;
         account_id : Text;
         canister_id : Text;
@@ -47,6 +48,11 @@ module {
         members : [Member];
         requests : [Text];
         points : ?Nat;
+    };
+
+    public type Role = {
+        #Player;
+        #Mod;
     };
 
     public type SquadType = {
@@ -79,7 +85,7 @@ module {
         game : Text;
         squad : [Squad];
         squad_points : ?[(Text, Nat)];
-        squad_in_game_names : ?[(Text, Text)];
+        squad_in_game_names : ?[[(Text, Text)]];
         messages : ?[Chat];
         user : [Text];
         winers : [Text];
