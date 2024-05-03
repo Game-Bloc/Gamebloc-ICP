@@ -68,8 +68,8 @@ module {
     public type TournamentStatus = {
         #AcceptingPlayers;
         #GameInProgress;
+        #GameCompleted;
         #Archived;
-        #GameCompleted
     };
 
     public type TournamentAccount = {
@@ -121,8 +121,8 @@ module {
     };
 
     public type LobbyStatus = {
+        #ReadyToStart;
         #GameInProgress;
-        #readyToStart;
         #GameCompleted
     };
 
