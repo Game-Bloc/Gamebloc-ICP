@@ -73,6 +73,7 @@ export const useGameblocHooks = () => {
     name: string,
     time: string,
     squad_badge: string,
+    role: any,
     successMsg: string,
     errorMsg: string,
     route: any,
@@ -85,6 +86,7 @@ export const useGameblocHooks = () => {
         name,
         time,
         squad_badge,
+        role,
       )
       if (user) {
         popUp(successMsg, route)

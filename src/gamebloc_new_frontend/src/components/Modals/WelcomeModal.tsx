@@ -77,6 +77,7 @@ const WelcomeModal = ({ modal }: Props) => {
         userName,
         joinDate,
         Squad_badge,
+        { Player: null },
         "Account Created",
         "Error, try again",
         "/dashboard",
