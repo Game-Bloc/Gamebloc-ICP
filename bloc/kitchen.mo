@@ -980,6 +980,9 @@ shared ({ caller }) actor class Kitchen() {
         return result
     };
 
+    // automated payment and receiving
+    // 
+
     // public func start_tournament(id : Text) : (){
 
     // };
