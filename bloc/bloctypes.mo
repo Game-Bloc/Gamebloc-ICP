@@ -20,6 +20,7 @@ module {
         tournaments_created : Nat8;
         username : Text;
         is_mod : Bool;
+        role : Role;
         principal_id : Text;
         account_id : Text;
         canister_id : Text;
@@ -49,6 +50,11 @@ module {
         points : ?Nat;
     };
 
+    public type Role = {
+        #Player;
+        #Mod;
+    };
+
     public type SquadType = {
         #Open;
         #Closed
@@ -62,8 +68,8 @@ module {
     public type TournamentStatus = {
         #AcceptingPlayers;
         #GameInProgress;
+        #GameCompleted;
         #Archived;
-        #GameCompleted
     };
 
     public type TournamentAccount = {
@@ -79,7 +85,7 @@ module {
         game : Text;
         squad : [Squad];
         squad_points : ?[(Text, Nat)];
-        squad_in_game_names : ?[(Text, Text)];
+        squad_in_game_names : ?[[(Text, Text)]];
         messages : ?[Chat];
         user : [Text];
         winers : [Text];
@@ -115,8 +121,8 @@ module {
     };
 
     public type LobbyStatus = {
+        #ReadyToStart;
         #GameInProgress;
-        #readyToStart;
         #GameCompleted
     };
 

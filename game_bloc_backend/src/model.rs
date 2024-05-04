@@ -203,7 +203,7 @@ pub enum TournamentStatus {
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum LobbyStatus {
     #[default]
-    readyToStart,
+    ReadyToStart,
     GameInProgress,
     GameCompleted,
 }

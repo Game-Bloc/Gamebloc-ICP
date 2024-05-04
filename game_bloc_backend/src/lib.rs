@@ -327,7 +327,7 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -355,7 +355,7 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -383,7 +383,7 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -409,7 +409,7 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                 tournament.clone().lobbies.unwrap().push(
                     LobbyAccount{
                         status: TournamentStatus::GameInProgress,
-                        lobby_status: LobbyStatus::readyToStart,
+                        lobby_status: LobbyStatus::ReadyToStart,
                         idx: 0,
                         starting_date: None,
                         lobby_rules: tournament.tournament_rules.clone(),
@@ -451,7 +451,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -479,7 +479,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -507,7 +507,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
-                            lobby_status: LobbyStatus::readyToStart,
+                            lobby_status: LobbyStatus::ReadyToStart,
                             idx: count as u8,
                             starting_date: None,
                             lobby_rules: tournament.tournament_rules.clone(),
@@ -533,7 +533,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
                 tournament.clone().lobbies.unwrap().push(
                     LobbyAccount{
                         status: TournamentStatus::GameInProgress.clone(),
-                        lobby_status: LobbyStatus::readyToStart.clone(),
+                        lobby_status: LobbyStatus::ReadyToStart.clone(),
                         idx: 0,
                         starting_date: None,
                         lobby_rules: tournament.tournament_rules.clone(),
