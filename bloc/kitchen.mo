@@ -419,6 +419,10 @@ shared ({ caller }) actor class Kitchen() {
         return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
     };
 
+    public func getCanisterAccountIdentifier() : async Text {
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null));
+    };
+
     public type AccountIdentifier = [Nat8];
 
     public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
