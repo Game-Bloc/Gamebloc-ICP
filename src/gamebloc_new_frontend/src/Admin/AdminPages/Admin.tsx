@@ -39,11 +39,7 @@ const Admin = () => {
   useEffect(() => {
     const adminName = localStorage.getItem("Username")
     console.log("username", adminName)
-    const authState = isAdmin(
-      adminName,
-      "you are logged in",
-      "/admin-dashboard",
-    )
+    const authState = isAdmin("you are logged in", "/admin-dashboard")
     console.log("is admin:", authState)
     if (!authState) {
       navigate("/admin-login")

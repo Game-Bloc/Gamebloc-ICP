@@ -26,6 +26,7 @@ import { DotChartOutlined } from "@ant-design/icons"
 import { GameType } from "../../../declarations/kitchen/kitchen.did"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useAuth } from "../Auth/use-auth-client"
+import Editor from "../components/Texteditor/Editor"
 const loader = require("../../assets/category1.svg").default
 const loader1 = require("../../assets/category2.svg").default
 const loader2 = require("../../assets/category3.svg").default
@@ -48,6 +49,41 @@ const CreateTournament = () => {
   const [noOfWinners, setNoOfWinners] = useState<number>(0)
   const [tourType, setTourType] = useState<string>("")
   const [title, setTitle] = useState<string>("")
+  const [content, setContent] = useState<string>(`<h2>Hi there,</h2>
+<p>This is a <em>basic</em> example of <strong>tiptap</strong>. Sure, there are all kind of basic text styles you’d probably expect from a text editor. But wait until you see the lists:</p>
+<ul>
+  <li>
+    <p>That’s a bullet list with one …</p>
+  </li>
+  <li>
+    <p>… or two list items.</p>
+  </li>
+  <li>
+    <p>… or sub-list items …</p>
+    <ul>
+      <li>
+        <p>Sub-item 1</p>
+      </li>
+      <li>
+        <p>Sub-item 2</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Isn’t that great? What about a grocery store list:</p>
+<ul data-type="taskList">
+  <li data-checked="true" data-type="taskItem">
+    <p>sugar</p>
+  </li>
+  <li data-checked="true" data-type="taskItem">
+    <p>milk</p>
+  </li>
+  <li data-checked="false" data-type="taskItem">
+    <p>eggs</p>
+  </li>
+</ul>
+<p>I know, I know, this is impressive. It’s only the tip of the iceberg though. Give it a try and click a little bit around. Don’t forget to check the other examples too.</p>
+<blockquote>Wow, that’s amazing. Good work, boy! <span data-emoji-replacer=""><img src="https://twemoji.maxcdn.com/v/latest/svg/1f44f.svg" alt="👏" class="emoji" draggable="false"></span><br>— Mom</blockquote>`)
   const [tournamentRules, setTournamentRules] = useState<string>("")
   const [initialTime, setInitialTime] = useState<string>("")
   const [initialDate, setInitialDate] = useState<string>("")
@@ -82,7 +118,7 @@ const CreateTournament = () => {
     setTournamentID(id)
     // console.log("ulid:", id)
   }
-  console.log("game name", game_name)
+  console.log("Rules", tournamentRules)
 
   useEffect(() => {
     generateULID()
@@ -176,9 +212,7 @@ const CreateTournament = () => {
     setPoolPrize("")
   }
 
-  const onRuleChange = (e: any) => {
-    e.preventDefault()
-    const rules = e.target.value
+  const handleContent = (rules: any) => {
     setTournamentRules(rules)
   }
 
@@ -691,15 +725,20 @@ const CreateTournament = () => {
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                           Tournament Description and Rules
                         </p>
-                        <div className=" my-4 items-center pl-2 hover:border-primary-second border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
-                          <textarea
+                        {/* <div className=" my-4  items-center  hover:border-primary-second border-[#595959] bg-[#141414] border-solid border rounded-lg flex"> */}
+                        {/* <textarea
                             className="pl-0 border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                             placeholder="Enter Description"
                             rows={4}
                             value={tournamentRules}
                             onChange={onRuleChange}
-                          />
-                        </div>
+                          /> */}
+
+                        <Editor
+                          handleContent={handleContent}
+                          content={tournamentRules}
+                        />
+                        {/* </div> */}
                       </div>
                       <div className="mt-4 mx-4 lg:mx-0 mb-4 flex justify-center items-center">
                         <button

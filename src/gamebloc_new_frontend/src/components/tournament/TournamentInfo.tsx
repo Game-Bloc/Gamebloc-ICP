@@ -12,12 +12,15 @@ import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useAuth } from "../../Auth/use-auth-client"
 import LoginModal2 from "../Modals/LoginModal2"
+import JoinAsSolo from "../Modals/JoinAsSolo"
+import JoinAsSquad from "../Modals/JoinAsSquad"
 interface Props {
   data: any
 }
 
 const TournamentInfo = ({ data }: Props) => {
   const { id } = useParams()
+  const { principal } = useAuth()
   const [count, setCount] = useState(0)
   const { isAuthenticated } = useAuth()
   const MySwal = withReactContent(Swal)
@@ -34,6 +37,9 @@ const TournamentInfo = ({ data }: Props) => {
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
+  const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
+  const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
+  const userId = principal.toString()
 
   const override = {
     display: "block",
@@ -57,9 +63,15 @@ const TournamentInfo = ({ data }: Props) => {
     data.squad.forEach((player: any) => (totalCount += player.members.length))
     return totalCount
   }
-
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
+  }
+  const handleSoloModal = () => {
+    setOpenSoloModal(!openSoloModal)
+  }
+
+  const handleSquadModal = () => {
+    setOpenSquadModal(!openSquadModal)
   }
 
   const convertToMilliseconds = (inputDateString: String) => {
@@ -170,34 +182,6 @@ const TournamentInfo = ({ data }: Props) => {
       year
 
     return formattedDate
-  }
-
-  const join = () => {
-    if (squad_data.some((player: any) => player.captain == owner)) {
-      console.log("squd_id:", squad_id)
-      console.log("id:", id)
-      joinTournamentSqaud(
-        squad_id,
-        id,
-        "Tournament Joined",
-        "Error, try again.",
-        "/dashboard",
-      )
-    } else {
-      errorPopUp(
-        "Only a squad captain can join a tournament on behalf of a squad.",
-      )
-    }
-  }
-
-  const joinAsSoloPlayer = () => {
-    joinTournament(
-      owner,
-      id,
-      "You have successfully joined this tournament",
-      "Something went wrong try again",
-      "/",
-    )
   }
 
   useEffect(() => {
@@ -612,8 +596,8 @@ const TournamentInfo = ({ data }: Props) => {
                 isAuthenticated
                   ? () => {
                       Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
-                        ? joinAsSoloPlayer()
-                        : join()
+                        ? setOpenSoloModal(true)
+                        : setOpenSquadModal(true)
                     }
                   : () => handleLoginModal()
               }
@@ -639,6 +623,15 @@ const TournamentInfo = ({ data }: Props) => {
           )}
         </div>
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
+        {openSoloModal && (
+          <JoinAsSolo
+            modal={handleSoloModal}
+            owner={owner}
+            userId={userId}
+            id={id}
+          />
+        )}
+        {openSquadModal && <JoinAsSquad modal={handleSquadModal} />}
       </div>
     )
   }

@@ -270,13 +270,16 @@ export const useGameblocHooks = () => {
   const joinTournament = async (
     name: string,
     id: string,
+    userId: string,
+    playerIgn: string,
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join_tournament = await whoamiActor.join_tournament(name, id)
+      const ign: [string, string] = [userId, playerIgn]
+      const join_tournament = await whoamiActor.join_tournament(name, id, ign)
       setIsLoading(false)
       popUp(successMsg, route)
     } catch (err) {
@@ -386,13 +389,18 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
+    igns: [],
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join = await whoamiActor.join_tournament_with_squad(squad_id, id)
+      const join = await whoamiActor.join_tournament_with_squad(
+        squad_id,
+        id,
+        igns,
+      )
       setIsLoading(false)
       popUp(successMsg, route)
     } catch (err) {
@@ -568,10 +576,10 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const isAdmin = async (name: string, msg: string, route: string) => {
+  const isAdmin = async (msg: string, route: string) => {
     try {
       setIsLoading(true)
-      const admin = await whoamiActor.is_mod(name)
+      const admin = await whoamiActor.is_mod(principal)
       if (admin) {
         popUp(msg, route)
         return true

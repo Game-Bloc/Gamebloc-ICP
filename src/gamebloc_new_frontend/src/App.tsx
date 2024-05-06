@@ -20,6 +20,8 @@ import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminCreateTournamentModal from "./Admin/AdminModals/AdminCreateTournamentModal"
 import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
 import AssignPointsModal from "./Admin/AdminModals/AssignPointsModal"
+import JoinAsSolo from "./components/Modals/JoinAsSolo"
+import JoinAsSquad from "./components/Modals/JoinAsSquad"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -40,6 +42,16 @@ const App = () => {
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/world-chat" element={<WorldChat />} />
+            <Route
+              path="/modal"
+              element={
+                <JoinAsSquad
+                  modal={function (): void {
+                    throw new Error("Function not implemented.")
+                  }}
+                />
+              }
+            />
           </Route>
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}
