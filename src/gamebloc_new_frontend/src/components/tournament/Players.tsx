@@ -14,7 +14,8 @@ interface Props {
 
 const Players = ({ data }: Props) => {
   const { id } = useParams()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, principal } = useAuth()
+  const userId = principal.toString()
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
   const owner =
@@ -54,6 +55,7 @@ const Players = ({ data }: Props) => {
       joinTournamentSqaud(
         squad_id,
         id,
+        [],
         "Tournament Joined",
         "Error, try again.",
         "/dashboard",
@@ -69,6 +71,8 @@ const Players = ({ data }: Props) => {
     joinTournament(
       owner,
       id,
+      userId,
+      "",
       "You have successfully joined this tournament",
       "Something went wrong try again",
       "/",

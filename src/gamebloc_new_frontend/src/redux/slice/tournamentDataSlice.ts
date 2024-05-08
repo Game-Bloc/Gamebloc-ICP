@@ -51,6 +51,8 @@ const tournamentDataSlice = createSlice({
 
       if (existingTournamentIndex !== -1) {
         state[existingTournamentIndex] = payload
+      } else {
+        state.push(payload)
       }
     },
     clearTournaments: () => {

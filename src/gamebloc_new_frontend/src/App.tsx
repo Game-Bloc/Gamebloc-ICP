@@ -20,6 +20,8 @@ import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminCreateTournamentModal from "./Admin/AdminModals/AdminCreateTournamentModal"
 import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
 import AssignPointsModal from "./Admin/AdminModals/AssignPointsModal"
+import JoinAsSolo from "./components/Modals/JoinAsSolo"
+import JoinAsSquad from "./components/Modals/JoinAsSquad"
 
 const App = () => {
   const { isAuthenticated } = useAuth()

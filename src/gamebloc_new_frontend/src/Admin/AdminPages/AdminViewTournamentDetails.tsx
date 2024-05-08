@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import AdminHeader from "../AdminComps/AdminHeader"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import { PiPowerBold } from "react-icons/pi"
@@ -10,6 +10,13 @@ import TournamentGridView from "../AdminComps/TournamentGridView"
 import TournamentListView from "../AdminComps/TournamentListView"
 import { useParams } from "react-router-dom"
 import AssignPointsModal from "../AdminModals/AssignPointsModal"
+import {
+  formatDate,
+  formatDate2,
+  squadCount,
+} from "../../components/utils/utills"
+import { useGetAllSquad, useUpdateAllSquad } from "../../Functions/blochooks"
+import { useAppSelector } from "../../redux/hooks"
 
 interface DataType {
   position: React.Key
@@ -22,36 +29,27 @@ interface DataType {
 
 const AdminViewTournamentDetails = () => {
   const { id } = useParams()
+  const [data, setData] = useState<any[]>([])
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
+  const { updateAllSquads } = useUpdateAllSquad()
+  const squad_data = useAppSelector((state) => state.squad)
+  const { noData, updating, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-  const [data, setData] = useState<DataType[]>([
-    {
-      position: 1,
-      ign: "kill Switch",
-      name: "Aladdin",
-      position_points: 45,
-      kill_points: 75,
-      total_points: 120,
-    },
-    {
-      position: 2,
-      ign: "Deron",
-      name: "Felix",
-      position_points: 21,
-      kill_points: 90,
-      total_points: 111,
-    },
-    {
-      position: 3,
-      ign: "pFb?finisher",
-      name: "Aje",
-      position_points: 17,
-      kill_points: 40,
-      total_points: 57,
-    },
-  ])
+
+  useEffect(() => {
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setData(data)
+    }
+    if (squad_data.length > 0) {
+      updateAllSquads()
+    } else {
+      getAllSquads()
+    }
+  }, [])
 
   const dataSearch = data.filter((obj) => {
     return Object.keys(obj).some((key) =>
@@ -72,7 +70,6 @@ const AdminViewTournamentDetails = () => {
     {
       title: "Position Points",
       dataIndex: "position_points",
-
       key: "position_points",
     },
     { title: "Kill Points", dataIndex: "kill_points", key: "kill_points" },
@@ -138,223 +135,267 @@ const AdminViewTournamentDetails = () => {
                 <h1 className="text-primary-second font-[600] text-[2rem]">
                   Tournaments
                 </h1>
-                <div className="mt-8">
-                  <div className="flex bg-[#070C12] p-4 flex-row justify-between items-start  w-full">
-                    <div className="flex flex-col">
-                      <div className="flex gap-4">
-                        <img
-                          src={`reloaded.svg`}
-                          alt=""
-                          className="w-[6.75rem] h-[6.375rem] m-0"
-                        />
-                        <div className="flex flex-col ">
-                          <p className="text-[1.2rem]  font-semibold text-white">
-                            Reloaded Tournament 2.0
-                          </p>
-                          <p className="text-[0.9rem] mb-[.7rem] text-[#E49A83]">
-                            Gamebloc
-                          </p>
+                {data
+                  .filter((tour: any) => tour.id_hash === id)
+                  .map((list: any) => (
+                    <div key={list.id_hash} className="mt-8">
+                      <div className="flex bg-[#070C12] p-4 flex-row justify-between items-start  w-full">
+                        <div className="flex flex-col">
                           <div className="flex gap-4">
-                            <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                              <p className="text-[.7rem] text-[#ABCCFF]">
-                                Crowdfunded
+                            <img
+                              src={`reloaded.svg`}
+                              alt=""
+                              className="w-[6.75rem] h-[6.375rem] m-0"
+                            />
+                            <div className="flex flex-col ">
+                              <p className="text-[1.2rem]  font-semibold text-white">
+                                {list.title}
                               </p>
-                            </div>
-                            <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                              <p className="text-[.7rem] text-[#ABCCFF]">
-                                Solo
+                              <p className="text-[0.9rem] mb-[.7rem] text-[#E49A83]">
+                                {list.creator}
                               </p>
+                              <div className="flex gap-4">
+                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                  <p className="text-[.7rem] text-[#ABCCFF]">
+                                    {Object.keys(list.tournament_type)[0]}
+                                  </p>
+                                </div>
+                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                  <p className="text-[.7rem] text-[#ABCCFF]">
+                                    {Object.keys(list.game_type)[0]}
+                                  </p>
+                                </div>
+                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                  <p className="text-[.7rem] text-[#ABCCFF]">
+                                    Battle Royale
+                                  </p>
+                                </div>
+                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                  <p className="text-[.7rem] text-[#ABCCFF]">
+                                    {list.no_of_participants} Slots
+                                  </p>
+                                </div>
+                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                  <p className="text-[.7rem] text-[#ABCCFF]">
+                                    {list.no_of_winners} Winners
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex gap-4 mt-[.7rem]">
+                                <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
+                                  {" "}
+                                  Start: {formatDate(list.starting_date)}
+                                </p>
+                                <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
+                                  Ends: {formatDate2(list.end_date)}
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                              <p className="text-[.7rem] text-[#ABCCFF]">
-                                Battle Royale
-                              </p>
+                          </div>
+
+                          <div className=" mt-[1rem] flex gap-4">
+                            <div className="flex bg-[#297FFF]/15 h-[4rem] w-fit">
+                              <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
+                              <div className="flex justify-center items-center px-4 ">
+                                <div className="flex flex-col">
+                                  <p className="text-[.8rem] text-white font-semibold">
+                                    Registration
+                                  </p>
+                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                    {Object.keys(
+                                      list.tournament_type,
+                                    )[0].toUpperCase() == "CROWDFUNDED"
+                                      ? `$${list.entry_prize}`
+                                      : "Free"}
+                                  </p>
+                                </div>
+                                <div className="flex ml-[2rem] flex-col">
+                                  <p className="text-[.8rem] text-white font-semibold">
+                                    {" "}
+                                    Prize
+                                  </p>
+                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                    {Object.keys(
+                                      list.tournament_type,
+                                    )[0].toUpperCase() === "CROWDFUNDED" &&
+                                    Object.keys(
+                                      list.game_type,
+                                    )[0].toUpperCase() === "SINGLE"
+                                      ? `$${
+                                          list.entry_prize * list.users.length
+                                        }`
+                                      : Object.keys(
+                                          list.tournament_type,
+                                        )[0].toUpperCase() == "CROWDFUNDED" &&
+                                        Object.keys(
+                                          list.game_type,
+                                        )[0].toUpperCase() === "DUO"
+                                      ? `$${
+                                          list.entry_prize * squadCount(list)
+                                        }`
+                                      : Object.keys(
+                                          list.tournament_type,
+                                        )[0].toUpperCase() == "CROWDFUNDED" &&
+                                        Object.keys(
+                                          list.game_type,
+                                        )[0].toUpperCase() === "SQUAD"
+                                      ? `$${
+                                          list.entry_prize * squadCount(list)
+                                        }`
+                                      : `$${list.total_prize}`}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                              <p className="text-[.7rem] text-[#ABCCFF]">
-                                100 Slots
-                              </p>
+
+                            <div className="flex  h-[4rem] bg-[#297FFF]/15 w-fit">
+                              <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
+                              <div className="flex justify-center items-center px-4 ">
+                                <div className="flex flex-col">
+                                  <p className="text-[.8rem] text-white font-semibold">
+                                    Players
+                                  </p>
+                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                    {Object.keys(
+                                      list.game_type,
+                                    )[0].toUpperCase() === "SINGLE"
+                                      ? `${list.users.length}`
+                                      : `${squadCount(list)}`}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                              <p className="text-[.7rem] text-[#ABCCFF]">
-                                3 Winners
+                          </div>
+                        </div>
+                        {/* Row */}
+                        <div className="flex h-[12rem] flex-col">
+                          <div className="w-full flex justify-end">
+                            <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
+                              <img
+                                src={`ongoing-status.png`}
+                                className="m-0"
+                                alt=""
+                              />
+                              <p className="text-[#BCBCBC] text-[.8rem]">
+                                Ongoing
                               </p>
                             </div>
                           </div>
-                          <div className="flex gap-4 mt-[.7rem]">
-                            <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
+
+                          <div className="flex h-full items-end">
+                            <div className="flex justify-between  gap-4 items-center ">
+                              <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
+                                <GiMoneyStack className="text-white text-[1.5rem]" />
+                                <p className="ml-[.4rem]  text-white text-[.8rem]">
+                                  {" "}
+                                  Pay
+                                </p>
+                              </button>
+                              <button className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
+                                <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                <p className="ml-[.4rem] text-white text-[.8rem]">
+                                  {" "}
+                                  End
+                                </p>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
+                        <div className="flex mx-8 justify-between items-center">
+                          <div className="flex items-center">
+                            <ConfigProvider
+                              theme={{
+                                algorithm: theme.darkAlgorithm,
+                                token: {
+                                  colorPrimaryActive: "#F6B8FC",
+                                  colorPrimary: "#F6B8FC",
+                                  colorPrimaryHover: "#F6B8FC",
+                                  colorText: "#fff",
+                                },
+                              }}
+                            >
+                              <Select
+                                className="mr-[2rem]"
+                                placeholder="Lobby"
+                                optionFilterProp="children"
+                                //   filterOption={filterOption}
+                                //   onChange={onDropDownChange}
+                                style={{ width: "fit-content" }}
+                                options={[
+                                  {
+                                    value: "Lobby A",
+                                    label: "Lobby A",
+                                  },
+                                  {
+                                    value: "Lobby B",
+                                    label: "Lobby B",
+                                  },
+                                ]}
+                              />
+                            </ConfigProvider>
+
+                            <div className=" flex items-center bg-[#141414] rounded-[6px]  border-solid border-[1px] border-[#4f4f4f] hover:border-primary-second ">
+                              <FiSearch className="text-[#4f4f4f] text-[1rem] ml-2" />
+                              <input
+                                onChange={onSearchChange}
+                                className="bg-[#141414] ml-2 h-[2rem] text-white rounded-[6px] placeholder:text-[#4f4f4f] placeholder:text-[.85rem] text-[.85rem]  focus:outline-none border-none focus:border-[transparent]  focus:ring-[transparent]"
+                                placeholder="search"
+                              />
+                            </div>
+                            <div className="flex gap-4 ml-4">
                               {" "}
-                              Created: 05-04-2024
-                            </p>
-                            <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
-                              Start: 10-04-2024 | 14:00WAT
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className=" mt-[1rem] flex gap-4">
-                        <div className="flex bg-[#297FFF]/15 h-[4rem] w-fit">
-                          <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
-                          <div className="flex justify-center items-center px-4 ">
-                            <div className="flex flex-col">
-                              <p className="text-[.8rem] text-white font-semibold">
-                                Registration
-                              </p>
-                              <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                $2
-                              </p>
-                            </div>
-                            <div className="flex ml-[2rem] flex-col">
-                              <p className="text-[.8rem] text-white font-semibold">
-                                {" "}
-                                Prize
-                              </p>
-                              <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                $300
-                              </p>
+                              <img
+                                onClick={() => setActive(1)}
+                                src={
+                                  active === 1
+                                    ? `bi_list-clicked.png`
+                                    : `bi_list.png`
+                                }
+                                className="cursor-pointer w-[2rem] h-[2rem]"
+                                alt=""
+                              />
+                              <img
+                                onClick={() => setActive(2)}
+                                src={
+                                  active === 2 ? `grid-clicked.png` : `grid.png`
+                                }
+                                className="cursor-pointer w-[2rem] h-[2rem]"
+                                alt=""
+                              />
                             </div>
                           </div>
-                        </div>
 
-                        <div className="flex  h-[4rem] bg-[#297FFF]/15 w-fit">
-                          <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
-                          <div className="flex justify-center items-center px-4 ">
-                            <div className="flex flex-col">
-                              <p className="text-[.8rem] text-white font-semibold">
-                                Players
+                          <div className="flex justify-center items-center ">
+                            <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
+                              <p className="text-[.85rem] text-white">
+                                Save Changes
                               </p>
-                              <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                75
-                              </p>
-                            </div>
+                            </button>
+                            <button
+                              onClick={handleDelete}
+                              disabled={selectedRowKeys.length === 0}
+                              className=" hover:border-primary-second border-primary-second/50 border border-solid rounded-[3px] h-[2.3rem] w-[2.5rem] p-2 flex justify-around items-center cursor-pointer"
+                            >
+                              <img src={`delete.png`} className="m-0" alt="" />
+                            </button>
                           </div>
                         </div>
+                        <div className="my-8 border border-solid border-[#2E3438] w-full" />
+                        {active === 1 ? (
+                          <TournamentGridView />
+                        ) : (
+                          <TournamentListView
+                            rowSelection={rowSelection}
+                            columns={columns}
+                            dataSearch={dataSearch}
+                          />
+                        )}
                       </div>
+                      {/*  */}
                     </div>
-                    {/* Row */}
-                    <div className="flex h-[12rem] flex-col">
-                      <div className="w-full flex justify-end">
-                        <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
-                          <img
-                            src={`ongoing-status.png`}
-                            className="m-0"
-                            alt=""
-                          />
-                          <p className="text-[#BCBCBC] text-[.8rem]">Ongoing</p>
-                        </div>
-                      </div>
-
-                      <div className="flex h-full items-end">
-                        <div className="flex justify-between  gap-4 items-center ">
-                          <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
-                            <GiMoneyStack className="text-white text-[1.5rem]" />
-                            <p className="ml-[.4rem]  text-white text-[.8rem]">
-                              {" "}
-                              Pay
-                            </p>
-                          </button>
-                          <button className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
-                            <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
-                            <p className="ml-[.4rem] text-white text-[.8rem]">
-                              {" "}
-                              End
-                            </p>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
-                    <div className="flex mx-8 justify-between items-center">
-                      <div className="flex items-center">
-                        <ConfigProvider
-                          theme={{
-                            algorithm: theme.darkAlgorithm,
-                            token: {
-                              colorPrimaryActive: "#F6B8FC",
-                              colorPrimary: "#F6B8FC",
-                              colorPrimaryHover: "#F6B8FC",
-                              colorText: "#fff",
-                            },
-                          }}
-                        >
-                          <Select
-                            className="mr-[2rem]"
-                            placeholder="Lobby"
-                            optionFilterProp="children"
-                            //   filterOption={filterOption}
-                            //   onChange={onDropDownChange}
-                            options={[
-                              {
-                                value: "Lobby A",
-                                label: "Lobby A",
-                              },
-                              {
-                                value: "Lobby B",
-                                label: "Lobby B",
-                              },
-                            ]}
-                          />
-                        </ConfigProvider>
-
-                        <div className=" flex items-center bg-[#141414] rounded-[6px]  border-solid border-[1px] border-[#4f4f4f] hover:border-primary-second ">
-                          <FiSearch className="text-[#4f4f4f] text-[1rem] ml-2" />
-                          <input
-                            onChange={onSearchChange}
-                            className="bg-[#141414] ml-2 h-[2rem] text-white rounded-[6px] placeholder:text-[#4f4f4f] placeholder:text-[.85rem] text-[.85rem]  focus:outline-none border-none focus:border-[transparent]  focus:ring-[transparent]"
-                            placeholder="search"
-                          />
-                        </div>
-                        <div className="flex gap-4 ml-4">
-                          {" "}
-                          <img
-                            onClick={() => setActive(1)}
-                            src={
-                              active === 1
-                                ? `bi_list-clicked.png`
-                                : `bi_list.png`
-                            }
-                            className="cursor-pointer w-[2rem] h-[2rem]"
-                            alt=""
-                          />
-                          <img
-                            onClick={() => setActive(2)}
-                            src={active === 2 ? `grid-clicked.png` : `grid.png`}
-                            className="cursor-pointer w-[2rem] h-[2rem]"
-                            alt=""
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex justify-center items-center ">
-                        <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
-                          <p className="text-[.85rem] text-white">
-                            Save Changes
-                          </p>
-                        </button>
-                        <button
-                          onClick={handleDelete}
-                          disabled={selectedRowKeys.length === 0}
-                          className=" hover:border-primary-second border-primary-second/50 border border-solid rounded-[3px] h-[2.3rem] w-[2.5rem] p-2 flex justify-around items-center cursor-pointer"
-                        >
-                          <img src={`delete.png`} className="m-0" alt="" />
-                        </button>
-                      </div>
-                    </div>
-                    <div className="my-8 border border-solid border-[#2E3438] w-full" />
-                    {active === 1 ? (
-                      <TournamentGridView />
-                    ) : (
-                      <TournamentListView
-                        rowSelection={rowSelection}
-                        columns={columns}
-                        dataSearch={dataSearch}
-                      />
-                    )}
-                  </div>
-                  {/*  */}
-                </div>
+                  ))}
               </div>
             </div>
           </div>

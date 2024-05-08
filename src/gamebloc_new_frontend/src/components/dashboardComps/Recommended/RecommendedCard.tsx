@@ -43,10 +43,10 @@ const RecommendedCard = ({ data, index }: Props) => {
             {data.creator}
           </p>
         </div>
-        <p className="font-valorant w-full text-center font-medium text-[0.65rem] 2xl:text-[.8rem]  text-primary-second">
+        <p className="font-valorant w-full text-center font-medium text-[0.75rem] 2xl:text-[.8rem]  text-primary-second">
           {data.game}
         </p>
-        <p className="text-primary-second text-[0.6rem] 2xl:text-[.659rem] text-center  mt-[2px] mb-2">
+        <p className="text-primary-second text-[0.8rem] 2xl:text-[.8rem] text-center  mt-[2px] mb-2">
           {data.title}
         </p>
         <div className="flex w-full justify-center items-center">

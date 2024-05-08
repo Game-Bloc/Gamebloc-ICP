@@ -54,7 +54,7 @@ const AdminLogin = () => {
     } else if (password.trim() !== "game-Bloc_@2024") {
       errorPopUp("Password incorrect !")
     } else {
-      isAdmin(userName, "you are logged in", "/admin-dashboard")
+      isAdmin("you are logged in", "/admin-dashboard")
     }
   }
 

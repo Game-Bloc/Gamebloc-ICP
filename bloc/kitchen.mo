@@ -419,6 +419,10 @@ shared ({ caller }) actor class Kitchen() {
         return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
     };
 
+    public func getCanisterAccountIdentifier() : async Text {
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null));
+    };
+
     public type AccountIdentifier = [Nat8];
 
     public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
@@ -979,6 +983,9 @@ shared ({ caller }) actor class Kitchen() {
         let result : Text = decoded_text # ". See more info of the request sent at: " # url # "/inspect";
         return result
     };
+
+    // automated payment and receiving
+    // 
 
     // public func start_tournament(id : Text) : (){
 

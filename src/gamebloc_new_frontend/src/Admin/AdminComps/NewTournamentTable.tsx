@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import type { TableColumnsType } from "antd"
 import { ConfigProvider, Select, Table, theme } from "antd"
 import NewModal from "../../components/Modals/Newmodal"
@@ -9,48 +9,78 @@ import { useNavigate } from "react-router-dom"
 import AdminCreateTournamentModal from "../AdminModals/AdminCreateTournamentModal"
 
 interface DataType {
-  id: React.Key
   creator: string
-  name: string
-  funding: string
-  game_mode: string
-  players: number
+  creator_id: string[]
+  messages: any[]
+  end_date: string
+  entry_prize: number
+  game: string
+  game_type: any
+  id_hash: string
+  idx: number
+  no_of_participants: number
+  no_of_winners: number
+  squad: any[]
+  starting_date: string
+  status: any
+  title: string
+  total_prize: number
+  tournament_rules: string
+  tournament_type: any
+  users: any[]
+  winners: any[]
+  squad_points: []
+  squad_in_game_names: []
+  in_game_names: []
+  points: []
+  lobbies: []
 }
 
 const NewTournamentTable = () => {
   const navigate = useNavigate()
-  const [openTournamentModal, setOpeTournamentnModal] = useState<boolean>(false)
+  const [data, setData] = useState<any[]>([])
   const [search, setSearch] = useState<string>("")
+  const [openTournamentModal, setOpeTournamentnModal] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-  //   const dataState = useAppSelector((state) => state.tournamentData);
-  //   console.log("dataState", dataState);
-  const [data, setData] = useState<any[]>([
-    {
-      id: "23232",
-      creator: "Deonorla",
-      name: "The Clash of the greatest",
-      funding: "Crowdfunded",
-      game_mode: "Solo",
-      players: 100,
-    },
-    {
-      id: "32232",
-      creator: "Gamebloc",
-      name: "The Revenge",
-      funding: "Prepaid",
-      game_mode: "Squad",
-      players: 95,
-    },
-  ])
+
+  useEffect(() => {
+    const storedTournament = sessionStorage.getItem("tournament")
+    if (storedTournament) {
+      const data = JSON.parse(storedTournament)
+      setData(data)
+    }
+  }, [])
+
+  // const dataSearch = data.filter((obj) => {
+  //   return Object.keys(obj).some((key) =>
+  //     obj[key]
+  //       .toString()
+  //       .toLowerCase()
+  //       .includes(search.toString().toLowerCase()),
+  //   )
+  // })
 
   const dataSearch = data.filter((obj) => {
-    return Object.keys(obj).some((key) =>
-      obj[key]
-        .toString()
-        .toLowerCase()
-        .includes(search.toString().toLowerCase()),
+    // Check if any key matches the search term
+    const keyMatches = Object.keys(obj).some((key) =>
+      key.toLowerCase().includes(search.toLowerCase()),
     )
+
+    // Check if any value matches the search term
+    const valueMatches = Object.values(obj).some((value) => {
+      if (typeof value === "object" && value !== null) {
+        // If the value is an object (nested object), check its keys
+        return Object.keys(value).some((nestedKey) =>
+          nestedKey.toLowerCase().includes(search.toLowerCase()),
+        )
+      } else {
+        // Otherwise, convert the value to string and perform case-insensitive search
+        return value.toString().toLowerCase().includes(search.toLowerCase())
+      }
+    })
+
+    return keyMatches || valueMatches
   })
 
   const handleTournamenteModal = () => {
@@ -60,31 +90,50 @@ const NewTournamentTable = () => {
   const columns = [
     {
       title: "ID",
-      dataIndex: "id",
-      key: "id",
-      // render: (text, record) => (
-      //   <div key={record.id} className="flex items-center">
-      //     <img src={`avatar.svg`} className="w-[3rem] m-0 h-[3rem]" alt="" />
-
-      //     <div className="ml-[.5rem] flex flex-col">
-      //       <p className="text-[.8rem] font-semibold ">{record.game}</p>
-      //       <p className=" text-[.7rem]">{record.username}</p>
-      //     </div>
-      //   </div>
-      // ),
+      dataIndex: "id_hash",
+      key: "id_hash",
+      render: (text: any, record: any) => (
+        <p key={record.id_hash} className="text-[.85rem] ">
+          {record.id_hash.substring(0, 3) +
+            "..." +
+            record.id_hash.substring(23, 26)}
+        </p>
+      ),
     },
     { title: "Creator", dataIndex: "creator", key: "creator" },
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Funding", dataIndex: "funding", key: "funding" },
-    { title: "Game_mode", dataIndex: "game_mode", key: "game_mode" },
-    { title: "Players", dataIndex: "players", key: "players" },
+    { title: "Name", dataIndex: "title", key: "title" },
+    {
+      title: "Funding",
+      dataIndex: "tournament_type",
+      key: "tournament_type",
+      render: (text: any, record: any) => (
+        <p key={record.id_hash} className="text-[.85rem] ">
+          {Object.keys(record.tournament_type)[0]}
+        </p>
+      ),
+    },
+    {
+      title: "Game Mode",
+      dataIndex: "game_type",
+      key: "game_type",
+      render: (text: any, record: any) => (
+        <p key={record.id_hash} className="text-[.85rem] ">
+          {Object.keys(record.game_type)[0]}
+        </p>
+      ),
+    },
+    {
+      title: "Players",
+      dataIndex: "no_of_participants",
+      key: "no_of_participants",
+    },
     {
       title: "",
       key: "operation",
-      render: (text, record) => (
-        <div key={record.id} className="flex items-center cursor-pointer">
+      render: (text: any, record: any) => (
+        <div key={record.id_hash} className="flex items-center cursor-pointer">
           <img
-            onClick={() => navigate(`/admin-tournament-view/${record.id}`)}
+            onClick={() => navigate(`/admin-tournament-view/${record.id_hash}`)}
             src={`view.png`}
             alt=""
           />
@@ -99,7 +148,9 @@ const NewTournamentTable = () => {
   }
 
   const handleDelete = () => {
-    const newData = data.filter((item) => !selectedRowKeys.includes(item.id))
+    const newData = data.filter(
+      (item) => !selectedRowKeys.includes(item.id_hash),
+    )
     setData(newData)
     setSelectedRowKeys([])
   }
@@ -146,6 +197,7 @@ const NewTournamentTable = () => {
               className="mr-[2rem]"
               placeholder="Game Type"
               optionFilterProp="children"
+              style={{ width: "fit-content" }}
               filterOption={filterOption}
               onChange={onDropDownChange}
               options={[
@@ -171,10 +223,11 @@ const NewTournamentTable = () => {
               placeholder="Game Mode"
               optionFilterProp="children"
               onChange={onDropDownChange}
+              style={{ width: "fit-content" }}
               options={[
                 {
-                  value: "Solo",
-                  label: "Solo",
+                  value: "Single",
+                  label: "Single",
                 },
                 {
                   value: "Duo",
@@ -226,7 +279,7 @@ const NewTournamentTable = () => {
           rowClassName={() => "rowClassName1"}
           columns={columns}
           dataSource={dataSearch}
-          rowKey={"id"}
+          rowKey={"id_hash"}
         />
       </ConfigProvider>
       {openTournamentModal && (

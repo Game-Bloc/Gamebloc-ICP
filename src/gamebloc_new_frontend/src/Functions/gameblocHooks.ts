@@ -73,6 +73,7 @@ export const useGameblocHooks = () => {
     name: string,
     time: string,
     squad_badge: string,
+    role: any,
     successMsg: string,
     errorMsg: string,
     route: any,
@@ -85,6 +86,7 @@ export const useGameblocHooks = () => {
         name,
         time,
         squad_badge,
+        role,
       )
       if (user) {
         popUp(successMsg, route)
@@ -151,6 +153,8 @@ export const useGameblocHooks = () => {
           date: user.date,
           id_hash: user.id_hash,
           is_mod: false,
+          role: user.role,
+          points: user.points,
           account_id: user.account_id,
           principal_id: user.principal_id,
           squad_badge: user.squad_badge,
@@ -266,13 +270,16 @@ export const useGameblocHooks = () => {
   const joinTournament = async (
     name: string,
     id: string,
+    userId: string,
+    playerIgn: string,
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join_tournament = await whoamiActor.join_tournament(name, id)
+      const ign: [string, string] = [userId, playerIgn]
+      const join_tournament = await whoamiActor.join_tournament(name, id, ign)
       setIsLoading(false)
       popUp(successMsg, route)
     } catch (err) {
@@ -382,13 +389,18 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
+    igns: [],
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join = await whoamiActor.join_tournament_with_squad(squad_id, id)
+      const join = await whoamiActor.join_tournament_with_squad(
+        squad_id,
+        id,
+        igns,
+      )
       setIsLoading(false)
       popUp(successMsg, route)
     } catch (err) {
@@ -564,10 +576,10 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const isAdmin = async (name: string, msg: string, route: string) => {
+  const isAdmin = async (msg: string, route: string) => {
     try {
       setIsLoading(true)
-      const admin = await whoamiActor.is_mod(name)
+      const admin = await whoamiActor.is_mod(principal)
       if (admin) {
         popUp(msg, route)
         return true

@@ -97,7 +97,7 @@ export const useUpdateTournament = () => {
       setUpdating(true)
       const update: any = await whoamiActor.get_all_tournament()
       if (update && update.length !== 0) {
-        // console.log("update function working")
+        console.log("update function working")
         const tourArray: any[] = []
         for (const data of update) {
           const tournamentData = {
@@ -229,6 +229,7 @@ export const useGetAllSquad = () => {
       dispatch(clearSquad())
       // console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
+        const squadArray: any[] = []
         for (const data of fetchSquads) {
           const squads: SquadState = {
             id_hash: data.id_hash,
@@ -242,6 +243,8 @@ export const useGetAllSquad = () => {
           }
           console.log("checking squads", squads)
           dispatch(addSquad(squads))
+          squadArray.push(squads)
+          sessionStorage.setItem("squad", JSON.stringify(squadArray))
         }
         setUpdating(false)
       } else {
@@ -270,6 +273,7 @@ export const useUpdateAllSquad = () => {
       const fetchSquads: any = await whoamiActor.get_all_squad()
       // console.log("update Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
+        const squadArray: any[] = []
         for (const data of fetchSquads) {
           const squads: SquadState = {
             id_hash: data.id_hash,
@@ -283,6 +287,8 @@ export const useUpdateAllSquad = () => {
           }
           console.log("updating squads", squads)
           dispatch(updateSquad(squads))
+          squadArray.push(squads)
+          sessionStorage.setItem("squad", JSON.stringify(squadArray))
         }
         setUpdating(false)
       } else {
