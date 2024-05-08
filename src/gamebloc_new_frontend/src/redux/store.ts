@@ -9,6 +9,7 @@ import {
   REGISTER,
 } from "redux-persist"
 import storage from "redux-persist/lib/storage"
+import { encryptTransform } from "./encrypt"
 import profileReducer from "./slice/userProfileSlice"
 import categoryReducer from "./slice/gameCategorySlice"
 import tournamentReducer from "./slice/tournamentDataSlice"
@@ -22,6 +23,7 @@ const persistConfig = {
   key: "root",
   version: 1,
   storage,
+  transforms: [encryptTransform],
 }
 
 const reducer = combineReducers({
