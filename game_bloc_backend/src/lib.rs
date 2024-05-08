@@ -227,7 +227,7 @@ fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,Str
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
             let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-            if !(squad.members.len() == ign.len()){
+            if squad.members.len() != ign.len() && ign.len() > squad.members.len(){
                 let count = ign.len() - squad.members.len();
                 PROFILE_STORE.with(|profile_store| {
                     loop {
