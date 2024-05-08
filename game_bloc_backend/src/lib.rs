@@ -222,35 +222,36 @@ fn join_tournament(name: String, id: String, ign: (String,String),) {
 }
 
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, ) {
+fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, mut new_member_ign:Vec<(String, String)>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
             let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-            if squad.members.len() != ign.len() && ign.len() > squad.members.len(){
-                let count = ign.len() - squad.members.len();
+            let count = new_member_ign.len();
+            if count > 0 {
                 PROFILE_STORE.with(|profile_store| {
                     loop {
                         if count == 0 {
                             break;
                         }
-                        let mut user = profile_store.borrow().get(&ign[count - 1].0).cloned().unwrap();
+                        let mut user = profile_store.borrow().get(&new_member_ign[count - 1].0).cloned().unwrap();
                         let missing: Member =
                             Member {
                                 name: user.clone().username,
-                                principal_id: ign[count - 1].0.to_owned(),
+                                principal_id: new_member_ign[count - 1].0.to_owned(),
                             };
                         squad.members.push(missing);
                         user.squad_badge = squad.id_hash.clone();
-                        profile_store.borrow_mut().insert(ign[count - 1].0.to_owned(), user);
+                        profile_store.borrow_mut().insert(new_member_ign[count - 1].0.to_owned(), user);
                     }
                     squad_store.borrow_mut().insert(squad_id, squad.clone());
                 });
             }
             tournament.squad.push(squad);
         });
+        ign.clone().append(&mut new_member_ign);
         if tournament.clone().squad_in_game_names == None {
-            tournament.squad_in_game_names = Some(vec![ign.clone()]);
+            tournament.squad_in_game_names = Some(vec![ign]);
         }
         else{
             tournament.to_owned().squad_in_game_names.expect("List of tournament squad in game names is empty").push(ign);
