@@ -7,7 +7,7 @@ export interface UserProfileState {
   date: string | null
   id_hash: string | null
   is_mod: boolean
-  points: [] | null
+  points: [number] | null
   role: any | null
   account_id: string | null
   principal_id: string | null
@@ -27,7 +27,7 @@ const initialState: UserProfileState = {
   is_mod: false,
   account_id: "",
   principal_id: "",
-  points: [],
+  points: [0],
   role: { Player: null },
   squad_badge: "",
   status: { Online: null },
@@ -57,6 +57,7 @@ export const userProfileSlice = createSlice({
       state.tournaments_created = payload.tournaments_created
       state.username = payload.username
       state.wins = payload.wins
+      state.points = payload.points
       state.initializeState = payload.initializeState
     },
   },

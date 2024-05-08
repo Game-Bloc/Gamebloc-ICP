@@ -20,9 +20,8 @@ interface Props {
 
 const TournamentInfo = ({ data }: Props) => {
   const { id } = useParams()
-  const { principal } = useAuth()
+  const { principal, isAuthenticated } = useAuth()
   const [count, setCount] = useState(0)
-  const { isAuthenticated } = useAuth()
   const MySwal = withReactContent(Swal)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
@@ -34,7 +33,8 @@ const TournamentInfo = ({ data }: Props) => {
   const { updateAllSquads } = useUpdateAllSquad()
   const gamerName = useAppSelector((state) => state.userProfile.username)
   const squad_data = useAppSelector((state) => state.squad)
-  const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
+  const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
+  const { isLoading, getProfile } = useGameblocHooks()
   const [squad, setSquad] = useState<any[]>([])
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
@@ -60,7 +60,9 @@ const TournamentInfo = ({ data }: Props) => {
 
   const squadCount = () => {
     let totalCount = 0
-    data.squad.forEach((player: any) => (totalCount += player.members.length))
+    data?.squad?.forEach(
+      (player: any) => (totalCount += player?.members?.length),
+    )
     return totalCount
   }
   const handleLoginModal = () => {
@@ -185,7 +187,7 @@ const TournamentInfo = ({ data }: Props) => {
   }
 
   useEffect(() => {
-    if (squad_data.length > 0) {
+    if (squad_data?.length > 0) {
       updateAllSquads()
     } else {
       getAllSquads()
@@ -202,9 +204,11 @@ const TournamentInfo = ({ data }: Props) => {
       setSquad(data)
     }
     if (principal != null) {
+      getProfile()
       setUserId(principal.toString())
+      console.log("userId", userId)
     }
-  }, [principal])
+  }, [])
 
   if (updating) {
     return (
@@ -234,7 +238,7 @@ const TournamentInfo = ({ data }: Props) => {
                       {Object.keys(data.tournament_type)[0].toUpperCase() ===
                         "CROWDFUNDED" &&
                       Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
-                        ? `$${data.entry_prize * data.users.length}`
+                        ? `$${data.entry_prize * data?.users?.length}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
                           Object.keys(data.game_type)[0].toUpperCase() === "DUO"
@@ -260,9 +264,9 @@ const TournamentInfo = ({ data }: Props) => {
                           "CROWDFUNDED" &&
                         Object.keys(data.game_type)[0].toUpperCase() ===
                           "SINGLE"
-                          ? `$${(data.entry_prize * data.users.length).toFixed(
-                              2,
-                            )}`
+                          ? `$${(
+                              data.entry_prize * data?.users?.length
+                            ).toFixed(2)}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
@@ -293,7 +297,7 @@ const TournamentInfo = ({ data }: Props) => {
                           "SINGLE"
                           ? `$${(
                               data.entry_prize *
-                              data.users.length *
+                              data?.users?.length *
                               0.6
                             ).toFixed(2)}`
                           : Object.keys(
@@ -327,7 +331,7 @@ const TournamentInfo = ({ data }: Props) => {
                           "SINGLE"
                           ? `$${(
                               data.entry_prize *
-                              data.users.length *
+                              data?.users?.length *
                               0.4
                             ).toFixed(2)}`
                           : Object.keys(
@@ -364,7 +368,7 @@ const TournamentInfo = ({ data }: Props) => {
                           "SINGLE"
                           ? `$${(
                               data.entry_prize *
-                              data.users.length *
+                              data?.users?.length *
                               0.5
                             ).toFixed(2)}`
                           : Object.keys(
@@ -398,7 +402,7 @@ const TournamentInfo = ({ data }: Props) => {
                           "SINGLE"
                           ? `$${(
                               data.entry_prize *
-                              data.users.length *
+                              data?.users?.length *
                               0.3
                             ).toFixed(2)}`
                           : Object.keys(
@@ -432,7 +436,7 @@ const TournamentInfo = ({ data }: Props) => {
                           "SINGLE"
                           ? `$${(
                               data.entry_prize *
-                              data.users.length *
+                              data?.users?.length *
                               0.2
                             ).toFixed(2)}`
                           : Object.keys(
@@ -643,7 +647,13 @@ const TournamentInfo = ({ data }: Props) => {
           />
         )}
         {openSquadModal && (
-          <JoinAsSquad modal={handleSquadModal} squad={squad} data={data} />
+          <JoinAsSquad
+            modal={handleSquadModal}
+            // squad_id={squad_id}
+            // id={id}
+            squad={squad}
+            data={data}
+          />
         )}
       </div>
     )

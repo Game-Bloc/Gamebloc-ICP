@@ -1,4 +1,14 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { configureStore, combineReducers } from "@reduxjs/toolkit"
+import {
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist"
+import storage from "redux-persist/lib/storage"
 import profileReducer from "./slice/userProfileSlice"
 import categoryReducer from "./slice/gameCategorySlice"
 import tournamentReducer from "./slice/tournamentDataSlice"
@@ -8,24 +18,31 @@ import icpReducer from "./slice/icpBalanceSlice"
 import chatReducer from "./slice/chatSlice"
 import transactionReducer from "./slice/transactionSlice"
 
+const persistConfig = {
+  key: "root",
+  version: 1,
+  storage,
+}
+
+const reducer = combineReducers({
+  userProfile: profileReducer,
+  tournamentData: tournamentReducer,
+  gameCategory: categoryReducer,
+  authenticationClient: authReducer,
+  squad: squadReducer,
+  IcpBalance: icpReducer,
+  chat: chatReducer,
+  transaction: transactionReducer,
+})
+
+const persistedReducer = persistReducer(persistConfig, reducer)
+
 export const store = configureStore({
-  reducer: {
-    userProfile: profileReducer,
-    tournamentData: tournamentReducer,
-    gameCategory: categoryReducer,
-    authenticationClient: authReducer,
-    squad: squadReducer,
-    IcpBalance: icpReducer,
-    chat: chatReducer,
-    transaction: transactionReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore all non-serializable action payloads
-        ignoredActionPaths: ["payload"],
-        // Ignore all non-serializable fields in the state
-        ignoredPaths: ["authenticationClient.auth.whoamiActor"],
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
 })

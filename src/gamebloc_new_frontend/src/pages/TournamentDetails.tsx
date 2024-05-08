@@ -71,6 +71,10 @@ const TournamentDetail = () => {
     img.src = gameImage
   }, [gameImage])
 
+  useEffect(() => {
+    updateTournament()
+  }, [])
+
   return (
     <div className="">
       {updating ? (

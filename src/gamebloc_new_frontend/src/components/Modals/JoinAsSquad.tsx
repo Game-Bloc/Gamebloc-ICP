@@ -11,6 +11,8 @@ interface Props {
   modal: () => void
   squad: any
   data: any
+  // squad_id: string
+  // id: string
 }
 
 const override = {
@@ -91,7 +93,7 @@ const JoinAsSquad = ({ modal, squad, data }: Props) => {
     //   "/dashboard",
     // );
   }
-
+  // console.log(squad_id)
   return (
     <div>
       <div
