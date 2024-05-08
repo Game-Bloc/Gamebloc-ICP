@@ -42,16 +42,6 @@ const App = () => {
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/world-chat" element={<WorldChat />} />
-            <Route
-              path="/modal"
-              element={
-                <JoinAsSquad
-                  modal={function (): void {
-                    throw new Error("Function not implemented.")
-                  }}
-                />
-              }
-            />
           </Route>
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}

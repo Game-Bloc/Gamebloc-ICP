@@ -7,6 +7,7 @@ import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useAuth } from "../../Auth/use-auth-client"
 import LoginModal2 from "../Modals/LoginModal2"
+import parse from "html-react-parser"
 interface Props {
   data: any
 }
@@ -75,11 +76,14 @@ const Rules = ({ data }: Props) => {
       "/",
     )
   }
-
+  console.log(data.tournament_rules)
   return (
     <div className="">
       <div className="flex flex-col mx-4 max-h-[27rem] h-[25rem]  overflow-x-hidden overflow-y-scroll">
-        <p className="text-white">{data.tournament_rules}</p>
+        <div
+          className="ProseMirror text-white"
+          dangerouslySetInnerHTML={{ __html: data.tournament_rules }}
+        />
       </div>
       <div className="flex flex-col w-full justify-center items-center">
         {Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&

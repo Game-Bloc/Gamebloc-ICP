@@ -35,11 +35,11 @@ const TournamentInfo = ({ data }: Props) => {
   const gamerName = useAppSelector((state) => state.userProfile.username)
   const squad_data = useAppSelector((state) => state.squad)
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
-  const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
+  const [squad, setSquad] = useState<any[]>([])
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
-  const userId = principal.toString()
+  const [userId, setUserId] = useState<string>("")
 
   const override = {
     display: "block",
@@ -194,6 +194,17 @@ const TournamentInfo = ({ data }: Props) => {
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
   }, [])
+
+  useEffect(() => {
+    const squads = sessionStorage.getItem("squad")
+    if (squads) {
+      const data = JSON.parse(squads)
+      setSquad(data)
+    }
+    if (principal != null) {
+      setUserId(principal.toString())
+    }
+  }, [principal])
 
   if (updating) {
     return (
@@ -631,7 +642,9 @@ const TournamentInfo = ({ data }: Props) => {
             id={id}
           />
         )}
-        {openSquadModal && <JoinAsSquad modal={handleSquadModal} />}
+        {openSquadModal && (
+          <JoinAsSquad modal={handleSquadModal} squad={squad} data={data} />
+        )}
       </div>
     )
   }
