@@ -11,8 +11,8 @@ interface Props {
   modal: () => void
   squad: any
   data: any
-  // squad_id: string
-  // id: string
+  squad_id: string
+  id: string
 }
 
 const override = {
@@ -21,9 +21,9 @@ const override = {
   borderColor: "white",
 }
 
-const JoinAsSquad = ({ modal, squad, data }: Props) => {
+const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
   const MySwal = withReactContent(Swal)
-  const username = sessionStorage.getItem("Username")
+  const username = useAppSelector((state) => state.userProfile.username)
   const { isLoading, joinTournamentSqaud } = useGameblocHooks()
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
@@ -83,17 +83,21 @@ const JoinAsSquad = ({ modal, squad, data }: Props) => {
       return
     }
 
+    console.log("squad_id", squad_id)
+    console.log("id", id)
+    console.log("igns", playerIGNs)
+
     // Perform join operation
-    // joinTournamentSqaud(
-    //   squad_id,
-    //   id,
-    //   [],
-    //   "Tournament Joined",
-    //   "Error, try again.",
-    //   "/dashboard",
-    // );
+    joinTournamentSqaud(
+      squad_id,
+      id,
+      playerIGNs,
+      "Tournament Joined",
+      "Error, try again.",
+      "/dashboard",
+    )
   }
-  // console.log(squad_id)
+
   return (
     <div>
       <div
@@ -261,19 +265,22 @@ const JoinAsSquad = ({ modal, squad, data }: Props) => {
                         onClick={() => joinTournament()}
                         className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
                       >
-                        <p className="font-semibold">Join Tournament</p>
                         {isLoading ? (
-                          <ClipLoader
-                            color={color}
-                            loading={isLoading}
-                            cssOverride={override}
-                            size={10}
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                            className="ml-4"
-                          />
+                          <div className="flex items-center  gap-2">
+                            <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                              Wait
+                            </p>
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={10}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          </div>
                         ) : (
-                          <></>
+                          <p className="font-semibold">Join Tournament</p>
                         )}
                       </button>
                     </div>

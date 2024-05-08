@@ -20,22 +20,19 @@ interface Props {
 
 const TournamentInfo = ({ data }: Props) => {
   const { id } = useParams()
-  const { principal, isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
   const [count, setCount] = useState(0)
   const MySwal = withReactContent(Swal)
   const [color, setColor] = useState("#ffffff")
   const [days, hours, minutes, seconds] = useCountdown(count)
-  const owner =
-    useAppSelector((state) => state.userProfile.username) === ""
-      ? sessionStorage.getItem("Username")
-      : useAppSelector((state) => state.userProfile.username)
+  const owner = useAppSelector((state) => state.userProfile.username)
   const { noData, updating, getAllSquads } = useGetAllSquad()
   const { updateAllSquads } = useUpdateAllSquad()
-  const gamerName = useAppSelector((state) => state.userProfile.username)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
   const squad_data = useAppSelector((state) => state.squad)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
   const { isLoading, getProfile } = useGameblocHooks()
-  const [squad, setSquad] = useState<any[]>([])
+  const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
@@ -195,19 +192,6 @@ const TournamentInfo = ({ data }: Props) => {
     const inputDateString = data.starting_date
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
-  }, [])
-
-  useEffect(() => {
-    const squads = sessionStorage.getItem("squad")
-    if (squads) {
-      const data = JSON.parse(squads)
-      setSquad(data)
-    }
-    if (principal != null) {
-      getProfile()
-      setUserId(principal.toString())
-      console.log("userId", userId)
-    }
   }, [])
 
   if (updating) {
@@ -649,8 +633,8 @@ const TournamentInfo = ({ data }: Props) => {
         {openSquadModal && (
           <JoinAsSquad
             modal={handleSquadModal}
-            // squad_id={squad_id}
-            // id={id}
+            squad_id={squad_id}
+            id={id}
             squad={squad}
             data={data}
           />

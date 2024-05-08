@@ -18,15 +18,11 @@ const Players = ({ data }: Props) => {
   const userId = principal.toString()
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
-  const owner =
-    useAppSelector((state) => state.userProfile.username) === ""
-      ? sessionStorage.getItem("Username")
-      : useAppSelector((state) => state.userProfile.username)
+  const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_data = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
-
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
 
   const override = {

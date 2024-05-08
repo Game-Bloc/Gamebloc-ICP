@@ -39,7 +39,15 @@ const tournamentDataSlice = createSlice({
       state,
       { payload }: PayloadAction<TournamentState>,
     ) => {
-      state.push(payload)
+      const existingTournamentIndex = state.findIndex(
+        (t) => t.id_hash === payload.id_hash,
+      )
+
+      if (existingTournamentIndex !== -1) {
+        state[existingTournamentIndex] = payload
+      } else {
+        state.push(payload)
+      }
     },
     updateActiveTournament: (
       state,

@@ -18,10 +18,7 @@ const Rules = ({ data }: Props) => {
   const userId = principal.toString()
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
-  const owner =
-    useAppSelector((state) => state.userProfile.username) === ""
-      ? sessionStorage.getItem("Username")
-      : useAppSelector((state) => state.userProfile.username)
+  const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
   const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_data = useAppSelector((state) => state.squad)

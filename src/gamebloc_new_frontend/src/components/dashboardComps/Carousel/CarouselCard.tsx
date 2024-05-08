@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Blurhash } from "react-blurhash"
 import { useGameblocHooks } from "../../../Functions/gameblocHooks"
+import { useAppSelector } from "../../../redux/hooks"
 
 interface Props {
   list: any
@@ -9,7 +10,7 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
-  const _icp2Usd = sessionStorage.getItem("_icp2usd")
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
 
   useEffect(() => {

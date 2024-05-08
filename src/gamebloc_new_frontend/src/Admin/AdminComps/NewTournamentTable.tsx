@@ -7,6 +7,7 @@ import { FiSearch } from "react-icons/fi"
 import { IoMdAdd } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
 import AdminCreateTournamentModal from "../AdminModals/AdminCreateTournamentModal"
+import { useAppSelector } from "../../redux/hooks"
 
 interface DataType {
   creator: string
@@ -38,19 +39,11 @@ interface DataType {
 
 const NewTournamentTable = () => {
   const navigate = useNavigate()
-  const [data, setData] = useState<any[]>([])
+  const data = useAppSelector((state) => state.tournamentData)
   const [search, setSearch] = useState<string>("")
   const [openTournamentModal, setOpeTournamentnModal] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-
-  useEffect(() => {
-    const storedTournament = sessionStorage.getItem("tournament")
-    if (storedTournament) {
-      const data = JSON.parse(storedTournament)
-      setData(data)
-    }
-  }, [])
 
   // const dataSearch = data.filter((obj) => {
   //   return Object.keys(obj).some((key) =>
@@ -151,7 +144,7 @@ const NewTournamentTable = () => {
     const newData = data.filter(
       (item) => !selectedRowKeys.includes(item.id_hash),
     )
-    setData(newData)
+    // setData(newData)
     setSelectedRowKeys([])
   }
 

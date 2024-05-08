@@ -22,16 +22,11 @@ const Header = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
-  const [username, setUsername] = useState<String>("")
+  const username = useAppSelector((state) => state.userProfile.username)
   const initials = username?.substring(0, 2).toUpperCase()
   const { isAuthenticated } = useAuth()
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
-
-  useEffect(() => {
-    const name = sessionStorage.getItem("Username")
-    setUsername(name)
-  }, [])
 
   const menus = [
     {
@@ -69,6 +64,7 @@ const Header = () => {
   }
 
   const signOut = () => {
+    localStorage.clear()
     signOut()
   }
 

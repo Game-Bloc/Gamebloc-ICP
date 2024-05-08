@@ -35,7 +35,7 @@ export const useGameblocHooks = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
-  const accountId = sessionStorage.getItem("accountId")
+  const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
@@ -123,7 +123,6 @@ export const useGameblocHooks = () => {
       }
       // Set the ICP price in state
       dispatch(updateICP(Icp))
-      sessionStorage.setItem("_icp2usd", `${price}`)
       console.log(`The current price of ICP is $${price}`)
     } catch (error) {
       console.error("Error fetching ICP price:", error)
@@ -165,8 +164,6 @@ export const useGameblocHooks = () => {
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
-        sessionStorage.setItem("accountId", user.account_id)
-        sessionStorage.setItem("Username", user.username)
         localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
@@ -389,7 +386,7 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
-    igns: [],
+    igns: [string, string][],
     successMsg: string,
     errorMsg: string,
     route: string,

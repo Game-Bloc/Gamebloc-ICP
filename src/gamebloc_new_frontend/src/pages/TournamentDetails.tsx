@@ -20,7 +20,7 @@ const TournamentDetail = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
-  const [tournamentData, setTournamentData] = useState<any[]>([])
+  const tournamentData = useAppSelector((state) => state.tournamentData)
   const { updating, updateTournament } = useUpdateTournament()
 
   const items: TabsProps["items"] = [
@@ -59,11 +59,6 @@ const TournamentDetail = () => {
   }
 
   useEffect(() => {
-    const storedTournament = sessionStorage.getItem("tournament")
-    if (storedTournament) {
-      const data = JSON.parse(storedTournament)
-      setTournamentData(data)
-    }
     const img = new Image()
     img.onload = () => {
       setImageLoaded(true)

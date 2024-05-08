@@ -19,7 +19,7 @@ const Prepaid = () => {
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
   const [nodata, setNodata] = useState<boolean>(false)
-  const [tournament, setTournament] = useState([])
+  const tournament = useAppSelector((state) => state.tournamentData)
   const prepaidTournament = tournament?.filter((list: any) => {
     return list.tournament_type && list.tournament_type.Prepaid === null
   })
@@ -43,14 +43,6 @@ const Prepaid = () => {
     ))
 
   console.log(prepaidTournament?.length == 0)
-
-  useEffect(() => {
-    const storedTournament = sessionStorage.getItem("tournament")
-    if (storedTournament) {
-      const data = JSON.parse(storedTournament)
-      setTournament(data)
-    }
-  }, [])
 
   useEffect(() => {
     if (prepaidTournament.length === 0) {
