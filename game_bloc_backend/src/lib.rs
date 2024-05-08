@@ -222,11 +222,31 @@ fn join_tournament(name: String, id: String, ign: (String,String),) {
 }
 
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>) {
+fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, ) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
-            let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+            let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+            if !(squad.members.len() == ign.len()){
+                let count = ign.len() - squad.members.len();
+                PROFILE_STORE.with(|profile_store| {
+                    loop {
+                        if count == 0 {
+                            break;
+                        }
+                        let mut user = profile_store.borrow().get(&ign[count - 1].0).cloned().unwrap();
+                        let missing: Member =
+                            Member {
+                                name: user.clone().username,
+                                principal_id: ign[count - 1].0.to_owned(),
+                            };
+                        squad.members.push(missing);
+                        user.squad_badge = squad.id_hash.clone();
+                        profile_store.borrow_mut().insert(ign[count - 1].0.to_owned(), user);
+                    }
+                    squad_store.borrow_mut().insert(squad_id, squad.clone());
+                });
+            }
             tournament.squad.push(squad);
         });
         if tournament.clone().squad_in_game_names == None {
@@ -285,6 +305,18 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                 TournamentStatus::GameInProgress
             }
         };
+
+        let mut is_even: bool = tournament.clone().lobbies.unwrap().len() % 2 == 0;
+
+        if (is_even) {
+            tournament.clone().lobbies.unwrap().iter().for_each(
+                |e|{
+                    e.no_of_participants as f64 * 0.5;
+
+
+                }
+            );
+        }
 
         // Matching arms for
         // structuring the tournament into lobbies
@@ -394,7 +426,7 @@ fn create_new_lobbies_from_winners(tournament_id: String, ) -> Result<u8, u8> {
                     })
             },
         }
-        tournament_store.borrow_mut().insert(tournament_id, tournament);
+        tournament_store.borrow_mut().insert(tournament_id, tournament.to_owned());
     });
     Ok(1)
 }
