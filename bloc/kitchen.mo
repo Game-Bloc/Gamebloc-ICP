@@ -839,7 +839,7 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text)]) : async () {
+    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text)], new_member_ign : [(Text, Text)]) : async () {
         try {
             await update_tournaments_joined(caller);
             return await RustBloc.join_tournament_with_squad(squad_id, id, ign)
