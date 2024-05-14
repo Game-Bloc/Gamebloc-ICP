@@ -1007,13 +1007,32 @@ shared ({ caller }) actor class Kitchen() {
         SQUAD_STORE.size()
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
     type GroupChatMessage = {
-        name : Text;
-        message : Text;
+        // name : Text;
+        // message : Text;
+        message : Message;
         isTyping : Bool
     };
 
@@ -1044,7 +1063,9 @@ shared ({ caller }) actor class Kitchen() {
                     case (_) {}
                 }
             }
-        }
+        };
+        // var actualMessage = msg.GroupMessage.Messagse;
+        var newMessage = sendMessage( msg.GroupMessage.Message.body, msg.GroupMessage.Message.time, msg.GroupMessage.Message.username, msg.GroupMessage.Message.f_id )
     };
 
     func on_open(args : IcWebSocketCdk.OnOpenCallbackArgs) : async () {
