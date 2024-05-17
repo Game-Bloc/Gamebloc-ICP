@@ -222,7 +222,7 @@ fn join_tournament(name: String, id: String, ign: (String,String),) {
 }
 
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, mut new_member_ign:Vec<(String, String)>) {
+fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, new_member_ign:Vec<(String, String)>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
@@ -249,7 +249,8 @@ fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,Str
             }
             tournament.squad.push(squad);
         });
-        ign.clone().append(&mut new_member_ign);
+        let mut mutable_new_member_ign = new_member_ign;
+        ign.clone().append(&mut mutable_new_member_ign);
         if tournament.clone().squad_in_game_names == None {
             tournament.squad_in_game_names = Some(vec![ign]);
         }
