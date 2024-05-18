@@ -262,7 +262,7 @@ const ChatContainer = () => {
         ) : (
           <IoSend
             onClick={sendGroupChatMessage}
-            className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
+            className="text-gray cursor-pointer mr-0 my-0 ml-4 text-[1.5rem]"
           />
         )}
       </div>
