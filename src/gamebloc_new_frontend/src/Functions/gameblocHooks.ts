@@ -397,6 +397,7 @@ export const useGameblocHooks = () => {
         squad_id,
         id,
         igns,
+        [],
       )
       setIsLoading(false)
       popUp(successMsg, route)
