@@ -449,7 +449,7 @@ shared ({ caller }) actor class Kitchen() {
 
     type Message = {
         f_id : Text;
-        id : Nat;
+        id : ?Nat;
         sender : Principal;
         username : Text;
         body : Text;
@@ -461,9 +461,21 @@ shared ({ caller }) actor class Kitchen() {
     public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
         var sent : Bool = false;
         var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
+        // switch(messageID){
+        //     case (null) {
+        //         // Do absolutely nothing
+        //         // MessageHashMap.put(messageID, newMessage);
+        //     };
+        //     case (?messageID){
+        //         MessageHashMap.put(messageID, newMessage);
+        //         messageID := messageID + 1;
+        //     }
+        // };
+        // MessageHashMap.put(messageID, newMessage);
         MessageHashMap.put(messageID, newMessage);
-        await update_messages_sent(caller);
         messageID := messageID + 1;
+        await update_messages_sent(caller);
+        
         sent := true;
         return newMessage
     };
