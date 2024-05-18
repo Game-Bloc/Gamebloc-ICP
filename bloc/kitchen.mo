@@ -1007,13 +1007,32 @@ shared ({ caller }) actor class Kitchen() {
         SQUAD_STORE.size()
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
     type GroupChatMessage = {
-        name : Text;
-        message : Text;
+        // name : Text;
+        // message : Text;
+        message : Message;
         isTyping : Bool
     };
 
@@ -1025,8 +1044,8 @@ shared ({ caller }) actor class Kitchen() {
     /// A custom function to send the message to the client
     public func send_app_message(client_principal : IcWebSocketCdk.ClientPrincipal, msg : AppMessage) : async () {
         switch (msg) {
-            case (#JoinedChat(message)) {
-                Debug.print("Sending message: " # debug_show (message));
+            case (#JoinedChat(_message)) {
+                Debug.print("Sending message: " # debug_show (_message));
 
                 // here we call the send from the CDK!!
                 switch (await IcWebSocketCdk.send(ws_state, client_principal, to_candid (msg))) {
@@ -1036,15 +1055,26 @@ shared ({ caller }) actor class Kitchen() {
                     case (_) {}
                 }
             };
-            case (#GroupMessage(message)) {
+            case (#GroupMessage(groupMessage)) {
                 switch (await IcWebSocketCdk.send(ws_state, client_principal, to_candid (msg))) {
                     case (#Err(err)) {
                         Debug.print("Could not send message:" # debug_show (#Err(err)))
                     };
-                    case (_) {}
+                    case (_) {
+                        var message = await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+                    }
                 }
             }
-        }
+        };
+        // switch(msg) {
+        //     case(#GroupMessage(message)){
+
+        //     } case ()
+        // };
+
+        // var john = msg.
+        // var actualMessage = msg.GroupMessage.Messagse;
+        // var newMessage = sendMessage( msg.GroupChatMessage.Message.body, msg.GroupMessage.Message.time, msg.GroupMessage.Message.username, msg.GroupMessage.Message.f_id )
     };
 
     func on_open(args : IcWebSocketCdk.OnOpenCallbackArgs) : async () {
