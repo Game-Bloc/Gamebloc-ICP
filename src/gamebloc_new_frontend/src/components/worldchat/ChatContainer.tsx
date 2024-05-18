@@ -12,27 +12,68 @@ import {
   AppMessage,
   GroupChatMessage,
 } from "../../../../declarations/kitchen/kitchen.did"
+import { ulid } from "ulid"
 
 const ChatContainer = () => {
-  const { ws } = useAuth()
+  const { ws, principal } = useAuth()
   const [wsIsConnecting, setWsIsConnecting] = useState(true)
   const [wsIsConnected, setWsIsConnected] = useState(false)
+  const [time, setTime] = useState<string>("")
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
-  const [messages, setMessages] = useState<GroupChatMessage[]>([])
-  const [userVal, setUserVal] = useState("")
-  //  const [userName, setUserName] = useState("")
+  const chats = useAppSelector((state) => state.chat)
+  const [messages, setMessages] = useState<any[]>(chats)
+  const { sendChatMessage, getChatmessage, updateChatmessage } =
+    useGameblocHooks()
+  const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const userName = useAppSelector((state) => state.userProfile.username)
+
   const [message, setMessage] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [typingUser, setTypingUser] = useState("")
   const [timer, setTimer] = useState(null)
+  const [id, setId] = useState<bigint>(null)
+  let usedIds = new Set()
+
+  function generateUniqueId() {
+    let newId
+    do {
+      newId = Math.floor(Math.random() * 9000) + 1000
+    } while (usedIds.has(newId))
+    usedIds.add(newId)
+    return newId
+  }
+
+  const getTimeIn12HourFormat = () => {
+    const date = new Date()
+    let hours = date.getHours()
+    const minutes = date.getMinutes()
+    const ampm = hours >= 12 ? "pm" : "am"
+
+    hours %= 12
+    hours = hours || 12 // Handle midnight (0 hours)
+
+    const formattedTime = `${hours}:${
+      minutes < 10 ? "0" : ""
+    }${minutes} ${ampm}`
+    return formattedTime
+  }
+
+  useEffect(() => {
+    getChatmessage(20)
+  }, [])
 
   useEffect(() => {
     if (userName) {
+      setId(generateUniqueId)
+      setTime(getTimeIn12HourFormat())
       sendJoinedChatMessage()
     }
   }, [userName])
+
+  const sendMessage = () => {
+    sendChatMessage(message, time, userName, chatId)
+  }
 
   const sendJoinedChatMessage = async () => {
     const msg: AppMessage = {
@@ -41,40 +82,74 @@ const ChatContainer = () => {
     ws.send(msg)
   }
 
-  const sendTypingMessage = async (appMessage: AppMessage) => {
-    if (!timer) {
-      setTimer(
-        setTimeout(() => {
-          setTimer(null)
-        }, 3000),
-      )
-      ws.send(appMessage)
-    }
-  }
+  // const sendTypingMessage = async (appMessage: AppMessage) => {
+  //   if (!timer) {
+  //     setTimer(
+  //       setTimeout(() => {
+  //         setTimer(null)
+  //       }, 3000),
+  //     )
+  //     ws.send(appMessage)
+  //   }
+  // }
 
   const handleMessageChange = async (event) => {
     setMessage(event.target.value)
     const msg: GroupChatMessage = {
-      name: userName,
-      message: event.target.value,
+      message: {
+        id: id,
+        username: userName,
+        body: event.target.value,
+        f_id: chatId,
+        time: time,
+        sender: principal,
+      },
       isTyping: true,
     }
     const appMessage: AppMessage = { GroupMessage: msg }
-    sendTypingMessage(appMessage)
+    // sendTypingMessage(appMessage)
+  }
+
+  const handleKeyPress = (e: any) => {
+    const chat: GroupChatMessage = {
+      message: {
+        id: id,
+        username: userName,
+        body: message,
+        f_id: chatId,
+        time: time,
+        sender: principal,
+      },
+      isTyping: false,
+    }
+    const appMessage: AppMessage = { GroupMessage: chat }
+    if (e.key === "Enter") {
+      setMessages((prev) => [...prev, chat])
+      sendMessage()
+      ws.send(appMessage)
+      setMessage("")
+    }
   }
 
   const sendGroupChatMessage = async (event) => {
     event.preventDefault()
 
     const chat: GroupChatMessage = {
-      name: userName,
-      message: message,
+      message: {
+        id: id,
+        username: userName,
+        body: message,
+        f_id: chatId,
+        time: time,
+        sender: principal,
+      },
       isTyping: false,
     }
     const appMessage: AppMessage = { GroupMessage: chat }
 
     setMessages((prev) => [...prev, chat])
     setMessage("")
+    sendMessage()
     ws.send(appMessage)
   }
 
@@ -118,7 +193,7 @@ const ChatContainer = () => {
           if (recievedMessage.GroupMessage.isTyping) {
             handleIsTypingMessage(recievedMessage.GroupMessage)
           } else {
-            if (recievedMessage.GroupMessage.name !== userName) {
+            if (recievedMessage.GroupMessage.message.username !== userName) {
               setMessages((prev) => [...prev, recievedMessage.GroupMessage])
             }
           }
@@ -126,8 +201,14 @@ const ChatContainer = () => {
         // If the message is a JoinedChat message, add it to the messages
         if ("JoinedChat" in recievedMessage) {
           const chat: GroupChatMessage = {
-            name: recievedMessage.JoinedChat,
-            message: "_joined_the_chat_",
+            message: {
+              id: id,
+              username: recievedMessage.JoinedChat,
+              body: "_joined_the_chat_",
+              f_id: chatId,
+              time: time,
+              sender: principal,
+            },
             isTyping: false,
           }
           setMessages((prev) => [...prev, chat])
@@ -139,9 +220,9 @@ const ChatContainer = () => {
   }, [ws, userName])
 
   const handleIsTypingMessage = (message: GroupChatMessage) => {
-    if (message.name !== userName) {
+    if (message.message.username !== userName) {
       setIsTyping(true)
-      setTypingUser(message.name)
+      setTypingUser(message.message.username)
       setTimeout(() => {
         setIsTyping(false)
       }, 3000)
@@ -168,12 +249,12 @@ const ChatContainer = () => {
       <div className=" w-full mt-2 flex justify-end items-center">
         <div className=" w-full justify-center items-center  px-4 bg-[#fff]/10 rounded-full flex">
           <textarea
-            className="border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+            className="resize border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
             placeholder="Leave a comment"
             rows={1}
             value={message}
             onChange={handleMessageChange}
-            // onKeyDown={handleKeyPress}
+            onKeyDown={handleKeyPress}
           />
         </div>
         {message === "" ? (

@@ -24,7 +24,7 @@ const Header = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username?.substring(0, 2).toUpperCase()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
 
@@ -65,7 +65,8 @@ const Header = () => {
 
   const signOut = () => {
     localStorage.clear()
-    signOut()
+    logout()
+    setOpenModal(false)
   }
 
   return (

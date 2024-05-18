@@ -29,6 +29,12 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* Resize none for text area */
+.resize {
+  resize: none;
+}
+
 /* Antd table css styles */
 
 /* thead[class*="ant-table-thead"] th {

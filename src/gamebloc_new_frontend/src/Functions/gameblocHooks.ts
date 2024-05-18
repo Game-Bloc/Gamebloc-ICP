@@ -533,15 +533,18 @@ export const useGameblocHooks = () => {
     try {
       const messages = await whoamiActor.getUpdatedMessages(num)
       if (messages) {
-        // console.log("chat fetched", messages)
+        console.log("chat fetched", messages)
         for (const data of messages) {
           const chats = {
-            body: data.body,
-            f_id: data.f_id,
-            sender: data.sender.toString(),
-            id: data.id,
-            time: data.time,
-            username: data.username,
+            message: {
+              body: data.body,
+              f_id: data.f_id,
+              sender: data.sender.toString(),
+              id: Number(data.id),
+              time: data.time,
+              username: data.username,
+            },
+            isTyping: false,
           }
           dispatch(pushToChat(chats))
         }
@@ -558,14 +561,16 @@ export const useGameblocHooks = () => {
       if (messages) {
         for (const data of messages) {
           const chats = {
-            body: data[1].body,
-            f_id: data[1].f_id,
-            sender: data[1].sender.toString(),
-            id: data[1].id,
-            time: data[1].time,
-            username: data[1].username,
+            message: {
+              body: data[1].body,
+              f_id: data[1].f_id,
+              sender: data[1].sender.toString(),
+              id: Number(data[1].id),
+              time: data[1].time,
+              username: data[1].username,
+            },
+            isTyping: false,
           }
-
           dispatch(updateChat(chats))
         }
       }

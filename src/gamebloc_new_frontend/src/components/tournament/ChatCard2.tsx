@@ -14,41 +14,48 @@ const ChatCard2 = ({ message, userName }: Props) => {
   return (
     <div
       className={`${
-        userName === message.name ? `justify-end` : ``
+        userName === message.message.username ? `justify-end` : ``
       } flex items-end  ${
-        message.message === "_joined_the_chat_" ? "justify-center" : ""
+        message.message.body === "_joined_the_chat_" ? "justify-center" : ""
       } `}
     >
       <div
         className={`${
-          userName === message.name ? `items-end` : `items-start`
+          userName === message.message.name ? `items-end` : `items-start`
         } flex flex-col space-y-2 max-w-xs mx-2 order-2 `}
       >
-        {message.message === "_joined_the_chat_" ? (
+        {message.message.body === "_joined_the_chat_" ? (
           <h1 className="text-white text-[.8rem] mb-2">
-            {message.name === userName ? "You" : `${message.name}`} joined chat
+            {message.message.username === userName
+              ? "You"
+              : `${message.message.username}`}{" "}
+            joined chat
           </h1>
         ) : (
           <div
             className={`flex gap-3 mb-3 ${
-              message.name === userName ? "" : "flex-row-reverse"
+              message.message.username === userName ? "" : "flex-row-reverse"
             } `}
           >
             <div className="bg-primary-second/20 rounded-xl p-3 min-w-[6rem]   max-w-[27rem]">
               <div className="flex items-center ">
                 <p
                   className={`${
-                    message.name === userName ? `text-end` : `text-start`
+                    message.message.username === userName
+                      ? `text-end`
+                      : `text-start`
                   } text-[.7rem] text-gray font-bold`}
                 >
-                  {message.name === userName ? "You" : `${message.name}`}
+                  {message.message.username === userName
+                    ? "You"
+                    : `${message.message.username}`}
                 </p>{" "}
-                {/* <p className="text-[.65rem] ml-2 mr-2 text-gray/80">
-                {message.time}
-              </p> */}
+                <p className="text-[.65rem] ml-2 mr-2 text-gray/80">
+                  {message.message.time}
+                </p>
               </div>
               <span className={` text-gray text-[.7rem]`}>
-                {message.message}
+                {message.message.body}
               </span>
             </div>
             <div className="ml-[.1rem]">
@@ -56,7 +63,7 @@ const ChatCard2 = ({ message, userName }: Props) => {
                 size={"small"}
                 style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}
               >
-                {message.name.substring(0, 2).toUpperCase()}
+                {message.message.username.substring(0, 2).toUpperCase()}
               </Avatar>
             </div>
           </div>
