@@ -458,7 +458,7 @@ shared ({ caller }) actor class Kitchen() {
 
     var messages : [Message] = [];
 
-    public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
+    public shared ({ caller }) func sendMessage2(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
         var sent : Bool = false;
         var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
         // switch(messageID){
@@ -480,6 +480,28 @@ shared ({ caller }) actor class Kitchen() {
         return newMessage
     };
 
+    public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async () {
+        var sent : Bool = false;
+        var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
+        // switch(messageID){
+        //     case (null) {
+        //         // Do absolutely nothing
+        //         // MessageHashMap.put(messageID, newMessage);
+        //     };
+        //     case (?messageID){
+        //         MessageHashMap.put(messageID, newMessage);
+        //         messageID := messageID + 1;
+        //     }
+        // };
+        // MessageHashMap.put(messageID, newMessage);
+        MessageHashMap.put(messageID, newMessage);
+        messageID := messageID + 1;
+        await update_messages_sent(caller);
+        
+        sent := true;
+        return ()
+    };
+
     func createMessage(id : Nat, f_id : Text, username : Text, sender : Principal, body : Text, time : Text) : MessageEntry {
         {
             id;
@@ -491,7 +513,7 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public func getMessage(id : Nat) : async ?MessageEntry {
+    public query func getMessage(id : Nat) : async ?MessageEntry {
         MessageHashMap.get(id)
     };
 
@@ -1073,7 +1095,7 @@ shared ({ caller }) actor class Kitchen() {
                         Debug.print("Could not send message:" # debug_show (#Err(err)))
                     };
                     case (_) {
-                        var message = await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+                        await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
                     }
                 }
             }
