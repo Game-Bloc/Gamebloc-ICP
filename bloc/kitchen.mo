@@ -429,6 +429,10 @@ shared ({ caller }) actor class Kitchen() {
         AccountIdentifier.fromText(caller)
     };
 
+    public func passwordChecker(_password : Text) : async () {
+        
+    };
+
     public type MessageEntry = {
         f_id : Text;
         id : Nat;
