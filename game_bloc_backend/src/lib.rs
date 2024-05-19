@@ -220,35 +220,62 @@ fn join_tournament(name: String, id: String, ign: (String,String),) {
         tournament_store.borrow_mut().insert(id, tournament);
     });
 }
+
+//delete lobbies
 #[update]
-fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, new_member_ign:Vec<(String, String)>) {
+fn lobbies_exterminator(name: String, id: String, ign: (String,String),) {
+
+}
+
+//merge three lobbies
+#[update]
+fn three_lobbies_merge(name: String, id: String, ign: (String,String),) {
+
+}
+
+//merge two lobbies members
+#[update]
+fn two_lobbies_merge(name: String, id: String, ign: (String,String),) {
+
+}
+
+//extradict lobbies members
+#[update]
+fn lobbies_extradition(name: String, id: String, ign: (String,String),) {
+
+}
+
+#[update]
+fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,String)>, new_member_ign:Option<Vec<(String, String)>>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
             let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-            let count = new_member_ign.len();
+            if new_member_ign.is_some() {
+            let count = new_member_ign.clone().unwrap().len();
             if count > 0 {
                 PROFILE_STORE.with(|profile_store| {
                     loop {
                         if count == 0 {
                             break;
                         }
-                        let mut user = profile_store.borrow().get(&new_member_ign[count - 1].0).cloned().unwrap();
+                        let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
                         let missing: Member =
                             Member {
                                 name: user.clone().username,
-                                principal_id: new_member_ign[count - 1].0.to_owned(),
+                                principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
                             };
                         squad.members.push(missing);
                         user.squad_badge = squad.id_hash.clone();
-                        profile_store.borrow_mut().insert(new_member_ign[count - 1].0.to_owned(), user);
+                        profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
                     }
                     squad_store.borrow_mut().insert(squad_id, squad.clone());
                 });
             }
+        }
             tournament.squad.push(squad);
         });
-        let mut mutable_new_member_ign = new_member_ign;
+        let mut mutable_new_member_ign = new_member_ign.unwrap();
         ign.clone().append(&mut mutable_new_member_ign);
         if tournament.clone().squad_in_game_names == None {
             tournament.squad_in_game_names = Some(vec![ign]);
