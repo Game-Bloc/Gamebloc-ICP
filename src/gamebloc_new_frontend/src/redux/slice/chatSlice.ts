@@ -2,12 +2,15 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface chatState {
-  body: string
-  f_id: string
-  sender: string
-  id: bigint
-  time: string
-  username: string
+  message: {
+    body: string
+    f_id: string
+    sender: string
+    id: number
+    time: string
+    username: string
+  }
+  isTyping: boolean
 }
 
 const initialState: chatState[] = []
@@ -17,7 +20,9 @@ export const chatSlice = createSlice({
   initialState,
   reducers: {
     pushToChat: (state, { payload }: PayloadAction<chatState>) => {
-      const existingIndex = state.findIndex((item) => item.id === payload.id)
+      const existingIndex = state.findIndex(
+        (item) => item.message.id === payload.message.id,
+      )
       if (existingIndex === -1) {
         state.push(payload)
       } else {
@@ -25,7 +30,9 @@ export const chatSlice = createSlice({
       }
     },
     updateChat: (state, { payload }: PayloadAction<chatState>) => {
-      const chatindex = state.findIndex((t) => t.id === payload.id)
+      const chatindex = state.findIndex(
+        (t) => t.message.id === payload.message.id,
+      )
 
       if (chatindex !== -1) {
         state[chatindex] = payload

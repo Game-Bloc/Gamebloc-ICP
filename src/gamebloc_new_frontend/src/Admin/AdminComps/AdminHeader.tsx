@@ -24,12 +24,6 @@ const AdminHeader = () => {
   const { logout } = useAuth()
   const tournamentName: String[] = ["Call of Duty: Mobile"]
 
-  useEffect(() => {
-    getProfile().then(() => {
-      sessionStorage.setItem("Username", username)
-    })
-  }, [username])
-
   const menus = [
     { name: "Overview", link: "/dashboard", icon: MdDashboard },
     {

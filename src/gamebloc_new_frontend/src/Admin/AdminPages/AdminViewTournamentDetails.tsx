@@ -29,7 +29,7 @@ interface DataType {
 
 const AdminViewTournamentDetails = () => {
   const { id } = useParams()
-  const [data, setData] = useState<any[]>([])
+  const data = useAppSelector((state) => state.tournamentData)
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
   const { updateAllSquads } = useUpdateAllSquad()
@@ -39,11 +39,6 @@ const AdminViewTournamentDetails = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
 
   useEffect(() => {
-    const storedTournament = sessionStorage.getItem("tournament")
-    if (storedTournament) {
-      const data = JSON.parse(storedTournament)
-      setData(data)
-    }
     if (squad_data.length > 0) {
       updateAllSquads()
     } else {
@@ -100,7 +95,7 @@ const AdminViewTournamentDetails = () => {
     const newData = data.filter(
       (item) => !selectedRowKeys.includes(item.position),
     )
-    setData(newData)
+    // setData(newData)
     setSelectedRowKeys([])
   }
 

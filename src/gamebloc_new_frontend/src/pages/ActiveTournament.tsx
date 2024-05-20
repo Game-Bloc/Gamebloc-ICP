@@ -17,7 +17,7 @@ import WelcomeModal from "../components/Modals/WelcomeModal"
 import { useAuth } from "../Auth/use-auth-client"
 
 const ActiveTournament = () => {
-  const [tournament, setTournament] = useState([])
+  const tournament = useAppSelector((state) => state.tournamentData)
   const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -47,14 +47,6 @@ const ActiveTournament = () => {
     ))
 
   console.log(tournament)
-
-  useEffect(() => {
-    const storedTournament = sessionStorage.getItem("tournament")
-    if (storedTournament) {
-      const data = JSON.parse(storedTournament)
-      setTournament(data)
-    }
-  }, [])
 
   useEffect(() => {
     if (crowdfundedTournament.length === 0) {

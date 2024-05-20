@@ -35,7 +35,7 @@ export const useGameblocHooks = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
-  const accountId = sessionStorage.getItem("accountId")
+  const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
@@ -123,7 +123,6 @@ export const useGameblocHooks = () => {
       }
       // Set the ICP price in state
       dispatch(updateICP(Icp))
-      sessionStorage.setItem("_icp2usd", `${price}`)
       console.log(`The current price of ICP is $${price}`)
     } catch (error) {
       console.error("Error fetching ICP price:", error)
@@ -154,7 +153,7 @@ export const useGameblocHooks = () => {
           id_hash: user.id_hash,
           is_mod: false,
           role: user.role,
-          points: user.points,
+          points: [Number(user.points[0])],
           account_id: user.account_id,
           principal_id: user.principal_id,
           squad_badge: user.squad_badge,
@@ -165,8 +164,6 @@ export const useGameblocHooks = () => {
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
-        sessionStorage.setItem("accountId", user.account_id)
-        sessionStorage.setItem("Username", user.username)
         localStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
@@ -389,7 +386,7 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
-    igns: [],
+    igns: [string, string][],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -400,6 +397,7 @@ export const useGameblocHooks = () => {
         squad_id,
         id,
         igns,
+        [],
       )
       setIsLoading(false)
       popUp(successMsg, route)
@@ -535,15 +533,18 @@ export const useGameblocHooks = () => {
     try {
       const messages = await whoamiActor.getUpdatedMessages(num)
       if (messages) {
-        // console.log("chat fetched", messages)
+        console.log("chat fetched", messages)
         for (const data of messages) {
           const chats = {
-            body: data.body,
-            f_id: data.f_id,
-            sender: data.sender.toString(),
-            id: data.id,
-            time: data.time,
-            username: data.username,
+            message: {
+              body: data.body,
+              f_id: data.f_id,
+              sender: data.sender.toString(),
+              id: Number(data.id),
+              time: data.time,
+              username: data.username,
+            },
+            isTyping: false,
           }
           dispatch(pushToChat(chats))
         }
@@ -560,14 +561,16 @@ export const useGameblocHooks = () => {
       if (messages) {
         for (const data of messages) {
           const chats = {
-            body: data[1].body,
-            f_id: data[1].f_id,
-            sender: data[1].sender.toString(),
-            id: data[1].id,
-            time: data[1].time,
-            username: data[1].username,
+            message: {
+              body: data[1].body,
+              f_id: data[1].f_id,
+              sender: data[1].sender.toString(),
+              id: Number(data[1].id),
+              time: data[1].time,
+              username: data[1].username,
+            },
+            isTyping: false,
           }
-
           dispatch(updateChat(chats))
         }
       }
