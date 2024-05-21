@@ -517,42 +517,42 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
         };
 
         let mut is_even: bool = tournament.clone().lobbies.unwrap().len() % 2 == 0;
-        let mut participant_queue : Vec<LobbyAccount> = Vec::new();
+        let mut participant_queue : Vec<String> = Vec::new();
 
         if (is_even) {
             tournament.clone().lobbies.unwrap().iter().for_each(
                 |e|{
                    let new_no_of_participant = e.no_of_participants as f64 * 0.5;
-                    participant_queue.push(e.participants[..(new_no_of_participant as usize)]);
+                    participant_queue.append( &mut Vec::from(&e.participants[..(new_no_of_participant as usize)]));
                 }
             );
         }
 
         // Matching arms for
-        // structuring the tournament into lobbies
-        match tournament.game_type {
-            GameType::Single =>{
-                // let mut count = tournament.user.len() % 100;
-                    tournament.clone().lobbies.unwrap().append(
-                        &mut Vec::from(&participant_queue[..100])
-                    );
-            },
-            GameType::Duo =>{
-                // let mut count = tournament.squad.len() % 50;
-                tournament.clone().lobbies.unwrap().append(
-                    &mut Vec::from(&participant_queue[..50])
-                );
-            },
-            GameType::Squad =>{
-                // let mut count = tournament.squad.len() % 25;
-                // participant_queue.remove([..25])
-                tournament.clone().lobbies.unwrap().append(
-                    &mut Vec::from(&participant_queue[..25])
-                );
-            },
-            GameType::TeamvTeam =>{
-            },
-        }
+        // // structuring the tournament into lobbies
+        // match tournament.game_type {
+        //     GameType::Single =>{
+        //         // let mut count = tournament.user.len() % 100;
+        //             tournament.clone().lobbies.unwrap().append(
+        //                 &mut Vec::from(&participant_queue[..100])
+        //             );
+        //     },
+        //     GameType::Duo =>{
+        //         // let mut count = tournament.squad.len() % 50;
+        //         tournament.clone().lobbies.unwrap().append(
+        //             &mut Vec::from(&participant_queue[..50])
+        //         );
+        //     },
+        //     GameType::Squad =>{
+        //         // let mut count = tournament.squad.len() % 25;
+        //         // participant_queue.remove([..25])
+        //         tournament.clone().lobbies.unwrap().append(
+        //             &mut Vec::from(&participant_queue[..25])
+        //         );
+        //     },
+        //     GameType::TeamvTeam =>{
+        //     },
+        // }
         tournament_store.borrow_mut().insert(tournament_id, tournament.to_owned());
     });
 }
