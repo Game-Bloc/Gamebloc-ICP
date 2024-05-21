@@ -145,7 +145,7 @@ export const useGameblocHooks = () => {
       const user: any = await whoamiActor.getSelf()
       if (user.username != "") {
         setIsAccount(true)
-        // console.log("user..:", user)
+        console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -587,6 +587,7 @@ export const useGameblocHooks = () => {
         popUp(msg, route)
         return true
       } else {
+        errorPopUp("You are not an Admin!")
         return false
       }
     } catch (err) {
