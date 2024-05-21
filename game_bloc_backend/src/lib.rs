@@ -590,18 +590,17 @@ fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,Str
                     squad_store.borrow_mut().insert(squad_id, squad.clone());
                 });
             }
-        }
+                let mut mutable_new_member_ign = new_member_ign.unwrap();
+                ign.clone().append(&mut mutable_new_member_ign);
+            }
             tournament.squad.push(squad);
         });
-        let mut mutable_new_member_ign = new_member_ign.unwrap();
-        ign.clone().append(&mut mutable_new_member_ign);
         if tournament.clone().squad_in_game_names == None {
             tournament.squad_in_game_names = Some(vec![ign]);
         }
         else{
             tournament.to_owned().squad_in_game_names.expect("List of tournament squad in game names is empty").push(ign);
         }
-
         tournament_store.borrow_mut().insert(id, tournament);
     });
 }
