@@ -27,22 +27,10 @@ const ChatContainer = () => {
     useGameblocHooks()
   const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const userName = useAppSelector((state) => state.userProfile.username)
-
   const [message, setMessage] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [typingUser, setTypingUser] = useState("")
   const [timer, setTimer] = useState(null)
-  const [id, setId] = useState<bigint>(null)
-  let usedIds = new Set()
-
-  function generateUniqueId() {
-    let newId
-    do {
-      newId = Math.floor(Math.random() * 9000) + 1000
-    } while (usedIds.has(newId))
-    usedIds.add(newId)
-    return newId
-  }
 
   const getTimeIn12HourFormat = () => {
     const date = new Date()
@@ -65,7 +53,6 @@ const ChatContainer = () => {
 
   useEffect(() => {
     if (userName) {
-      setId(generateUniqueId)
       setTime(getTimeIn12HourFormat())
       sendJoinedChatMessage()
     }
@@ -82,61 +69,14 @@ const ChatContainer = () => {
     ws.send(msg)
   }
 
-  // const sendTypingMessage = async (appMessage: AppMessage) => {
-  //   if (!timer) {
-  //     setTimer(
-  //       setTimeout(() => {
-  //         setTimer(null)
-  //       }, 3000),
-  //     )
-  //     ws.send(appMessage)
-  //   }
-  // }
-
-  const handleMessageChange = async (event) => {
+  const handleMessageChange = async (event: any) => {
     setMessage(event.target.value)
-    const msg: GroupChatMessage = {
-      message: {
-        id: id,
-        username: userName,
-        body: event.target.value,
-        f_id: chatId,
-        time: time,
-        sender: principal,
-      },
-      isTyping: true,
-    }
-    const appMessage: AppMessage = { GroupMessage: msg }
-    // sendTypingMessage(appMessage)
   }
 
-  const handleKeyPress = (e: any) => {
+  const sendGroupChatMessage = async () => {
     const chat: GroupChatMessage = {
       message: {
-        id: id,
-        username: userName,
-        body: message,
-        f_id: chatId,
-        time: time,
-        sender: principal,
-      },
-      isTyping: false,
-    }
-    const appMessage: AppMessage = { GroupMessage: chat }
-    if (e.key === "Enter") {
-      setMessages((prev) => [...prev, chat])
-      sendMessage()
-      ws.send(appMessage)
-      setMessage("")
-    }
-  }
-
-  const sendGroupChatMessage = async (event) => {
-    event.preventDefault()
-
-    const chat: GroupChatMessage = {
-      message: {
-        id: id,
+        id: [],
         username: userName,
         body: message,
         f_id: chatId,
@@ -149,7 +89,6 @@ const ChatContainer = () => {
 
     setMessages((prev) => [...prev, chat])
     setMessage("")
-    sendMessage()
     ws.send(appMessage)
   }
 
@@ -184,7 +123,6 @@ const ChatContainer = () => {
     }
 
     ws.onmessage = async (event) => {
-      // await handleWebSocketMessage(event)
       try {
         const recievedMessage = event.data
 
@@ -202,7 +140,7 @@ const ChatContainer = () => {
         if ("JoinedChat" in recievedMessage) {
           const chat: GroupChatMessage = {
             message: {
-              id: id,
+              id: [],
               username: recievedMessage.JoinedChat,
               body: "_joined_the_chat_",
               f_id: chatId,
@@ -254,7 +192,7 @@ const ChatContainer = () => {
             rows={1}
             value={message}
             onChange={handleMessageChange}
-            onKeyDown={handleKeyPress}
+            // onKeyDown={handleKeyPress}
           />
         </div>
         {message === "" ? (

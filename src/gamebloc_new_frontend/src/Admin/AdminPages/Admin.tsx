@@ -18,11 +18,12 @@ import { useAppSelector } from "../../redux/hooks"
 const Admin = () => {
   const navigate = useNavigate()
   const MySwal = withReactContent(Swal)
+  const isMod = useAppSelector((state) => state.userProfile.role)
   const { updateTournament } = useUpdateTournament()
   const tournament = useAppSelector((state) => state.tournamentData)
   const { fetchAllTournaments } = useFetchAllTournaments()
   const [totalUsers, setTotalUsers] = useState<String>("")
-  const { isAdmin, isLoading, getPlayers } = useGameblocHooks()
+  const { isAdmin, isLoading, getPlayers, getProfile } = useGameblocHooks()
   const ongoingTournnamentCount = tournament.filter(
     (tour: any) =>
       Object.keys(tour.status)[0].toUpperCase() === "GAMEINPROGRESS",
@@ -37,14 +38,12 @@ const Admin = () => {
   ).length
 
   useEffect(() => {
-    const adminName = localStorage.getItem("Username")
-    console.log("username", adminName)
-    const authState = isAdmin("you are logged in", "/admin-dashboard")
-    console.log("is admin:", authState)
-    if (!authState) {
+    getProfile()
+    console.log("is admin:", Object.keys(isMod)[0])
+    if (Object.keys(isMod)[0].toUpperCase() !== "MOD") {
       navigate("/admin-login")
     }
-    if (authState) {
+    if (Object.keys(isMod)[0].toUpperCase() === "MOD") {
       if (tournament.length > 0 || null || undefined) {
         updateTournament()
       } else {

@@ -8,7 +8,8 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist"
-import storage from "redux-persist/lib/storage"
+import storage from "redux-persist/lib/storage/session"
+// import storage from "redux-persist/lib/storage"
 import { encryptTransform } from "./encrypt"
 import profileReducer from "./slice/userProfileSlice"
 import categoryReducer from "./slice/gameCategorySlice"

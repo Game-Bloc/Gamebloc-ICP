@@ -23,7 +23,6 @@ const AdminLogin = () => {
   const [userName, setUserName] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const adminName = useAppSelector((state) => state.userProfile.username)
-  console.log("Normal username", adminName)
 
   const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
@@ -53,6 +52,8 @@ const AdminLogin = () => {
       errorPopUp("Username is empty !")
     } else if (password.trim() !== "game-Bloc_@2024") {
       errorPopUp("Password incorrect !")
+    } else if (userName !== adminName) {
+      errorPopUp("Username is wrong !")
     } else {
       isAdmin("you are logged in", "/admin-dashboard")
     }

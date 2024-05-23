@@ -54,6 +54,7 @@ export const userProfileSlice = createSlice({
       state.principal_id = payload.principal_id
       state.squad_badge = payload.squad_badge
       state.status = payload.status
+      state.role = payload.role
       state.tournaments_created = payload.tournaments_created
       state.username = payload.username
       state.wins = payload.wins
