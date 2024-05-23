@@ -44,6 +44,12 @@ const AdminViewTournamentDetails = () => {
     } else {
       getAllSquads()
     }
+    console.log(
+      "tour",
+      data
+        .filter((tour: any) => tour.id_hash === id)
+        .map((item) => item.squad_in_game_names),
+    )
   }, [])
 
   const dataSearch = data.filter((obj) => {
