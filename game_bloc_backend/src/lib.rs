@@ -599,9 +599,9 @@ fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,Str
             tournament.squad_in_game_names = Some(vec![ign]);
         }
         else{
-            tournament.to_owned().squad_in_game_names.expect("List of tournament squad in game names is empty").push(ign);
+            tournament.clone().squad_in_game_names.unwrap().push(ign);
         }
-        tournament_store.borrow_mut().insert(id, tournament);
+        tournament_store.borrow_mut().insert(id, tournament.clone());
     });
 }
 
