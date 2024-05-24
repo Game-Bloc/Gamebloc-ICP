@@ -11,6 +11,13 @@ module {
         total_point : Nat
     };
 
+    public type Access = {
+        _user : Principal;
+        _password : Text;
+        _confirm_password : Text;
+        _updatedTime : Int;
+    };
+
     public type UserProfile = {
         id_hash : Text;
         age : Nat8;
