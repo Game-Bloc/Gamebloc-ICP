@@ -611,7 +611,13 @@ shared ({ caller }) actor class Kitchen() {
         
     };
 
+    public shared ({ caller }) func updatePassword() : (){
 
+    };
+
+    public shared ({ caller }) func recoveryPassword() : (){
+
+    };
 
     public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0, role);
@@ -1202,7 +1208,10 @@ shared ({ caller }) actor class Kitchen() {
                         Debug.print("Could not send message:" # debug_show (#Err(err)))
                     };
                     case (_) {
+                        // Resolving the duplicate issue
+                        Debug.print("message body:" # debug_show(groupMessage.message.body));
                         await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+                        
                     }
                 }
             }
