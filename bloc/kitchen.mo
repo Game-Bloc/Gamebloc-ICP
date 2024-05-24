@@ -604,7 +604,7 @@ shared ({ caller }) actor class Kitchen() {
         
     };
 
-    
+
 
     public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0, role);
@@ -1104,13 +1104,13 @@ shared ({ caller }) actor class Kitchen() {
         Hex.encode(Blob.toArray(public_key))
     };
 
-    public shared ({ caller }) func encrypted_symmetric_key_for_vault(email : Text, website : Text, encryption_public_key : Blob) : async Text {
+    public shared ({ caller }) func encrypted_symmetric_key_for_vault(encryption_public_key : Blob) : async Text {
         Debug.print("encrypted_symmetric_key_for_caller: caller: " # debug_show (caller));
         let _caller = Principal.toText(caller);
 
-        // let (?payload)= Manager.get(email # _caller # website) else Debug.trap("payload not found");
+        let (?payload)= PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
-        let encoded_payload = Text.encodeUtf8(_caller # email # payload.website # payload.password);
+        let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
         let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
             derivation_id = encoded_payload;
             public_key_derivation_path = Array.make(Text.encodeUtf8("vault_symmetric_key"));
