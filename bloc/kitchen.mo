@@ -1108,7 +1108,9 @@ shared ({ caller }) actor class Kitchen() {
         Debug.print("encrypted_symmetric_key_for_caller: caller: " # debug_show (caller));
         let _caller = Principal.toText(caller);
 
-        let (?payload)= PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
+        let (?payload) = PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
+
+        assert(payload._user == caller);
 
         let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
         let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
@@ -1139,14 +1141,14 @@ shared ({ caller }) actor class Kitchen() {
         Hex.encode(Blob.toArray(public_key))
     };
 
-    public shared ({ caller }) func encrypted_ibe_decryption_key_for_caller(email : Text, website : Text, encryption_public_key : Blob) : async Text {
+    public shared ({ caller }) func encrypted_ibe_decryption_key_for_caller(encryption_public_key : Blob) : async Text {
         Debug.print("encrypted_ibe_decryption_key_for_caller: caller: " # debug_show (caller));
 
         let _caller = Principal.toText(caller);
 
-        // let (?payload)= Manager.get(email # _caller # website) else Debug.trap("payload not found");
+        let (?payload)= PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
-        let encoded_payload = Text.encodeUtf8();
+        let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
 
         let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
             derivation_id = encoded_payload;
