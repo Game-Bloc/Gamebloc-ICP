@@ -422,6 +422,28 @@ fn three_lobbies_merge(tournament_id: String,) {
             GameType::Single =>{
                 let mut count = participant_queue.len() / 100;
                 loop {
+                    if participant_queue.len() < 100 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: Vec::new(),
+                                messages: Some(Vec::new()),
+                                participants: participant_queue.to_owned(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -441,6 +463,7 @@ fn three_lobbies_merge(tournament_id: String,) {
                             name: Some(tournament.title.clone()),
                         }
                     );
+                    participant_queue.drain(..100);
                     count = count - 1;
                     if count < 1 {
                         break;
@@ -450,6 +473,28 @@ fn three_lobbies_merge(tournament_id: String,) {
             GameType::Duo =>{
                 let mut count = squad_queue.len() / 50;
                 loop {
+                    if squad_queue.len() < 50 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: squad_queue.to_owned(),
+                                messages: Some(Vec::new()),
+                                participants: Vec::new(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -469,6 +514,7 @@ fn three_lobbies_merge(tournament_id: String,) {
                             name: Some(tournament.title.clone()),
                         }
                     );
+                    participant_queue.drain(..50);
                     count = count - 1;
                     if count < 1 {
                         break;
@@ -476,8 +522,30 @@ fn three_lobbies_merge(tournament_id: String,) {
                 }
             },
             GameType::Squad =>{
-                let mut count = squad_queue.len() / 50;
+                let mut count = squad_queue.len() / 25;
                 loop {
+                    if squad_queue.len() < 25 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: squad_queue.to_owned(),
+                                messages: Some(Vec::new()),
+                                participants: Vec::new(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -487,7 +555,7 @@ fn three_lobbies_merge(tournament_id: String,) {
                             lobby_rules: tournament.tournament_rules.clone(),
                             tournament_type: tournament.tournament_type.clone(),
                             game: tournament.game.clone(),
-                            squads: squad_queue[..50].to_owned(),
+                            squads: squad_queue[..25].to_owned(),
                             messages: Some(Vec::new()),
                             participants: Vec::new(),
                             winers: Vec::new(),
@@ -497,6 +565,7 @@ fn three_lobbies_merge(tournament_id: String,) {
                             name: Some(tournament.title.clone()),
                         }
                     );
+                    participant_queue.drain(..25);
                     count = count - 1;
                     if count < 1 {
                         break;
@@ -562,6 +631,28 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
             GameType::Single =>{
                 let mut count = participant_queue.len() / 100;
                 loop {
+                    if participant_queue.len() < 100 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: Vec::new(),
+                                messages: Some(Vec::new()),
+                                participants: participant_queue.to_owned(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -581,7 +672,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
                             name: Some(tournament.title.clone()),
                         }
                     );
-                    // participant_queue.remove([..100]);
+                    participant_queue.drain(..100);
                     count = count - 1;
                     if count < 1 {
                         break;
@@ -591,6 +682,28 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
             GameType::Duo =>{
                 let mut count = squad_queue.len() / 50;
                 loop {
+                    if squad_queue.len() < 50 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: squad_queue.to_owned(),
+                                messages: Some(Vec::new()),
+                                participants: Vec::new(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -610,6 +723,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
                             name: Some(tournament.title.clone()),
                         }
                     );
+                    participant_queue.drain(..50);
                     count = count - 1;
                     if count < 1 {
                         break;
@@ -617,8 +731,30 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
                 }
             },
             GameType::Squad =>{
-                let mut count = squad_queue.len() / 50;
+                let mut count = squad_queue.len() / 25;
                 loop {
+                    if squad_queue.len() < 25 {
+                        tournament.clone().lobbies.unwrap().push(
+                            LobbyAccount{
+                                status: TournamentStatus::GameInProgress,
+                                lobby_status: LobbyStatus::ReadyToStart,
+                                idx: count as u8,
+                                starting_date: None,
+                                lobby_rules: tournament.tournament_rules.clone(),
+                                tournament_type: tournament.tournament_type.clone(),
+                                game: tournament.game.clone(),
+                                squads: squad_queue.to_owned(),
+                                messages: Some(Vec::new()),
+                                participants: Vec::new(),
+                                winers: Vec::new(),
+                                no_of_winners: None,
+                                no_of_participants: tournament.no_of_participants,
+                                game_type: tournament.game_type.clone(),
+                                name: Some(tournament.title.clone()),
+                            }
+                        );
+                        break;
+                    }
                     tournament.clone().lobbies.unwrap().push(
                         LobbyAccount{
                             status: TournamentStatus::GameInProgress,
@@ -628,7 +764,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
                             lobby_rules: tournament.tournament_rules.clone(),
                             tournament_type: tournament.tournament_type.clone(),
                             game: tournament.game.clone(),
-                            squads: squad_queue[..50].to_owned(),
+                            squads: squad_queue[..25].to_owned(),
                             messages: Some(Vec::new()),
                             participants: Vec::new(),
                             winers: Vec::new(),
@@ -638,6 +774,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
                             name: Some(tournament.title.clone()),
                         }
                     );
+                    participant_queue.drain(..25);
                     count = count - 1;
                     if count < 1 {
                         break;
