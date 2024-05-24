@@ -827,11 +827,11 @@ fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String,Str
         });
         match tournament.clone().squad_in_game_names {
             None => {
-                tournament.clone().squad_in_game_names = Some(vec![ign]);
+                tournament.squad_in_game_names = Some(vec![ign]);
             }
             Some(mut previous_igns) => {
                 previous_igns.push(ign);
-                tournament.clone().squad_in_game_names = Some(previous_igns);
+                tournament.squad_in_game_names = Some(previous_igns);
             }
         }
         tournament_store.borrow_mut().insert(id, tournament.clone());
