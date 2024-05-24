@@ -52,6 +52,7 @@ shared ({ caller }) actor class Kitchen() {
     private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
     private stable var feedback_id : Nat = 0;
     private stable var SupportedGames : [Text] = [];
+    private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -69,7 +70,10 @@ shared ({ caller }) actor class Kitchen() {
         IDEntries := Iter.toArray(ID_STORE.entries());
         UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
-        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries())
+        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+
+        // Passwords
+        PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
     };
 
     system func postupgrade() {
@@ -81,13 +85,16 @@ shared ({ caller }) actor class Kitchen() {
         USER_TRACK_STORE := TrieMap.fromEntries<Principal, Bloctypes.UserTrack>(UserTrackEntries.vals(), Principal.equal, Principal.hash);
         FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
 
+        PASSWORD_STORE := TrieMap.fromEntries<Principal, Bloctypes.Access>(PasswordEntries.vals(), Principal.equal, Principal.hash);
+
         // clear the states
         ProfileEntries := [];
         UserTrackEntries := [];
         TournamentEntries := [];
         IDEntries := [];
         SquadEntries := [];
-        FeedbackEntries := []
+        FeedbackEntries := [];
+        PasswordEntries := [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, role : Bloctypes.Role) {
