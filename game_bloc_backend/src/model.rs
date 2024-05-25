@@ -112,7 +112,7 @@ pub struct TournamentAccount {
     pub tournament_type: TournamentType,
     pub game: String,
     pub squad:Vec<Squad>,
-    pub squad_points: Option<Vec<(String,u128)>>,
+    pub squad_points: Option<Vec<(String,Point)>>,
     pub squad_in_game_names:Option<Vec<Vec<(String, String)>>>,
     pub messages: Option<Vec<Chat>>,
     pub user: Vec<String>,
@@ -125,7 +125,7 @@ pub struct TournamentAccount {
     pub end_date: String,
     pub title: String,
     pub in_game_names: Option<Vec<(String,String)>>,
-    pub points: Option<Vec<(String,u128)>>,
+    pub points: Option<Vec<(String,Point)>>,
     pub lobbies: Option<Vec<LobbyAccount>>
 }
 
@@ -146,6 +146,13 @@ pub struct LobbyAccount {
     pub no_of_participants: u128,
     pub game_type: GameType,
     pub name: Option<String>,
+}
+
+#[derive(Clone,Debug, Default, CandidType, Deserialize, Serialize)]
+pub struct Point {
+    pub position_points: u128,
+    pub kill_points: u128,
+    pub total_points: u128,
 }
 
 impl Storable for TournamentAccount {
