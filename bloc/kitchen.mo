@@ -17,6 +17,7 @@ import TrieMap "mo:base/TrieMap";
 import Text "mo:base/Text";
 import Debug "mo:base/Debug";
 import Nat "mo:base/Nat";
+import Nat8 "mo:base/Nat8";
 import Hash "mo:base/Hash";
 import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
@@ -36,6 +37,7 @@ import LedgerTypes "ledgertypes";
 import Utils "utils";
 import Ledgertypes "ledgertypes";
 import HTTP "http";
+import Hex "utils/Hex";
 
 shared ({ caller }) actor class Kitchen() {
 
@@ -50,11 +52,13 @@ shared ({ caller }) actor class Kitchen() {
     private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
     private stable var feedback_id : Nat = 0;
     private stable var SupportedGames : [Text] = [];
+    private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
+    var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
     var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
     var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
@@ -66,7 +70,10 @@ shared ({ caller }) actor class Kitchen() {
         IDEntries := Iter.toArray(ID_STORE.entries());
         UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
-        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries())
+        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+
+        // Passwords
+        PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
     };
 
     system func postupgrade() {
@@ -78,13 +85,16 @@ shared ({ caller }) actor class Kitchen() {
         USER_TRACK_STORE := TrieMap.fromEntries<Principal, Bloctypes.UserTrack>(UserTrackEntries.vals(), Principal.equal, Principal.hash);
         FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
 
+        PASSWORD_STORE := TrieMap.fromEntries<Principal, Bloctypes.Access>(PasswordEntries.vals(), Principal.equal, Principal.hash);
+
         // clear the states
         ProfileEntries := [];
         UserTrackEntries := [];
         TournamentEntries := [];
         IDEntries := [];
         SquadEntries := [];
-        FeedbackEntries := []
+        FeedbackEntries := [];
+        PasswordEntries := [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, role : Bloctypes.Role) {
@@ -420,7 +430,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public func getCanisterAccountIdentifier() : async Text {
-        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null));
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null))
     };
 
     public type AccountIdentifier = [Nat8];
@@ -430,7 +440,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public func passwordChecker(_password : Text) : async () {
-        
+
     };
 
     public type MessageEntry = {
@@ -479,7 +489,7 @@ shared ({ caller }) actor class Kitchen() {
         MessageHashMap.put(messageID, newMessage);
         messageID := messageID + 1;
         await update_messages_sent(caller);
-        
+
         sent := true;
         return newMessage
     };
@@ -501,7 +511,7 @@ shared ({ caller }) actor class Kitchen() {
         MessageHashMap.put(messageID, newMessage);
         messageID := messageID + 1;
         await update_messages_sent(caller);
-        
+
         sent := true;
         return ()
     };
@@ -566,7 +576,7 @@ shared ({ caller }) actor class Kitchen() {
         await getOwner()
     };
 
-    func makeProfile(id_hash : Text,  age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?Nat, role : Bloctypes.Role) : Bloctypes.UserProfile {
+    func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?Nat, role : Bloctypes.Role) : Bloctypes.UserProfile {
         {
             id_hash;
             age;
@@ -585,6 +595,34 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
+        var time : Int = Time.now();
+        if (_password == _confirm_password){
+            PASSWORD_STORE.put(caller, {
+                _user = caller;
+                _password;
+                _confirm_password;
+                _updatedTime = time;
+            });
+            return #ok("You have successfully set password");
+        } else {
+            return #err("Password must be the same");
+        }
+        
+    };
+
+    public shared ({ caller }) func updatePassword() : (){
+
+    };
+
+    public shared ({ caller }) func recoveryPassword() : (){
+
+    };
+
+    public shared ({ caller }) func checkPassword(_password : Text) : async Bool {
+       return true;
+    };
+
     public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0, role);
         await RustBloc.create_profile(profile, caller)
@@ -600,6 +638,7 @@ shared ({ caller }) actor class Kitchen() {
             throw (err)
         }
     };
+
 
     //
     // User activities
@@ -920,7 +959,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public shared ({ caller }) func join_tournament(name : Text, id : Text, ign : (Text, Text)) : async () {
-        
+
         try {
             await update_tournaments_joined(caller);
             return await RustBloc.join_tournament(name, id, ign)
@@ -975,7 +1014,6 @@ shared ({ caller }) actor class Kitchen() {
         transformed
     };
 
-
     public func send_http_get_request(url_ : Text, player_tag : Text) : async Text {
 
         let ic : HTTP.IC = actor ("aaaa-aa");
@@ -1023,7 +1061,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // automated payment and receiving
-    // 
+    //
 
     // public func start_tournament(id : Text) : (){
 
@@ -1045,25 +1083,101 @@ shared ({ caller }) actor class Kitchen() {
         SQUAD_STORE.size()
     };
 
+    // Mod Consensus
+
+    // Password for Wallet
 
 
+    type VETKD_SYSTEM_API = actor {
+        vetkd_public_key : ({
+            canister_id : ?Principal;
+            derivation_path : [Blob];
+            key_id : { curve : { #bls12_381 }; name : Text }
+        }) -> async ({ public_key : Blob });
+        vetkd_encrypted_key : ({
+            public_key_derivation_path : [Blob];
+            derivation_id : Blob;
+            key_id : { curve : { #bls12_381 }; name : Text };
+            encryption_public_key : Blob
+        }) -> async ({ encrypted_key : Blob })
+    };
 
+    let vetkd_system_api : VETKD_SYSTEM_API = actor ("s55qq-oqaaa-aaaaa-aaakq-cai");
 
+    public shared ({ caller }) func app_vetkd_public_key(derivation_path : [Blob]) : async Text {
+        let { public_key } = await vetkd_system_api.vetkd_public_key({
+            canister_id = null;
+            derivation_path;
+            key_id = { curve = #bls12_381; name = "test_key_1" }
+        });
+        Hex.encode(Blob.toArray(public_key))
+    };
 
+    public shared ({ caller }) func symmetric_key_verification_key() : async Text {
+        let { public_key } = await vetkd_system_api.vetkd_public_key({
+            canister_id = null;
+            derivation_path = Array.make(Text.encodeUtf8("vault_symmetric_key"));
+            key_id = { curve = #bls12_381; name = "test_key_1" }
+        });
+        Hex.encode(Blob.toArray(public_key))
+    };
 
+    public shared ({ caller }) func encrypted_symmetric_key_for_vault(encryption_public_key : Blob) : async Text {
+        Debug.print("encrypted_symmetric_key_for_caller: caller: " # debug_show (caller));
+        let _caller = Principal.toText(caller);
 
+        let (?payload) = PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
+        assert(payload._user == caller);
 
+        let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
+        let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
+            derivation_id = encoded_payload;
+            public_key_derivation_path = Array.make(Text.encodeUtf8("vault_symmetric_key"));
+            key_id = { curve = #bls12_381; name = "test_key_1" };
+            encryption_public_key
+        });
+        Hex.encode(Blob.toArray(encrypted_key))
+    };
 
+    // Converts a nat to a fixed-size big-endian byte (Nat8) array
+    func natToBigEndianByteArray(len : Nat, n : Nat) : [Nat8] {
+        let ith_byte = func(i : Nat) : Nat8 {
+            assert (i < len);
+            let shift : Nat = 8 * (len - 1 - i);
+            Nat8.fromIntWrap(n / 2 ** shift)
+        };
+        Array.tabulate<Nat8>(len, ith_byte)
+    };
 
+    public shared ({ caller }) func ibe_encryption_key() : async Text {
+        let { public_key } = await vetkd_system_api.vetkd_public_key({
+            canister_id = null;
+            derivation_path = Array.make(Text.encodeUtf8("ibe_encryption"));
+            key_id = { curve = #bls12_381; name = "test_key_1" }
+        });
+        Hex.encode(Blob.toArray(public_key))
+    };
 
+    public shared ({ caller }) func encrypted_ibe_decryption_key_for_caller(encryption_public_key : Blob) : async Text {
+        Debug.print("encrypted_ibe_decryption_key_for_caller: caller: " # debug_show (caller));
 
+        let _caller = Principal.toText(caller);
 
+        let (?payload)= PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
+        let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
 
+        let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
+            derivation_id = encoded_payload;
+            public_key_derivation_path = Array.make(Text.encodeUtf8("ibe_encryption"));
+            key_id = { curve = #bls12_381; name = "test_key_1" };
+            encryption_public_key
+        });
+        Hex.encode(Blob.toArray(encrypted_key))
+    };
 
-
-    
+    // Websockets
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
@@ -1099,7 +1213,10 @@ shared ({ caller }) actor class Kitchen() {
                         Debug.print("Could not send message:" # debug_show (#Err(err)))
                     };
                     case (_) {
+                        // Resolving the duplicate issue
+                        Debug.print("message body:" # debug_show(groupMessage.message.body));
                         await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+                        
                     }
                 }
             }

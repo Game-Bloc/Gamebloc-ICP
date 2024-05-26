@@ -23,6 +23,12 @@
       }
     },
 
+    "system_api": {
+      "candid": "system_api/vetkd_system_api.did",
+      "type": "rust",
+      "package": "vetkd_system_api"
+    },
+
     "icp_index": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/index/index.did",

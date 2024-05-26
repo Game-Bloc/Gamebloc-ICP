@@ -1,6 +1,7 @@
 // import Bloc "./bloc";
 import IC "types";
 import Bloctypes "bloctypes";
+import Hex "utils/Hex";
 
 import RustBloc "canister:game_bloc_backend";
 import ICPLedger "canister:icp_ledger";
@@ -13,10 +14,9 @@ import Nat8 "mo:base/Nat8";
 import Debug "mo:base/Debug";
 import Result "mo:base/Result";
 
+
 shared ({caller}) actor class BlocFactory() = this {
 
-
-    
     private let ic : IC.Self = actor "aaaaa-aa";
 
     public query func getCanisterId() : async ?Principal {

@@ -789,7 +789,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String,String),)
 
 //extradict lobbies members
 #[update]
-fn lobbies_extradition(name: String, id: String, ign: (String,String),) {
+fn lobbies_extraditor(name: String, id: String, ign: (String,String),) {
 
 }
 
@@ -997,7 +997,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
 }
 
 #[update]
-fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_points: Vec<(String, u128)>, principal: Principal, lobby_id: u8) {
+fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
@@ -1006,7 +1006,7 @@ fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_poi
                 LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
                 _ => LobbyStatus::GameCompleted,
             };
-             squad_id_and_points.sort_by_key(|k| k.1);
+             squad_id_and_points.sort_by_key(|k| k.1.total_points);
             tournament.squad_points = Some(squad_id_and_points);
 
             tournament_store.borrow_mut().insert(tournament_id, tournament);
@@ -1016,7 +1016,7 @@ fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_poi
     }
 }
 #[update]
-fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_points: Vec<(String, u128)>, principal: Principal, lobby_id: u8) {
+fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
@@ -1025,7 +1025,7 @@ fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_point
                 LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
                 _ => LobbyStatus::GameCompleted,
             };
-           user_id_and_points.sort_by_key(|k| k.1);
+           user_id_and_points.sort_by_key(|k| k.1.total_points);
             tournament.points = Some(user_id_and_points);
 
             tournament_store.borrow_mut().insert(tournament_id, tournament);
