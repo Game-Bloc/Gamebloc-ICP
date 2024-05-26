@@ -161,8 +161,10 @@ service : () -> {
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
+  structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
-  three_lobbies_merge : (text, text, record { text; text }) -> ();
+  structure_tournament_into_squad_lobbies : (text, text) -> ();
+  three_lobbies_merge : (text) -> ();
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
   ws_close : (CanisterWsCloseArguments) -> (Result_1);

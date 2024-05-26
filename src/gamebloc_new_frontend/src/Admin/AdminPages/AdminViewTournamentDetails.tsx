@@ -32,6 +32,7 @@ const AdminViewTournamentDetails = () => {
   const data = useAppSelector((state) => state.tournamentData)
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
+  const [players, setPlayers] = useState<any[]>([])
   const { updateAllSquads } = useUpdateAllSquad()
   const squad_data = useAppSelector((state) => state.squad)
   const { noData, updating, getAllSquads } = useGetAllSquad()
@@ -44,14 +45,27 @@ const AdminViewTournamentDetails = () => {
     } else {
       getAllSquads()
     }
-    console.log(
-      "tour",
-      data
-        .filter((tour: any) => tour.id_hash === id)
-        .map((item) => item.squad_in_game_names),
+    const tournament = data.find((tour: any) => tour.id_hash === id)
+    if (!tournament) {
+      console.log("Tournament not found")
+      return
+    }
+    const structuredSquads = tournament.squad_in_game_names.flatMap(
+      (squad: any) => {
+        return squad
+          .map((player: any) => {
+            return player.map(([principalId, inGameName]: [string, string]) => {
+              return { principalId, inGameName }
+            })
+          })
+          .flat()
+      },
     )
+
+    setPlayers(structuredSquads)
   }, [])
 
+  console.log("players", players)
   const dataSearch = data.filter((obj) => {
     return Object.keys(obj).some((key) =>
       obj[key]
@@ -385,7 +399,7 @@ const AdminViewTournamentDetails = () => {
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
                         {active === 1 ? (
-                          <TournamentGridView />
+                          <TournamentGridView players={players} />
                         ) : (
                           <TournamentListView
                             rowSelection={rowSelection}
