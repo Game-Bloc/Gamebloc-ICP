@@ -623,7 +623,7 @@ shared ({ caller }) actor class Kitchen() {
        return true;
     };
 
-    public func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
+    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0, role);
         await RustBloc.create_profile(profile, caller)
     };
