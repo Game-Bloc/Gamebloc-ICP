@@ -8,7 +8,7 @@ dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
-dfx identity use deon
+dfx identity use finisher
 
 LEDGER_ACC=$(dfx ledger account-id)
 export LEDGER_ACC
@@ -39,4 +39,9 @@ dfx canister --network local call icp_ledger icr1_transfer '
 
 dfx deploy
 
+#  "system_api": {
+#       "candid": "system_api/vetkd_system_api.did",
+#       "type": "rust",
+#       "package": "vetkd_system_api"
+#     },
 
