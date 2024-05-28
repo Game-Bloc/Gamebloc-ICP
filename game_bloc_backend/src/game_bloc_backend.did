@@ -152,20 +152,15 @@ service : () -> {
       text,
       text,
       vec record { text; text },
-      opt vec record { text; text },
+      vec record { text; text },
     ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
-  lobbies_exterminator : (text) -> ();
-  lobbies_extradition : (text, text, record { text; text }) -> ();
   open_squad : (text, vec text, principal) -> ();
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
   structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
-  structure_tournament_into_squad_lobbies : (text, text) -> ();
-  three_lobbies_merge : (text) -> ();
-  two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
   ws_close : (CanisterWsCloseArguments) -> (Result_1);
   ws_get_messages : (CanisterWsGetMessagesArguments) -> (Result_2) query;
