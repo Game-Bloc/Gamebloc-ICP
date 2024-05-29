@@ -211,11 +211,14 @@ fn join_tournament(name: String, id: String, ign: (String,String),) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         tournament.user.push(name);
-        if tournament.clone().in_game_names == None {
-            tournament.in_game_names = Some(vec![ign.clone()]);
-        }
-        else{
-            tournament.to_owned().in_game_names.expect("List of tournament in game names is empty").push(ign);
+        match tournament.clone().in_game_names {
+            None => {
+                tournament.in_game_names = Some(vec![ign.clone()]);
+            }
+            Some(mut previous_igns) => {
+                previous_igns.push(ign);
+                tournament.in_game_names = Some(previous_igns);
+            }
         }
         tournament_store.borrow_mut().insert(id, tournament);
     });
