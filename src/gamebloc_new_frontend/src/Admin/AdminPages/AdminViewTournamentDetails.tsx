@@ -50,19 +50,36 @@ const AdminViewTournamentDetails = () => {
       console.log("Tournament not found")
       return
     }
-    const structuredSquads = tournament.squad_in_game_names.flatMap(
-      (squad: any) => {
-        return squad
-          .map((player: any) => {
-            return player.map(([principalId, inGameName]: [string, string]) => {
-              return { principalId, inGameName }
-            })
-          })
-          .flat()
-      },
-    )
+    const game_type = data
+      .filter((tour: any) => tour.id_hash === id)
+      .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
+    console.log("single", game_type[0])
 
-    setPlayers(structuredSquads)
+    if (game_type[0] === true) {
+      const structuredSquads = tournament.in_game_names.flatMap(
+        (squad: any) => {
+          return squad.map(([principalId, inGameName]: [string, string]) => {
+            return { principalId, inGameName }
+          })
+        },
+      )
+      setPlayers(structuredSquads)
+    } else {
+      const structuredSquads = tournament.squad_in_game_names.flatMap(
+        (squad: any) => {
+          return squad
+            .map((player: any) => {
+              return player.map(
+                ([principalId, inGameName]: [string, string]) => {
+                  return { principalId, inGameName }
+                },
+              )
+            })
+            .flat()
+        },
+      )
+      setPlayers(structuredSquads)
+    }
   }, [])
 
   console.log("players", players)
