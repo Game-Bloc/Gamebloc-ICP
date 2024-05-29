@@ -4,6 +4,7 @@ import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { ulid } from "ulid"
 import ClipLoader from "react-spinners/ClipLoader"
+import { errorPopUp } from "../utils/ErrorModal"
 interface Props {
   modal: () => void
   owner: string
@@ -23,21 +24,24 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
   const { isLoading, joinTournament } = useGameblocHooks()
 
   const onIgnChange = (event: any) => {
-    event.default()
     const input = event.target.value
     setPlayerIgn(input)
   }
 
   const joinAsSoloPlayer = () => {
-    joinTournament(
-      owner,
-      id,
-      userId,
-      playerIgn,
-      "You have successfully joined this tournament",
-      "Something went wrong try again",
-      "/",
-    )
+    if (playerIgn.trim() !== "") {
+      joinTournament(
+        owner,
+        id,
+        userId,
+        playerIgn,
+        "You have successfully joined this tournament",
+        "Something went wrong try again",
+        "/dashboard",
+      )
+    } else {
+      errorPopUp("Ign is empty !")
+    }
   }
 
   return (
@@ -58,8 +62,8 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
                     className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                   />
                   <div className="mt-4 flex  flex-col">
-                    <h2 className="text-primary-second text-center text-base sm:text-xl mb-4 ">
-                      Enter your current CODM In Game Name to join this
+                    <h2 className="text-primary-second text-center text-base  mb-4 ">
+                      Enter your current Codm In Game Name to join this
                       tournament
                     </h2>
                     <div className="flex-col flex mt-4 ">
@@ -78,20 +82,26 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
                     </div>
                   </div>
                   <div className="flex w-full mt-4 justify-center items-center">
-                    <button className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2">
-                      <p className="font-semibold">Join</p>
+                    <button
+                      onClick={() => joinAsSoloPlayer()}
+                      className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
+                    >
                       {isLoading ? (
-                        <ClipLoader
-                          color={color}
-                          loading={isLoading}
-                          cssOverride={override}
-                          size={10}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                          className="ml-4"
-                        />
+                        <div className="flex items-center  gap-2">
+                          <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                            Wait
+                          </p>
+                          <ClipLoader
+                            color={color}
+                            loading={isLoading}
+                            cssOverride={override}
+                            size={10}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                          />
+                        </div>
                       ) : (
-                        <></>
+                        <p className="font-semibold">Join Tournament</p>
                       )}
                     </button>
                   </div>
