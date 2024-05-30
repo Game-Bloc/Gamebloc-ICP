@@ -64,7 +64,7 @@ pub struct UserProfile {
     pub status: Status,
     pub wins: u8,
     pub tournaments_created:u8,
-    pub points: Option<u128>,
+    pub points: Option<Vec<(String,String,Point)>>,
     pub username: String,
     pub is_mod: bool,
     pub role: Role,
@@ -235,7 +235,7 @@ pub enum SquadType {
      Closed,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub struct Squad {
     pub id_hash: String,
     pub captain: String,
@@ -244,7 +244,7 @@ pub struct Squad {
     pub tag: String,
     pub members: Vec<Member>,
     pub requests: Vec<String>,
-    pub points: Option<u128>,
+    pub points: Option<Vec<(String,String,Point)>>
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
