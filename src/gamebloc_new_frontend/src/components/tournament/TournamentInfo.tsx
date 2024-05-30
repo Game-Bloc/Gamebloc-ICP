@@ -36,7 +36,6 @@ const TournamentInfo = ({ data }: Props) => {
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
-  const [userId, setUserId] = useState<string>("")
 
   const override = {
     display: "block",
@@ -626,7 +625,7 @@ const TournamentInfo = ({ data }: Props) => {
           <JoinAsSolo
             modal={handleSoloModal}
             owner={owner}
-            userId={userId}
+            userId={principal}
             id={id}
           />
         )}

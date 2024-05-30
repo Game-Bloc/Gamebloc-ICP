@@ -177,7 +177,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                                   )
                                     ? " bg-primary-second  "
                                     : " border border-primary-second border-solid"
-                                }  cursor-pointer  h-[2.5rem] w-[8rem] rounded-[3px] flex justify-between items-center`}
+                                }  cursor-pointer  h-[2.5rem] rounded-[3px] flex justify-between items-center`}
                               >
                                 <p
                                   className={` ${
@@ -186,7 +186,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                                     )
                                       ? "text-black"
                                       : "text-white"
-                                  } text-[.9rem]  ml-4`}
+                                  } text-[.9rem]  ml-4 text-ellipsis`}
                                 >
                                   {player.name}
                                 </p>
