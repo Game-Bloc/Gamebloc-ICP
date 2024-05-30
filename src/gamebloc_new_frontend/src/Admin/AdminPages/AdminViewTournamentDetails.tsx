@@ -84,12 +84,25 @@ const AdminViewTournamentDetails = () => {
 
   console.log("players", players)
   const dataSearch = data.filter((obj) => {
-    return Object.keys(obj).some((key) =>
-      obj[key]
-        .toString()
-        .toLowerCase()
-        .includes(search.toString().toLowerCase()),
+    // Check if any key matches the search term
+    const keyMatches = Object.keys(obj).some((key) =>
+      key.toLowerCase().includes(search.toLowerCase()),
     )
+
+    // Check if any value matches the search term
+    const valueMatches = Object.values(obj).some((value) => {
+      if (typeof value === "object" && value !== null) {
+        // If the value is an object (nested object), check its keys
+        return Object.keys(value).some((nestedKey) =>
+          nestedKey.toLowerCase().includes(search.toLowerCase()),
+        )
+      } else {
+        // Otherwise, convert the value to string and perform case-insensitive search
+        return value.toString().toLowerCase().includes(search.toLowerCase())
+      }
+    })
+
+    return keyMatches || valueMatches
   })
   const columns = [
     {
@@ -106,22 +119,6 @@ const AdminViewTournamentDetails = () => {
     },
     { title: "Kill Points", dataIndex: "kill_points", key: "kill_points" },
     { title: "Total Points", dataIndex: "total_points", key: "total_points" },
-    {
-      title: "",
-      key: "operation",
-      render: (text, record) => (
-        <div key={record.position} className="flex items-center cursor-pointer">
-          <img
-            // onClick={() => {
-            //   handleOpenModal(record)
-            // }}
-            src={`view.png`}
-            alt=""
-          />
-          <img src={`delete-red.png`} className="ml-3 cursor-pointer" alt="" />
-        </div>
-      ),
-    },
   ]
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
@@ -416,13 +413,13 @@ const AdminViewTournamentDetails = () => {
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
                         {active === 1 ? (
-                          <TournamentGridView players={players} />
-                        ) : (
                           <TournamentListView
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSearch={dataSearch}
                           />
+                        ) : (
+                          <TournamentGridView players={players} />
                         )}
                       </div>
                       {/*  */}
