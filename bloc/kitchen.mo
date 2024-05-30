@@ -959,10 +959,10 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     public shared ({ caller }) func join_tournament(name : Text, id : Text, ign : (Text, Text)) : async () {
-
         try {
             await update_tournaments_joined(caller);
-            return await RustBloc.join_tournament(name, id, ign)
+            // var _caller : Text = caller.toText();
+            return await RustBloc.join_tournament(name, id, ign);
         } catch err {
             throw (err)
         }
