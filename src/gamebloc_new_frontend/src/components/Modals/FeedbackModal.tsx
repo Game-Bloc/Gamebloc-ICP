@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { errorPopUp } from "../utils/ErrorModal"
 interface Props {
   modal: () => void
 }
@@ -52,7 +53,11 @@ const FeedbackModal = ({ modal }: Props) => {
   }, [])
 
   const submit = () => {
-    sendFeedBack(content, title, date, "Submitted", "Failed", "/")
+    if (title.trim() && content.trim() !== "") {
+      sendFeedBack(content, title, date, "Submitted", "Failed", "/")
+    } else {
+      errorPopUp("A field is empty !")
+    }
   }
 
   return (
@@ -80,7 +85,7 @@ const FeedbackModal = ({ modal }: Props) => {
                     />
                   </div>
                   <h1 className="font-bold mt-4 text-primary-second text-[1.1rem] text-semibold">
-                    Submit Feedback
+                    Send a feedback
                   </h1>
 
                   <div className="flex flex-col w-[100%] md:w-[80%] mt-4">

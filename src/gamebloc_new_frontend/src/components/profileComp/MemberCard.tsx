@@ -23,8 +23,12 @@ const MemberCard = ({ gamer, captain }: Props) => {
       </div>
       {gamer.name == captain ? (
         <p className="text-white text-[.6rem]">Squad Captain</p>
+      ) : gamer.name == captain ? (
+        <div>
+          <img src={`remove.png`} alt="" />
+        </div>
       ) : (
-        <div> </div>
+        <div></div>
       )}
     </div>
   )

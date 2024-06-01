@@ -89,6 +89,7 @@ const ChatContainer = () => {
 
     setMessages((prev) => [...prev, chat])
     setMessage("")
+    console.log("called:", appMessage)
     ws.send(appMessage)
   }
 
@@ -122,39 +123,39 @@ const ChatContainer = () => {
       }
     }
 
-    ws.onmessage = async (event) => {
-      try {
-        const recievedMessage = event.data
+    //   ws.onmessage = async (event) => {
+    //     try {
+    //       const recievedMessage = event.data
 
-        // If the message is a GroupMessage, check if it is a typing message
-        if ("GroupMessage" in recievedMessage) {
-          if (recievedMessage.GroupMessage.isTyping) {
-            handleIsTypingMessage(recievedMessage.GroupMessage)
-          } else {
-            if (recievedMessage.GroupMessage.message.username !== userName) {
-              setMessages((prev) => [...prev, recievedMessage.GroupMessage])
-            }
-          }
-        }
-        // If the message is a JoinedChat message, add it to the messages
-        if ("JoinedChat" in recievedMessage) {
-          const chat: GroupChatMessage = {
-            message: {
-              id: [],
-              username: recievedMessage.JoinedChat,
-              body: "_joined_the_chat_",
-              f_id: chatId,
-              time: time,
-              sender: principal,
-            },
-            isTyping: false,
-          }
-          setMessages((prev) => [...prev, chat])
-        }
-      } catch (error) {
-        console.log("Error deserializing message", error)
-      }
-    }
+    //       // If the message is a GroupMessage, check if it is a typing message
+    //       if ("GroupMessage" in recievedMessage) {
+    //         if (recievedMessage.GroupMessage.isTyping) {
+    //           handleIsTypingMessage(recievedMessage.GroupMessage)
+    //         } else {
+    //           if (recievedMessage.GroupMessage.message.username !== userName) {
+    //             setMessages((prev) => [...prev, recievedMessage.GroupMessage])
+    //           }
+    //         }
+    //       }
+    //       // If the message is a JoinedChat message, add it to the messages
+    //       if ("JoinedChat" in recievedMessage) {
+    //         const chat: GroupChatMessage = {
+    //           message: {
+    //             id: [],
+    //             username: recievedMessage.JoinedChat,
+    //             body: "_joined_the_chat_",
+    //             f_id: chatId,
+    //             time: time,
+    //             sender: principal,
+    //           },
+    //           isTyping: false,
+    //         }
+    //         setMessages((prev) => [...prev, chat])
+    //       }
+    //     } catch (error) {
+    //       console.log("Error deserializing message", error)
+    //     }
+    //   }
   }, [ws, userName])
 
   const handleIsTypingMessage = (message: GroupChatMessage) => {
@@ -199,7 +200,7 @@ const ChatContainer = () => {
           <></>
         ) : (
           <IoSend
-            onClick={sendGroupChatMessage}
+            onClick={() => sendGroupChatMessage()}
             className="text-gray cursor-pointer mr-0 my-0 ml-4 text-[1.5rem]"
           />
         )}
