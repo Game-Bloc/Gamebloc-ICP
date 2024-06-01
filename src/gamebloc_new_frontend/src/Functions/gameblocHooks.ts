@@ -383,6 +383,11 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const leaveSquad = async () => {
+    try {
+    } catch (err) {}
+  }
+
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
