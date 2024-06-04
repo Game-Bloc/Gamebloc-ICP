@@ -212,4 +212,3 @@ impl Storable for UserProfile {
         is_fixed_size: false,
     };
 }
-
