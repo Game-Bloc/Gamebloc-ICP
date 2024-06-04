@@ -97,9 +97,9 @@ shared ({ caller }) actor class Kitchen() {
         PasswordEntries := [];
     };
 
-    func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, role : Bloctypes.Role) {
+    func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) {
         // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-        ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", ?0, role))
+        ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
     };
 
     // public func update_users() : async () {
@@ -112,7 +112,7 @@ shared ({ caller }) actor class Kitchen() {
     //      := [] := users;
     // };
 
-    public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, role : Bloctypes.Role) : async Result.Result<Text, Text> {
+    public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Result.Result<Text, Text> {
         // call the balnce function to get and set the balance of newly registered users
         let balance = 10;
         let checkUsername = usernameChecker(username);
@@ -120,7 +120,7 @@ shared ({ caller }) actor class Kitchen() {
         if (checkUsername == false) {
             #err("This username exist! Please enter another")
         } else {
-            createOneProfile(id_hash, age, username, caller, role);
+            createOneProfile(id_hash, age, username, caller, points, role);
             #ok("You have successfully created an account")
         }
     };
@@ -576,7 +576,7 @@ shared ({ caller }) actor class Kitchen() {
         await getOwner()
     };
 
-    func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?Nat, role : Bloctypes.Role) : Bloctypes.UserProfile {
+    func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : Bloctypes.UserProfile {
         {
             id_hash;
             age;
@@ -623,13 +623,13 @@ shared ({ caller }) actor class Kitchen() {
        return true;
     };
 
-    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, ?0, role);
+    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text,  points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
         await RustBloc.create_profile(profile, caller)
     };
 
-    public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, role : Bloctypes.Role) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, ?0, role);
+    public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points , role);
         try {
             await create_usertrack(caller);
             ProfileHashMap.put(caller, profile);
@@ -916,10 +916,10 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text)], new_member_ign : [(Text, Text)]) : async () {
+    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text)], new_member_ign : ?[(Text, Text)]) : async () {
         try {
             await update_tournaments_joined(caller);
-            return await RustBloc.join_tournament_with_squad(squad_id, id, ign)
+            return await RustBloc.join_tournament_with_squad(squad_id, id, ign, new_member_ign)
         } catch err {
             throw (err)
         }

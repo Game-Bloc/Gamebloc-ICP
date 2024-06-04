@@ -56,7 +56,7 @@ type Squad = record {
   name : text;
   captain : text;
   requests : vec text;
-  points : opt nat;
+  points : opt vec record { text; text; Point };
 };
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
@@ -108,7 +108,7 @@ type UserProfile = record {
   principal_id : text;
   squad_badge : text;
   tournaments_created : nat8;
-  points : opt nat;
+  points : opt vec record { text; text; Point };
 };
 type WebsocketMessage = record {
   sequence_num : nat64;
