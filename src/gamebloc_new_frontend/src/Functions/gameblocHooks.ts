@@ -26,6 +26,8 @@ import {
   clearTransaction,
 } from "../redux/slice/transactionSlice"
 import axios from "axios"
+import { Principal } from "@dfinity/principal"
+// const { Principal } = require("@dfinity/principal")
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -385,14 +387,15 @@ export const useGameblocHooks = () => {
   }
 
   const leaveSquad = async (
-    member: string,
+    id: string,
+    principal: Principal,
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      await whoamiActor.leave_or_remove_squad_member(member)
+      await whoamiActor2.leave_or_remove_squad_member(principal, id)
       setIsLoading(false)
       popUp(successMsg, route)
       window.location.reload()

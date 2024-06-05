@@ -39,12 +39,12 @@ const PromptModal = ({ modal, handleRemove, isLoading }: Prop) => {
                     <div className=" flex mt-2 flex-row  ">
                       <button
                         onClick={() => modal(false)}
-                        className="py-2 px-8 bg-[#141414]/10 text-white/70 w-full border border-white border-solid text-xs sm:text-sm "
+                        className="py-2 px-8 bg-[#141414]/10 text-white/70 w-full border border-white border-solid text-xs flex justify-center items-center sm:text-sm "
                       >
                         Cancel
                       </button>
                       <button
-                        className="py-2 px-8 ml-4 bg-[#EF4444] text-[#ffffff] w-full  text-xs sm:text-sm "
+                        className="py-2 px-8 ml-4 bg-[#EF4444] text-[#ffffff] w-full flex justify-center items-center text-xs sm:text-sm "
                         onClick={() => handleRemove()}
                       >
                         {isLoading ? (

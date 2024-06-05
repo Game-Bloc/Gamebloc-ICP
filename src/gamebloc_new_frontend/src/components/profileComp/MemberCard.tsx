@@ -3,13 +3,15 @@ import React, { useState } from "react"
 import { useAppSelector } from "../../redux/hooks"
 import PromptModal from "../Modals/PromptModal"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
-
+const { Principal } = require("@dfinity/principal")
 interface Props {
   gamer: any
   captain: string
+  id: string
 }
 
-const MemberCard = ({ gamer, captain }: Props) => {
+const MemberCard = ({ gamer, captain, id }: Props) => {
+  const principalText = gamer.principal_id
   const [openModal, setOpenModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const { isLoading, leaveSquad } = useGameblocHooks()
@@ -19,8 +21,9 @@ const MemberCard = ({ gamer, captain }: Props) => {
   }
 
   const leave_Squad = () => {
-    //  leaveSquad(gamer.name, "Remove successfully", "error", "")
-    console.log(gamer.name)
+    const principal = Principal.fromText(principalText)
+    leaveSquad(id, principal, "Removed successfully", "error", "")
+    // console.log(id)
   }
 
   return (
@@ -43,7 +46,7 @@ const MemberCard = ({ gamer, captain }: Props) => {
         </div>
       ) : gamer.name !== captain ? (
         <div>
-          {gamer.name !== username ? (
+          {username == captain ? (
             <div onClick={() => setOpenModal(true)} className="cursor-pointer">
               <img src={`remove.png`} alt="" />
             </div>

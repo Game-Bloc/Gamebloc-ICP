@@ -60,6 +60,7 @@ const ViewSquadModal = ({ modal, data }: Props) => {
                           key={index}
                           gamer={gamer}
                           captain={data.captain}
+                          id={data.id_hash}
                         />
                       ))}
                     </div>
