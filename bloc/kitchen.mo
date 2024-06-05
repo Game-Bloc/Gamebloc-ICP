@@ -63,6 +63,8 @@ shared ({ caller }) actor class Kitchen() {
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
     var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
+    var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+
     /// stabilizing the motoko backup
     system func preupgrade() {
         ProfileEntries := Iter.toArray(ProfileHashMap.entries());
@@ -110,7 +112,16 @@ shared ({ caller }) actor class Kitchen() {
     //         users := Array.append(users, [(i.principal_id, i)]);
     //     };
     //      := [] := users;
+    
     // };
+
+    public func updatePays(payment : Bloctypes.PayrollHistory) : () {
+        PAY_STORE.add(payment);
+    };
+    
+    public func getPays() : async [Bloctypes.PayrollHistory] {
+        PAY_STORE.toArray();
+    };
 
     public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Result.Result<Text, Text> {
         // call the balnce function to get and set the balance of newly registered users
