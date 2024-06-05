@@ -8,6 +8,7 @@ type Squad = record {
   name : text;
   captain : text;
   requests : vec text;
+  points : opt vec record { text; text; Point };
 };
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
@@ -50,6 +51,14 @@ type UserProfile = record {
   principal_id : text;
   squad_badge : text;
   tournaments_created : nat8;
+  points : opt vec record { text; text; Point };
+};
+type WebsocketMessage = record {
+  sequence_num : nat64;
+  content : vec nat8;
+  client_key : ClientKey;
+  timestamp : nat64;
+  is_service_message : bool;
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
