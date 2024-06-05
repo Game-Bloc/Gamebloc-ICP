@@ -17,6 +17,6 @@ dfx.json
 build.sh
 
 .env
-
+.mops
 
 src/declarations

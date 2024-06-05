@@ -86,6 +86,7 @@ export const useGameblocHooks = () => {
         name,
         time,
         squad_badge,
+        [],
         role,
       )
       if (user) {
@@ -383,9 +384,23 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const leaveSquad = async () => {
+  const leaveSquad = async (
+    member: string,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
     try {
-    } catch (err) {}
+      setIsLoading(true)
+      await whoamiActor.leave_or_remove_squad_member(member)
+      setIsLoading(false)
+      popUp(successMsg, route)
+      window.location.reload()
+    } catch (err) {
+      errorPopUp(errorMsg)
+      setIsLoading(false)
+      console.log("Error removing member:", err)
+    }
   }
 
   const joinTournamentSqaud = async (
@@ -685,6 +700,7 @@ export const useGameblocHooks = () => {
     createSquad,
     getICPBalance,
     joinSquad,
+    leaveSquad,
     joinTournamentSqaud,
     sendICP,
     sendFeedBack,
