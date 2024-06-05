@@ -1,7 +1,10 @@
-import React from "react"
+import React, { useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import MemberCard from "./MemberCard"
 import { useAppSelector } from "../../redux/hooks"
+import PromptModal from "../Modals/PromptModal"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { Principal } from "@dfinity/principal"
 
 interface Props {
   modal: () => void
@@ -9,7 +12,24 @@ interface Props {
 }
 
 const ViewSquadModal = ({ modal, data }: Props) => {
+  const principalText = useAppSelector(
+    (state) => state.userProfile.principal_id,
+  )
+  const id = data.id_hash
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
+  const { isLoading, leaveSquad } = useGameblocHooks()
+  const handleLeaveModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const leave_Squad = () => {
+    const principal = Principal.fromText(principalText)
+    leaveSquad(id, principal, "Removed successfully", "error", "")
+    // console.log(id)
+    // console.log(principal)
+  }
+
   return (
     <div>
       <div
@@ -66,7 +86,10 @@ const ViewSquadModal = ({ modal, data }: Props) => {
                     </div>
                     <div className="mt-[1rem] mb-[1rem] border border-solid border-[#2E3438] w-full" />
                     {data.captain !== username ? (
-                      <div className="flex justify-end mt-3">
+                      <div
+                        onClick={() => setOpenModal(true)}
+                        className="flex justify-end mt-3"
+                      >
                         <p className="text-primary-second rounded-md pt-[.15rem] pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer">
                           Leave
                         </p>
@@ -81,6 +104,13 @@ const ViewSquadModal = ({ modal, data }: Props) => {
           </div>
         </div>
       </div>
+      {openModal && (
+        <PromptModal
+          modal={handleLeaveModal}
+          handleRemove={leave_Squad}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   )
 }
