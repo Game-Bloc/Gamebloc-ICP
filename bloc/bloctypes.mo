@@ -32,9 +32,15 @@ module {
         account_id : Text;
         canister_id : Text;
         squad_badge : Text;
-        points : ?Nat;
+        points : ?[(Text, Text, Point)];
         // role : Text
         // ico_balance : Nat64;
+    };
+
+    public type Point = {
+        position_points : Nat;
+        kill_points : Nat;
+        total_points : Nat;
     };
 
     public type Feedback = {
@@ -54,7 +60,7 @@ module {
         tag : Text;
         members : [Member];
         requests : [Text];
-        points : ?Nat;
+        points : ?[(Text, Text, Point)];
     };
 
     public type Role = {
@@ -91,7 +97,7 @@ module {
         // mods : [Text];
         game : Text;
         squad : [Squad];
-        squad_points : ?[(Text, Nat)];
+        squad_points : ?[(Text, Point)];
         squad_in_game_names : ?[[(Text, Text)]];
         messages : ?[Chat];
         user : [Text];
@@ -104,7 +110,7 @@ module {
         end_date : Text;
         title : Text;
         in_game_names : ?[(Text, Text)];
-        points : ?[(Text, Nat)];
+        points : ?[(Text, Point)];
         lobbies : ?[LobbyAccount]
     };
 

@@ -29,14 +29,12 @@ const TournamentInfo = ({ data }: Props) => {
   const { noData, updating, getAllSquads } = useGetAllSquad()
   const { updateAllSquads } = useUpdateAllSquad()
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-  const squad_data = useAppSelector((state) => state.squad)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
   const { isLoading, getProfile } = useGameblocHooks()
   const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
-  const [userId, setUserId] = useState<string>("")
 
   const override = {
     display: "block",
@@ -184,7 +182,7 @@ const TournamentInfo = ({ data }: Props) => {
   }
 
   useEffect(() => {
-    if (squad_data?.length > 0) {
+    if (squad?.length > 0) {
       updateAllSquads()
     } else {
       getAllSquads()
@@ -626,7 +624,7 @@ const TournamentInfo = ({ data }: Props) => {
           <JoinAsSolo
             modal={handleSoloModal}
             owner={owner}
-            userId={userId}
+            userId={principal}
             id={id}
           />
         )}

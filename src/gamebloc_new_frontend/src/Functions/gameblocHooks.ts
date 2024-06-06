@@ -26,6 +26,8 @@ import {
   clearTransaction,
 } from "../redux/slice/transactionSlice"
 import axios from "axios"
+import { Principal } from "@dfinity/principal"
+// const { Principal } = require("@dfinity/principal")
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -86,6 +88,7 @@ export const useGameblocHooks = () => {
         name,
         time,
         squad_badge,
+        [],
         role,
       )
       if (user) {
@@ -380,6 +383,26 @@ export const useGameblocHooks = () => {
       console.log("Error joining squad:", err)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const leaveSquad = async (
+    id: string,
+    principal: Principal,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      await whoamiActor2.leave_or_remove_squad_member(principal, id)
+      setIsLoading(false)
+      popUp(successMsg, route)
+      window.location.reload()
+    } catch (err) {
+      errorPopUp(errorMsg)
+      setIsLoading(false)
+      console.log("Error removing member:", err)
     }
   }
 
@@ -680,6 +703,7 @@ export const useGameblocHooks = () => {
     createSquad,
     getICPBalance,
     joinSquad,
+    leaveSquad,
     joinTournamentSqaud,
     sendICP,
     sendFeedBack,

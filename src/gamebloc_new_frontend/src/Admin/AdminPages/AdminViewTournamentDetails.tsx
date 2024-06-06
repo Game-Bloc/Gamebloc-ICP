@@ -32,6 +32,7 @@ const AdminViewTournamentDetails = () => {
   const data = useAppSelector((state) => state.tournamentData)
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
+  const [players, setPlayers] = useState<any[]>([])
   const { updateAllSquads } = useUpdateAllSquad()
   const squad_data = useAppSelector((state) => state.squad)
   const { noData, updating, getAllSquads } = useGetAllSquad()
@@ -44,15 +45,64 @@ const AdminViewTournamentDetails = () => {
     } else {
       getAllSquads()
     }
+    const tournament = data.find((tour: any) => tour.id_hash === id)
+    if (!tournament) {
+      console.log("Tournament not found")
+      return
+    }
+    const game_type = data
+      .filter((tour: any) => tour.id_hash === id)
+      .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
+    console.log("single", game_type[0])
+
+    if (game_type[0] === true) {
+      const structuredSquads = tournament.in_game_names.flatMap(
+        (squad: any) => {
+          return squad.map(([principalId, inGameName]: [string, string]) => {
+            return { principalId, inGameName }
+          })
+        },
+      )
+      setPlayers(structuredSquads)
+    } else {
+      const structuredSquads = tournament.squad_in_game_names.flatMap(
+        (squad: any) => {
+          return squad
+            .map((player: any) => {
+              return player.map(
+                ([principalId, inGameName]: [string, string]) => {
+                  return { principalId, inGameName }
+                },
+              )
+            })
+            .flat()
+        },
+      )
+      setPlayers(structuredSquads)
+    }
   }, [])
 
+  console.log("players", players)
   const dataSearch = data.filter((obj) => {
-    return Object.keys(obj).some((key) =>
-      obj[key]
-        .toString()
-        .toLowerCase()
-        .includes(search.toString().toLowerCase()),
+    // Check if any key matches the search term
+    const keyMatches = Object.keys(obj).some((key) =>
+      key.toLowerCase().includes(search.toLowerCase()),
     )
+
+    // Check if any value matches the search term
+    const valueMatches = Object.values(obj).some((value) => {
+      if (typeof value === "object" && value !== null) {
+        // If the value is an object (nested object), check its keys
+        return Object.keys(value).some((nestedKey) =>
+          nestedKey.toLowerCase().includes(search.toLowerCase()),
+        )
+      } else {
+        // Otherwise, convert the value to string and perform case-insensitive search
+        return value.toString().toLowerCase().includes(search.toLowerCase())
+      }
+    })
+
+    return keyMatches || valueMatches
   })
   const columns = [
     {
@@ -69,22 +119,6 @@ const AdminViewTournamentDetails = () => {
     },
     { title: "Kill Points", dataIndex: "kill_points", key: "kill_points" },
     { title: "Total Points", dataIndex: "total_points", key: "total_points" },
-    {
-      title: "",
-      key: "operation",
-      render: (text, record) => (
-        <div key={record.position} className="flex items-center cursor-pointer">
-          <img
-            // onClick={() => {
-            //   handleOpenModal(record)
-            // }}
-            src={`view.png`}
-            alt=""
-          />
-          <img src={`delete-red.png`} className="ml-3 cursor-pointer" alt="" />
-        </div>
-      ),
-    },
   ]
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
@@ -379,13 +413,13 @@ const AdminViewTournamentDetails = () => {
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
                         {active === 1 ? (
-                          <TournamentGridView />
-                        ) : (
                           <TournamentListView
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSearch={dataSearch}
                           />
+                        ) : (
+                          <TournamentGridView players={players} />
                         )}
                       </div>
                       {/*  */}
