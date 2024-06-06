@@ -11,6 +11,7 @@
       "type": "motoko",
       "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index"]
     },
+    
 
     "icp_ledger": {
       "type": "custom",
