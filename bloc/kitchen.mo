@@ -1269,7 +1269,7 @@ shared ({ caller }) actor class Kitchen() {
                     case (_) {
                         // Resolving the duplicate issue
                         Debug.print("message body:" # debug_show(groupMessage.message.body));
-                        await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+                        // await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
                         
                     }
                 }
