@@ -34,6 +34,20 @@ module {
 
     };
 
+    public type Notification = {
+        id : Nat;
+        body : Text;
+        user : Principal;
+        username : Text;
+        date : Text;
+        read : Bool;
+    };
+
+    public type Notifications = {
+        notifications : [Notification];
+        user : Principal;
+    };
+
     public type UserProfile = {
         id_hash : Text;
         age : Nat8;

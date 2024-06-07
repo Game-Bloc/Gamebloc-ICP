@@ -53,9 +53,11 @@ shared ({ caller }) actor class Kitchen() {
     private stable var feedback_id : Nat = 0;
     private stable var SupportedGames : [Text] = [];
     private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
+    private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+    var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
     var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
@@ -64,6 +66,8 @@ shared ({ caller }) actor class Kitchen() {
     var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
     var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+
+    // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
     /// stabilizing the motoko backup
     system func preupgrade() {
@@ -74,6 +78,8 @@ shared ({ caller }) actor class Kitchen() {
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
         FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
 
+        messageEntries := Iter.toArray(MessageHashMap.entries());
+
         // Passwords
         PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
     };
@@ -81,6 +87,7 @@ shared ({ caller }) actor class Kitchen() {
     system func postupgrade() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+        MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
         SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -97,12 +104,16 @@ shared ({ caller }) actor class Kitchen() {
         SquadEntries := [];
         FeedbackEntries := [];
         PasswordEntries := [];
+        messageEntries := [];
     };
+
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) {
         // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
         ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
     };
+
+
 
     // public func update_users() : async () {
 
@@ -118,7 +129,7 @@ shared ({ caller }) actor class Kitchen() {
     public func updatePays(payment : Bloctypes.PayrollHistory) : () {
         PAY_STORE.add(payment);
     };
-    
+
     public func getPays() : async [Bloctypes.PayrollHistory] {
         PAY_STORE.toArray();
     };
@@ -221,6 +232,8 @@ shared ({ caller }) actor class Kitchen() {
     public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
         await ICPIndex.icrc1_balance_of(account)
     };
+
+
 
     // Transfers ICP from the caller to receipient
     public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
@@ -463,7 +476,6 @@ shared ({ caller }) actor class Kitchen() {
         time : Text
     };
 
-    private stable var connectionID : Nat = 0;
     private stable var messageID : Nat = 0;
 
     // private stable var conversationEntries : [(Text, Conversation)] = [];
@@ -605,6 +617,37 @@ shared ({ caller }) actor class Kitchen() {
             points
         }
     };
+
+    // public shared ({ caller }) func notifty(body : Text) : async Bool {
+    //     NOTIFICATION_STORE.put(
+    //         caller, makeNotification()
+    //     )
+    // };
+
+    func makeNotification(id : Nat, body : Text, user : Principal, username : Text, date : Text, read : Bool ) : Bloctypes.Notification {
+        {
+            id : Nat;
+            body : Text;
+            user : Principal;
+            username : Text;
+            date : Text;
+            read : Bool;
+        }
+    };
+
+    // func makeNotifications(id : Nat, body : Text, user : Principal, username : Text, date : Text, read : Bool) : BLoctypes.Notifications {
+    //     {
+    //        [ {
+    //             id : Nat;
+    //             body : Text;
+    //             user : Principal;
+    //             username : Text;
+    //             date : Text;
+    //             read : Bool;
+    //         }]
+    //         user;
+    //     }
+    // };
 
     public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
         var time : Int = Time.now();
