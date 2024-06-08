@@ -201,7 +201,7 @@ const TournamentInfo = ({ data }: Props) => {
   } else {
     return (
       <div>
-        <div className="flex flex-col sm:mx-4 h-[27rem] max-h-[50rem]  overflow-x-hidden overflow-y-scroll">
+        <div className="flex flex-col sm:mx-4  overflow-x-hidden overflow-y-scroll">
           <div className="mt-8 w-full p-4 ">
             <div className="flex flex-col">
               <div className="flex gap-4 xl:gap-8">
