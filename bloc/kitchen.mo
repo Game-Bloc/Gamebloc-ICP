@@ -1306,7 +1306,8 @@ shared ({ caller }) actor class Kitchen() {
                         let clients_to_send = Buffer.toArray<IcWebSocketCdk.ClientPrincipal>(connected_clients);
 
                         for (client in clients_to_send.vals()) {
-                            await send_app_message(client, #GroupMessage(message))
+                            await send_app_message(client, #GroupMessage(message));
+                            await sendMessage(message.message.body, message.message.time, message.message.username, message.message.f_id)
                         }
                     }
                 };
