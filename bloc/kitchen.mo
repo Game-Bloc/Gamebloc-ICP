@@ -65,7 +65,7 @@ shared ({ caller }) actor class Kitchen() {
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
     var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
-    var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+    // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
 
     // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
