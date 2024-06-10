@@ -4,6 +4,7 @@ import { IoIosArrowRoundBack } from "react-icons/io"
 import { ConfigProvider, Tabs, TabsProps } from "antd"
 import AllNoti from "./AllNoti"
 import NewNoti from "./NewNoti"
+import { IoClose } from "react-icons/io5"
 
 interface Prop {
   modal: () => void
@@ -24,19 +25,21 @@ const items: TabsProps["items"] = [
 
 const MobileNoti = ({ modal }: Prop) => {
   return (
-    <div className="absolute z-50 bg-primary-first top-0 left-0 w-full h-screen ">
+    <div className="absolute z-50 bg-primary-first top-0   lg:w-[50%] lg:right-0 w-full h-[150vh] ">
       <div className="relative p-[2rem]">
         <div className="items-center justify-between flex w-full">
+          <p className="text-primary-second ml-2 text-[1.2rem]">
+            Notifications
+          </p>
           <div
             onClick={() => modal()}
             className="flex  items-center cursor-pointer"
           >
-            <IoIosArrowRoundBack className="text-primary-second" />
+            <IoClose className="text-primary-second" />
           </div>
-          <p className="text-primary-second ml-2 text-[1rem]">Notifications</p>
         </div>
 
-        <div className="mt-[3rem] px-[1rem] ">
+        <div className=" mt-[1.5rem] lg:mt-[3rem] px-[1rem] ">
           <ConfigProvider
             theme={{
               token: {
