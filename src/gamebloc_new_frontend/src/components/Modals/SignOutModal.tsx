@@ -24,8 +24,8 @@ const SignOutModal = ({ modal, handleSignOut }: Prop) => {
                       Sign Out of Gamebloc
                     </h4>
                     <p className=" text-white/90 text-sm my-2">
-                      A sign out has been requested for your account . Are you
-                      sure you want to sign out from it ?
+                      A sign out has been requested for your account. Are you
+                      sure you want to sign out ?
                     </p>
                     <div className=" flex mt-2 flex-row  ">
                       <button

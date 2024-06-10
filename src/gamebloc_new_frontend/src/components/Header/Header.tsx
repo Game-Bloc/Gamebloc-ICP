@@ -15,18 +15,21 @@ import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 import LoginModal2 from "../Modals/LoginModal2"
 import WelcomeModal from "../Modals/WelcomeModal"
 import SignOutModal from "../Modals/SignOutModal"
+import { FaRegBell } from "react-icons/fa"
+import MobileNoti from "../notifications/MobileNoti"
 
 const Header = () => {
   const navigate = useNavigate()
+  const { isAuthenticated, logout } = useAuth()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username?.substring(0, 2).toUpperCase()
-  const { isAuthenticated, logout } = useAuth()
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
+  const [mobileNotiModal, setMobileNotiModal] = useState<boolean>(false)
 
   const menus = [
     {
@@ -52,7 +55,9 @@ const Header = () => {
       icon: HiChatBubbleOvalLeft,
     },
   ]
-
+  const closeNotification = () => {
+    setMobileNotiModal(false)
+  }
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
   }
@@ -67,6 +72,7 @@ const Header = () => {
     localStorage.clear()
     sessionStorage.clear()
     logout()
+    navigate("/dashboard")
     setOpenModal(false)
   }
 
@@ -119,7 +125,7 @@ const Header = () => {
             </p>
             {profileModal && (
               <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
-                <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+                <div className="absolute w-[14rem] bg-[#030C15] rounded-[12px] h-32 flex border border-solid border-[#ffff]/20  flex-col  top-[4rem] right-2 p-4">
                   <div
                     onClick={() => navigate("/profile")}
                     className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
@@ -148,6 +154,25 @@ const Header = () => {
       </div>
       {open && (
         <div className="bg-primary-second duration-500  absolute left-0 top-0 w-[60%] h-screen">
+          <div
+            onClick={() => setMobileNotiModal(true)}
+            className="absolute left-4 top-4"
+          >
+            <div className="relative, inline-block ">
+              <FaRegBell />
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  width: "10px",
+                  height: "10px",
+                  backgroundColor: "red",
+                  borderRadius: "50%",
+                }}
+              />
+            </div>
+          </div>
           <div className="absolute right-4 top-4">
             <IoClose onClick={() => setOpen(!open)} />
           </div>
@@ -203,6 +228,9 @@ const Header = () => {
           </div>
         </div>
       )}
+      {/* {mobileNotiModal && */}
+      <MobileNoti modal={closeNotification} />
+      {/* } */}
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
       {accountModal && <WelcomeModal modal={handleAccModal} />}
       {openModal && (

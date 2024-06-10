@@ -1307,7 +1307,7 @@ shared ({ caller }) actor class Kitchen() {
 
                         for (client in clients_to_send.vals()) {
                             await send_app_message(client, #GroupMessage(message));
-                            await sendMessage(message.message.body, message.message.time, message.message.username, message.message.f_id)
+                            // await sendMessage(message.message.body, message.message.time, message.message.username, message.message.f_id)
                         }
                     }
                 };
