@@ -3,6 +3,7 @@ import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import AccountIdentifier "mo:account-identifier";
 // import AccountIdentifier "mo:account";
+import { now } = "mo:base/Time";
 
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
@@ -613,11 +614,6 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    // public shared ({ caller }) func notifty(body : Text) : async Bool {
-    //     NOTIFICATION_STORE.put(
-    //         caller, makeNotification()
-    //     )
-    // };
 
     func makeNotification(id : Nat, body : Text, user : Principal, username : Text, date : Text, read : Bool) : Bloctypes.Notification {
         {
@@ -653,29 +649,52 @@ shared ({ caller }) actor class Kitchen() {
         var notifications = Buffer.Buffer<Bloctypes.Notifications>(0);
         for ((principal, notification) in NOTIFICATION_STORE.entries()){
             if (principal == caller) { 
+                notifications.add(notification);
             }
         };
         notifications.toArray();
     };
 
-    // public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
-    //     var notifications = Buffer.Buffer<[Bloctypes.Notification]>(0);
-    //     var unread_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    //     for ((principal, notification) in NOTIFICATION_STORE.entries()){
-    //         if (principal == caller) {
-    //             notifications.add(notification.notifications);
-    //             for (i in Iter.toArray(notifications.toArray())){
-    //                 if (i.read == false){jjj
-    //                     unread_notifications.add(i);
-    //                 }
-    //             };
-    //         }
-    //     };
-    //     unread_notifications.toArray();
+    // public shared ({ caller }) func notifty(body : Text) : async Bool {
+    //     NOTIFICATION_STORE.put(
+    //         caller, makeNotification()
+    //     )
     // };
 
-    public query func get_read_notifications(caller : Principal) : async () {
+    public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var unread_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()){
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)){
+                    if (notification.read == false){
+                        unread_notifications.add(notification);
+                    }
+                };
+            }
+        };
+        return unread_notifications.toArray();
+    };
 
+
+
+    public query func get_read_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var read_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()){
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)){
+                    if (notification.read == true){
+                        read_notifications.add(notification);
+                    }
+                };
+            }
+        };
+        return read_notifications.toArray();
     };
 
     public func read_notification(caller : Principal) : async () {
