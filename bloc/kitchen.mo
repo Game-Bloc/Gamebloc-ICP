@@ -78,6 +78,7 @@ shared ({ caller }) actor class Kitchen() {
         UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
         FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+        NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
 
         messageEntries := Iter.toArray(MessageHashMap.entries());
 
@@ -89,6 +90,7 @@ shared ({ caller }) actor class Kitchen() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
         MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+        NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
         SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -105,7 +107,8 @@ shared ({ caller }) actor class Kitchen() {
         SquadEntries := [];
         FeedbackEntries := [];
         PasswordEntries := [];
-        messageEntries := []
+        messageEntries := [];
+        NotificationEntries := [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) {
@@ -626,10 +629,10 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
+    func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
         let notification : Bloctypes.Notification = {
                 id = 0;
-                body = "You have successfully created an account with Game Bloc!";
+                body = "Hi" # _username # ",you have successfully created an account with Game Bloc!";
                 user = caller;
                 username = _username;
                 date = _date;
@@ -655,11 +658,74 @@ shared ({ caller }) actor class Kitchen() {
         notifications.toArray();
     };
 
-    // public shared ({ caller }) func notifty(body : Text) : async Bool {
-    //     NOTIFICATION_STORE.put(
-    //         caller, makeNotification()
-    //     )
-    // };
+    public query func get_notification_id(caller : Principal) : async Nat {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var length = 0;
+        switch(notification){
+            case(null){0};
+            case(?notification){
+                var array = notification.notifications;
+                length := Array.size(array);
+                return length;
+            }  
+        }      
+    };
+
+    public func notify(body : Text, caller : Principal, date : Text, id : Nat, user : Text) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        switch(notification){
+            case(null){null};
+            case(?notfication){
+                var id = await get_notification_id(caller);
+                var newNotification = makeNotification(id+1, body, caller, user, date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications= Array.append(array, [newNotification]);
+                        user = caller;
+                    };
+                    var temp = NOTIFICATION_STORE.replace(caller, _notifications)
+                }
+            }
+        }
+    };
+
+    public shared ({ caller }) func read_notification(caller : Principal, id : Nat) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var updatedNotifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        switch(notification){
+            case(null){null};
+            case(?notfication){
+                // var newNotification = makeNotification(1, body, caller, "user", date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    for (_notification in Iter.fromArray(array)){
+                        if (_notification.id == id){
+                            let updatedNotif = {
+                                id = _notification.id;
+                                body = _notification.body;
+                                user = _notification.user;
+                                username = _notification.username;
+                                date = _notification.date;
+                                read = true;
+                            };
+                            updatedNotifications.add(updatedNotif);
+                        };
+                        if (_notification.id != id){
+                            updatedNotifications.add(_notification);
+                        }
+                    };
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications= updatedNotifications.toArray();
+                        user = caller;
+                    };
+                    var updateNotification = NOTIFICATION_STORE.replace(caller, _notifications);
+                }
+            }
+        }
+        // switch(notfication)
+
+    };
 
     public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
         var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
@@ -697,16 +763,6 @@ shared ({ caller }) actor class Kitchen() {
         return read_notifications.toArray();
     };
 
-    public func read_notification(caller : Principal) : async () {
-
-    };
-
-    // func makeNotifications(id : Nat, body : Text, user : Principal, username : Text, date : Text, read : Bool) : Bloctypes.Notifications {
-    //     let newNotification = makeNotification(id, body, user, username, date, false);
-
-    //     user;
-
-    // };
 
     public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
         var time : Int = Time.now();
