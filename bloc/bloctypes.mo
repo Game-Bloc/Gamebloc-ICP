@@ -24,7 +24,7 @@ module {
         amount : Nat;
     };
 
-    public type PayrollHistory = {
+    public type PoH = {
         user : Principal;
         account : Text;
         amount : Text;
