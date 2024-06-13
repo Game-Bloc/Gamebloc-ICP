@@ -7,7 +7,7 @@ import Recommended from "../components/dashboardComps/Recommended/Recommended"
 import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
 import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
-import { ConfigProvider, FloatButton, theme } from "antd"
+import { ConfigProvider, FloatButton, theme, Tooltip } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
@@ -90,18 +90,19 @@ const Dashboard = () => {
             },
           }}
         >
-          <FloatButton
-            shape="circle"
-            type="primary"
-            tooltip="Feedback"
-            style={{ right: 15, bottom: 15 }}
-            icon={<VscFeedback className="text-black" />}
-            onClick={
-              isAuthenticated
-                ? () => setOpenModal(!openModal)
-                : () => handleLoginModal()
-            }
-          />
+          <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
+            <FloatButton
+              shape="circle"
+              type="primary"
+              style={{ right: 15, bottom: 15 }}
+              icon={<VscFeedback className="text-black" />}
+              onClick={
+                isAuthenticated
+                  ? () => setOpenModal(!openModal)
+                  : () => handleLoginModal()
+              }
+            />
+          </Tooltip>
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}

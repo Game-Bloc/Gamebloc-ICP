@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
-import { Avatar } from "antd"
+import { Avatar, Tooltip } from "antd"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { CiUser } from "react-icons/ci"
@@ -119,70 +119,77 @@ const Header = () => {
           </div>
         ) : (
           <div className="flex relative items-center">
-            <div
-              onClick={() => {
-                setMobileNotiModal(true)
-              }}
-              className="relative hidden lg:inline-block cursor-pointer mr-8"
-            >
-              <FaRegBell className="text-primary-second" />
+            <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
               <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  width: "10px",
-                  height: "10px",
-                  backgroundColor: "red",
-                  borderRadius: "50%",
+                onClick={() => {
+                  setMobileNotiModal(true)
                 }}
-              />
-            </div>
-            <div
-              onClick={() => setProfileModal(!profileModal)}
-              className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
-            >
-              <Avatar
-                style={{
-                  backgroundColor: "#f6b8fc",
-                  color: "#01070E",
-                  fontSize: ".8rem",
-                }}
-                size={40}
+                className="relative hidden lg:inline-block cursor-pointer mr-8"
               >
-                {initials}
-              </Avatar>
+                <FaRegBell className="text-primary-second" />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "10px",
+                    height: "10px",
+                    backgroundColor: "red",
+                    borderRadius: "50%",
+                  }}
+                />
+              </div>
+            </Tooltip>
+            <Tooltip placement="bottom" title="Profile" color="#bfa9c27e">
+              <div
+                onClick={() => setProfileModal(!profileModal)}
+                className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
+              >
+                <Avatar
+                  style={{
+                    backgroundColor: "#f6b8fc",
+                    color: "#01070E",
+                    fontSize: ".8rem",
+                  }}
+                  size={40}
+                >
+                  {initials}
+                </Avatar>
 
-              <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
-                {username}
-              </p>
-              {profileModal && (
-                <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
-                  <div className="absolute w-[14rem] bg-[#030C15] rounded-[12px] h-32 flex border border-solid border-[#ffff]/20  flex-col  top-[4rem] right-2 p-4">
-                    <div
-                      onClick={() => navigate("/profile")}
-                      className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                    >
-                      <CiUser className="text-white" />
-                      <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                        {" "}
-                        Profile
-                      </p>
-                    </div>
-                    <div
-                      onClick={() => setOpenModal(true)}
-                      className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
-                    >
-                      <PiSignOutThin className=" text-white" />
-                      <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
-                        {" "}
-                        Sign out
-                      </p>
-                    </div>
+                <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
+                  {username}
+                </p>
+              </div>
+            </Tooltip>
+            {profileModal && (
+              <div
+                onClick={() => setProfileModal(false)}
+                className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity"
+              >
+                <div className="absolute w-[14rem] bg-[#030C15] rounded-[12px] h-32 flex border border-solid border-[#ffff]/20  flex-col  top-[4rem] right-2 p-4">
+                  <div
+                    onClick={() => navigate("/profile")}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <CiUser className="text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Profile
+                    </p>
+                  </div>
+                  <div
+                    onClick={() => setOpenModal(true)}
+                    className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
+                  >
+                    <PiSignOutThin className=" text-white" />
+                    <p className=" ml-4 text-[.8rem] sm:text-base text-white ">
+                      {" "}
+                      Sign out
+                    </p>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
