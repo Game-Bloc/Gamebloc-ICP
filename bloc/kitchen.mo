@@ -78,6 +78,7 @@ shared ({ caller }) actor class Kitchen() {
         UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
         FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+        NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
 
         messageEntries := Iter.toArray(MessageHashMap.entries());
 
@@ -89,6 +90,7 @@ shared ({ caller }) actor class Kitchen() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
         MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+        NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
         SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -105,7 +107,8 @@ shared ({ caller }) actor class Kitchen() {
         SquadEntries := [];
         FeedbackEntries := [];
         PasswordEntries := [];
-        messageEntries := []
+        messageEntries := [];
+        NotificationEntries := [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) {
