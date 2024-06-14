@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useAppSelector } from "../../redux/hooks"
 import NotiModal from "../Modals/NotiModal"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { Principal } from "@dfinity/principal"
 
 const NewNoti = () => {
-  const { markAsRead } = useGameblocHooks()
+  const { markAsRead, getMyNotifications } = useGameblocHooks()
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
@@ -15,12 +15,20 @@ const NewNoti = () => {
   const unreadmessages = notifi
     .filter((list: any) => list.read === false)
     .map((data: any) => data)
+
+  useEffect(() => {
+    getMyNotifications(principal)
+  }, [])
+
   const handleModal = () => {
+    getMyNotifications(principal)
     setOpenModal(!openModal)
   }
+
   const mark_as_read = (principal: Principal, id: bigint) => {
     markAsRead(principal, id)
   }
+
   if (unreadmessages.length === 0) {
     return (
       <div className=" flex flex-col justify-center items-center h-[70vh]">
@@ -40,19 +48,18 @@ const NewNoti = () => {
         {unreadmessages.map((noti: any) => (
           <div key={noti.id} className="flex flex-col mt-2">
             <div className="flex items-center">
-              {noti.read === false && (
-                <div
-                  style={{
-                    position: "relative",
-                    top: 0,
-                    right: 0,
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "red",
-                    borderRadius: "50%",
-                  }}
-                />
-              )}
+              <div
+                style={{
+                  position: "relative",
+                  top: 0,
+                  right: 0,
+                  width: "10px",
+                  height: "10px",
+                  backgroundColor: noti.read === false ? `red` : "#40454A",
+                  borderRadius: "50%",
+                }}
+              />
+
               <div className="flex justify-between items-center w-full">
                 <p className="ml-4 text-white/50">
                   {noti.body.substring(0, 20) + "..."}

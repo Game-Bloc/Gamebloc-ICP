@@ -121,9 +121,11 @@ const Header = () => {
           <div className="flex relative items-center">
             <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
               <div
-                onClick={() => {
-                  setMobileNotiModal(true)
-                }}
+                onClick={
+                  isAuthenticated
+                    ? () => setMobileNotiModal(true)
+                    : () => handleLoginModal()
+                }
                 className="relative hidden lg:inline-block cursor-pointer mr-8"
               >
                 <FaRegBell className="text-primary-second" />
@@ -196,10 +198,14 @@ const Header = () => {
       {open && (
         <div className="bg-primary-second duration-500  absolute left-0 top-0 w-[60%] h-screen">
           <div
-            onClick={() => {
-              setOpen(!open)
-              setMobileNotiModal(true)
-            }}
+            onClick={
+              isAuthenticated
+                ? () => {
+                    setOpen(!open)
+                    setMobileNotiModal(true)
+                  }
+                : () => handleLoginModal()
+            }
             className="absolute left-4 top-4"
           >
             <div className="relative inline-block ">

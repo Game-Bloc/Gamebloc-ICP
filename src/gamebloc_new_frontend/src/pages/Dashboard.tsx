@@ -45,9 +45,6 @@ const Dashboard = () => {
       getChatmessage(20)
       if (userSession === "true") {
         setAccountModal(false)
-        const principal = Principal.fromText(principalText)
-        getMyNotifications(principal)
-        getNotificationId(principal)
       } else {
         setAccountModal(true)
       }
@@ -56,7 +53,15 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, userSession])
 
-  console.log("Noti:", notifi)
+  useEffect(() => {
+    if (isAuthenticated && userSession === "true") {
+      console.log("testing principal", principalText)
+      const principal = Principal.fromText(principalText)
+      getMyNotifications(principal)
+      getNotificationId(principal)
+    }
+  }, [isAuthenticated, userSession])
+
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
   }
