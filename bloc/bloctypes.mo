@@ -36,6 +36,7 @@ module {
 
     public type Notification = {
         id : Nat;
+        title : Text;
         body : Text;
         user : Principal;
         username : Text;
