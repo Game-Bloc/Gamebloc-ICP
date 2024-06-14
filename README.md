@@ -72,7 +72,7 @@ To run GameBloc locally, you need the following:
 
 ## License
 
-This project is licensed under the GNU License. See the [LICENSE](https://www.gnu.org/licenses/agpl-3.0.en.html#license-text) file for details.
+This project is licensed under the AGPL License. See the [LICENSE](https://www.gnu.org/licenses/agpl-3.0.en.html#license-text) file for details.
 
 ## Acknowledgements
 
