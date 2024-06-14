@@ -1,3 +1,35 @@
+export const generateDate = () => {
+  let currentDate = new Date()
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }
+
+  const dayOptions: Intl.DateTimeFormatOptions = {
+    weekday: "short",
+  }
+
+  const timeString = currentDate.toLocaleTimeString("en-US", timeOptions)
+  const dayString = currentDate.toLocaleDateString("en-US", dayOptions)
+
+  let currentMonth = currentDate.toLocaleString("default", { month: "long" })
+  let currentYear = currentDate.getFullYear()
+  let dayOfMonth = currentDate.getDate()
+
+  let date =
+    `${timeString}, ${dayString}` +
+    ", " +
+    dayOfMonth +
+    " " +
+    currentMonth +
+    ", " +
+    currentYear +
+    "."
+  return date
+}
+
 export const squadCount = (data: any) => {
   let totalCount = 0
   data.squad.forEach((player: any) => (totalCount += player.members.length))

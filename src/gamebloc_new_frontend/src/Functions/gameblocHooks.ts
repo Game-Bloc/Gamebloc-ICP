@@ -12,6 +12,7 @@ import {
   IcpBalanceState,
   updateBalance,
   updateICP,
+  updateId,
 } from "../redux/slice/icpBalanceSlice"
 import { message } from "antd"
 import {
@@ -28,7 +29,6 @@ import {
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
 import { allNotification } from "../redux/slice/notificationSlice"
-// const { Principal } = require("@dfinity/principal")
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -438,6 +438,10 @@ export const useGameblocHooks = () => {
     to: string,
     amount: number,
     created_at_time: any,
+    _principal: any,
+    date: string,
+    notification_id: number,
+    username,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -468,6 +472,15 @@ export const useGameblocHooks = () => {
       // const send = await whoamiActor.transferICP(to, tokens, timeStamp)
       const send = await ledgerActor.send_dfx(args)
       if (send) {
+        notify(
+          "Withdrawal Successful",
+          `You have successfully withdrawn ${amount} ICP from your account to this address ${to}.`,
+          _principal,
+          date,
+          BigInt(notification_id),
+          username,
+        )
+        console.log("notify sent")
         setIsLoading(false)
         popUp(successMsg, route)
         setInterval(() => {
@@ -689,13 +702,14 @@ export const useGameblocHooks = () => {
 
   const notify = async (
     body: string,
+    title: string,
     principal: Principal,
     date: string,
     id: bigint,
     username: string,
   ) => {
     try {
-      await whoamiActor.notify(body, principal, date, id, username)
+      await whoamiActor.notify(title, body, principal, date, id, username)
       console.log("Notification created")
     } catch (err) {
       console.log("Error creating notification", err)
@@ -704,31 +718,39 @@ export const useGameblocHooks = () => {
 
   const getMyNotifications = async (principal: Principal) => {
     try {
-      const notification: any = await whoamiActor.get_my_notifications(
+      const notifications: any = await whoamiActor.get_my_notifications(
         principal,
       )
-      if (notification) {
-        for (const data of notification) {
-          const notifi = {
-            body: data.notifications[0].body,
-            date: data.notifications[0].date,
-            id: Number(data.notifications[0].id),
-            read: data.notifications[0].read,
-            username: data.notifications[0].username,
+      if (notifications) {
+        for (const data of notifications) {
+          for (const notification of data.notifications) {
+            const notifi = {
+              body: notification.body,
+              date: notification.date,
+              id: Number(notification.id),
+              read: notification.read,
+              title: notification.title,
+              username: notification.username,
+            }
+            dispatch(allNotification(notifi))
+            console.log("notif", notifi)
           }
-          dispatch(allNotification(notifi))
-          // console.log("notif", notifi)
         }
         console.log("went")
       }
-      // console.log("Noti :", notification)
+      console.log("Noti :", notifications)
     } catch (err) {
       console.log("Error getting notifications", err)
     }
   }
+
   const getNotificationId = async (principal: Principal) => {
     try {
-      const id = await whoamiActor.get_notification_id(principal)
+      const id: any = await whoamiActor.get_notification_id(principal)
+      const _id: any = {
+        id: Number(id),
+      }
+      dispatch(updateId(_id))
       console.log("Noti :", id)
     } catch (err) {
       console.log("Error getting notification id", err)

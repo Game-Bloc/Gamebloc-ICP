@@ -4,10 +4,13 @@ import { IoSend } from "react-icons/io5"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useAppSelector } from "../../redux/hooks"
+import { generateDate } from "../utils/utills"
 
 // export const ALPHANUM_REGEX = /^[a-zA-Z0-9]+$/
 interface Props {
   modal: () => void
+  _principal: any
+  notification_id: number
 }
 
 const override = {
@@ -16,13 +19,15 @@ const override = {
   borderColor: "white",
 }
 
-const TransferModal = ({ modal }: Props) => {
+const TransferModal = ({ modal, _principal, notification_id }: Props) => {
   const [recipient, setRecipient] = useState<string>("")
   const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
+  const [createdAt, setCreatedAt] = useState<string>("")
   const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
+  const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
 
   const onSendChange = (e: any) => {
@@ -41,6 +46,7 @@ const TransferModal = ({ modal }: Props) => {
   }
 
   useEffect(() => {
+    setCreatedAt(generateDate())
     getICPBalance()
     setDate(Date.now())
   }, [])
@@ -65,6 +71,10 @@ const TransferModal = ({ modal }: Props) => {
       recipient,
       amountToSend,
       date,
+      _principal,
+      createdAt,
+      notification_id,
+      username,
       "Transfer Successful",
       "Transfer Failed",
       "/profile",

@@ -7,7 +7,7 @@ interface notificationState {
   date: string
   id: number
   read: boolean
-  //   user: Principal
+  title: string
   username: string
 }
 

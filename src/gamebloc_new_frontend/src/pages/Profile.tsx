@@ -15,6 +15,7 @@ import ClipLoader from "react-spinners/ClipLoader"
 import MyTournaments from "../components/profileComp/MyTournaments/MyTournaments"
 import TransactionHistory from "../components/profileComp/Transaction/TransactionHistory"
 import { useAuth } from "../Auth/use-auth-client"
+import { Principal } from "@dfinity/principal"
 
 const items: TabsProps["items"] = [
   {
@@ -47,9 +48,11 @@ const Profile = () => {
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const _principal = Principal.fromText(principal)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
@@ -59,6 +62,7 @@ const Profile = () => {
     fetching,
     getICPBalance,
     getTransactions,
+    getNotificationId,
   } = useGameblocHooks()
   const [_date, setDate] = useState<string>("")
 
@@ -70,6 +74,7 @@ const Profile = () => {
   }
   useEffect(() => {
     getProfile()
+    getNotificationId(_principal)
     getICPBalance()
     getTransactions(accountId)
   }, [isAuthenticated])
@@ -232,7 +237,13 @@ const Profile = () => {
             </div>
           </div>
         </section>
-        {transferModal && <TransferModal modal={handleModal} />}
+        {transferModal && (
+          <TransferModal
+            notification_id={notification_id}
+            _principal={_principal}
+            modal={handleModal}
+          />
+        )}
       </div>
     )
   }

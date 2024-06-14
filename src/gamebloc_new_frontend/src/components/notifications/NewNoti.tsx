@@ -61,9 +61,7 @@ const NewNoti = () => {
               />
 
               <div className="flex justify-between items-center w-full">
-                <p className="ml-4 text-white/50">
-                  {noti.body.substring(0, 20) + "..."}
-                </p>
+                <p className="ml-4 text-white/50 font-bold">{noti.title}</p>
                 <p
                   onClick={() => {
                     mark_as_read(principal, noti.id)
@@ -75,7 +73,10 @@ const NewNoti = () => {
                 </p>
               </div>
             </div>
-            <p className="text-white/25 text-[.7rem]  ml-6"> {noti.date}</p>
+            <p className="text-white/25 text-[.7rem] -mt-[0.5rem] ml-6">
+              {" "}
+              {noti.date}
+            </p>
             {openModal && <NotiModal modal={handleModal} data={noti} />}
           </div>
         ))}

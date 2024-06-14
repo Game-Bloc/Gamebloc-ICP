@@ -26,7 +26,7 @@ const items: TabsProps["items"] = [
 const MobileNoti = ({ modal }: Prop) => {
   return (
     <div className="absolute z-50 bg-primary-first top-0   lg:w-[50%] lg:right-0 w-full h-[150vh] ">
-      <div className="relative p-[2rem]">
+      <div className="relative p-4 lg:p-[2rem]">
         <div className="items-center justify-between flex w-full">
           <p className="text-primary-second ml-2 text-[1.2rem]">
             Notifications
