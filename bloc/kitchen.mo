@@ -632,7 +632,7 @@ shared ({ caller }) actor class Kitchen() {
     func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
         let notification : Bloctypes.Notification = {
                 id = 0;
-                body = "Hi" # _username # ",you have successfully created an account with Game Bloc!";
+                body = "Hi " # _username # ",you have successfully created an account with Game Bloc!";
                 user = caller;
                 username = _username;
                 date = _date;
