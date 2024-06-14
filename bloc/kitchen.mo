@@ -634,7 +634,7 @@ shared ({ caller }) actor class Kitchen() {
         let notification : Bloctypes.Notification = {
                 id = 0;
                 title = "Welcome to Game Bloc";
-                body = "Hi " # _username # ",you have successfully created an account with Game Bloc!";
+                body = "Hi " # _username # ", you have successfully created an account with Game Bloc!";
                 user = caller;
                 username = _username;
                 date = _date;
