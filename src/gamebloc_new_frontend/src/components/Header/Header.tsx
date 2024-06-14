@@ -23,6 +23,10 @@ const Header = () => {
   const { isAuthenticated, logout } = useAuth()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const notifi = useAppSelector((state) => state.notification)
+  const unreadmessages = notifi
+    .filter((list: any) => list.read === false)
+    .map((data: any) => data)
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
@@ -129,17 +133,19 @@ const Header = () => {
                 className="relative hidden lg:inline-block cursor-pointer mr-8"
               >
                 <FaRegBell className="text-primary-second" />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "10px",
-                    height: "10px",
-                    backgroundColor: "red",
-                    borderRadius: "50%",
-                  }}
-                />
+                {unreadmessages.length == !0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
               </div>
             </Tooltip>
             <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh>
@@ -210,17 +216,19 @@ const Header = () => {
           >
             <div className="relative inline-block ">
               <FaRegBell />
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  right: 0,
-                  width: "10px",
-                  height: "10px",
-                  backgroundColor: "red",
-                  borderRadius: "50%",
-                }}
-              />
+              {unreadmessages.length == !0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "10px",
+                    height: "10px",
+                    backgroundColor: "red",
+                    borderRadius: "50%",
+                  }}
+                />
+              )}
             </div>
           </div>
           <div className="absolute right-4 top-4">

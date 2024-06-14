@@ -69,13 +69,13 @@ const NewNoti = () => {
                     mark_as_read(principal, noti.id)
                     setOpenModal(!openModal)
                   }}
-                  className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
+                  className="mt-6 text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
                 >
                   View
                 </p>
               </div>
             </div>
-            <p className="text-white/25 mt-2 ml-6"> {noti.date}</p>
+            <p className="text-white/25 text-[.7rem]  ml-6"> {noti.date}</p>
             {openModal && <NotiModal modal={handleModal} data={noti} />}
           </div>
         ))}

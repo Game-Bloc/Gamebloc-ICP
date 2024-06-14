@@ -5,7 +5,7 @@ import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { Principal } from "@dfinity/principal"
 
 const AllNoti = () => {
-  const { getMyNotifications } = useGameblocHooks()
+  const { getMyNotifications, markAsRead } = useGameblocHooks()
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
@@ -17,6 +17,11 @@ const AllNoti = () => {
     getMyNotifications(principal)
     setOpenModal(!openModal)
   }
+
+  const mark_as_read = (principal: Principal, id: bigint) => {
+    markAsRead(principal, id)
+  }
+
   if (notifi.length === 0) {
     return (
       <div className=" flex flex-col justify-center items-center h-[70vh]">
@@ -53,14 +58,20 @@ const AllNoti = () => {
                   {noti.body.substring(0, 20) + "..."}
                 </p>
                 <p
-                  onClick={() => setOpenModal(!openModal)}
-                  className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
+                  onClick={() => {
+                    mark_as_read(principal, noti.id)
+                    setOpenModal(!openModal)
+                  }}
+                  className="mt-6 text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
                 >
                   View
                 </p>
               </div>
             </div>
-            <p className="text-white/25 mt-2 ml-6"> {noti.date}</p>
+            <p className="text-white/25 text-[.7rem] -mt-[0.5rem] ml-6">
+              {" "}
+              {noti.date}
+            </p>
             {openModal && <NotiModal modal={handleModal} data={noti} />}
           </div>
         ))}
