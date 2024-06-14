@@ -140,7 +140,7 @@ const Header = () => {
                 />
               </div>
             </Tooltip>
-            <Tooltip placement="bottom" title="Profile" color="#bfa9c27e">
+            <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh>
               <div
                 onClick={() => setProfileModal(!profileModal)}
                 className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"

@@ -13,7 +13,7 @@ interface Prop {
 const items: TabsProps["items"] = [
   {
     key: "1",
-    label: `New`,
+    label: `Unread`,
     children: <NewNoti />,
   },
   {

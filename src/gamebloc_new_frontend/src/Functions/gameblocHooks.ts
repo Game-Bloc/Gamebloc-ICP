@@ -27,6 +27,7 @@ import {
 } from "../redux/slice/transactionSlice"
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
+import { allNotification } from "../redux/slice/notificationSlice"
 // const { Principal } = require("@dfinity/principal")
 
 export const useGameblocHooks = () => {
@@ -684,6 +685,67 @@ export const useGameblocHooks = () => {
     }
   }
 
+  // Notification functions
+
+  const notify = async (
+    body: string,
+    principal: Principal,
+    date: string,
+    id: bigint,
+    username: string,
+  ) => {
+    try {
+      await whoamiActor.notify(body, principal, date, id, username)
+      console.log("Notification created")
+    } catch (err) {
+      console.log("Error creating notification", err)
+    }
+  }
+
+  const getMyNotifications = async (principal: Principal) => {
+    try {
+      const notification: any = await whoamiActor.get_my_notifications(
+        principal,
+      )
+      if (notification) {
+        for (const data of notification) {
+          const notifi = {
+            body: data.notifications[0].body,
+            date: data.notifications[0].date,
+            id: Number(data.notifications[0].id),
+            read: data.notifications[0].read,
+            username: data.notifications[0].username,
+          }
+          dispatch(allNotification(notifi))
+          // console.log("notif", notifi)
+        }
+        console.log("went")
+      }
+      // console.log("Noti :", notification)
+    } catch (err) {
+      console.log("Error getting notifications", err)
+    }
+  }
+  const getNotificationId = async (principal: Principal) => {
+    try {
+      const id = await whoamiActor.get_notification_id(principal)
+      console.log("Noti :", id)
+    } catch (err) {
+      console.log("Error getting notification id", err)
+    }
+  }
+
+  const markAsRead = async (principal: Principal, id: bigint) => {
+    try {
+      const read = await whoamiActor.read_notification(principal, id)
+      if (read) {
+        console.log("Message marked as read")
+      }
+    } catch (err) {
+      console.log("Error marking message as read", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -712,5 +774,9 @@ export const useGameblocHooks = () => {
     sendChatMessage,
     getChatmessage,
     updateChatmessage,
+    notify,
+    getMyNotifications,
+    getNotificationId,
+    markAsRead,
   }
 }

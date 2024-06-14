@@ -17,19 +17,22 @@ import { useNavigate } from "react-router-dom"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useFetchAllTournaments } from "../Functions/blochooks"
 import LoginModal2 from "../components/Modals/LoginModal2"
+import { Principal } from "@dfinity/principal"
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch()
   const { isAuthenticated } = useAuth()
   const {
     getProfile,
     isLoadingProfile,
-    getFeedBacks,
+    getMyNotifications,
+    getNotificationId,
     getChatmessage,
     getICPrice,
   } = useGameblocHooks()
-  const { fetchAllTournaments } = useFetchAllTournaments()
-  const navigate = useNavigate()
+  const principalText = useAppSelector(
+    (state) => state.userProfile.principal_id,
+  )
+  const notifi = useAppSelector((state) => state.notification)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
@@ -39,16 +42,21 @@ const Dashboard = () => {
     getICPrice()
     if (isAuthenticated) {
       getProfile()
-      getFeedBacks()
       getChatmessage(20)
       if (userSession === "true") {
         setAccountModal(false)
+        const principal = Principal.fromText(principalText)
+        getMyNotifications(principal)
+        getNotificationId(principal)
       } else {
         setAccountModal(true)
       }
+    } else {
+      setAccountModal(false)
     }
   }, [isAuthenticated, userSession])
 
+  console.log("Noti:", notifi)
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
   }
