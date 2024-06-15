@@ -55,7 +55,7 @@ fn start_tournament(id: String) {
 }
 
 #[update]
-fn end_tournament(id: String, names: Vec<String>, principal: Principal, no_of_winners: u8,)
+fn end_tournament(id: String, principal: Principal, )
     // -> Vec<>
 {
     if get_self(principal).is_mod {
