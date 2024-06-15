@@ -587,6 +587,11 @@
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
   integrity sha512-Hcv+nVC0kZnQ3tD9GVu5xSMR4VVYOteQIr/hwFPVEvPdlXqgGEuRjiheChHgdM+JyqdgNcmzZOX/tnl0JOiI7A==
 
+"@napi-rs/lzma-darwin-x64@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/@napi-rs/lzma-darwin-x64/-/lzma-darwin-x64-1.2.1.tgz"
+  integrity sha512-/a5sHZkkO81w/PCpxlwXjADz++jDiTJquMzCLAhupd23wTRmJoCBAwp4Tur+qV5esI7ahAA0lS5P0M4TZv+OUg==
+
 "@napi-rs/lzma@^1.1.2":
   version "1.2.1"
   resolved "https://registry.npmjs.org/@napi-rs/lzma/-/lzma-1.2.1.tgz"

@@ -17,7 +17,6 @@ dfx.json
 build.sh
 
 .env
-
 .mops
 .mops/*
 

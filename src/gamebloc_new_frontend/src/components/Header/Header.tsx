@@ -65,6 +65,7 @@ const Header = () => {
 
   const signOut = () => {
     localStorage.clear()
+    sessionStorage.clear()
     logout()
     setOpenModal(false)
   }
