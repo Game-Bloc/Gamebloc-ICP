@@ -34,6 +34,7 @@ const LandingPage = () => {
   console.log("state", state)
 
   useEffect(() => {
+    localStorage.setItem("userSession", "false")
     if (isAuthenticated) {
       getProfile()
       getProfile2()

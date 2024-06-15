@@ -28,7 +28,7 @@ export const useFetchAllTournaments = () => {
       // console.log("get tournament was called")
       dispatch(clearTournaments())
       const tour: any = await whoamiActor.get_all_tournament()
-      console.log("Tour:", tour)
+      // console.log("Tour:", tour)
       if (tour && tour.length !== 0) {
         const tourArray: any[] = []
         for (const data of tour) {

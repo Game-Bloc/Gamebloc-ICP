@@ -127,7 +127,7 @@ export const useGameblocHooks = () => {
       }
       // Set the ICP price in state
       dispatch(updateICP(Icp))
-      console.log(`The current price of ICP is $${price}`)
+      // console.log(`The current price of ICP is $${price}`)
     } catch (error) {
       console.error("Error fetching ICP price:", error)
     }
@@ -149,7 +149,7 @@ export const useGameblocHooks = () => {
       const user: any = await whoamiActor.getSelf()
       if (user.username != "") {
         setIsAccount(true)
-        console.log("user..:", user)
+        // console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
