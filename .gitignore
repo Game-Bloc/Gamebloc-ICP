@@ -19,5 +19,6 @@ build.sh
 .env
 
 .mops
+.mops/*
 
 src/declarations
