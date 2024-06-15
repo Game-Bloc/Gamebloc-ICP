@@ -570,7 +570,7 @@ export const useGameblocHooks = () => {
     try {
       const messages = await whoamiActor.getUpdatedMessages(num)
       if (messages) {
-        console.log("chat fetched", messages)
+        // console.log("chat fetched", messages)
         for (const data of messages) {
           const chats = {
             message: {

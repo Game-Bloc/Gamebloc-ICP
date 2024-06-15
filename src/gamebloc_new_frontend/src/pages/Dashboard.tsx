@@ -55,7 +55,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (userSession === "true") {
-      console.log("testing principal", principalText)
       const principal = Principal.fromText(principalText)
       getMyNotifications(principal)
       getNotificationId(principal)

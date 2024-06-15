@@ -7,7 +7,7 @@ import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd"
 import { useAppSelector } from "../redux/hooks"
 import Copy from "../components/utils/Copy"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
-import { useGetAllSquad } from "../Functions/blochooks"
+import { useGetAllSquad, useUpdateTournament } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
@@ -64,6 +64,7 @@ const Profile = () => {
     getTransactions,
     getNotificationId,
   } = useGameblocHooks()
+  const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -74,6 +75,7 @@ const Profile = () => {
   }
   useEffect(() => {
     getProfile()
+    updateTournament()
     getNotificationId(_principal)
     getICPBalance()
     getTransactions(accountId)
