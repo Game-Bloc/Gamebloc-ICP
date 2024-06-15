@@ -27,8 +27,9 @@ mod model;
 
 mod serialization_memory_ids;
 mod tournament_mutations;
-mod lobbies_management;
+
 mod squad_mutations;
+mod tournament_lobbies_management;
 
 // method called by the client to open a WS connection to the canister (relayed by the WS Gateway)
 #[update]

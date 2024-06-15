@@ -55,8 +55,11 @@ fn start_tournament(id: String) {
 }
 
 #[update]
-fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
+fn end_tournament(id: String, names: Vec<String>, principal: Principal, no_of_winners: u8,)
+    // -> Vec<>
+{
     if get_self(principal).is_mod {
+        // let mut winners = Vec::new();
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
             tournament.status = match tournament.status {
@@ -65,14 +68,39 @@ fn end_tournament(id: String, names: Vec<String>, principal: Principal) {
                     TournamentStatus::GameCompleted
                 }
             };
+            // let mut winner = Vec::with_capacity(3);
+            // winner.
+            // let mut winning_squad = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
+            // let mut winning_players = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
+            match tournament.game_type {
+                GameType::TeamvTeam => {}
+                GameType::Single => {
+                    // winners.append(&mut winning_players);
+                    tournament.points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                        tournament.winers.push(id_mapping.0.clone())
+                    });
+                }
+                GameType::Duo => {
+                    // winners.append(&mut winning_squad);
+                    tournament.squad_points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                        tournament.winers.push(id_mapping.0.clone())
+                    });
+                }
+                GameType::Squad => {
+                    // winners.append(&mut winning_squad);
+                    tournament.squad_points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                        tournament.winers.push(id_mapping.0.clone())
+                    });
+                }
+            }
 
-            names.iter().for_each(|name| {
-                tournament.winers.push(name.try_into().unwrap());
-            });
-            tournament_store.borrow_mut().insert(id, tournament);
+            tournament_store.borrow_mut().insert(id, tournament.clone());
+            // &tournament.squad_points.clone().unwrap()[..3]
         });
+        // winners
     } else {
         println!("you're not admin");
+        // Vec::new()
     }
 }
 
