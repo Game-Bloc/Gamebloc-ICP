@@ -133,7 +133,7 @@ const Header = () => {
                 className="relative hidden lg:inline-block cursor-pointer mr-8"
               >
                 <FaRegBell className="text-primary-second" />
-                {unreadmessages.length == !0 && (
+                {unreadmessages.length !== 0 && (
                   <div
                     style={{
                       position: "absolute",
@@ -216,7 +216,7 @@ const Header = () => {
           >
             <div className="relative inline-block ">
               <FaRegBell />
-              {unreadmessages.length == !0 && (
+              {unreadmessages.length !== 0 && (
                 <div
                   style={{
                     position: "absolute",

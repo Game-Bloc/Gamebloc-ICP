@@ -1,12 +1,15 @@
 import React from "react"
 import { RiCloseFill } from "react-icons/ri"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
 
 interface notiState {
   modal: () => void
   data: any
+  principal: any
 }
 
-const NotiModal = ({ modal, data }: notiState) => {
+const NotiModal = ({ modal, data, principal }: notiState) => {
+  const { getMyNotifications } = useGameblocHooks()
   return (
     <div>
       <div
@@ -21,14 +24,19 @@ const NotiModal = ({ modal, data }: notiState) => {
               <div className="relative border-white/10 border border-solid bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
                 <div className="bg-primary-first  p-[2rem] flex flex-col justify-center items-center">
                   <RiCloseFill
-                    onClick={modal}
+                    onClick={() => {
+                      getMyNotifications(principal)
+                      modal()
+                    }}
                     className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                   />
 
-                  <div key={data.id} className="flex flex-col mt-4">
+                  <div key={data.id} className="flex relative flex-col mt-4">
                     <p className="text-white/50 mb-4 font-bold">{data.title}</p>
                     <div className="flex items-center">
-                      <p className=" text-white/40 text-[.8rem]">{data.body}</p>
+                      <p className=" text-white/40 text-[.8rem] ">
+                        {data.body}
+                      </p>
                     </div>
                     <p className="text-white/25 mt-2 text-[.7rem]">
                       {" "}

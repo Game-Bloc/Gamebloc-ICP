@@ -103,17 +103,20 @@ const Profile = () => {
                   </h1>
                   <div className=" flex flex-col w-full sm:w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
                     <div className="flex">
-                      <Avatar
-                        style={{
-                          backgroundColor: "#f6b8fc",
-                          color: "#01070E",
-                          fontSize: "1.2rem",
-                        }}
-                        size={80}
-                      >
-                        {initials}
-                      </Avatar>
-                      <div className="flex ml-[3rem] flex-col">
+                      <div className="mr-4 lg:mr-[3rem]">
+                        <Avatar
+                          style={{
+                            backgroundColor: "#f6b8fc",
+                            color: "#01070E",
+                            fontSize:
+                              window.innerWidth >= 1200 ? "1.2rem" : ".8rem",
+                          }}
+                          size={window.innerWidth >= 1200 ? 80 : 50}
+                        >
+                          {initials}
+                        </Avatar>
+                      </div>
+                      <div className="flex  flex-col">
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>

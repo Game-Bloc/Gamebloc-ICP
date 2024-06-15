@@ -12,7 +12,10 @@ const NewNoti = () => {
   const principal = Principal.fromText(principalText)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const notifi = useAppSelector((state) => state.notification)
-  const unreadmessages = notifi
+  const [selectedNoti, setSelectedNoti] = useState<any>(null)
+
+  const unreadmessages = [...notifi]
+    .sort((a, b) => b.id - a.id)
     .filter((list: any) => list.read === false)
     .map((data: any) => data)
 
@@ -20,8 +23,8 @@ const NewNoti = () => {
     getMyNotifications(principal)
   }, [])
 
-  const handleModal = () => {
-    getMyNotifications(principal)
+  const handleModal = (noti: any) => {
+    setSelectedNoti(noti)
     setOpenModal(!openModal)
   }
 
@@ -65,7 +68,7 @@ const NewNoti = () => {
                 <p
                   onClick={() => {
                     mark_as_read(principal, noti.id)
-                    setOpenModal(!openModal)
+                    handleModal(noti)
                   }}
                   className="mt-6 text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
                 >
@@ -77,7 +80,13 @@ const NewNoti = () => {
               {" "}
               {noti.date}
             </p>
-            {openModal && <NotiModal modal={handleModal} data={noti} />}
+            {openModal && selectedNoti && (
+              <NotiModal
+                principal={principal}
+                modal={() => setOpenModal(false)}
+                data={selectedNoti}
+              />
+            )}
           </div>
         ))}
       </div>

@@ -12,17 +12,23 @@ const AllNoti = () => {
   const principal = Principal.fromText(principalText)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const notifi = useAppSelector((state) => state.notification)
+  const [selectedNoti, setSelectedNoti] = useState<any>(null)
+  const sortedNotifi = [...notifi].sort((a, b) => b.id - a.id)
 
-  const handleModal = () => {
-    getMyNotifications(principal)
+  const handleModal = (noti: any) => {
+    setSelectedNoti(noti)
     setOpenModal(!openModal)
   }
+
+  // const handleModal = () => {
+  //   getMyNotifications(principal)
+  //   setOpenModal(!openModal)
+  // }
 
   const mark_as_read = (principal: Principal, id: bigint) => {
     markAsRead(principal, id)
   }
-
-  if (notifi.length === 0) {
+  if (sortedNotifi.length === 0) {
     return (
       <div className=" flex flex-col justify-center items-center h-[70vh]">
         <img
@@ -38,8 +44,8 @@ const AllNoti = () => {
   } else {
     return (
       <div className="overflow-x-hidden overflow-y-scroll h-screen max-h-screen pb-[20vh] lg:pb-[30vh]">
-        {notifi.map((noti: any) => (
-          <div key={noti.id} className="flex flex-col mt-2">
+        {sortedNotifi.map((noti: any) => (
+          <div key={noti.id} className="relative flex flex-col mt-2">
             <div className="flex items-center">
               <div
                 style={{
@@ -58,7 +64,7 @@ const AllNoti = () => {
                 <p
                   onClick={() => {
                     mark_as_read(principal, noti.id)
-                    setOpenModal(!openModal)
+                    handleModal(noti)
                   }}
                   className="mt-6 text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
                 >
@@ -70,7 +76,13 @@ const AllNoti = () => {
               {" "}
               {noti.date}
             </p>
-            {openModal && <NotiModal modal={handleModal} data={noti} />}
+            {openModal && selectedNoti && (
+              <NotiModal
+                principal={principal}
+                modal={() => setOpenModal(false)}
+                data={selectedNoti}
+              />
+            )}
           </div>
         ))}
       </div>

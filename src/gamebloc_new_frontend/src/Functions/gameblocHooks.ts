@@ -474,7 +474,7 @@ export const useGameblocHooks = () => {
       if (send) {
         notify(
           "Withdrawal Successful",
-          `You have successfully withdrawn ${amount} ICP from your account to this address ${to}.`,
+          `You have successfully withdrawn ${amount} ICP from your account.`,
           _principal,
           date,
           BigInt(notification_id),
@@ -733,12 +733,12 @@ export const useGameblocHooks = () => {
               username: notification.username,
             }
             dispatch(allNotification(notifi))
-            console.log("notif", notifi)
+            // console.log("notif", notifi)
           }
         }
         console.log("went")
       }
-      console.log("Noti :", notifications)
+      // console.log("Noti :", notifications)
     } catch (err) {
       console.log("Error getting notifications", err)
     }
