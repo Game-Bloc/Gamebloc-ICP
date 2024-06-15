@@ -3,7 +3,7 @@ use crate::tournament_lobbies_management::helper_functions::*;
 
 ///Lobby (or sub tournament) CRUD
 #[query]
-fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
+pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.clone().lobbies.unwrap()[lobby_id as usize].clone()
@@ -11,7 +11,7 @@ fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccoun
 }
 
 #[update]
-fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) {
+pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -26,7 +26,7 @@ fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(Stri
 }
 
 #[update]
-fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) {
+pub fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -41,7 +41,7 @@ fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String
 }
 
 #[query]
-fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
+pub fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -53,7 +53,7 @@ fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
 }
 
 #[query]
-fn count_tournament_lobbies(tournament_id: String) -> u128 {
+pub fn count_tournament_lobbies(tournament_id: String) -> u128 {
     let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
@@ -66,7 +66,7 @@ fn count_tournament_lobbies(tournament_id: String) -> u128 {
 }
 
 #[update]
-fn structure_tournament_into_lobbies(tournament_id: String) {
+pub fn structure_tournament_into_lobbies(tournament_id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.status = match tournament.status {
@@ -189,7 +189,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
 }
 
 // #[update]
-// fn structure_tournament_into_duo_lobbies(name: String, id: String) {
+// pub fn structure_tournament_into_duo_lobbies(name: String, id: String) {
 //     TOURNAMENT_STORE.with(|tournament_store| {
 //         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
 //         tournament.user.push(name);
@@ -198,7 +198,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
 // }
 //
 // #[update]
-// fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
+// pub fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
 //     TOURNAMENT_STORE.with(|tournament_store| {
 //         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
 //         SQUAD_STORE.with(|squad_store| {
@@ -211,7 +211,7 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
 
 ///Tournament lobbies restructuring function
 #[update]
-fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> {
+pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.status = match tournament.status {
@@ -346,7 +346,7 @@ fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> {
 
 //delete lobbies
 #[update]
-fn lobbies_exterminator(tournament_id: String) {
+pub fn lobbies_exterminator(tournament_id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.clone().lobbies = Some([].to_vec());
@@ -356,7 +356,7 @@ fn lobbies_exterminator(tournament_id: String) {
 
 //merge three lobbies
 #[update]
-fn three_lobbies_merge(tournament_id: String) {
+pub fn three_lobbies_merge(tournament_id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.status = match tournament.status {
@@ -566,7 +566,7 @@ fn three_lobbies_merge(tournament_id: String) {
 
 //merge two lobbies members
 #[update]
-fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, String)) {
+pub fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, String)) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
         tournament.status = match tournament.status {
@@ -594,4 +594,4 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, String))
 
 //extradict lobbies members
 #[update]
-fn lobbies_extraditor(name: String, id: String, ign: (String, String)) {}
+pub fn lobbies_extraditor(name: String, id: String, ign: (String, String)) {}
