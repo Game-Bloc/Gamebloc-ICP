@@ -11,7 +11,7 @@ fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccoun
 }
 
 #[update]
-fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
+fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -26,7 +26,7 @@ fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(Stri
 }
 
 #[update]
-fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
+fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
