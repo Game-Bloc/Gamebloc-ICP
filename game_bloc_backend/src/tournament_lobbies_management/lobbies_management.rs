@@ -11,15 +11,10 @@ fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccoun
 }
 
 #[update]
-fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
+fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
-            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            tournament.clone().lobbies.unwrap()[lobby_id.clone() as usize].lobby_status = match tournament.clone().lobbies.unwrap()[lobby_id as usize].lobby_status {
-                LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
-                _ => LobbyStatus::GameCompleted,
-            };
             squad_id_and_points.sort_by_key(|k| k.1.total_points);
             tournament.squad_points = Some(squad_id_and_points);
 
@@ -31,15 +26,10 @@ fn assign_squad_points_and_end_lobby(tournament_id: String, mut squad_id_and_poi
 }
 
 #[update]
-fn assign_solo_points_and_end_lobby(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
+fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal, lobby_id: u8) {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
-            let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            tournament.clone().lobbies.unwrap()[lobby_id.clone() as usize].lobby_status = match tournament.clone().lobbies.unwrap()[lobby_id as usize].lobby_status {
-                LobbyStatus::GameInProgress => LobbyStatus::GameCompleted,
-                _ => LobbyStatus::GameCompleted,
-            };
             user_id_and_points.sort_by_key(|k| k.1.total_points);
             tournament.points = Some(user_id_and_points);
 
@@ -198,26 +188,26 @@ fn structure_tournament_into_lobbies(tournament_id: String) {
     });
 }
 
-#[update]
-fn structure_tournament_into_duo_lobbies(name: String, id: String) {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        tournament.user.push(name);
-        tournament_store.borrow_mut().insert(id, tournament);
-    });
-}
-
-#[update]
-fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        SQUAD_STORE.with(|squad_store| {
-            let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-            tournament.squad.push(squad);
-        });
-        tournament_store.borrow_mut().insert(id, tournament);
-    });
-}
+// #[update]
+// fn structure_tournament_into_duo_lobbies(name: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         tournament.user.push(name);
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
+//
+// #[update]
+// fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
+//     TOURNAMENT_STORE.with(|tournament_store| {
+//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+//         SQUAD_STORE.with(|squad_store| {
+//             let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+//             tournament.squad.push(squad);
+//         });
+//         tournament_store.borrow_mut().insert(id, tournament);
+//     });
+// }
 
 ///Tournament lobbies restructuring function
 #[update]
@@ -590,7 +580,7 @@ fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, String))
         let mut participant_queue: Vec<String> = Vec::new();
         let mut squad_queue: Vec<Squad> = Vec::new();
 
-        sqad_or_player_religator(&mut tournament, &mut participant_queue, &mut squad_queue);
+        squad_or_player_religator(&mut tournament, &mut participant_queue, &mut squad_queue);
 
         lobbies_exterminator(tournament_id.clone());
 

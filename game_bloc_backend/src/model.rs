@@ -57,7 +57,6 @@ pub_struct!(
      tournament_type: TournamentType,
      game: String,
      squad:Vec<Squad>,
-     squad_points: Option<Vec<(String,Point)>>,
      squad_in_game_names:Option<Vec<Vec<(String, String)>>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
@@ -69,8 +68,10 @@ pub_struct!(
      game_type: GameType,
      end_date: String,
      title: String,
-     in_game_names: Option<Vec<(String,String)>>,
+     squad_points: Option<Vec<(String,Point)>>,
      points: Option<Vec<(String,Point)>>,
+     in_game_names: Option<Vec<(String,String)>>,
+     tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
 });
 
@@ -85,6 +86,8 @@ pub_struct!(
          game: String,
          squads:Vec<Squad>,
          messages: Option<Vec<Chat>>,
+         // squad_points: Option<Vec<(String,Point)>>,
+         // points: Option<Vec<(String,Point)>>,
          participants: Vec<String>,
          winers: Vec<String>,
          no_of_winners: Option<u8>,
@@ -173,6 +176,12 @@ pub enum TournamentType {
     #[default]
     Crowdfunded,
     Prepaid,
+}
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+pub enum TournamentLobbyType {
+    #[default]
+    SingleLobby,
+    MultiLobby,
 }
 
 #[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]

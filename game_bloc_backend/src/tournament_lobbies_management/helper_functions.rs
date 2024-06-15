@@ -1,6 +1,6 @@
 use crate::*;
 
-pub(crate) fn sqad_or_player_religator(mut tournament: &mut TournamentAccount, mut participant_queue: &mut Vec<String>, mut squad_queue: &mut Vec<Squad>) {
+pub(crate) fn squad_or_player_religator(mut tournament: &mut TournamentAccount, mut participant_queue: &mut Vec<String>, mut squad_queue: &mut Vec<Squad>) {
     match tournament.game_type {
         GameType::TeamvTeam => {}
         GameType::Single => {
