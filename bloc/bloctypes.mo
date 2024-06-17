@@ -55,6 +55,8 @@ module {
         date : Text;
         status : Status;
         wins : Nat8;
+        attendance : ?Nat8;
+        losses : ?Nat8;
         tournaments_created : Nat8;
         username : Text;
         is_mod : Bool;
