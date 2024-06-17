@@ -34,6 +34,8 @@ pub_struct!(UserProfile {
      date: String,
      status: Status,
      wins: u8,
+     attendance: Option<u8>,
+     losses: Option<u8>,
      tournaments_created:u8,
      points: Option<Vec<(String,String,Point)>>,
      username: String,
