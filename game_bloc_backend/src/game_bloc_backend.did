@@ -1,5 +1,53 @@
+type AppMessage = record { "text" : text; timestamp : nat64 };
+type CanisterOutputCertifiedMessages = record {
+  messages : vec CanisterOutputMessage;
+  cert : vec nat8;
+  tree : vec nat8;
+  is_end_of_queue : bool;
+};
+type CanisterOutputMessage = record {
+  key : text;
+  content : vec nat8;
+  client_key : ClientKey;
+};
+type CanisterWsCloseArguments = record { client_key : ClientKey };
+type CanisterWsGetMessagesArguments = record { nonce : nat64 };
+type CanisterWsMessageArguments = record { msg : WebsocketMessage };
+type CanisterWsOpenArguments = record {
+  gateway_principal : principal;
+  client_nonce : nat64;
+};
+type Chat = record { id : text; name : text; time : text; message : text };
+type ClientKey = record { client_principal : principal; client_nonce : nat64 };
+type GameType = variant { Duo; Squad; TeamvTeam; Single };
+type LobbyAccount = record {
+  idx : nat8;
+  status : TournamentStatus;
+  participants : vec text;
+  messages : opt vec Chat;
+  game : text;
+  name : opt text;
+  winers : vec text;
+  squads : vec Squad;
+  lobby_status : LobbyStatus;
+  game_type : GameType;
+  starting_date : opt text;
+  no_of_participants : nat;
+  no_of_winners : opt nat8;
+  tournament_type : TournamentType;
+  lobby_rules : text;
+};
+type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
 type Member = record { name : text; principal_id : text };
+type Point = record {
+  kill_points : nat;
+  total_points : nat;
+  position_points : nat;
+};
 type Result = variant { Ok : nat8; Err : nat8 };
+type Result_1 = variant { Ok; Err : text };
+type Result_2 = variant { Ok : CanisterOutputCertifiedMessages; Err : text };
+type Role = variant { Mod; Player };
 type Squad = record {
   tag : text;
   id_hash : text;
@@ -18,23 +66,33 @@ type TournamentAccount = record {
   status : TournamentStatus;
   title : text;
   creator : text;
+  messages : opt vec Chat;
+  creator_id : opt text;
   game : text;
   user : vec text;
+  in_game_names : opt vec record { text; text };
   winers : vec text;
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
+  squad_in_game_names : opt vec vec record { text; text };
   squad : vec Squad;
-  game_type : text;
+  lobbies : opt vec LobbyAccount;
+  game_type : GameType;
   starting_date : text;
   no_of_participants : nat;
+  tournament_lobby_type : opt TournamentLobbyType;
   no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
+  points : opt vec record { text; Point };
+  squad_points : opt vec record { text; Point };
 };
+type TournamentLobbyType = variant { MultiLobby; SingleLobby };
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
+  Archived;
   GameCompleted;
 };
 type TournamentType = variant { Prepaid; Crowdfunded };
@@ -45,6 +103,7 @@ type UserProfile = record {
   status : Status;
   username : text;
   date : text;
+  role : Role;
   canister_id : text;
   wins : nat8;
   is_mod : bool;
@@ -62,24 +121,49 @@ type WebsocketMessage = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
+  assign_solo_points : (text, vec record { text; Point }, principal) -> ();
+  assign_squad_points : (text, vec record { text; Point }, principal) -> ();
   close_squad : (text, vec text, principal) -> ();
+  count_all_squad : () -> (nat) query;
+  count_all_tournament : () -> (nat) query;
+  count_all_users : () -> (nat) query;
+  count_tournament_lobbies : (text) -> (nat) query;
+  create_new_lobbies_from_winners : (text) -> (Result);
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
-  end_tournament : (text, vec text, principal) -> ();
+  end_tournament : (text, principal) -> ();
   getSelf : (principal) -> (UserProfile) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
+  get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
   get_all_user : () -> (vec UserProfile) query;
+  get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
   get_profile : (text) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
-  is_mod : (text) -> (bool) query;
+  is_mod : (principal) -> (bool) query;
   join_squad : (Member, principal, text) -> ();
-  join_tournament : (text, text) -> ();
-  join_tournament_with_squad : (text, text) -> ();
+  join_tournament : (text, text, record { text; text }) -> ();
+  join_tournament_with_squad : (
+      text,
+      text,
+      vec record { text; text },
+      opt vec record { text; text },
+    ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
+  lobbies_exterminator : (text) -> ();
+  lobbies_extraditor : (text, text, record { text; text }) -> ();
   open_squad : (text, vec text, principal) -> ();
-  set_mod : (text, principal) -> ();
+  send_message_tournament : (text, Chat) -> ();
+  set_mod : (principal) -> ();
   start_tournament : (text) -> ();
+  structure_tournament_into_lobbies : (text) -> ();
+  three_lobbies_merge : (text) -> ();
+  two_lobbies_merge : (text, text, record { text; text }) -> ();
+  update_squad_details : (text) -> ();
+  ws_close : (CanisterWsCloseArguments) -> (Result_1);
+  ws_get_messages : (CanisterWsGetMessagesArguments) -> (Result_2) query;
+  ws_message : (CanisterWsMessageArguments, opt AppMessage) -> (Result_1);
+  ws_open : (CanisterWsOpenArguments) -> (Result_1);
 }

@@ -768,6 +768,20 @@ export const useGameblocHooks = () => {
     }
   }
 
+  // ADMIN TOURNAMENT FUNCTIONS
+
+  const assign_solo_point = async () => {
+    try {
+      setIsLoading(true)
+      // const action = whoamiActor2.
+    } catch (err) {}
+  }
+
+  const assign_squad_point = () => {
+    try {
+    } catch (err) {}
+  }
+
   return {
     isLoading,
     isLoadingProfile,

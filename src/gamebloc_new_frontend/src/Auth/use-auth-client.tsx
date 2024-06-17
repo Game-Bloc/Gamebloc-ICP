@@ -181,7 +181,7 @@ export const useAuthClient = (options = defaultOptions) => {
           identity,
         },
       })
-      // console.log("Actor", actor4)
+      console.log("Actor", actor2)
       setWhoamiActor(actor)
       setWhoamiActor2(actor2)
       setLedgerAcor(actor3)
