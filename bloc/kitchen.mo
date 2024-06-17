@@ -433,6 +433,19 @@ shared ({ caller }) actor class Kitchen() {
         caller
     };
 
+    // Notify icp deposits
+    public shared ({ caller }) func newTransactions(_length : Nat64) : async () {
+        let newTransactions = await ICPLedger.query_blocks({
+            start = lastCheckedBlock;
+            length = _length;
+        });
+
+        
+
+    };
+
+    stable var lastCheckedBlock : Nat64 = 0;
+
     // Trying to hard code the wallet id - possible solution is use a transfer_from func
     // Look into the icrc-2 documentation
 
