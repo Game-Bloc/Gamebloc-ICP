@@ -33,19 +33,19 @@ mod tournament_lobbies_management;
 
 // method called by the client to open a WS connection to the canister (relayed by the WS Gateway)
 #[update]
-fn ws_open(args: CanisterWsOpenArguments) -> CanisterWsOpenResult {
+pub fn ws_open(args: CanisterWsOpenArguments) -> CanisterWsOpenResult {
     ic_websocket_cdk::ws_open(args)
 }
 
 // method called by the Ws Gateway when closing the IcWebSocket connection for a client
 #[update]
-fn ws_close(args: CanisterWsCloseArguments) -> CanisterWsCloseResult {
+pub fn ws_close(args: CanisterWsCloseArguments) -> CanisterWsCloseResult {
     ic_websocket_cdk::ws_close(args)
 }
 
 // method called by the client to send a message to the canister (relayed by the WS Gateway)
 #[update]
-fn ws_message(
+pub fn ws_message(
     args: CanisterWsMessageArguments,
     msg_type: Option<AppMessage>,
 ) -> CanisterWsMessageResult {
@@ -54,7 +54,7 @@ fn ws_message(
 
 // method called by the WS Gateway to get messages for all the clients it serves
 #[query]
-fn ws_get_messages(args: CanisterWsGetMessagesArguments) -> CanisterWsGetMessagesResult {
+pub fn ws_get_messages(args: CanisterWsGetMessagesArguments) -> CanisterWsGetMessagesResult {
     ic_websocket_cdk::ws_get_messages(args)
 }
 
@@ -73,7 +73,7 @@ thread_local! {
 
 //User struct crud functions
 #[query(name = "getSelf")]
-fn get_self(principal: Principal) -> UserProfile {
+pub fn get_self(principal: Principal) -> UserProfile {
     // let id = ic_cdk::api::caller();
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow().get(&principal.to_text()).cloned().unwrap()
@@ -81,7 +81,7 @@ fn get_self(principal: Principal) -> UserProfile {
 }
 
 #[query]
-fn get_all_user() -> Vec<UserProfile> {
+pub fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
@@ -92,7 +92,7 @@ fn get_all_user() -> Vec<UserProfile> {
 }
 
 #[query]
-fn count_all_users() -> u128 {
+pub fn count_all_users() -> u128 {
     PROFILE_STORE.with(|profile_store| {
         let mut users_vec: Vec<UserProfile> = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
@@ -103,7 +103,7 @@ fn count_all_users() -> u128 {
 }
 
 #[query]
-fn get_profile(name: String) -> UserProfile {
+pub fn get_profile(name: String) -> UserProfile {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
             id_store.borrow().get(&name).and_then(|id| profile_store.borrow().get(id).cloned()).unwrap()
@@ -112,7 +112,7 @@ fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> {
+pub fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> {
     // let principal_id = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store.borrow_mut().insert(profile.username.clone(), principal.to_text());
@@ -125,7 +125,7 @@ fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> 
 
 //setting mods and managing admins
 #[update]
-fn set_mod(identity: Principal) {
+pub fn set_mod(identity: Principal) {
     PROFILE_STORE.with(|profile_store| {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         profile.role = match profile.role {
@@ -139,7 +139,7 @@ fn set_mod(identity: Principal) {
 }
 
 #[query]
-fn is_mod(identity: Principal) -> bool {
+pub fn is_mod(identity: Principal) -> bool {
     PROFILE_STORE.with(|profile_store| {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         match profile.role {
@@ -150,7 +150,7 @@ fn is_mod(identity: Principal) -> bool {
 }
 
 #[update]
-fn send_message_tournament(id: String, message: Chat) {
+pub fn send_message_tournament(id: String, message: Chat) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         if tournament.messages.is_none() && !tournament.messages.clone().is_some() {
@@ -168,7 +168,7 @@ fn send_message_tournament(id: String, message: Chat) {
 }
 
 #[update]
-fn leave_or_remove_squad_member(principal: Principal, id: String) {
+pub fn leave_or_remove_squad_member(principal: Principal, id: String) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap_or_default();
         match squad.status {
@@ -206,7 +206,7 @@ pub fn on_message(args: OnMessageCallbackArgs) {
     send_app_message(args.client_principal, new_msg)
 }
 
-fn send_app_message(client_principal: ClientPrincipal, msg: AppMessage) {
+pub fn send_app_message(client_principal: ClientPrincipal, msg: AppMessage) {
     print(format!("Sending message: {:?}", msg));
     if let Err(e) = send(client_principal, msg.candid_serialize()) {
         println!("Could not send message: {}", e);
@@ -218,7 +218,7 @@ pub fn on_close(args: OnCloseCallbackArgs) {
 }
 
 #[init]
-fn init() {
+pub fn init() {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
