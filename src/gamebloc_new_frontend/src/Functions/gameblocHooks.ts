@@ -87,6 +87,8 @@ export const useGameblocHooks = () => {
         id_hash,
         age,
         name,
+        0,
+        0,
         time,
         squad_badge,
         [],

@@ -106,7 +106,9 @@ type UserProfile = record {
   role : Role;
   canister_id : text;
   wins : nat8;
+  losses : opt nat8;
   is_mod : bool;
+  attendance : opt nat8;
   principal_id : text;
   squad_badge : text;
   tournaments_created : nat8;
@@ -167,4 +169,3 @@ service : () -> {
   ws_message : (CanisterWsMessageArguments, opt AppMessage) -> (Result_1);
   ws_open : (CanisterWsOpenArguments) -> (Result_1);
 }
-
