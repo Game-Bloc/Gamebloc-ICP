@@ -145,7 +145,13 @@ module {
         title : Text;
         in_game_names : ?[(Text, Text)];
         points : ?[(Text, Point)];
+        tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount]
+    };
+
+    public type TournamentLobbyType = {
+        #SingleLobby;
+        #MultiLobby;
     };
 
 
