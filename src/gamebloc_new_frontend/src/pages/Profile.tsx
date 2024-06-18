@@ -16,22 +16,28 @@ import MyTournaments from "../components/profileComp/MyTournaments/MyTournaments
 import TransactionHistory from "../components/profileComp/Transaction/TransactionHistory"
 import { useAuth } from "../Auth/use-auth-client"
 import { Principal } from "@dfinity/principal"
+import Stats from "../components/profileComp/stats/Stats"
 
 const items: TabsProps["items"] = [
   {
     key: "1",
-    label: `My Tournaments`,
-    children: <MyTournaments />,
+    label: `Stats`,
+    children: <Stats />,
   },
   {
     key: "2",
-    label: `Transaction History`,
-    children: <TransactionHistory />,
+    label: `My Tournaments`,
+    children: <MyTournaments />,
   },
   {
     key: "3",
     label: `Squad`,
     children: <Squad />,
+  },
+  {
+    key: "4",
+    label: `Transaction History`,
+    children: <TransactionHistory />,
   },
 ]
 

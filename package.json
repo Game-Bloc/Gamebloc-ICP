@@ -27,7 +27,7 @@
     "@headlessui/tailwindcss": "^0.2.0",
     "@reduxjs/toolkit": "^2.0.1",
     "@remixicon/react": "^4.2.0",
-    "@tremor/react": "^3.15.0",
+    "@tremor/react": "^3.17.2",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
     "@types/react": "^18.2.45",

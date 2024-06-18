@@ -87,8 +87,6 @@ export const useGameblocHooks = () => {
         id_hash,
         age,
         name,
-        0,
-        0,
         time,
         squad_badge,
         [],
@@ -151,7 +149,7 @@ export const useGameblocHooks = () => {
       const user: any = await whoamiActor.getSelf()
       if (user.username != "") {
         setIsAccount(true)
-        // console.log("user..:", user)
+        console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -167,6 +165,8 @@ export const useGameblocHooks = () => {
           tournaments_created: user.tournaments_created,
           username: user.username,
           wins: user.wins,
+          losses: user.losses[0],
+          attendance: user.attendance[0],
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
@@ -218,6 +218,7 @@ export const useGameblocHooks = () => {
     in_game_names: [],
     points: [],
     lobbies: [],
+    tournament_lobby_type: any,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -251,6 +252,7 @@ export const useGameblocHooks = () => {
         title,
         in_game_names,
         points,
+        tournament_lobby_type,
         lobbies,
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
@@ -775,7 +777,7 @@ export const useGameblocHooks = () => {
   const assign_solo_point = async () => {
     try {
       setIsLoading(true)
-      // const action = whoamiActor2.
+      // const action = whoamiActor2
     } catch (err) {}
   }
 
