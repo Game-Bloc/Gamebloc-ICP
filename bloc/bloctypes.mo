@@ -18,6 +18,37 @@ module {
         _updatedTime : Int;
     };
 
+    type Winner = {
+        user : Principal;
+        position : ?Text;
+        amount : Nat;
+    };
+
+    public type PoH = {
+        user : Principal;
+        account : Text;
+        amount : Text;
+        tournamentTitle : Text;
+        tournament_id_hash : Text;
+        date : Text;
+
+    };
+
+    public type Notification = {
+        id : Nat;
+        title : Text;
+        body : Text;
+        user : Principal;
+        username : Text;
+        date : Text;
+        read : Bool;
+    };
+
+    public type Notifications = {
+        notifications : [Notification];
+        user : Principal;
+    };
+
     public type UserProfile = {
         id_hash : Text;
         age : Nat8;
@@ -51,6 +82,7 @@ module {
         time : Text;
         read : Bool
     };
+
 
     public type Squad = {
         id_hash : Text;

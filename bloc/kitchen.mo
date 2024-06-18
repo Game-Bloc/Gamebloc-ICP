@@ -3,6 +3,7 @@ import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import AccountIdentifier "mo:account-identifier";
 // import AccountIdentifier "mo:account";
+import { now } = "mo:base/Time";
 
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
@@ -53,15 +54,21 @@ shared ({ caller }) actor class Kitchen() {
     private stable var feedback_id : Nat = 0;
     private stable var SupportedGames : [Text] = [];
     private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
+    private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+    var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
     var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
     var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
     var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
     var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
+
+    // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+
+    // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
     /// stabilizing the motoko backup
     system func preupgrade() {
@@ -71,6 +78,9 @@ shared ({ caller }) actor class Kitchen() {
         UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
         SquadEntries := Iter.toArray(SQUAD_STORE.entries());
         FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+        NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
+
+        messageEntries := Iter.toArray(MessageHashMap.entries());
 
         // Passwords
         PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
@@ -79,6 +89,8 @@ shared ({ caller }) actor class Kitchen() {
     system func postupgrade() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+        MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+        NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
         SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -95,6 +107,8 @@ shared ({ caller }) actor class Kitchen() {
         SquadEntries := [];
         FeedbackEntries := [];
         PasswordEntries := [];
+        messageEntries := [];
+        NotificationEntries := [];
     };
 
     func createOneProfile(id_hash : Text, age : Nat8, username : Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) {
@@ -110,6 +124,15 @@ shared ({ caller }) actor class Kitchen() {
     //         users := Array.append(users, [(i.principal_id, i)]);
     //     };
     //      := [] := users;
+
+    // };
+
+    // public func updatePays(payment : Bloctypes.PoH) : () {
+    //     PAY_STORE.add(payment);
+    // };
+
+    // public func getPays() : async [Bloctypes.PoH] {
+    //     PAY_STORE.toArray();
     // };
 
     public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Result.Result<Text, Text> {
@@ -452,7 +475,6 @@ shared ({ caller }) actor class Kitchen() {
         time : Text
     };
 
-    private stable var connectionID : Nat = 0;
     private stable var messageID : Nat = 0;
 
     // private stable var conversationEntries : [(Text, Conversation)] = [];
@@ -595,43 +617,197 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+
+    func makeNotification(id : Nat, body : Text, title : Text, user : Principal, username : Text, date : Text, read : Bool) : Bloctypes.Notification {
+        {
+            id;
+            title;
+            body;
+            user;
+            username;
+            date;
+            read
+        }
+    };
+
+    func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
+        let notification : Bloctypes.Notification = {
+                id = 0;
+                title = "Welcome to Game Bloc";
+                body = "Hi " # _username # ", you have successfully created an account with Game Bloc!";
+                user = caller;
+                username = _username;
+                date = _date;
+                read = false;
+        };
+        let notifications : Bloctypes.Notifications = {
+            notifications = [notification];
+            user = caller;
+        };
+        NOTIFICATION_STORE.put(
+            caller,
+            notifications
+        )
+    };
+
+    public query func get_my_notifications(caller : Principal) : async [Bloctypes.Notifications] {
+        var notifications = Buffer.Buffer<Bloctypes.Notifications>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()){
+            if (principal == caller) { 
+                notifications.add(notification);
+            }
+        };
+        notifications.toArray();
+    };
+
+    public query func get_notification_id(caller : Principal) : async Nat {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var length = 0;
+        switch(notification){
+            case(null){0};
+            case(?notification){
+                var array = notification.notifications;
+                length := Array.size(array);
+                return length;
+            }  
+        }      
+    };
+
+    public func notify(title : Text, body : Text, caller : Principal, date : Text, id : Nat, user : Text) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        switch(notification){
+            case(null){null};
+            case(?notfication){
+                var id = await get_notification_id(caller);
+                var newNotification = makeNotification(id+1, title, body, caller, user, date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications= Array.append(array, [newNotification]);
+                        user = caller;
+                    };
+                    var temp = NOTIFICATION_STORE.replace(caller, _notifications)
+                }
+            }
+        }
+    };
+
+    public shared ({ caller }) func read_notification(caller : Principal, id : Nat) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var updatedNotifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        switch(notification){
+            case(null){null};
+            case(?notfication){
+                // var newNotification = makeNotification(1, body, caller, "user", date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    for (_notification in Iter.fromArray(array)){
+                        if (_notification.id == id){
+                            let updatedNotif = {
+                                id = _notification.id;
+                                title = _notification.title;
+                                body = _notification.body;
+                                user = _notification.user;
+                                username = _notification.username;
+                                date = _notification.date;
+                                read = true;
+                            };
+                            updatedNotifications.add(updatedNotif);
+                        };
+                        if (_notification.id != id){
+                            updatedNotifications.add(_notification);
+                        }
+                    };
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications= updatedNotifications.toArray();
+                        user = caller;
+                    };
+                    var updateNotification = NOTIFICATION_STORE.replace(caller, _notifications);
+                }
+            }
+        }
+        // switch(notfication)
+
+    };
+
+    public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var unread_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()){
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)){
+                    if (notification.read == false){
+                        unread_notifications.add(notification);
+                    }
+                };
+            }
+        };
+        return unread_notifications.toArray();
+    };
+
+
+
+    public query func get_read_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var read_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()){
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)){
+                    if (notification.read == true){
+                        read_notifications.add(notification);
+                    }
+                };
+            }
+        };
+        return read_notifications.toArray();
+    };
+
+
     public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
         var time : Int = Time.now();
-        if (_password == _confirm_password){
-            PASSWORD_STORE.put(caller, {
-                _user = caller;
-                _password;
-                _confirm_password;
-                _updatedTime = time;
-            });
-            return #ok("You have successfully set password");
+        if (_password == _confirm_password) {
+            PASSWORD_STORE.put(
+                caller,
+                {
+                    _user = caller;
+                    _password;
+                    _confirm_password;
+                    _updatedTime = time
+                },
+            );
+            return #ok("You have successfully set password")
         } else {
-            return #err("Password must be the same");
+            return #err("Password must be the same")
         }
-        
-    };
-
-    public shared ({ caller }) func updatePassword() : (){
 
     };
 
-    public shared ({ caller }) func recoveryPassword() : (){
+    public shared ({ caller }) func updatePassword() : () {
+
+    };
+
+    public shared ({ caller }) func recoveryPassword() : () {
 
     };
 
     public shared ({ caller }) func checkPassword(_password : Text) : async Bool {
-       return true;
+        return true
     };
 
-    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text,  points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Bloctypes.Result {
+    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Bloctypes.Result {
         let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
         await RustBloc.create_profile(profile, caller)
     };
 
     public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : Bloctypes.Role) : async Bloctypes.Result {
-        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points , role);
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
         try {
             await create_usertrack(caller);
+            await create_notification_panel(caller, username,  time);
             ProfileHashMap.put(caller, profile);
             return await RustBloc.create_profile(profile, caller)
         } catch err {
@@ -644,7 +820,7 @@ shared ({ caller }) actor class Kitchen() {
     // User activities
     //
 
-    public func create_usertrack(caller : Principal) : async () {
+    func create_usertrack(caller : Principal) : async () {
         USER_TRACK_STORE.put(
             caller,
             {
@@ -962,7 +1138,7 @@ shared ({ caller }) actor class Kitchen() {
         try {
             await update_tournaments_joined(caller);
             // var _caller : Text = caller.toText();
-            return await RustBloc.join_tournament(name, id, ign);
+            return await RustBloc.join_tournament(name, id, ign)
         } catch err {
             throw (err)
         }
@@ -1087,7 +1263,6 @@ shared ({ caller }) actor class Kitchen() {
 
     // Password for Wallet
 
-
     type VETKD_SYSTEM_API = actor {
         vetkd_public_key : ({
             canister_id : ?Principal;
@@ -1128,7 +1303,7 @@ shared ({ caller }) actor class Kitchen() {
 
         let (?payload) = PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
-        assert(payload._user == caller);
+        assert (payload._user == caller);
 
         let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
         let { encrypted_key } = await vetkd_system_api.vetkd_encrypted_key({
@@ -1164,7 +1339,7 @@ shared ({ caller }) actor class Kitchen() {
 
         let _caller = Principal.toText(caller);
 
-        let (?payload)= PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
+        let (?payload) = PASSWORD_STORE.get(caller) else Debug.trap("payload not found");
 
         let encoded_payload = Text.encodeUtf8(_caller # payload._password # Int.toText(payload._updatedTime));
 
@@ -1214,9 +1389,9 @@ shared ({ caller }) actor class Kitchen() {
                     };
                     case (_) {
                         // Resolving the duplicate issue
-                        Debug.print("message body:" # debug_show(groupMessage.message.body));
-                        await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
-                        
+                        Debug.print("message body:" # debug_show (groupMessage.message.body));
+                        // await sendMessage(groupMessage.message.body, groupMessage.message.time, groupMessage.message.username, groupMessage.message.f_id)
+
                     }
                 }
             }
@@ -1252,7 +1427,8 @@ shared ({ caller }) actor class Kitchen() {
                         let clients_to_send = Buffer.toArray<IcWebSocketCdk.ClientPrincipal>(connected_clients);
 
                         for (client in clients_to_send.vals()) {
-                            await send_app_message(client, #GroupMessage(message))
+                            await send_app_message(client, #GroupMessage(message));
+                            await sendMessage(message.message.body, message.message.time, message.message.username, message.message.f_id)
                         }
                     }
                 };
