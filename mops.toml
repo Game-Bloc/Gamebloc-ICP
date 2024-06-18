@@ -7,7 +7,11 @@ keywords = [ ]
 license = "MIT"
 
 [dependencies]
-base = "0.11.1"
+base = "0.10.4"
 ic-websocket-cdk = "0.3.2"
 account-identifier = "1.0.2"
 account = "1.0.1"
+motoko-base = "https://github.com/dfinity/motoko-base#moc-0.9.1@5d225a427fb785aacb3051acab4be69651c19101"
+
+[toolchain]
+moc = "0.10.4"
