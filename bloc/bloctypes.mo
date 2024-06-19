@@ -1,4 +1,3 @@
-import Principal "mo:base/Principal";
 module {
 
     public type UserTrack = {
