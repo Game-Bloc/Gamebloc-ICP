@@ -11,7 +11,7 @@ pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAc
 }
 
 #[update]
-pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) {
+pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) -> bool {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -19,14 +19,16 @@ pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(
             tournament.squad_points = Some(squad_id_and_points);
 
             tournament_store.borrow_mut().insert(tournament_id, tournament);
+            true
         })
     } else {
         println!("you're not admin");
+        false
     }
 }
 
 #[update]
-pub fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) {
+pub fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) -> bool {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
@@ -34,9 +36,11 @@ pub fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(St
             tournament.points = Some(user_id_and_points);
 
             tournament_store.borrow_mut().insert(tournament_id, tournament);
+            true
         })
     } else {
         println!("you're not admin");
+        false
     }
 }
 
