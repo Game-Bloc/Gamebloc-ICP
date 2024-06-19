@@ -56,7 +56,7 @@ pub fn start_tournament(id: String) {
 
 #[update]
 pub fn end_tournament(id: String, principal: Principal, )
-    // -> Vec<>
+    -> bool
 {
     if get_self(principal).is_mod {
         // let mut winners = Vec::new();
@@ -96,10 +96,12 @@ pub fn end_tournament(id: String, principal: Principal, )
 
             tournament_store.borrow_mut().insert(id, tournament.clone());
             // &tournament.squad_points.clone().unwrap()[..3]
-        });
+            true
+        })
         // winners
     } else {
         println!("you're not admin");
+        false
         // Vec::new()
     }
 }
