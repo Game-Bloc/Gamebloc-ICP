@@ -17,6 +17,9 @@ import {
 } from "../../components/utils/utills"
 import { useGetAllSquad, useUpdateAllSquad } from "../../Functions/blochooks"
 import { useAppSelector } from "../../redux/hooks"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { Principal } from "@dfinity/principal"
+import ClipLoader from "react-spinners/ClipLoader"
 
 interface DataType {
   position: React.Key
@@ -27,9 +30,27 @@ interface DataType {
   total_points: number
 }
 
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
+}
+
+interface Points {
+  position_points: number
+  kill_points: number
+  total_points: number
+}
+
 const AdminViewTournamentDetails = () => {
   const { id } = useParams()
+  const { assign_solo_point, isLoading } = useGameblocHooks()
   const data = useAppSelector((state) => state.tournamentData)
+  const principal_id_text = useAppSelector(
+    (state) => state.userProfile.principal_id,
+  )
+  const _principal = Principal.fromText(principal_id_text)
+  const [color, setColor] = useState("#ffffff")
   const [active, setActive] = useState<number>(1)
   const [search, setSearch] = useState<string>("")
   const [players, setPlayers] = useState<any[]>([])
@@ -38,6 +59,7 @@ const AdminViewTournamentDetails = () => {
   const { noData, updating, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
+  const [playerPoints, setPlayerPoints] = useState<[string, Points][]>([])
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -111,7 +133,7 @@ const AdminViewTournamentDetails = () => {
       key: "position",
     },
     { title: "IGN", dataIndex: "ign", key: "ign" },
-    { title: "Username", dataIndex: "name", key: "name" },
+    { title: "Principal", dataIndex: "principal", key: "principal" },
     {
       title: "Position Points",
       dataIndex: "position_points",
@@ -150,6 +172,17 @@ const AdminViewTournamentDetails = () => {
 
   const onDropDownChange = (value: string) => {
     setSearch(value)
+  }
+
+  const saveChanges = () => {
+    assign_solo_point(
+      id,
+      _principal,
+      playerPoints,
+      "Players points saved",
+      "Error setting players points",
+      "",
+    )
   }
 
   return (
@@ -311,7 +344,7 @@ const AdminViewTournamentDetails = () => {
                             </div>
                           </div>
 
-                          <div className="flex h-full items-end">
+                          {/* <div className="flex h-full items-end">
                             <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
@@ -328,7 +361,7 @@ const AdminViewTournamentDetails = () => {
                                 </p>
                               </button>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                       <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
@@ -397,18 +430,37 @@ const AdminViewTournamentDetails = () => {
                           </div>
 
                           <div className="flex justify-center items-center ">
-                            <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
-                              <p className="text-[.85rem] text-white">
-                                Save Changes
-                              </p>
-                            </button>
                             <button
+                              onClick={() => saveChanges()}
+                              className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                            >
+                              {isLoading ? (
+                                <div className="flex items-center  gap-2">
+                                  <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                                    Wait
+                                  </p>
+                                  <ClipLoader
+                                    color={color}
+                                    loading={isLoading}
+                                    cssOverride={override}
+                                    size={10}
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
+                                  />
+                                </div>
+                              ) : (
+                                <p className="text-[.85rem] text-white">
+                                  Save Changes
+                                </p>
+                              )}
+                            </button>
+                            {/* <button
                               onClick={handleDelete}
                               disabled={selectedRowKeys.length === 0}
                               className=" hover:border-primary-second border-primary-second/50 border border-solid rounded-[3px] h-[2.3rem] w-[2.5rem] p-2 flex justify-around items-center cursor-pointer"
                             >
                               <img src={`delete.png`} className="m-0" alt="" />
-                            </button>
+                            </button> */}
                           </div>
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
@@ -417,6 +469,8 @@ const AdminViewTournamentDetails = () => {
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSearch={dataSearch}
+                            setPlayerPoints={setPlayerPoints}
+                            playerPoints={playerPoints}
                           />
                         ) : (
                           <TournamentGridView players={players} />
