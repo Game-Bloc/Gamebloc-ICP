@@ -9,7 +9,6 @@ import {
   REGISTER,
 } from "redux-persist"
 import storage from "redux-persist/lib/storage/session"
-// import storage from "redux-persist/lib/storage"
 import { encryptTransform } from "./encrypt"
 import profileReducer from "./slice/userProfileSlice"
 import categoryReducer from "./slice/gameCategorySlice"
@@ -19,6 +18,7 @@ import squadReducer from "./slice/squadSlice"
 import icpReducer from "./slice/icpBalanceSlice"
 import chatReducer from "./slice/chatSlice"
 import transactionReducer from "./slice/transactionSlice"
+import notificationReducer from "./slice/notificationSlice"
 
 const persistConfig = {
   key: "root",
@@ -36,6 +36,7 @@ const reducer = combineReducers({
   IcpBalance: icpReducer,
   chat: chatReducer,
   transaction: transactionReducer,
+  notification: notificationReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

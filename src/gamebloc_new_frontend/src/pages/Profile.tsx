@@ -7,7 +7,7 @@ import { Avatar, ConfigProvider, Tabs, TabsProps } from "antd"
 import { useAppSelector } from "../redux/hooks"
 import Copy from "../components/utils/Copy"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
-import { useGetAllSquad } from "../Functions/blochooks"
+import { useGetAllSquad, useUpdateTournament } from "../Functions/blochooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import Squad from "../components/profileComp/Squad"
 import TransferModal from "../components/Modals/TransferModal"
@@ -15,22 +15,29 @@ import ClipLoader from "react-spinners/ClipLoader"
 import MyTournaments from "../components/profileComp/MyTournaments/MyTournaments"
 import TransactionHistory from "../components/profileComp/Transaction/TransactionHistory"
 import { useAuth } from "../Auth/use-auth-client"
+import { Principal } from "@dfinity/principal"
+import Stats from "../components/profileComp/stats/Stats"
 
 const items: TabsProps["items"] = [
   {
     key: "1",
-    label: `My Tournaments`,
-    children: <MyTournaments />,
+    label: `Stats`,
+    children: <Stats />,
   },
   {
     key: "2",
-    label: `Transaction History`,
-    children: <TransactionHistory />,
+    label: `My Tournaments`,
+    children: <MyTournaments />,
   },
   {
     key: "3",
     label: `Squad`,
     children: <Squad />,
+  },
+  {
+    key: "4",
+    label: `Transaction History`,
+    children: <TransactionHistory />,
   },
 ]
 
@@ -47,9 +54,11 @@ const Profile = () => {
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const _principal = Principal.fromText(principal)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
   const principalID = principal
@@ -59,7 +68,9 @@ const Profile = () => {
     fetching,
     getICPBalance,
     getTransactions,
+    getNotificationId,
   } = useGameblocHooks()
+  const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
   const onChange = (key: string) => {
@@ -70,6 +81,8 @@ const Profile = () => {
   }
   useEffect(() => {
     getProfile()
+    updateTournament()
+    getNotificationId(_principal)
     getICPBalance()
     getTransactions(accountId)
   }, [isAuthenticated])
@@ -98,17 +111,20 @@ const Profile = () => {
                   </h1>
                   <div className=" flex flex-col w-full sm:w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
                     <div className="flex">
-                      <Avatar
-                        style={{
-                          backgroundColor: "#f6b8fc",
-                          color: "#01070E",
-                          fontSize: "1.2rem",
-                        }}
-                        size={80}
-                      >
-                        {initials}
-                      </Avatar>
-                      <div className="flex ml-[3rem] flex-col">
+                      <div className="mr-4 lg:mr-[3rem]">
+                        <Avatar
+                          style={{
+                            backgroundColor: "#f6b8fc",
+                            color: "#01070E",
+                            fontSize:
+                              window.innerWidth >= 1200 ? "1.2rem" : ".8rem",
+                          }}
+                          size={window.innerWidth >= 1200 ? 80 : 50}
+                        >
+                          {initials}
+                        </Avatar>
+                      </div>
+                      <div className="flex  flex-col">
                         <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                           {username}
                         </h2>
@@ -232,7 +248,13 @@ const Profile = () => {
             </div>
           </div>
         </section>
-        {transferModal && <TransferModal modal={handleModal} />}
+        {transferModal && (
+          <TransferModal
+            notification_id={notification_id}
+            _principal={_principal}
+            modal={handleModal}
+          />
+        )}
       </div>
     )
   }

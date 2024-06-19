@@ -55,6 +55,8 @@ module {
         date : Text;
         status : Status;
         wins : Nat8;
+        attendance : ?Nat8;
+        losses : ?Nat8;
         tournaments_created : Nat8;
         username : Text;
         is_mod : Bool;
@@ -143,7 +145,13 @@ module {
         title : Text;
         in_game_names : ?[(Text, Text)];
         points : ?[(Text, Point)];
+        tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount]
+    };
+
+    public type TournamentLobbyType = {
+        #SingleLobby;
+        #MultiLobby;
     };
 
 

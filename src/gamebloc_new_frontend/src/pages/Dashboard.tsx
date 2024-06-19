@@ -7,7 +7,7 @@ import Recommended from "../components/dashboardComps/Recommended/Recommended"
 import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
 import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
-import { ConfigProvider, FloatButton, theme } from "antd"
+import { ConfigProvider, FloatButton, theme, Tooltip } from "antd"
 import { VscFeedback } from "react-icons/vsc"
 import FeedbackModal from "../components/Modals/FeedbackModal"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
@@ -17,19 +17,22 @@ import { useNavigate } from "react-router-dom"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useFetchAllTournaments } from "../Functions/blochooks"
 import LoginModal2 from "../components/Modals/LoginModal2"
+import { Principal } from "@dfinity/principal"
 
 const Dashboard = () => {
-  const dispatch = useAppDispatch()
   const { isAuthenticated } = useAuth()
   const {
     getProfile,
     isLoadingProfile,
-    getFeedBacks,
+    getMyNotifications,
+    getNotificationId,
     getChatmessage,
     getICPrice,
   } = useGameblocHooks()
-  const { fetchAllTournaments } = useFetchAllTournaments()
-  const navigate = useNavigate()
+  const principalText = useAppSelector(
+    (state) => state.userProfile.principal_id,
+  )
+  const notifi = useAppSelector((state) => state.notification)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
@@ -39,13 +42,22 @@ const Dashboard = () => {
     getICPrice()
     if (isAuthenticated) {
       getProfile()
-      getFeedBacks()
       getChatmessage(20)
       if (userSession === "true") {
         setAccountModal(false)
       } else {
         setAccountModal(true)
       }
+    } else {
+      setAccountModal(false)
+    }
+  }, [isAuthenticated, userSession])
+
+  useEffect(() => {
+    if (userSession === "true") {
+      const principal = Principal.fromText(principalText)
+      getMyNotifications(principal)
+      getNotificationId(principal)
     }
   }, [isAuthenticated, userSession])
 
@@ -90,18 +102,19 @@ const Dashboard = () => {
             },
           }}
         >
-          <FloatButton
-            shape="circle"
-            type="primary"
-            tooltip="Feedback"
-            style={{ right: 15, bottom: 15 }}
-            icon={<VscFeedback className="text-black" />}
-            onClick={
-              isAuthenticated
-                ? () => setOpenModal(!openModal)
-                : () => handleLoginModal()
-            }
-          />
+          <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
+            <FloatButton
+              shape="circle"
+              type="primary"
+              style={{ right: 15, bottom: 15 }}
+              icon={<VscFeedback className="text-black" />}
+              onClick={
+                isAuthenticated
+                  ? () => setOpenModal(!openModal)
+                  : () => handleLoginModal()
+              }
+            />
+          </Tooltip>
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}

@@ -142,6 +142,13 @@ const CreateTournament = () => {
     return null
   }
 
+  const CustomDisabledDate = (current: Dayjs) => {
+    const oneDayAfterStart = initialDate
+      ? dayjs(initialDate).add(1, "day")
+      : dayjs().add(1, "day")
+    return current && current < oneDayAfterStart.endOf("day")
+  }
+
   const onTimeChange = (time: Dayjs | null, timeString: string) => {
     const value = timeString
     setInitialTime(value)
@@ -287,9 +294,10 @@ const CreateTournament = () => {
           [],
           [],
           [],
+          [],
           "You have successfully created a Tournament",
           "Try again something went wrong",
-          "/dashboard",
+          "/profile",
         )
       } else {
         errorPopUp("Your ICP balance is low, pls fund your account.")
@@ -637,7 +645,7 @@ const CreateTournament = () => {
                           }}
                         >
                           <DatePicker
-                            disabledDate={disabledDate}
+                            disabledDate={CustomDisabledDate}
                             onChange={onEndDateChange}
                           />
                         </ConfigProvider>

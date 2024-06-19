@@ -12,6 +12,7 @@ import {
   IcpBalanceState,
   updateBalance,
   updateICP,
+  updateId,
 } from "../redux/slice/icpBalanceSlice"
 import { message } from "antd"
 import {
@@ -27,7 +28,7 @@ import {
 } from "../redux/slice/transactionSlice"
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
-// const { Principal } = require("@dfinity/principal")
+import { allNotification } from "../redux/slice/notificationSlice"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -126,7 +127,7 @@ export const useGameblocHooks = () => {
       }
       // Set the ICP price in state
       dispatch(updateICP(Icp))
-      console.log(`The current price of ICP is $${price}`)
+      // console.log(`The current price of ICP is $${price}`)
     } catch (error) {
       console.error("Error fetching ICP price:", error)
     }
@@ -164,6 +165,8 @@ export const useGameblocHooks = () => {
           tournaments_created: user.tournaments_created,
           username: user.username,
           wins: user.wins,
+          losses: user.losses[0],
+          attendance: user.attendance[0],
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
@@ -215,6 +218,7 @@ export const useGameblocHooks = () => {
     in_game_names: [],
     points: [],
     lobbies: [],
+    tournament_lobby_type: any,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -248,6 +252,7 @@ export const useGameblocHooks = () => {
         title,
         in_game_names,
         points,
+        tournament_lobby_type,
         lobbies,
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
@@ -437,6 +442,10 @@ export const useGameblocHooks = () => {
     to: string,
     amount: number,
     created_at_time: any,
+    _principal: any,
+    date: string,
+    notification_id: number,
+    username,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -467,6 +476,15 @@ export const useGameblocHooks = () => {
       // const send = await whoamiActor.transferICP(to, tokens, timeStamp)
       const send = await ledgerActor.send_dfx(args)
       if (send) {
+        notify(
+          "Withdrawal Successful",
+          `You have successfully withdrawn ${amount} ICP from your account.`,
+          _principal,
+          date,
+          BigInt(notification_id),
+          username,
+        )
+        console.log("notify sent")
         setIsLoading(false)
         popUp(successMsg, route)
         setInterval(() => {
@@ -556,7 +574,7 @@ export const useGameblocHooks = () => {
     try {
       const messages = await whoamiActor.getUpdatedMessages(num)
       if (messages) {
-        console.log("chat fetched", messages)
+        // console.log("chat fetched", messages)
         for (const data of messages) {
           const chats = {
             message: {
@@ -684,6 +702,90 @@ export const useGameblocHooks = () => {
     }
   }
 
+  // Notification functions
+
+  const notify = async (
+    body: string,
+    title: string,
+    principal: Principal,
+    date: string,
+    id: bigint,
+    username: string,
+  ) => {
+    try {
+      await whoamiActor.notify(title, body, principal, date, id, username)
+      console.log("Notification created")
+    } catch (err) {
+      console.log("Error creating notification", err)
+    }
+  }
+
+  const getMyNotifications = async (principal: Principal) => {
+    try {
+      const notifications: any = await whoamiActor.get_my_notifications(
+        principal,
+      )
+      if (notifications) {
+        for (const data of notifications) {
+          for (const notification of data.notifications) {
+            const notifi = {
+              body: notification.body,
+              date: notification.date,
+              id: Number(notification.id),
+              read: notification.read,
+              title: notification.title,
+              username: notification.username,
+            }
+            dispatch(allNotification(notifi))
+            // console.log("notif", notifi)
+          }
+        }
+        console.log("went")
+      }
+      // console.log("Noti :", notifications)
+    } catch (err) {
+      console.log("Error getting notifications", err)
+    }
+  }
+
+  const getNotificationId = async (principal: Principal) => {
+    try {
+      const id: any = await whoamiActor.get_notification_id(principal)
+      const _id: any = {
+        id: Number(id),
+      }
+      dispatch(updateId(_id))
+      console.log("Noti :", id)
+    } catch (err) {
+      console.log("Error getting notification id", err)
+    }
+  }
+
+  const markAsRead = async (principal: Principal, id: bigint) => {
+    try {
+      const read = await whoamiActor.read_notification(principal, id)
+      if (read) {
+        console.log("Message marked as read")
+      }
+    } catch (err) {
+      console.log("Error marking message as read", err)
+    }
+  }
+
+  // ADMIN TOURNAMENT FUNCTIONS
+
+  const assign_solo_point = async () => {
+    try {
+      setIsLoading(true)
+      // const action = whoamiActor2
+    } catch (err) {}
+  }
+
+  const assign_squad_point = () => {
+    try {
+    } catch (err) {}
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -712,5 +814,9 @@ export const useGameblocHooks = () => {
     sendChatMessage,
     getChatmessage,
     updateChatmessage,
+    notify,
+    getMyNotifications,
+    getNotificationId,
+    markAsRead,
   }
 }

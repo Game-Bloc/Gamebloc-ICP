@@ -16,6 +16,8 @@ export interface UserProfileState {
   tournaments_created: number
   username: string | null
   wins: number | null
+  losses: number | null
+  attendance: number | null
   initializeState: boolean
 }
 
@@ -34,6 +36,8 @@ const initialState: UserProfileState = {
   tournaments_created: 0,
   username: "",
   wins: 0,
+  losses: 0,
+  attendance: 0,
   initializeState: false,
 }
 
@@ -59,6 +63,8 @@ export const userProfileSlice = createSlice({
       state.username = payload.username
       state.wins = payload.wins
       state.points = payload.points
+      state.losses = payload.losses
+      state.attendance = payload.attendance
       state.initializeState = payload.initializeState
     },
   },

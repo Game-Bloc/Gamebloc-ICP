@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom"
 import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
-import { Avatar } from "antd"
+import { Avatar, Tooltip } from "antd"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { CiUser } from "react-icons/ci"
@@ -15,18 +15,38 @@ import { HiChatBubbleOvalLeft } from "react-icons/hi2"
 import LoginModal2 from "../Modals/LoginModal2"
 import WelcomeModal from "../Modals/WelcomeModal"
 import SignOutModal from "../Modals/SignOutModal"
+import { FaRegBell } from "react-icons/fa"
+import MobileNoti from "../notifications/MobileNoti"
 
 const Header = () => {
   const navigate = useNavigate()
+  const { isAuthenticated, logout } = useAuth()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const notifi = useAppSelector((state) => state.notification)
+  const unreadmessages = notifi
+    .filter((list: any) => list.read === false)
+    .map((data: any) => data)
   const [profileModal, setProfileModal] = useState<boolean>(false)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username?.substring(0, 2).toUpperCase()
-  const { isAuthenticated, logout } = useAuth()
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
+  const [mobileNotiModal, setMobileNotiModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (mobileNotiModal || open) {
+      document.body.classList.add("no-scroll")
+    } else {
+      document.body.classList.remove("no-scroll")
+    }
+
+    // Clean up the effect when the component is unmounted
+    return () => {
+      document.body.classList.remove("no-scroll")
+    }
+  }, [mobileNotiModal, open])
 
   const menus = [
     {
@@ -52,7 +72,9 @@ const Header = () => {
       icon: HiChatBubbleOvalLeft,
     },
   ]
-
+  const closeNotification = () => {
+    setMobileNotiModal(false)
+  }
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
   }
@@ -67,6 +89,7 @@ const Header = () => {
     localStorage.clear()
     sessionStorage.clear()
     logout()
+    navigate("/dashboard")
     setOpenModal(false)
   }
 
@@ -99,27 +122,59 @@ const Header = () => {
             </button>
           </div>
         ) : (
-          <div
-            onClick={() => setProfileModal(!profileModal)}
-            className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
-          >
-            <Avatar
-              style={{
-                backgroundColor: "#f6b8fc",
-                color: "#01070E",
-                fontSize: ".8rem",
-              }}
-              size={40}
-            >
-              {initials}
-            </Avatar>
+          <div className="flex relative items-center">
+            <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
+              <div
+                onClick={
+                  isAuthenticated
+                    ? () => setMobileNotiModal(true)
+                    : () => handleLoginModal()
+                }
+                className="relative hidden lg:inline-block cursor-pointer mr-8"
+              >
+                <FaRegBell className="text-primary-second" />
+                {unreadmessages.length !== 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
+              </div>
+            </Tooltip>
+            <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh>
+              <div
+                onClick={() => setProfileModal(!profileModal)}
+                className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
+              >
+                <Avatar
+                  style={{
+                    backgroundColor: "#f6b8fc",
+                    color: "#01070E",
+                    fontSize: ".8rem",
+                  }}
+                  size={40}
+                >
+                  {initials}
+                </Avatar>
 
-            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
-              {username}
-            </p>
+                <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
+                  {username}
+                </p>
+              </div>
+            </Tooltip>
             {profileModal && (
-              <div className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity">
-                <div className="absolute w-[14rem] bg-[#030C15] rounded-sm h-32 flex border border-solid border-[#ffff]/20  flex-col top-[3rem] right-2 p-4">
+              <div
+                onClick={() => setProfileModal(false)}
+                className="fixed inset-0 bg-[transparent]  bg-opacity-75 transition-opacity"
+              >
+                <div className="absolute w-[14rem] bg-[#030C15] rounded-[12px] h-32 flex border border-solid border-[#ffff]/20  flex-col  top-[4rem] right-2 p-4">
                   <div
                     onClick={() => navigate("/profile")}
                     className="flex items-center hover:bg-[#fff]/10 rounded-md w-full p-3"
@@ -148,6 +203,34 @@ const Header = () => {
       </div>
       {open && (
         <div className="bg-primary-second duration-500  absolute left-0 top-0 w-[60%] h-screen">
+          <div
+            onClick={
+              isAuthenticated
+                ? () => {
+                    setOpen(!open)
+                    setMobileNotiModal(true)
+                  }
+                : () => handleLoginModal()
+            }
+            className="absolute left-4 top-4"
+          >
+            <div className="relative inline-block ">
+              <FaRegBell />
+              {unreadmessages.length !== 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    width: "10px",
+                    height: "10px",
+                    backgroundColor: "red",
+                    borderRadius: "50%",
+                  }}
+                />
+              )}
+            </div>
+          </div>
           <div className="absolute right-4 top-4">
             <IoClose onClick={() => setOpen(!open)} />
           </div>
@@ -203,6 +286,7 @@ const Header = () => {
           </div>
         </div>
       )}
+      {mobileNotiModal && <MobileNoti modal={closeNotification} />}
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
       {accountModal && <WelcomeModal modal={handleAccModal} />}
       {openModal && (
