@@ -218,20 +218,10 @@ pub fn on_close(args: OnCloseCallbackArgs) {
 }
 
 #[init]
-pub fn init() {
+fn init() {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
-    canister_tools::init(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID);
-    let handlers = WsHandlers {
-        on_open: Some(on_open),
-        on_message: Some(on_message),
-        on_close: Some(on_close),
-    };
-
-    let params = WsInitParams::new(handlers);
-
-    ic_websocket_cdk::init(params);
 }
 
 #[pre_upgrade]
@@ -244,16 +234,6 @@ fn post_upgrade() {
     canister_tools::post_upgrade(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(TournamentStore) -> TournamentStore>);
     canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
     canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
-    canister_tools::post_upgrade(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(SquadStore) -> SquadStore>);
-    let handlers = WsHandlers {
-        on_open: Some(on_open),
-        on_message: Some(on_message),
-        on_close: Some(on_close),
-    };
-
-    let params = WsInitParams::new(handlers);
-
-    ic_websocket_cdk::init(params);
 }
 
 
