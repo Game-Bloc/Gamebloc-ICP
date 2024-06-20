@@ -1,6 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
+type solo_points = {
+  principal: string
+  points: {
+    kill_points: number
+    position_points: number
+    total_points: number
+  }
+}
 export interface TournamentState {
   creator: string
   creator_id: string[]
@@ -25,7 +33,7 @@ export interface TournamentState {
   squad_points: []
   squad_in_game_names: []
   in_game_names: []
-  points: []
+  points: [solo_points]
   lobbies: []
 }
 

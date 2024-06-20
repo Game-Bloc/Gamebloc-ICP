@@ -32,6 +32,17 @@ export const useFetchAllTournaments = () => {
       if (tour && tour.length !== 0) {
         const tourArray: any[] = []
         for (const data of tour) {
+          const convertedPoints = data.points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              {
+                kill_points: Number(pointPair[1].kill_points),
+                total_points: Number(pointPair[1].total_points),
+                position_points: Number(pointPair[1].position_points),
+              },
+            ]),
+          )
+          console.log("convertedPoints", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -58,7 +69,7 @@ export const useFetchAllTournaments = () => {
               (points: any) => points,
             ),
             in_game_names: data.in_game_names.map((points: any) => points),
-            points: data.points.map((points: any) => points),
+            points: convertedPoints,
             lobbies: data.lobbies.map((points: any) => points),
           }
           // console.log(tournamentData)
@@ -99,6 +110,17 @@ export const useUpdateTournament = () => {
         console.log("update function working")
         const tourArray: any[] = []
         for (const data of update) {
+          const convertedPoints = data.points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              {
+                kill_points: Number(pointPair[1].kill_points),
+                total_points: Number(pointPair[1].total_points),
+                position_points: Number(pointPair[1].position_points),
+              },
+            ]),
+          )
+          console.log("convertedPoints update", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -125,7 +147,7 @@ export const useUpdateTournament = () => {
               (points: any) => points,
             ),
             in_game_names: data.in_game_names.map((points: any) => points),
-            points: data.points.map((points: any) => points),
+            points: convertedPoints,
             lobbies: data.lobbies.map((points: any) => points),
           }
           console.log(tournamentData)

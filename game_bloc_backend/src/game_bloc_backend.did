@@ -123,8 +123,8 @@ type WebsocketMessage = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_solo_points : (text, vec record { text; Point }, principal) -> ();
-  assign_squad_points : (text, vec record { text; Point }, principal) -> ();
+  assign_solo_points : (text, vec record { text; Point }, principal) -> (bool);
+  assign_squad_points : (text, vec record { text; Point }, principal) -> (bool);
   close_squad : (text, vec text, principal) -> ();
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
@@ -134,7 +134,7 @@ service : () -> {
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
-  end_tournament : (text, principal) -> ();
+  end_tournament : (text, principal) -> (bool);
   getSelf : (principal) -> (UserProfile) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
