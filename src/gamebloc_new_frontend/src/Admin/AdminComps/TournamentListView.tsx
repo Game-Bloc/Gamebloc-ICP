@@ -1,19 +1,20 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useAppSelector } from "../../redux/hooks"
-import {
-  ConfigProvider,
-  Table,
-  Modal,
-  InputNumber,
-  Form,
-  Button,
-  theme,
-} from "antd"
+import { ConfigProvider, Table, theme } from "antd"
 import AssignPointsModal from "../AdminModals/AssignPointsModal"
-interface props {
+
+interface Props {
   rowSelection: any
   columns: any[]
   dataSearch: any[]
+  setPlayerPoints: any
+  playerPoints: any
+}
+
+interface Points {
+  position_points: number
+  kill_points: number
+  total_points: number
 }
 
 const transformTournamentData = (tournamentDataArray, userProfile) => {
@@ -23,28 +24,24 @@ const transformTournamentData = (tournamentDataArray, userProfile) => {
   }
 
   const tournamentData = tournamentDataArray[0]
-  console.log("tournamentData:", tournamentData)
+  // console.log("tournamentData:", tournamentData)
 
   const { in_game_names = [], no_of_participants = 0 } = tournamentData
+  // console.log("in_game_names:", in_game_names)
 
-  // Log the in_game_names to check its structure
-  console.log("in_game_names:", in_game_names)
-
-  // Safeguard for undefined or null in_game_names
   if (!Array.isArray(in_game_names) || in_game_names.length === 0) {
     console.log("in_game_names is not a valid array or is empty")
     return []
   }
 
-  // Flatten the in_game_names array and map to player data
   const players = in_game_names.flatMap((lobby, lobbyIndex) =>
     lobby.map(([id, ign], index) => {
-      console.log("id, ign:", id, ign)
+      // console.log("id, ign:", id, ign)
       return {
         position: lobbyIndex * no_of_participants + index + 1,
         ign: ign,
         userId: id,
-        name: userProfile.username,
+        principal: id.substring(0, 3) + "......" + id.substring(60, 64),
         position_points: 0,
         kill_points: 0,
         total_points: 0,
@@ -52,48 +49,58 @@ const transformTournamentData = (tournamentDataArray, userProfile) => {
     }),
   )
 
-  console.log("players:", players)
+  // console.log("players:", players)
   return players
 }
 
-const TournamentListView = ({ rowSelection, columns, dataSearch }: props) => {
+const TournamentListView = ({
+  rowSelection,
+  columns,
+  dataSearch,
+  setPlayerPoints,
+  playerPoints,
+}: Props) => {
   const userProfile = useAppSelector((state) => state.userProfile)
   const [dataSource, setDataSource] = useState(
     transformTournamentData(dataSearch, userProfile),
   )
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentPlayer, setCurrentPlayer] = useState(null)
-  const [editingPlayer, setEditingPlayer] = useState(null)
 
-  const handleEdit = (player) => {
-    setEditingPlayer(player)
-  }
+  useEffect(() => {
+    const initialPoints: [string, Points][] = dataSource.map((player) => [
+      player.userId,
+      {
+        position_points: player.position_points,
+        kill_points: player.kill_points,
+        total_points: player.total_points,
+      },
+    ])
+    setPlayerPoints(initialPoints)
+  }, [dataSource])
 
   const showModal = (player) => {
     setCurrentPlayer(player)
     setIsModalVisible(true)
   }
-
+  console.log("playerPoints", playerPoints)
   const hideModal = () => {
     setIsModalVisible(false)
     setCurrentPlayer(null)
   }
-
-  const handleSave = (values) => {
-    const updatedData = dataSource.map((player) =>
-      player.position === currentPlayer.position
-        ? {
-            ...player,
-            ...values,
-            total_points:
-              values.position_points +
-              values.kill_points -
-              (values.pointsDeduction || 0),
-          }
-        : player,
+  const handleSave = (userId, points) => {
+    const updatedPlayerPoints: any = playerPoints.map(([id, pts]) =>
+      id === userId ? [id, points] : [id, pts],
     )
+
+    setPlayerPoints(updatedPlayerPoints)
+
+    const updatedData = dataSource.map((player) =>
+      player.userId === userId ? { ...player, ...points } : player,
+    )
+
     setDataSource(updatedData)
-    setIsModalVisible(false)
+    hideModal()
   }
 
   const columnsWithActions = [
@@ -135,14 +142,13 @@ const TournamentListView = ({ rowSelection, columns, dataSearch }: props) => {
         />
       </ConfigProvider>
 
-      {isModalVisible && (
+      {isModalVisible && currentPlayer && (
         <AssignPointsModal
           modal={hideModal}
           player={currentPlayer}
-          onSave={handleSave}
+          onSave={(points) => handleSave(currentPlayer.userId, points)}
         />
       )}
-      {/* {openPlayerModal && <AssignPointsModal modal={handleModal} />} */}
     </div>
   )
 }

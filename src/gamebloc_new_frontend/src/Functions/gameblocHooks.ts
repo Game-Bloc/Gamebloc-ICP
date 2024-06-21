@@ -379,8 +379,8 @@ export const useGameblocHooks = () => {
         principal_id: principal,
       }
       const join = await whoamiActor.join_squad(user, id)
-      setIsLoading(false)
       popUp(successMsg, route)
+      setIsLoading(false)
       window.location.reload()
     } catch (err) {
       errorPopUp(errorMsg)
@@ -774,11 +774,29 @@ export const useGameblocHooks = () => {
 
   // ADMIN TOURNAMENT FUNCTIONS
 
-  const assign_solo_point = async () => {
+  const assign_solo_point = async (
+    tournament_id: string,
+    principal: Principal,
+    user_id_and_points: any[],
+    success: string,
+    error: string,
+    route,
+  ) => {
     try {
       setIsLoading(true)
-      // const action = whoamiActor2
-    } catch (err) {}
+      const action = await whoamiActor2.assign_solo_points(
+        tournament_id,
+        user_id_and_points,
+        principal,
+      )
+      popUp(success, route)
+    } catch (err) {
+      errorPopUp(error)
+      setIsLoading(false)
+      console.log("Error joining squad:", err)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const assign_squad_point = () => {
@@ -818,5 +836,6 @@ export const useGameblocHooks = () => {
     getMyNotifications,
     getNotificationId,
     markAsRead,
+    assign_solo_point,
   }
 }

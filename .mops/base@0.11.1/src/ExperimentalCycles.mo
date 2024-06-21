@@ -112,11 +112,11 @@ module {
   ///
   /// actor {
   ///   func operation() : async() {
-  ///     ignore Cycles.accept<system>(10_000_000);
+  ///     ignore Cycles.accept(10_000_000);
   ///   };
   ///
   ///   public func main() : async() {
-  ///     Cycles.add<system>(15_000_000);
+  ///     Cycles.add(15_000_000);
   ///     await operation();
   ///   }
   /// }
@@ -136,7 +136,7 @@ module {
   ///
   /// actor {
   ///   func operation() : async() {
-  ///     ignore Cycles.accept<system>(10_000_000);
+  ///     ignore Cycles.accept(10_000_000);
   ///   };
   ///
   ///   public func main() : async() {

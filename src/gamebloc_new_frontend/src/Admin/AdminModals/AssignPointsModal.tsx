@@ -2,49 +2,45 @@ import React, { useState, useEffect } from "react"
 import { RiCloseFill } from "react-icons/ri"
 
 type Prop = {
-  modal: any
+  modal: () => void
   player: any
-  onSave: any
+  onSave: (points: any) => void
+}
+
+type Points = {
+  position_points: number
+  kill_points: number
+  total_points: number
 }
 
 const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
-  const [kills, setKills] = useState<number>(null)
-  const [positionPoints, setPositionPoints] = useState<number>(null)
-  const [pointsDeduction, setPointsDeduction] = useState<number>(null)
+  const [kills, setKills] = useState<number>(player?.kill_points || 0)
+  const [positionPoints, setPositionPoints] = useState<number>(
+    player?.position_points || 0,
+  )
+  const [pointsDeduction, setPointsDeduction] = useState<number>(0)
 
-  useEffect(() => {
-    if (player) {
-      setKills(player.killPoints)
-      setPositionPoints(player.positionPoints)
-    }
-  }, [player])
+  const calculateTotalPoints = () => {
+    return kills + positionPoints - pointsDeduction
+  }
 
   const handleSave = () => {
-    onSave({
+    const totalPoints = calculateTotalPoints()
+    const points: Points = {
       kill_points: kills,
       position_points: positionPoints,
-      pointsDeduction,
-    })
-    modal()
+      total_points: totalPoints,
+    }
+    onSave(points)
   }
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     field: string,
   ) => {
-    let value = parseInt(e.target.value)
-    console.log("Input value:", value)
-
-    if (isNaN(value)) {
-      value = 0 // Set value to 0 if NaN
-    }
-
-    if (value < 0) {
-      console.log("Value is less than 0. Setting to 0.")
-      value = 0 // Set value to 0 if less than 0
-    }
-
-    console.log("Final value:", value)
+    let value = parseInt(e.target.value, 10)
+    if (isNaN(value)) value = 0
+    if (value < 0) value = 0
 
     switch (field) {
       case "kills":
@@ -80,22 +76,22 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
   const decreaseValue = (field: string) => {
     switch (field) {
       case "kills":
-        if (kills !== 0) setKills(kills - 1)
+        if (kills > 0) setKills(kills - 1)
         break
       case "positionPoints":
-        if (positionPoints !== 0) setPositionPoints(positionPoints - 1)
+        if (positionPoints > 0) setPositionPoints(positionPoints - 1)
         break
       case "pointsDeduction":
-        if (pointsDeduction !== 0) setPointsDeduction(pointsDeduction - 1)
+        if (pointsDeduction > 0) setPointsDeduction(pointsDeduction - 1)
         break
       default:
         break
     }
   }
 
-  const calculateTotalPoints = () => {
-    return kills + positionPoints - pointsDeduction
-  }
+  useEffect(() => {
+    console.log("Modal opened for player:", player)
+  }, [player])
 
   return (
     <div>
@@ -108,21 +104,21 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
         <div className="fixed inset-0 bg-[#fff]/20 bg-opacity-75 transition-opacity">
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-full">
-              <div className="relative  bg-primary-first border border-solid border-[#5041BC] rounded-lg  overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
-                <div className=" bg-primary-first pt-5 shadow-md pb-4 ">
+              <div className="relative bg-primary-first border border-solid border-[#5041BC] rounded-lg overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
+                <div className="bg-primary-first pt-5 shadow-md pb-4">
                   <div className="flex flex-col">
                     <RiCloseFill
                       onClick={() => modal()}
                       className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                     />
-                    <div className="px-8 ">
+                    <div className="px-8">
                       <p className="text-white text-base my-3">Player IGN</p>
                       <p className="text-[#999999] text-[.8rem]">
-                        {player?.IGN}
+                        {player?.ign}
                       </p>
                     </div>
                     <div className="my-3 border border-solid border-[#2E3438] w-full" />
-                    <div className="px-8  flex flex-col gap-8">
+                    <div className="px-8 flex flex-col gap-8">
                       <div className="flex justify-between items-center">
                         <p className="text-white text-base my-3">Kills</p>
                         <div className="flex ml-[5rem] items-center gap-2">
@@ -132,12 +128,12 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
                             alt=""
                             onClick={() => decreaseValue("kills")}
                           />
-                          <div className="  items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second  bg-[#141414] border-solid border rounded-[3px] flex">
+                          <div className="items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second bg-[#141414] border-solid border rounded-[3px] flex">
                             <input
                               name="kills"
                               type="number"
                               value={kills}
-                              className="border-none w-[3rem] text-white pl-0 flex justify-center items-center focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
+                              className="border-none w-[3rem] text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                               onChange={(e) => handleInputChange(e, "kills")}
                             />
                           </div>
@@ -160,7 +156,7 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
                             alt=""
                             onClick={() => decreaseValue("positionPoints")}
                           />
-                          <div className="  items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second  bg-[#141414] border-solid border rounded-[3px] flex">
+                          <div className="items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second bg-[#141414] border-solid border rounded-[3px] flex">
                             <input
                               name="positionPoints"
                               type="number"
@@ -183,8 +179,7 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
                         <p className="text-white text-base my-3">
                           Points deduction
                         </p>
-
-                        <div className="  items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second  bg-[#141414] border-solid border rounded-[3px] flex">
+                        <div className="items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second bg-[#141414] border-solid border rounded-[3px] flex">
                           <input
                             name="pointsDeduction"
                             className="border-none w-[3rem] text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
@@ -201,7 +196,6 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
                         <p className="text-white text-base my-3">
                           Total points
                         </p>
-
                         <div className="ml-[2.3rem] items-center pl-2 h-[2rem] border-primary-second hover:border-primary-second bg-[#141414] border-solid border rounded-[3px] flex">
                           <input
                             className="border-none w-[3rem] text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"

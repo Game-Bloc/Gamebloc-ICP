@@ -10,6 +10,7 @@ import LoginModal2 from "../Modals/LoginModal2"
 import { useAuth } from "../../Auth/use-auth-client"
 import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
+import { hasDateReached } from "../utils/utills"
 interface Props {
   data: any
 }
@@ -104,8 +105,18 @@ const Players = ({ data }: Props) => {
           data.squad.some((players: any) =>
             players.members.some((gamer: any) => gamer.name.includes(owner)),
           ) ? (
-          <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#63aa88] rounded-md items-center sm:py-2">
-            <p className="font-semibold">Joined</p>
+          hasDateReached(data.end_date) ? (
+            <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
+              <p className="font-semibold">Ended</p>
+            </button>
+          ) : (
+            <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#63aa88] rounded-md items-center sm:py-2">
+              <p className="font-semibold">Joined</p>
+            </button>
+          )
+        ) : hasDateReached(data.end_date) ? (
+          <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f]  rounded-md items-center sm:py-2">
+            <p className="font-semibold">Ended</p>
           </button>
         ) : (
           <button
