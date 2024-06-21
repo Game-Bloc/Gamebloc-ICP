@@ -1,7 +1,8 @@
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
 
-use candid::{CandidType, decode_one, Deserialize, Principal};
+use candid::types::CandidType;
+use candid::{decode_one, Deserialize, Principal};
 use canister_tools::{
     localkey::refcell::{with, with_mut},
     MemoryId,
@@ -11,12 +12,6 @@ use ic_cdk::{init, post_upgrade, pre_upgrade, print, query, storage, update};
 use ic_cdk::api::time;
 use ic_cdk_macros::*;
 use ic_cdk_macros::*;
-use ic_websocket_cdk::*;
-use ic_websocket_cdk::{
-    CanisterWsCloseArguments, CanisterWsCloseResult, CanisterWsGetMessagesArguments,
-    CanisterWsGetMessagesResult, CanisterWsMessageArguments, CanisterWsMessageResult,
-    CanisterWsOpenArguments, CanisterWsOpenResult, WsHandlers, WsInitParams,
-};
 use serde::Serialize;
 
 use model::*;
@@ -30,33 +25,8 @@ mod tournament_mutations;
 
 mod squad_mutations;
 mod tournament_lobbies_management;
+mod candid_types_impl;
 
-// method called by the client to open a WS connection to the canister (relayed by the WS Gateway)
-#[update]
-pub fn ws_open(args: CanisterWsOpenArguments) -> CanisterWsOpenResult {
-    ic_websocket_cdk::ws_open(args)
-}
-
-// method called by the Ws Gateway when closing the IcWebSocket connection for a client
-#[update]
-pub fn ws_close(args: CanisterWsCloseArguments) -> CanisterWsCloseResult {
-    ic_websocket_cdk::ws_close(args)
-}
-
-// method called by the client to send a message to the canister (relayed by the WS Gateway)
-#[update]
-pub fn ws_message(
-    args: CanisterWsMessageArguments,
-    msg_type: Option<AppMessage>,
-) -> CanisterWsMessageResult {
-    ic_websocket_cdk::ws_message(args, msg_type)
-}
-
-// method called by the WS Gateway to get messages for all the clients it serves
-#[query]
-pub fn ws_get_messages(args: CanisterWsGetMessagesArguments) -> CanisterWsGetMessagesResult {
-    ic_websocket_cdk::ws_get_messages(args)
-}
 
 type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
@@ -188,50 +158,13 @@ pub fn leave_or_remove_squad_member(principal: Principal, id: String) {
     });
 }
 
-pub fn on_open(args: OnOpenCallbackArgs) {
-    let msg = AppMessage {
-        text: String::from("ping"),
-        timestamp: time(),
-    };
-    send_app_message(args.client_principal, msg);
-}
-
-pub fn on_message(args: OnMessageCallbackArgs) {
-    let app_msg: AppMessage = decode_one(&args.message).unwrap();
-    let new_msg = AppMessage {
-        text: String::from("ping"),
-        timestamp: time(),
-    };
-    print(format!("Received message: {:?}", app_msg));
-    send_app_message(args.client_principal, new_msg)
-}
-
-pub fn send_app_message(client_principal: ClientPrincipal, msg: AppMessage) {
-    print(format!("Sending message: {:?}", msg));
-    if let Err(e) = send(client_principal, msg.candid_serialize()) {
-        println!("Could not send message: {}", e);
-    }
-}
-
-pub fn on_close(args: OnCloseCallbackArgs) {
-    print(format!("Client {} disconnected", args.client_principal));
-}
 
 #[init]
-pub fn init() {
+fn init() {
     canister_tools::init(&TOURNAMENT_STORE, TOURNAMENT_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID);
     canister_tools::init(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID);
-    let handlers = WsHandlers {
-        on_open: Some(on_open),
-        on_message: Some(on_message),
-        on_close: Some(on_close),
-    };
-
-    let params = WsInitParams::new(handlers);
-
-    ic_websocket_cdk::init(params);
 }
 
 #[pre_upgrade]
@@ -245,15 +178,6 @@ fn post_upgrade() {
     canister_tools::post_upgrade(&ID_STORE, ID_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(IdStore) -> IdStore>);
     canister_tools::post_upgrade(&PROFILE_STORE, PROFILE_STORE_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(ProfileStore) -> ProfileStore>);
     canister_tools::post_upgrade(&SQUAD_STORE, SQUAD_UPGRADE_SERIALIZATION_MEMORY_ID, None::<fn(SquadStore) -> SquadStore>);
-    let handlers = WsHandlers {
-        on_open: Some(on_open),
-        on_message: Some(on_message),
-        on_close: Some(on_close),
-    };
-
-    let params = WsInitParams::new(handlers);
-
-    ic_websocket_cdk::init(params);
 }
 
 

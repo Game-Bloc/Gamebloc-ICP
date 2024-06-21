@@ -11,12 +11,13 @@ pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAc
 }
 
 #[update]
-pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(String, Point)>, principal: Principal) -> bool {
+pub fn assign_squad_points(tournament_id: String, squad_id_and_points: Vec<(String, Point)>, principal: Principal) -> bool {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            squad_id_and_points.sort_by_key(|k| k.1.total_points);
-            tournament.squad_points = Some(squad_id_and_points);
+            let mut sorted_squad_id_and_points = squad_id_and_points;
+            sorted_squad_id_and_points.sort_by_key(|k| k.1.total_points);
+            tournament.squad_points = Some(sorted_squad_id_and_points);
 
             tournament_store.borrow_mut().insert(tournament_id, tournament);
             true
@@ -28,13 +29,13 @@ pub fn assign_squad_points(tournament_id: String, mut squad_id_and_points: Vec<(
 }
 
 #[update]
-pub fn assign_solo_points(tournament_id: String, mut user_id_and_points: Vec<(String, Point)>, principal: Principal,) -> bool {
+pub fn assign_solo_points(tournament_id: String, user_id_and_points: Vec<(String, Point)>, principal: Principal,) -> bool {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            user_id_and_points.sort_by_key(|k| k.1.total_points);
-            tournament.points = Some(user_id_and_points);
-
+            let mut sorted_user_id_and_points  = user_id_and_points;
+            sorted_user_id_and_points.sort_by_key(|k| k.1.total_points);
+            tournament.points = Some(sorted_user_id_and_points);
             tournament_store.borrow_mut().insert(tournament_id, tournament);
             true
         })

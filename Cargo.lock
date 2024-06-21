@@ -135,7 +135,7 @@ dependencies = [
  "logos",
  "num-bigint",
  "num-traits",
- "num_enum 0.5.11",
+ "num_enum",
  "paste",
  "pretty 0.10.0",
  "serde",
@@ -146,27 +146,23 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.9.11"
+version = "0.10.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "465c1ce01d8089ee5b49ba20d3a9da15a28bba64c35cdff2aa256d37e319625d"
+checksum = "dd5902d37352dffd8bd9177a2daa6444ce3cd0279c91763fb0171c053aa04335"
 dependencies = [
  "anyhow",
  "binread",
  "byteorder",
- "candid_derive 0.6.4",
- "codespan-reporting",
- "crc32fast",
- "data-encoding",
+ "candid_derive 0.6.6",
  "hex",
+ "ic_principal",
  "leb128",
  "num-bigint",
  "num-traits",
- "num_enum 0.6.1",
  "paste",
  "pretty 0.12.3",
  "serde",
  "serde_bytes",
- "sha2",
  "stacker",
  "thiserror",
 ]
@@ -185,9 +181,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.6.4"
+version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "201ea498d901add0822653ac94cb0f8a92f9b1758a5273f4dafbb6673c9a5020"
+checksum = "3de398570c386726e7a59d9887b68763c481477f9a043fb998a2e09d428df1a9"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -197,13 +193,13 @@ dependencies = [
 
 [[package]]
 name = "canister-tools"
-version = "0.2.0"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4b3047324ddb4f63e0af73db6e0f0e51095ade79cdde3a466bd2f11fbc6de998"
+checksum = "a4449e67c64c492f21d4c9aedc575160ae1800767b7d50f3ac9106103f318260"
 dependencies = [
- "candid 0.9.11",
- "ic-cdk 0.10.0",
- "ic-stable-structures 0.5.6",
+ "candid 0.10.8",
+ "ic-cdk 0.12.1",
+ "ic-stable-structures",
  "serde",
  "serde_bytes",
 ]
@@ -446,15 +442,16 @@ dependencies = [
 name = "game_bloc_backend"
 version = "0.1.0"
 dependencies = [
- "candid 0.9.11",
+ "candid 0.10.8",
  "canister-tools",
- "ic-cdk 0.11.3",
- "ic-cdk-macros 0.8.1",
+ "ic-cdk 0.12.1",
+ "ic-cdk-macros 0.8.4",
  "ic-cdk-timers 0.1.2",
- "ic-stable-structures 0.6.1",
+ "ic-stable-structures",
  "ic-websocket-cdk",
  "ic_principal",
  "serde",
+ "serde_bytes",
 ]
 
 [[package]]
@@ -517,25 +514,12 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk"
-version = "0.10.0"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "08d4c0b932bf454d5d60e61e13c3c944972fcfd74dc82b9ed5c8b0a75979cf50"
+checksum = "9f3d204af0b11c45715169c997858edb58fa8407d08f4fae78a6b415dd39a362"
 dependencies = [
- "candid 0.9.11",
- "ic-cdk-macros 0.7.1",
- "ic0 0.18.11",
- "serde",
- "serde_bytes",
-]
-
-[[package]]
-name = "ic-cdk"
-version = "0.11.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c126ac20219abff15c3441282e9da6aa7244319d5a4a42c7260667237e790712"
-dependencies = [
- "candid 0.9.11",
- "ic-cdk-macros 0.8.1",
+ "candid 0.10.8",
+ "ic-cdk-macros 0.8.4",
  "ic0 0.21.1",
  "serde",
  "serde_bytes",
@@ -557,25 +541,11 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.7.1"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "411c0dd4c149132b68e679274d397053332ee29996c6a541075895881916333b"
+checksum = "a5a618e4020cea88e933d8d2f8c7f86d570ec06213506a80d4f2c520a9bba512"
 dependencies = [
- "candid 0.9.11",
- "proc-macro2",
- "quote",
- "serde",
- "serde_tokenstream",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "ic-cdk-macros"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b6295fd7389c198a97dd99b28b846e18487d99303077102d817eebbf6a924cd"
-dependencies = [
- "candid 0.9.11",
+ "candid 0.10.8",
  "proc-macro2",
  "quote",
  "serde",
@@ -599,13 +569,13 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.4.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "198e55e4d9e069903fbea1dceae6fd28f7e0b38d5a4e1026ed2c772e1d55f5e0"
+checksum = "8c43b9706fef3ad10c4192a14801d16bd9539068239f0f06f257857441364329"
 dependencies = [
  "futures",
- "ic-cdk 0.10.0",
- "ic0 0.18.11",
+ "ic-cdk 0.12.1",
+ "ic0 0.21.1",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -624,30 +594,24 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.5.6"
+version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95dce29e3ceb0e6da3e78b305d95365530f2efd2146ca18590c0ef3aa6038568"
-
-[[package]]
-name = "ic-stable-structures"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e1edc2c31d16b3065e5162cc019bdcec380b07294bcf865533f072ea92268621"
+checksum = "03f3044466a69802de74e710dc0300b706a05696a0531c942ca856751a13b0db"
 dependencies = [
  "ic_principal",
 ]
 
 [[package]]
 name = "ic-websocket-cdk"
-version = "0.3.2"
+version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2996bf5fd813d6f21c2a766e0f249a4c482c266d755c5e8dbb97031c4605e647"
+checksum = "71699c9028dd7e2df1daea4bc4afc3bf210fc85f6564fd51d68ea59485078c18"
 dependencies = [
  "base64",
- "candid 0.9.11",
- "ic-cdk 0.10.0",
- "ic-cdk-macros 0.7.1",
- "ic-cdk-timers 0.4.0",
+ "candid 0.10.8",
+ "ic-cdk 0.12.1",
+ "ic-cdk-macros 0.8.4",
+ "ic-cdk-timers 0.6.0",
  "ic-certified-map",
  "serde",
  "serde_bytes",
@@ -864,16 +828,7 @@ version = "0.5.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1f646caf906c20226733ed5b1374287eb97e3c2a5c227ce668c1f2ce20ae57c9"
 dependencies = [
- "num_enum_derive 0.5.11",
-]
-
-[[package]]
-name = "num_enum"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a015b430d3c108a207fd776d2e2196aaf8b1cf8cf93253e3a097ff3085076a1"
-dependencies = [
- "num_enum_derive 0.6.1",
+ "num_enum_derive",
 ]
 
 [[package]]
@@ -886,18 +841,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
-]
-
-[[package]]
-name = "num_enum_derive"
-version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "96667db765a921f7b295ffee8b60472b686a51d4f21c2ee4ffdb94c7013b65a6"
-dependencies = [
- "proc-macro-crate",
- "proc-macro2",
- "quote",
- "syn 2.0.44",
 ]
 
 [[package]]
