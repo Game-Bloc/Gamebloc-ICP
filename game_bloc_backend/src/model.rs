@@ -1,6 +1,10 @@
 use std::borrow::Cow;
 
-use candid::{CandidType, Decode, Deserialize, Encode};
+use candid::{Decode, Deserialize, CandidType, Encode};
+// use candid::types::CandidType;
+// use candid::CandidType as CandidType;
+// use candid::types::Compound;
+// use candid::types::Serializer;
 use candid::encode_one;
 use ic_stable_structures::{
     Storable, storable::Bound,
@@ -11,7 +15,8 @@ use crate::*;
 
 macro_rules! pub_struct {
     ($name:ident {$($field:ident: $t:ty,)*}) => {
-       #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
+       #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize
+       )]
         pub struct $name {
             $(pub(crate) $field: $t),*
         }
@@ -76,6 +81,18 @@ pub_struct!(
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
 });
+
+// impl CandidType for i128 {
+//     fn _ty() -> Type {
+//         TypeInner::Int.into()
+//     }
+//     fn idl_serialize<S>(&self, serializer: S) -> Result<(), S::Error>
+//         where
+//             S: Serializer,
+//     {
+//         serializer.serialize_i128(*self)
+//     }
+// }
 
 pub_struct!(
     LobbyAccount {
