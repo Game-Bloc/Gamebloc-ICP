@@ -85,7 +85,7 @@ const TournamentListView = ({
     setCurrentPlayer(player)
     setIsModalVisible(true)
   }
-  console.log("playerPoints", playerPoints)
+  // console.log("playerPoints", playerPoints)
   const hideModal = () => {
     setIsModalVisible(false)
     setCurrentPlayer(null)

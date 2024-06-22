@@ -21,6 +21,7 @@ import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
 import Results from "../AdminComps/Results"
+import SquadListView from "../AdminComps/SquadListView"
 
 interface DataType {
   position: React.Key
@@ -64,6 +65,11 @@ const AdminViewTournamentDetails = () => {
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
+  const _point = tourData[0].points.length === 0
+
+  const game_type = data
+    .filter((tour: any) => tour.id_hash === id)
+    .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -108,7 +114,8 @@ const AdminViewTournamentDetails = () => {
     }
   }, [])
 
-  // console.log("players", players)
+  console.log("players", players)
+
   const dataSearch = data.filter((obj) => {
     // Check if any key matches the search term
     const keyMatches = Object.keys(obj).some((key) =>
@@ -361,8 +368,8 @@ const AdminViewTournamentDetails = () => {
                         </div>
                       </div>
                       <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
-                        <div className="flex mx-8 justify-between items-center">
-                          <div className="flex items-center">
+                        <div className="flex mr-8 justify-between items-center">
+                          {/* <div className="flex items-center">
                             <ConfigProvider
                               theme={{
                                 algorithm: theme.darkAlgorithm,
@@ -423,55 +430,70 @@ const AdminViewTournamentDetails = () => {
                                 alt=""
                               />
                             </div>
-                          </div>
+                          </div> */}
 
-                          <div className="flex justify-center items-center ">
-                            <button
-                              onClick={() => saveChanges()}
-                              className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
-                            >
-                              {isLoading ? (
-                                <div className="flex items-center  gap-2">
-                                  <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
-                                    Wait
+                          {_point ? (
+                            <p className="text-[1.2rem] ml-8 font-semibold text-white">
+                              Assign points
+                            </p>
+                          ) : (
+                            <p className="text-[1.2rem]  font-semibold text-white">
+                              Collated Result
+                            </p>
+                          )}
+
+                          {_point ? (
+                            <div className="flex justify-center items-center ">
+                              <button
+                                onClick={() => saveChanges()}
+                                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                              >
+                                {isLoading ? (
+                                  <div className="flex items-center  gap-2">
+                                    <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                                      Wait
+                                    </p>
+                                    <ClipLoader
+                                      color={color}
+                                      loading={isLoading}
+                                      cssOverride={override}
+                                      size={10}
+                                      aria-label="Loading Spinner"
+                                      data-testid="loader"
+                                    />
+                                  </div>
+                                ) : (
+                                  <p className="text-[.85rem] text-white">
+                                    Save Changes
                                   </p>
-                                  <ClipLoader
-                                    color={color}
-                                    loading={isLoading}
-                                    cssOverride={override}
-                                    size={10}
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
-                                  />
-                                </div>
-                              ) : (
-                                <p className="text-[.85rem] text-white">
-                                  Save Changes
-                                </p>
-                              )}
-                            </button>
-                            {/* <button
-                              onClick={handleDelete}
-                              disabled={selectedRowKeys.length === 0}
-                              className=" hover:border-primary-second border-primary-second/50 border border-solid rounded-[3px] h-[2.3rem] w-[2.5rem] p-2 flex justify-around items-center cursor-pointer"
-                            >
-                              <img src={`delete.png`} className="m-0" alt="" />
-                            </button> */}
-                          </div>
+                                )}
+                              </button>
+                            </div>
+                          ) : (
+                            <></>
+                          )}
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
-                        {active === 1 ? (
-                          <TournamentListView
-                            tourData={tourData}
-                            rowSelection={rowSelection}
-                            columns={columns}
-                            dataSearch={dataSearch}
-                            setPlayerPoints={setPlayerPoints}
-                            playerPoints={playerPoints}
-                          />
+                        {game_type === true ? (
+                          <>
+                            {_point ? (
+                              <TournamentListView
+                                tourData={tourData}
+                                rowSelection={rowSelection}
+                                columns={columns}
+                                dataSearch={dataSearch}
+                                setPlayerPoints={setPlayerPoints}
+                                playerPoints={playerPoints}
+                              />
+                            ) : (
+                              // <TournamentGridView players={players} />
+                              <Results tourData={tourData} />
+                            )}
+                          </>
                         ) : (
-                          // <TournamentGridView players={players} />
-                          <Results tourData={tourData} />
+                          <>
+                            <SquadListView players={players} />
+                          </>
                         )}
                       </div>
                       {/*  */}
