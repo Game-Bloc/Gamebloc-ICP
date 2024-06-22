@@ -248,9 +248,9 @@ shared ({ caller }) actor class Kitchen() {
         })
     };
 
-    // public shared ({caller}) func get_total_tournament() : async Nat {
+    public shared ({caller}) func get_total_tournament() : async () {
 
-    // }
+    };
 
     //  --------------------------
     // /                        /
