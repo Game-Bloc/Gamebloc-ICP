@@ -13,6 +13,8 @@ type TableRowSelection<T> = TableProps<T>["rowSelection"]
 
 type prop = {
   players: any[]
+  setSquadPoints: any
+  setPlayerPoints: any
 }
 
 interface DataType {
@@ -31,6 +33,7 @@ const columns: TableColumnsType<DataType> = [
     title: "Position",
     dataIndex: "position",
     key: "position",
+    render: (_, __, index) => index + 1,
   },
   {
     title: "Squad Name",
@@ -93,7 +96,7 @@ const transformSquadData = (squads, players) => {
   })
 }
 
-const SquadListView = ({ players }: prop) => {
+const SquadListView = ({ players, setSquadPoints, setPlayerPoints }: prop) => {
   const squads = useAppSelector((state) => state.squad)
   const [dataSource, setDataSource] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
@@ -143,6 +146,28 @@ const SquadListView = ({ players }: prop) => {
     })
 
     setDataSource(updatedData)
+
+    // Update player points
+    setPlayerPoints((prevPoints) => [
+      ...prevPoints.filter(([pid]) => pid !== id),
+      [id, points],
+    ])
+
+    // Update squad points
+    updatedData.forEach((squad) => {
+      setSquadPoints((prevPoints) => [
+        ...prevPoints.filter(([sid]) => sid !== squad.id),
+        [
+          squad.id,
+          {
+            kill_points: squad.kill_points,
+            position_points: squad.position_points,
+            total_points: squad.total_points,
+          },
+        ],
+      ])
+    })
+
     hideModal()
   }
 

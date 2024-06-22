@@ -62,6 +62,8 @@ const AdminViewTournamentDetails = () => {
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, Points][]>([])
+  const [squadPoints, setSquadPoints] = useState<[string, Points][]>([])
+
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
@@ -114,7 +116,8 @@ const AdminViewTournamentDetails = () => {
     }
   }, [])
 
-  console.log("players", players)
+  console.log("playersPoints", playerPoints)
+  console.log("squadPoints", squadPoints)
 
   const dataSearch = data.filter((obj) => {
     // Check if any key matches the search term
@@ -492,7 +495,11 @@ const AdminViewTournamentDetails = () => {
                           </>
                         ) : (
                           <>
-                            <SquadListView players={players} />
+                            <SquadListView
+                              players={players}
+                              setSquadPoints={setSquadPoints}
+                              setPlayerPoints={setPlayerPoints}
+                            />
                           </>
                         )}
                       </div>
