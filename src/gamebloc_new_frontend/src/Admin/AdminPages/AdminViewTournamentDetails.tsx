@@ -61,6 +61,9 @@ const AdminViewTournamentDetails = () => {
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, Points][]>([])
+  const tourData = data
+    .filter((tour: any) => tour.id_hash === id)
+    .map((list: any) => list)
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -105,7 +108,7 @@ const AdminViewTournamentDetails = () => {
     }
   }, [])
 
-  console.log("players", players)
+  // console.log("players", players)
   const dataSearch = data.filter((obj) => {
     // Check if any key matches the search term
     const keyMatches = Object.keys(obj).some((key) =>
@@ -146,14 +149,6 @@ const AdminViewTournamentDetails = () => {
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedRowKeys(newSelectedRowKeys)
-  }
-
-  const handleDelete = () => {
-    const newData = data.filter(
-      (item) => !selectedRowKeys.includes(item.position),
-    )
-    // setData(newData)
-    setSelectedRowKeys([])
   }
 
   const onSearchChange = (event: any) => {
@@ -467,6 +462,7 @@ const AdminViewTournamentDetails = () => {
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
                         {active === 1 ? (
                           <TournamentListView
+                            tourData={tourData}
                             rowSelection={rowSelection}
                             columns={columns}
                             dataSearch={dataSearch}
@@ -475,7 +471,7 @@ const AdminViewTournamentDetails = () => {
                           />
                         ) : (
                           // <TournamentGridView players={players} />
-                          <Results />
+                          <Results tourData={tourData} />
                         )}
                       </div>
                       {/*  */}

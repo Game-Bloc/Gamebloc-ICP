@@ -9,6 +9,7 @@ interface Props {
   dataSearch: any[]
   setPlayerPoints: any
   playerPoints: any
+  tourData: any
 }
 
 interface Points {
@@ -59,10 +60,11 @@ const TournamentListView = ({
   dataSearch,
   setPlayerPoints,
   playerPoints,
+  tourData,
 }: Props) => {
   const userProfile = useAppSelector((state) => state.userProfile)
   const [dataSource, setDataSource] = useState(
-    transformTournamentData(dataSearch, userProfile),
+    transformTournamentData(tourData, userProfile),
   )
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentPlayer, setCurrentPlayer] = useState(null)
