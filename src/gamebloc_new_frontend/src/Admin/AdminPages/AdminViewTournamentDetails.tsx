@@ -20,6 +20,7 @@ import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
+import Results from "../AdminComps/Results"
 
 interface DataType {
   position: React.Key
@@ -473,7 +474,8 @@ const AdminViewTournamentDetails = () => {
                             playerPoints={playerPoints}
                           />
                         ) : (
-                          <TournamentGridView players={players} />
+                          // <TournamentGridView players={players} />
+                          <Results />
                         )}
                       </div>
                       {/*  */}
