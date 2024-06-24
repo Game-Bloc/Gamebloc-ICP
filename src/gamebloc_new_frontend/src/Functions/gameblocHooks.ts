@@ -29,6 +29,7 @@ import {
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
 import { allNotification } from "../redux/slice/notificationSlice"
+import { MultiSelect } from "@tremor/react"
 
 export const useGameblocHooks = () => {
   const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
@@ -774,6 +775,18 @@ export const useGameblocHooks = () => {
 
   // ADMIN TOURNAMENT FUNCTIONS
 
+  const multiSelect_user_profile = async (principal: Principal) => {
+    try {
+      setIsLoading(true)
+      const user = await whoamiActor2.getSelf(principal)
+      console.log("user", user)
+      setIsLoading(false)
+    } catch (err) {
+      console.log("error getting profile", err)
+      setIsLoading(false)
+    }
+  }
+
   const assign_solo_point = async (
     tournament_id: string,
     principal: Principal,
@@ -837,5 +850,6 @@ export const useGameblocHooks = () => {
     getNotificationId,
     markAsRead,
     assign_solo_point,
+    multiSelect_user_profile,
   }
 }
