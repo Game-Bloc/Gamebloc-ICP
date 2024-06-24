@@ -81,7 +81,7 @@ type UserProfile = record {
   status : Status;
   username : text;
   date : text;
-  role : Role;
+  role : opt Role;
   canister_id : text;
   wins : nat8;
   losses : opt nat8;
