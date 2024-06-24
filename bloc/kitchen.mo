@@ -583,6 +583,11 @@ shared ({ caller }) actor class Kitchen() {
         Iter.toArray(MessageHashMap.entries())
     };
 
+    public func getSortedMessages() : async [MessageEntry] {
+        let entries = Array.fromIter(MessageHashMap.vals());
+
+    }
+
     public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
         // var checkForConnection = await checkConnection(account, caller);
         //  if (checkForConnection == true) {
