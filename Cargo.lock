@@ -146,9 +146,9 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.10.8"
+version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd5902d37352dffd8bd9177a2daa6444ce3cd0279c91763fb0171c053aa04335"
+checksum = "7df77a80c72fcd356cf37ff59c812f37ff06dc9a81232b3aff0a308cb5996904"
 dependencies = [
  "anyhow",
  "binread",
@@ -197,7 +197,7 @@ version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4449e67c64c492f21d4c9aedc575160ae1800767b7d50f3ac9106103f318260"
 dependencies = [
- "candid 0.10.8",
+ "candid 0.10.9",
  "ic-cdk 0.12.1",
  "ic-stable-structures",
  "serde",
@@ -442,7 +442,7 @@ dependencies = [
 name = "game_bloc_backend"
 version = "0.1.0"
 dependencies = [
- "candid 0.10.8",
+ "candid 0.10.9",
  "canister-tools",
  "ic-cdk 0.12.1",
  "ic-cdk-macros 0.8.4",
@@ -518,7 +518,7 @@ version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f3d204af0b11c45715169c997858edb58fa8407d08f4fae78a6b415dd39a362"
 dependencies = [
- "candid 0.10.8",
+ "candid 0.10.9",
  "ic-cdk-macros 0.8.4",
  "ic0 0.21.1",
  "serde",
@@ -545,7 +545,7 @@ version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a5a618e4020cea88e933d8d2f8c7f86d570ec06213506a80d4f2c520a9bba512"
 dependencies = [
- "candid 0.10.8",
+ "candid 0.10.9",
  "proc-macro2",
  "quote",
  "serde",
@@ -608,7 +608,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71699c9028dd7e2df1daea4bc4afc3bf210fc85f6564fd51d68ea59485078c18"
 dependencies = [
  "base64",
- "candid 0.10.8",
+ "candid 0.10.9",
  "ic-cdk 0.12.1",
  "ic-cdk-macros 0.8.4",
  "ic-cdk-timers 0.6.0",

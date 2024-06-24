@@ -45,7 +45,7 @@ pub_struct!(UserProfile {
      points: Option<Vec<(String,String,Point)>>,
      username: String,
      is_mod: bool,
-     role: Role,
+     role: Option<Role>,
      principal_id: String,
      account_id : String,
      canister_id: String,
