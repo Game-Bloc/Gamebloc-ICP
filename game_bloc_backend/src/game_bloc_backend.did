@@ -1,24 +1,4 @@
-type AppMessage = record { "text" : text; timestamp : nat64 };
-type CanisterOutputCertifiedMessages = record {
-  messages : vec CanisterOutputMessage;
-  cert : vec nat8;
-  tree : vec nat8;
-  is_end_of_queue : bool;
-};
-type CanisterOutputMessage = record {
-  key : text;
-  content : vec nat8;
-  client_key : ClientKey;
-};
-type CanisterWsCloseArguments = record { client_key : ClientKey };
-type CanisterWsGetMessagesArguments = record { nonce : nat64 };
-type CanisterWsMessageArguments = record { msg : WebsocketMessage };
-type CanisterWsOpenArguments = record {
-  gateway_principal : principal;
-  client_nonce : nat64;
-};
 type Chat = record { id : text; name : text; time : text; message : text };
-type ClientKey = record { client_principal : principal; client_nonce : nat64 };
 type GameType = variant { Duo; Squad; TeamvTeam; Single };
 type LobbyAccount = record {
   idx : nat8;
@@ -45,8 +25,6 @@ type Point = record {
   position_points : nat;
 };
 type Result = variant { Ok : nat8; Err : nat8 };
-type Result_1 = variant { Ok; Err : text };
-type Result_2 = variant { Ok : CanisterOutputCertifiedMessages; Err : text };
 type Role = variant { Mod; Player };
 type Squad = record {
   tag : text;
@@ -114,13 +92,6 @@ type UserProfile = record {
   tournaments_created : nat8;
   points : opt vec record { text; text; Point };
 };
-type WebsocketMessage = record {
-  sequence_num : nat64;
-  content : vec nat8;
-  client_key : ClientKey;
-  timestamp : nat64;
-  is_service_message : bool;
-};
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
   assign_solo_points : (text, vec record { text; Point }, principal) -> (bool);
@@ -164,8 +135,4 @@ service : () -> {
   three_lobbies_merge : (text) -> ();
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
-  ws_close : (CanisterWsCloseArguments) -> (Result_1);
-  ws_get_messages : (CanisterWsGetMessagesArguments) -> (Result_2) query;
-  ws_message : (CanisterWsMessageArguments, opt AppMessage) -> (Result_1);
-  ws_open : (CanisterWsOpenArguments) -> (Result_1);
 }
