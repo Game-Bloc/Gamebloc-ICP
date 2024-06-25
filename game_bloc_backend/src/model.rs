@@ -72,7 +72,7 @@ pub_struct!(
      total_prize: u128,
      no_of_winners: u8,
      no_of_participants: u128,
-     game_type: GameType,
+     game_type: String,
      end_date: String,
      title: String,
      squad_points: Option<Vec<(String,Point)>>,
