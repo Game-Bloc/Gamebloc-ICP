@@ -39,6 +39,7 @@ export const useGameblocHooks = () => {
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
+  const [isAssigningPoints, setIsAssigningPoints] = useState<boolean>(false)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
@@ -806,15 +807,44 @@ export const useGameblocHooks = () => {
     } catch (err) {
       errorPopUp(error)
       setIsLoading(false)
-      console.log("Error joining squad:", err)
+      console.log("Error assigning points:", err)
     } finally {
       setIsLoading(false)
     }
   }
 
-  const assign_squad_point = () => {
+  const assign_squad_point = async (
+    tournament_id: string,
+    principal: Principal,
+    user_id_and_points: any[],
+    squad_id_and_points: any[],
+    success: string,
+    error: string,
+    route,
+  ) => {
     try {
-    } catch (err) {}
+      setIsAssigningPoints(true)
+      assign_solo_point(
+        tournament_id,
+        principal,
+        user_id_and_points,
+        success,
+        error,
+        route,
+      )
+      await whoamiActor2.assign_squad_points(
+        tournament_id,
+        squad_id_and_points,
+        principal,
+      )
+      console.log("Assigned")
+      setIsAssigningPoints(false)
+      popUp(success, route)
+    } catch (err) {
+      errorPopUp(error)
+      setIsAssigningPoints(false)
+      console.log("Error assigning points:", err)
+    }
   }
 
   return {
@@ -824,6 +854,7 @@ export const useGameblocHooks = () => {
     noData,
     isAccount,
     fetching,
+    isAssigningPoints,
     isAdmin,
     getPlayers,
     getTransactions,
@@ -851,5 +882,6 @@ export const useGameblocHooks = () => {
     markAsRead,
     assign_solo_point,
     multiSelect_user_profile,
+    assign_squad_point,
   }
 }
