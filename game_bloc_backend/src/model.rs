@@ -173,6 +173,26 @@ pub enum GameType {
     Squad,
 }
 
+impl GameType {
+    pub fn name(&self) -> String {
+        match self {
+            GameType::TeamvTeam => "primary".to_string(),
+            GameType::Single => "unique".to_string(),
+            GameType::Duo => "unique".to_string(),
+            GameType::Squad => "unique".to_string(),
+        }
+    }
+    pub fn from_str(name: &str) -> GameType {
+        match name {
+            "TeamvTeam" => GameType::TeamvTeam,
+            "Single" => GameType::Single,
+            "Duo" => GameType::Duo,
+            "Squad" => GameType::Squad,
+            _ => panic!("Unsupported game type {}", name),
+        }
+    }
+}
+
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentStatus {
     #[default]

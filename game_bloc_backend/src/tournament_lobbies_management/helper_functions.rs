@@ -1,7 +1,7 @@
 use crate::*;
 
 pub(crate) fn squad_or_player_religator(mut tournament: &mut TournamentAccount, mut participant_queue: &mut Vec<String>, mut squad_queue: &mut Vec<Squad>) {
-    match tournament.game_type {
+    match GameType::from_str(tournament.game_type.clone().as_str()) {
         GameType::TeamvTeam => {}
         GameType::Single => {
             tournament.clone().lobbies.unwrap().iter().for_each(
@@ -31,7 +31,7 @@ pub(crate) fn squad_or_player_religator(mut tournament: &mut TournamentAccount, 
 }
 
 pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, mut participant_queue: Vec<String>, mut squad_queue: Vec<Squad>) {
-    match tournament.game_type {
+    match GameType::from_str(tournament.game_type.clone().as_str()) {
         GameType::Single => {
             let mut count = participant_queue.len() / 100;
             loop {
@@ -51,7 +51,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -72,7 +72,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                         winers: Vec::new(),
                         no_of_winners: None,
                         no_of_participants: tournament.no_of_participants,
-                        game_type: tournament.game_type.clone(),
+                        game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                         name: Some(tournament.title.clone()),
                     }
                 );
@@ -102,7 +102,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -123,7 +123,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                         winers: Vec::new(),
                         no_of_winners: None,
                         no_of_participants: tournament.no_of_participants,
-                        game_type: tournament.game_type.clone(),
+                        game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                         name: Some(tournament.title.clone()),
                     }
                 );
@@ -153,7 +153,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -174,7 +174,7 @@ pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, m
                         winers: Vec::new(),
                         no_of_winners: None,
                         no_of_participants: tournament.no_of_participants,
-                        game_type: tournament.game_type.clone(),
+                        game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                         name: Some(tournament.title.clone()),
                     }
                 );
