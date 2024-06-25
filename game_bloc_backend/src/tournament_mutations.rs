@@ -72,7 +72,7 @@ pub fn end_tournament(id: String, principal: Principal, )
             // winner.
             // let mut winning_squad = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
             // let mut winning_players = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
-            match tournament.game_type {
+            match GameType::from_str(tournament.game_type.clone().as_str()) {
                 GameType::TeamvTeam => {}
                 GameType::Single => {
                     // winners.append(&mut winning_players);

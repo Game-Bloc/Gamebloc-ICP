@@ -83,7 +83,7 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
 
         // Matching arms for
         // structuring the tournament into lobbies
-        match tournament.game_type {
+        match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::Single => {
                 let mut count = tournament.user.len() / 100;
                 loop {
@@ -102,7 +102,7 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -130,7 +130,7 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -158,7 +158,7 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -184,7 +184,7 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
                         winers: Vec::new(),
                         no_of_winners: None,
                         no_of_participants: tournament.no_of_participants.clone(),
-                        game_type: tournament.game_type.clone(),
+                        game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                         name: Some(tournament.title.clone()),
                     })
             }
@@ -238,7 +238,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
 
         // Matching arms for
         // structuring the tournament into lobbies
-        match tournament.game_type {
+        match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::Single => {
                 let mut count = tournament.user.len() / 100;
                 loop {
@@ -257,7 +257,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -285,7 +285,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -313,7 +313,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -339,7 +339,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
                         winers: Vec::new(),
                         no_of_winners: None,
                         no_of_participants: tournament.no_of_participants.clone(),
-                        game_type: tournament.game_type.clone(),
+                        game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                         name: Some(tournament.title.clone()),
                     })
             }
@@ -377,7 +377,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
 
         /// Matching arms for
         /// eliminating players
-        match tournament.game_type {
+        match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::TeamvTeam => {}
             GameType::Single => {
                 tournament.clone().lobbies.unwrap().iter().for_each(
@@ -409,7 +409,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
 
         /// Matching arms for
         /// structuring the tournament into lobbies
-        match tournament.game_type {
+        match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::Single => {
                 let mut count = participant_queue.len() / 100;
                 loop {
@@ -429,7 +429,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                                 winers: Vec::new(),
                                 no_of_winners: None,
                                 no_of_participants: tournament.no_of_participants,
-                                game_type: tournament.game_type.clone(),
+                                game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                                 name: Some(tournament.title.clone()),
                             }
                         );
@@ -450,7 +450,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -480,7 +480,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                                 winers: Vec::new(),
                                 no_of_winners: None,
                                 no_of_participants: tournament.no_of_participants,
-                                game_type: tournament.game_type.clone(),
+                                game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                                 name: Some(tournament.title.clone()),
                             }
                         );
@@ -501,7 +501,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );
@@ -531,7 +531,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                                 winers: Vec::new(),
                                 no_of_winners: None,
                                 no_of_participants: tournament.no_of_participants,
-                                game_type: tournament.game_type.clone(),
+                                game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                                 name: Some(tournament.title.clone()),
                             }
                         );
@@ -552,7 +552,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                             winers: Vec::new(),
                             no_of_winners: None,
                             no_of_participants: tournament.no_of_participants,
-                            game_type: tournament.game_type.clone(),
+                            game_type: GameType::from_str(tournament.game_type.clone().as_str()),
                             name: Some(tournament.title.clone()),
                         }
                     );

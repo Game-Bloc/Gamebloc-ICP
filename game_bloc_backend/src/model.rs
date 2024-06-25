@@ -45,7 +45,7 @@ pub_struct!(UserProfile {
      points: Option<Vec<(String,String,Point)>>,
      username: String,
      is_mod: bool,
-     role: Role,
+     role: Option<Role>,
      principal_id: String,
      account_id : String,
      canister_id: String,
@@ -72,7 +72,7 @@ pub_struct!(
      total_prize: u128,
      no_of_winners: u8,
      no_of_participants: u128,
-     game_type: GameType,
+     game_type: String,
      end_date: String,
      title: String,
      squad_points: Option<Vec<(String,Point)>>,
@@ -171,6 +171,26 @@ pub enum GameType {
     Single,
     Duo,
     Squad,
+}
+
+impl GameType {
+    pub fn name(&self) -> String {
+        match self {
+            GameType::TeamvTeam => "primary".to_string(),
+            GameType::Single => "unique".to_string(),
+            GameType::Duo => "unique".to_string(),
+            GameType::Squad => "unique".to_string(),
+        }
+    }
+    pub fn from_str(name: &str) -> GameType {
+        match name {
+            "TeamvTeam" => GameType::TeamvTeam,
+            "Single" => GameType::Single,
+            "Duo" => GameType::Duo,
+            "Squad" => GameType::Squad,
+            _ => panic!("Unsupported game type {}", name),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
