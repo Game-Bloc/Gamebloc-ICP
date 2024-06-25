@@ -56,7 +56,7 @@ type TournamentAccount = record {
   squad_in_game_names : opt vec vec record { text; text };
   squad : vec Squad;
   lobbies : opt vec LobbyAccount;
-  game_type : GameType;
+  game_type : text;
   starting_date : text;
   no_of_participants : nat;
   tournament_lobby_type : opt TournamentLobbyType;

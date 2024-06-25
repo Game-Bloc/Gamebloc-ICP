@@ -62,7 +62,7 @@ module {
         tournaments_created : Nat8;
         username : Text;
         is_mod : Bool;
-        role : Role;
+        role : ?Role;
         principal_id : Text;
         account_id : Text;
         canister_id : Text;
@@ -142,7 +142,7 @@ module {
         entry_prize : Nat8;
         no_of_winners : Nat8;
         no_of_participants : Nat;
-        game_type : GameType;
+        game_type : Text;
         end_date : Text;
         title : Text;
         in_game_names : ?[(Text, Text)];
