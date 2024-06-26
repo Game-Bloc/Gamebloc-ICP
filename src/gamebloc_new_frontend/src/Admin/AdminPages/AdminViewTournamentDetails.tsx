@@ -46,7 +46,12 @@ interface Points {
 
 const AdminViewTournamentDetails = () => {
   const { id } = useParams()
-  const { assign_solo_point, isLoading } = useGameblocHooks()
+  const {
+    assign_solo_point,
+    assign_squad_point,
+    isAssigningPoints,
+    isLoading,
+  } = useGameblocHooks()
   const data = useAppSelector((state) => state.tournamentData)
   const principal_id_text = useAppSelector(
     (state) => state.userProfile.principal_id,
@@ -62,6 +67,8 @@ const AdminViewTournamentDetails = () => {
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, Points][]>([])
+  const [squadPoints, setSquadPoints] = useState<[string, Points][]>([])
+
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
@@ -69,7 +76,8 @@ const AdminViewTournamentDetails = () => {
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
-    .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
+    .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
+  console.log("state", game_type[0])
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -84,7 +92,7 @@ const AdminViewTournamentDetails = () => {
     }
     const game_type = data
       .filter((tour: any) => tour.id_hash === id)
-      .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
+      .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
     console.log("single", game_type[0])
 
     if (game_type[0] === true) {
@@ -114,7 +122,8 @@ const AdminViewTournamentDetails = () => {
     }
   }, [])
 
-  console.log("players", players)
+  // console.log("playersPoints", playerPoints)
+  // console.log("squadPoints", squadPoints)
 
   const dataSearch = data.filter((obj) => {
     // Check if any key matches the search term
@@ -178,14 +187,26 @@ const AdminViewTournamentDetails = () => {
   }
 
   const saveChanges = () => {
-    assign_solo_point(
-      id,
-      _principal,
-      playerPoints,
-      "Players points saved",
-      "Error setting players points",
-      "",
-    )
+    {
+      game_type[0] === true
+        ? assign_solo_point(
+            id,
+            _principal,
+            playerPoints,
+            "Players points saved",
+            "Error setting players points",
+            "",
+          )
+        : assign_squad_point(
+            id,
+            _principal,
+            playerPoints,
+            squadPoints,
+            "Players and squads points saved",
+            "Error setting points",
+            "",
+          )
+    }
   }
 
   return (
@@ -227,7 +248,7 @@ const AdminViewTournamentDetails = () => {
                                 </div>
                                 <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
                                   <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {Object.keys(list.game_type)[0]}
+                                    {list.game_type}
                                   </p>
                                 </div>
                                 <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
@@ -283,27 +304,21 @@ const AdminViewTournamentDetails = () => {
                                     {Object.keys(
                                       list.tournament_type,
                                     )[0].toUpperCase() === "CROWDFUNDED" &&
-                                    Object.keys(
-                                      list.game_type,
-                                    )[0].toUpperCase() === "SINGLE"
+                                    list.game_type.toUpperCase() === "SINGLE"
                                       ? `$${
                                           list.entry_prize * list.users.length
                                         }`
                                       : Object.keys(
                                           list.tournament_type,
                                         )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        Object.keys(
-                                          list.game_type,
-                                        )[0].toUpperCase() === "DUO"
+                                        list.game_type.toUpperCase() === "DUO"
                                       ? `$${
                                           list.entry_prize * squadCount(list)
                                         }`
                                       : Object.keys(
                                           list.tournament_type,
                                         )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        Object.keys(
-                                          list.game_type,
-                                        )[0].toUpperCase() === "SQUAD"
+                                        list.game_type.toUpperCase() === "SQUAD"
                                       ? `$${
                                           list.entry_prize * squadCount(list)
                                         }`
@@ -321,9 +336,7 @@ const AdminViewTournamentDetails = () => {
                                     Players
                                   </p>
                                   <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                    {Object.keys(
-                                      list.game_type,
-                                    )[0].toUpperCase() === "SINGLE"
+                                    {list.game_type.toUpperCase() === "SINGLE"
                                       ? `${list.users.length}`
                                       : `${squadCount(list)}`}
                                   </p>
@@ -444,37 +457,64 @@ const AdminViewTournamentDetails = () => {
 
                           {_point ? (
                             <div className="flex justify-center items-center ">
-                              <button
-                                onClick={() => saveChanges()}
-                                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
-                              >
-                                {isLoading ? (
-                                  <div className="flex items-center  gap-2">
-                                    <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
-                                      Wait
+                              {game_type[0] === true ? (
+                                <button
+                                  onClick={() => saveChanges()}
+                                  className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                                >
+                                  {isLoading ? (
+                                    <div className="flex items-center  gap-2">
+                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                        Wait
+                                      </p>
+                                      <ClipLoader
+                                        color={color}
+                                        loading={isLoading}
+                                        cssOverride={override}
+                                        size={10}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <p className="text-[.85rem] text-white">
+                                      Save Changes
                                     </p>
-                                    <ClipLoader
-                                      color={color}
-                                      loading={isLoading}
-                                      cssOverride={override}
-                                      size={10}
-                                      aria-label="Loading Spinner"
-                                      data-testid="loader"
-                                    />
-                                  </div>
-                                ) : (
-                                  <p className="text-[.85rem] text-white">
-                                    Save Changes
-                                  </p>
-                                )}
-                              </button>
+                                  )}
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => saveChanges()}
+                                  className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                                >
+                                  {isAssigningPoints ? (
+                                    <div className="flex items-center  gap-2">
+                                      <p className="text-[0.65rem] mr-2  text-white font-bold sm:text-[.85rem]">
+                                        Wait
+                                      </p>
+                                      <ClipLoader
+                                        color={color}
+                                        loading={isAssigningPoints}
+                                        cssOverride={override}
+                                        size={10}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <p className="text-[.85rem] text-white">
+                                      Save Points
+                                    </p>
+                                  )}
+                                </button>
+                              )}
                             </div>
                           ) : (
                             <></>
                           )}
                         </div>
                         <div className="my-8 border border-solid border-[#2E3438] w-full" />
-                        {game_type === true ? (
+                        {game_type[0] === true ? (
                           <>
                             {_point ? (
                               <TournamentListView
@@ -492,7 +532,11 @@ const AdminViewTournamentDetails = () => {
                           </>
                         ) : (
                           <>
-                            <SquadListView players={players} />
+                            <SquadListView
+                              players={players}
+                              setSquadPoints={setSquadPoints}
+                              setPlayerPoints={setPlayerPoints}
+                            />
                           </>
                         )}
                       </div>

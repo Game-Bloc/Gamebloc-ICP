@@ -164,7 +164,7 @@ export function hasDateReached(givenDate) {
     .toString()
     .padStart(2, "0")}`
 
-  console.log("ended", currentDateStr >= targetDateStr)
+  // console.log("ended", currentDateStr >= targetDateStr)
   // Compare the date strings
   return currentDateStr >= targetDateStr
 }

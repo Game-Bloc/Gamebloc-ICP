@@ -93,7 +93,7 @@ const Rules = ({ data }: Props) => {
             onClick={
               isAuthenticated
                 ? () => {
-                    Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                    data.game_type.toUpperCase() === "SINGLE"
                       ? setOpenSoloModal(true)
                       : setOpenSquadModal(true)
                   }
@@ -113,7 +113,7 @@ const Rules = ({ data }: Props) => {
             ) : (
               <p className="font-semibold">
                 {" "}
-                {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                {data.game_type.toUpperCase() === "SINGLE"
                   ? "Join Solo Tournament"
                   : "Join Tournament with Squad"}
               </p>

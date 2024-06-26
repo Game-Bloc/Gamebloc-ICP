@@ -111,7 +111,7 @@ const NewTournamentTable = () => {
       key: "game_type",
       render: (text: any, record: any) => (
         <p key={record.id_hash} className="text-[.85rem] ">
-          {Object.keys(record.game_type)[0]}
+          {record.game_type}
         </p>
       ),
     },
