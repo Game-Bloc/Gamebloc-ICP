@@ -63,7 +63,7 @@ const Players = ({ data }: Props) => {
   return (
     <div className="">
       <div className="flex flex-col mx-4 h-[25rem] max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
-        {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE" ? (
+        {data.game_type.toUpperCase() === "SINGLE" ? (
           data.users.length === 0 ? (
             <div className="w-full flex justify-center mt-[3rem]">
               <div className="flex flex-col mb-4 ">
@@ -123,7 +123,7 @@ const Players = ({ data }: Props) => {
             onClick={
               isAuthenticated
                 ? () => {
-                    Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                    data.game_type.toUpperCase() === "SINGLE"
                       ? setOpenSoloModal(true)
                       : setOpenSquadModal(true)
                   }
@@ -143,7 +143,7 @@ const Players = ({ data }: Props) => {
             ) : (
               <p className="font-semibold">
                 {" "}
-                {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                {data.game_type.toUpperCase() === "SINGLE"
                   ? "Join Solo Tournament"
                   : "Join Tournament with Squad"}
               </p>

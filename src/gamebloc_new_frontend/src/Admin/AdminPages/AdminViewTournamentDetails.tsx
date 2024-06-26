@@ -76,8 +76,8 @@ const AdminViewTournamentDetails = () => {
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
-    .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
-  console.log("state", game_type)
+    .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
+  console.log("state", game_type[0])
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -92,8 +92,8 @@ const AdminViewTournamentDetails = () => {
     }
     const game_type = data
       .filter((tour: any) => tour.id_hash === id)
-      .map((tour) => Object.keys(tour.game_type)[0].toUpperCase() === "SINGLE")
-    // console.log("single", game_type[0])
+      .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
+    console.log("single", game_type[0])
 
     if (game_type[0] === true) {
       const structuredSquads = tournament.in_game_names.flatMap(
@@ -188,7 +188,7 @@ const AdminViewTournamentDetails = () => {
 
   const saveChanges = () => {
     {
-      game_type === true
+      game_type[0] === true
         ? assign_solo_point(
             id,
             _principal,
@@ -248,7 +248,7 @@ const AdminViewTournamentDetails = () => {
                                 </div>
                                 <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
                                   <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {Object.keys(list.game_type)[0]}
+                                    {list.game_type}
                                   </p>
                                 </div>
                                 <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
@@ -304,27 +304,21 @@ const AdminViewTournamentDetails = () => {
                                     {Object.keys(
                                       list.tournament_type,
                                     )[0].toUpperCase() === "CROWDFUNDED" &&
-                                    Object.keys(
-                                      list.game_type,
-                                    )[0].toUpperCase() === "SINGLE"
+                                    list.game_type.toUpperCase() === "SINGLE"
                                       ? `$${
                                           list.entry_prize * list.users.length
                                         }`
                                       : Object.keys(
                                           list.tournament_type,
                                         )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        Object.keys(
-                                          list.game_type,
-                                        )[0].toUpperCase() === "DUO"
+                                        list.game_type.toUpperCase() === "DUO"
                                       ? `$${
                                           list.entry_prize * squadCount(list)
                                         }`
                                       : Object.keys(
                                           list.tournament_type,
                                         )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        Object.keys(
-                                          list.game_type,
-                                        )[0].toUpperCase() === "SQUAD"
+                                        list.game_type.toUpperCase() === "SQUAD"
                                       ? `$${
                                           list.entry_prize * squadCount(list)
                                         }`
@@ -342,9 +336,7 @@ const AdminViewTournamentDetails = () => {
                                     Players
                                   </p>
                                   <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                    {Object.keys(
-                                      list.game_type,
-                                    )[0].toUpperCase() === "SINGLE"
+                                    {list.game_type.toUpperCase() === "SINGLE"
                                       ? `${list.users.length}`
                                       : `${squadCount(list)}`}
                                   </p>

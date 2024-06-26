@@ -220,16 +220,15 @@ const TournamentInfo = ({ data }: Props) => {
                     <h1 className="text-[2rem] sm:text-[3rem] font-valorant bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
                       {Object.keys(data.tournament_type)[0].toUpperCase() ===
                         "CROWDFUNDED" &&
-                      Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                      data.game_type.toUpperCase() === "SINGLE"
                         ? `$${data.entry_prize * data?.users?.length}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
-                          Object.keys(data.game_type)[0].toUpperCase() === "DUO"
+                          data.game_type.toUpperCase() === "DUO"
                         ? `$${data.entry_prize * squadCount()}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
-                          Object.keys(data.game_type)[0].toUpperCase() ===
-                            "SQUAD"
+                          data.game_type.toUpperCase() === "SQUAD"
                         ? `$${data.entry_prize * squadCount()}`
                         : `$${data.total_prize}`}
                     </h1>
@@ -245,22 +244,19 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize * data?.users?.length
                             ).toFixed(2)}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount()).toFixed(2)}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount()).toFixed(2)}`
                           : `$${data.total_prize.toFixed(2)}`}
                       </h1>
@@ -276,8 +272,7 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize *
                               data?.users?.length *
@@ -286,16 +281,14 @@ const TournamentInfo = ({ data }: Props) => {
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount() * 0.6).toFixed(
                               2,
                             )}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount() * 0.6).toFixed(
                               2,
                             )}`
@@ -310,8 +303,7 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize *
                               data?.users?.length *
@@ -320,16 +312,14 @@ const TournamentInfo = ({ data }: Props) => {
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount() * 0.4).toFixed(
                               2,
                             )}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount() * 0.4).toFixed(
                               2,
                             )}`
@@ -347,8 +337,7 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize *
                               data?.users?.length *
@@ -357,16 +346,14 @@ const TournamentInfo = ({ data }: Props) => {
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount() * 0.5).toFixed(
                               2,
                             )}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount() * 0.5).toFixed(
                               2,
                             )}`
@@ -381,8 +368,7 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize *
                               data?.users?.length *
@@ -391,16 +377,14 @@ const TournamentInfo = ({ data }: Props) => {
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount() * 0.3).toFixed(
                               2,
                             )}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount() * 0.3).toFixed(
                               2,
                             )}`
@@ -415,8 +399,7 @@ const TournamentInfo = ({ data }: Props) => {
                       <h1 className="text-[1.5rem] font-valorant mt-4 bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text  ">
                         {Object.keys(data.tournament_type)[0].toUpperCase() ===
                           "CROWDFUNDED" &&
-                        Object.keys(data.game_type)[0].toUpperCase() ===
-                          "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE"
                           ? `$${(
                               data.entry_prize *
                               data?.users?.length *
@@ -425,16 +408,14 @@ const TournamentInfo = ({ data }: Props) => {
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "DUO"
+                            data.game_type.toUpperCase() === "DUO"
                           ? `$${(data.entry_prize * squadCount() * 0.2).toFixed(
                               2,
                             )}`
                           : Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() == "CROWDFUNDED" &&
-                            Object.keys(data.game_type)[0].toUpperCase() ===
-                              "SQUAD"
+                            data.game_type.toUpperCase() === "SQUAD"
                           ? `$${(data.entry_prize * squadCount() * 0.2).toFixed(
                               2,
                             )}`
@@ -603,7 +584,7 @@ const TournamentInfo = ({ data }: Props) => {
               onClick={
                 isAuthenticated
                   ? () => {
-                      Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                      data.game_type.toUpperCase() === "SINGLE"
                         ? setOpenSoloModal(true)
                         : setOpenSquadModal(true)
                     }
@@ -622,7 +603,7 @@ const TournamentInfo = ({ data }: Props) => {
                 />
               ) : (
                 <p className="font-semibold">
-                  {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE"
+                  {data.game_type.toUpperCase() === "SINGLE"
                     ? "Join Solo Tournament"
                     : "Join Tournament with Squad"}
                 </p>

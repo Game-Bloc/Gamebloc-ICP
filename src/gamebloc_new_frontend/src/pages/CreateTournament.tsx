@@ -43,7 +43,7 @@ const CreateTournament = () => {
   const [entryPrice, setEntryPrize] = useState("")
   const [noOfUsers, setNoOfUsers] = useState<number>(0)
   const [tournamentType, setTournamentType] = useState<string>("")
-  const [gameType, setGameType] = useState<GameType>({ Single: null })
+  const [gameType, setGameType] = useState<string>("")
   const [variantType, setVariantType] = useState(null)
   const [gameName, setGameName] = useState<string>("")
   const [noOfWinners, setNoOfWinners] = useState<number>(0)
@@ -211,12 +211,12 @@ const CreateTournament = () => {
 
   const handleGameTYpe = (value: string) => {
     value === "MP/BR Single"
-      ? setGameType({ Single: null })
+      ? setGameType("Single")
       : value === "BR Duo"
-      ? setGameType({ Duo: null })
+      ? setGameType("Duo")
       : value === "BR Squad"
-      ? setGameType({ Squad: null })
-      : setGameType({ Single: null })
+      ? setGameType("Squad")
+      : setGameType("Single")
   }
 
   const handleWinnersChange = (value: string) => {

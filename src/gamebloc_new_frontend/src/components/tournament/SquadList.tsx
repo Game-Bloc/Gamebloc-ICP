@@ -10,7 +10,7 @@ interface Props {
 const SquadList = ({ data, list }: Props) => {
   return (
     <>
-      {Object.keys(data.game_type)[0].toUpperCase() === "SINGLE" ? (
+      {data.game_type.toUpperCase() === "SINGLE" ? (
         <div className="flex flex-col mb-4">
           {/* <div className="w-full border border-primary-second border-solid my-3" /> */}
           <div className="flex gap-4 items-center">

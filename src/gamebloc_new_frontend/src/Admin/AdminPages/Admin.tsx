@@ -39,11 +39,11 @@ const Admin = () => {
 
   useEffect(() => {
     getProfile()
-    console.log("is admin:", Object.keys(isMod)[0])
-    if (Object.keys(isMod)[0].toUpperCase() !== "MOD") {
+    console.log("is admin:", Object.keys(isMod[0])[0])
+    if (Object.keys(isMod[0])[0].toUpperCase() !== "MOD") {
       navigate("/admin-login")
     }
-    if (Object.keys(isMod)[0].toUpperCase() === "MOD") {
+    if (Object.keys(isMod[0])[0].toUpperCase() === "MOD") {
       if (tournament.length > 0 || null || undefined) {
         updateTournament()
       } else {
@@ -62,9 +62,12 @@ const Admin = () => {
     }
 
     tournament.forEach((tour: any) => {
-      if (tour.game_type.Squad === null || tour.game_type.Duo === null) {
+      if (
+        tour.game_type.toUpperCase() === "SQUAD" ||
+        tour.game_type.toUpperCase() === "DUO"
+      ) {
         gameMode.BattleRoyale++
-      } else if (tour.game_type.Single === null) {
+      } else if (tour.game_type.toUpperCase() === "SINGLE") {
         gameMode.multiplayer++
       }
     })
