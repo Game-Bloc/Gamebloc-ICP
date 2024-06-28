@@ -48,12 +48,12 @@ type TournamentAccount = record {
   creator_id : opt text;
   game : text;
   user : vec text;
-  in_game_names : opt vec record { text; text };
+  in_game_names : opt vec record { text; text; text };
   winers : vec text;
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
-  squad_in_game_names : opt vec vec record { text; text };
+  squad_in_game_names : opt vec record { text; vec record { text; text } };
   squad : vec Squad;
   lobbies : opt vec LobbyAccount;
   game_type : text;
@@ -121,11 +121,11 @@ service : () -> {
   get_tournament : (text) -> (TournamentAccount) query;
   is_mod : (principal) -> (bool) query;
   join_squad : (Member, principal, text) -> ();
-  join_tournament : (text, text, record { text; text }) -> ();
+  join_tournament : (text, text, record { text; text; text }) -> ();
   join_tournament_with_squad : (
       text,
       text,
-      vec record { text; text },
+      record { text; vec record { text; text } },
       opt vec record { text; text },
     ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
