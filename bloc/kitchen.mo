@@ -584,7 +584,10 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // public func getSortedMessages() : async [MessageEntry] {
-    //     let entries = Array.fromIter(MessageHashMap.vals());
+    //     let entries = Iter.toArray(MessageHashMap.entries());
+    //     let sortedEntries = Array.sort(entries, func(a, b) {
+    //         a.0 < b.0
+    //     });
 
     // };
 
