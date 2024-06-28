@@ -64,7 +64,7 @@ pub_struct!(
      tournament_type: TournamentType,
      game: String,
      squad:Vec<Squad>,
-     squad_in_game_names:Option<Vec<Vec<(String, String)>>>,
+     squad_in_game_names:Option<Vec<(String,Vec<(String, String)>)>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
      winers: Vec<String>,
@@ -77,7 +77,7 @@ pub_struct!(
      title: String,
      squad_points: Option<Vec<(String,String,Point)>>,
      points: Option<Vec<(String,String,Point)>>,
-     in_game_names: Option<Vec<(String,String)>>,
+     in_game_names: Option<Vec<(String,String,String)>>,
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
 });
