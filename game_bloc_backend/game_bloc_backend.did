@@ -48,12 +48,12 @@ type TournamentAccount = record {
   creator_id : opt text;
   game : text;
   user : vec text;
-  in_game_names : opt vec record { text; text };
+  in_game_names : opt vec record { text; text; text };
   winers : vec text;
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
-  squad_in_game_names : opt vec vec record { text; text };
+  squad_in_game_names : opt vec record { text; vec record { text; text } };
   squad : vec Squad;
   lobbies : opt vec LobbyAccount;
   game_type : text;
@@ -63,8 +63,8 @@ type TournamentAccount = record {
   no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
-  points : opt vec record { text; Point };
-  squad_points : opt vec record { text; Point };
+  points : opt vec record { text; text; Point };
+  squad_points : opt vec record { text; text; Point };
 };
 type TournamentLobbyType = variant { MultiLobby; SingleLobby };
 type TournamentStatus = variant {
@@ -94,8 +94,12 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_solo_points : (text, vec record { text; Point }, principal) -> (bool);
-  assign_squad_points : (text, vec record { text; Point }, principal) -> (bool);
+  assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
+      bool,
+    );
+  assign_squad_points : (text, vec record { text; text; Point }, principal) -> (
+      bool,
+    );
   close_squad : (text, vec text, principal) -> ();
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
@@ -117,11 +121,11 @@ service : () -> {
   get_tournament : (text) -> (TournamentAccount) query;
   is_mod : (principal) -> (bool) query;
   join_squad : (Member, principal, text) -> ();
-  join_tournament : (text, text, record { text; text }) -> ();
+  join_tournament : (text, text, record { text; text; text }) -> ();
   join_tournament_with_squad : (
       text,
       text,
-      vec record { text; text },
+      record { text; vec record { text; text } },
       opt vec record { text; text },
     ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
