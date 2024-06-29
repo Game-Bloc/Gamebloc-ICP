@@ -63,8 +63,8 @@ type TournamentAccount = record {
   no_of_winners : nat8;
   tournament_type : TournamentType;
   entry_prize : nat8;
-  points : opt vec record { text; Point };
-  squad_points : opt vec record { text; Point };
+  points : opt vec record { text; text; Point };
+  squad_points : opt vec record { text; text; Point };
 };
 type TournamentLobbyType = variant { MultiLobby; SingleLobby };
 type TournamentStatus = variant {
@@ -94,8 +94,12 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_solo_points : (text, vec record { text; Point }, principal) -> (bool);
-  assign_squad_points : (text, vec record { text; Point }, principal) -> (bool);
+  assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
+      bool,
+    );
+  assign_squad_points : (text, vec record { text; text; Point }, principal) -> (
+      bool,
+    );
   close_squad : (text, vec text, principal) -> ();
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;

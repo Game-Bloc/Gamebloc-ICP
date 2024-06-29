@@ -10,6 +10,11 @@ const Stats = () => {
     (state) => state.userProfile.tournaments_created,
   )
 
+  console.log("attendance", attendance)
+  console.log("losses", losses)
+  console.log("wins", _wins)
+  console.log("tour_created", tour_created)
+
   const chartdata = [
     {
       name: "Tournament created",
@@ -36,6 +41,7 @@ const Stats = () => {
   const total = winRatio.reduce((acc, item) => acc + item.stat, 0)
   const wins = winRatio.find((item) => item.action === "Wins").stat
   const winRate = ((wins / total) * 100).toFixed(2) // Calculate the win rate and format to 2 decimal places
+  console.log("Winrate", winRate)
 
   const valueFormatter = (value) => `${value}%`
   const CustomDonutChart = ({ data, category, index, colors, className }) => {
