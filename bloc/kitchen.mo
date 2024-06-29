@@ -1114,7 +1114,7 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text)], new_member_ign : ?[(Text, Text)]) : async () {
+    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : (Text, [(Text, Text)]), new_member_ign : ?[(Text, Text)]) : async () {
         try {
             await update_tournaments_joined(caller);
             return await RustBloc.join_tournament_with_squad(squad_id, id, ign, new_member_ign)
@@ -1156,7 +1156,7 @@ shared ({ caller }) actor class Kitchen() {
 
     };
 
-    public shared ({ caller }) func join_tournament(name : Text, id : Text, ign : (Text, Text)) : async () {
+    public shared ({ caller }) func join_tournament(name : Text, id : Text, ign : (Text, Text, Text)) : async () {
         try {
             await update_tournaments_joined(caller);
             // var _caller : Text = caller.toText();
@@ -1169,6 +1169,22 @@ shared ({ caller }) actor class Kitchen() {
     public func set_mod(identity : Principal) : async () {
         try {
             return await RustBloc.set_mod(identity)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public func assign_squad_points(tournament_id: Text,  squad_id_and_points : [(Text, Text, Bloctypes.Point)], principal: Principal) : async Bool {
+        try{
+            return await RustBloc.assign_squad_points(tournament_id, squad_id_and_points, principal)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public func assign_solo_points(tournament_id: Text,  user_id_and_points : [(Text, Text, Bloctypes.Point)], principal: Principal) : async Bool {
+        try{
+            return await RustBloc.assign_squad_points(tournament_id, user_id_and_points, principal)
         } catch err {
             throw (err)
         }
