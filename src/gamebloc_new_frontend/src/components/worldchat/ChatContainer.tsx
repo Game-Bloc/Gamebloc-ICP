@@ -100,11 +100,16 @@ const ChatContainer = () => {
   const handleAccModal = () => {
     setAccountModal(!accountModal)
   }
+  
 
   useEffect(() => {
+
+    console.log("ws started ", ws)
     if (!ws) {
       return
     }
+    console.log("ws ended ", ws)
+
 
     ws.onopen = () => {
       console.log("Connected to the canister")
