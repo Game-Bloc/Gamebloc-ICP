@@ -583,12 +583,12 @@ shared ({ caller }) actor class Kitchen() {
         Iter.toArray(MessageHashMap.entries())
     };
 
-    public func getSortedMessages() : async [MessageEntry] {
-        let entries = Iter.toArray(MessageHashMap.entries());
-        let sortedEntries: [(Key, Value)] = Array.sort(entries, func(a: (Key, Value), b: (Key, Value)) -> Bool {
-            a.0 < b.0
-        });
-    };
+    // public func getSortedMessages() : async [MessageEntry] {
+    //     let entries = Iter.toArray(MessageHashMap.entries());
+    //     let sortedEntries: [(Key, Value)] = Array.sort(entries, func(a: (Key, Value), b: (Key, Value)) -> Bool {
+    //         a.0 < b.0
+    //     });
+    // };
 
     public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
         // var checkForConnection = await checkConnection(account, caller);
