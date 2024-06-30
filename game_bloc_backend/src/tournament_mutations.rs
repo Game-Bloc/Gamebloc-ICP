@@ -125,7 +125,7 @@ pub fn join_tournament(name: String, id: String, ign: (String,String, String)) {
 }
 
 #[update]
-pub fn  join_tournament_with_squad(squad_id: String, id: String, ign: (String,Vec<(String, String)>), new_member_ign: Option<Vec<(String, String)>>) {
+pub fn  join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String, String, String)>, new_member_ign: Option<Vec<(String, String, String)>>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
@@ -151,7 +151,7 @@ pub fn  join_tournament_with_squad(squad_id: String, id: String, ign: (String,Ve
                     });
                 }
                 let mut mutable_new_member_ign = new_member_ign.unwrap();
-                ign.clone().1.append(&mut mutable_new_member_ign);
+                ign.clone().append(&mut mutable_new_member_ign);
             }
             tournament.squad.push(squad);
         });
