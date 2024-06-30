@@ -133,8 +133,8 @@ module {
         // mods : [Text];
         game : Text;
         squad : [Squad];
-        squad_points : ?[(Text, Point)];
-        squad_in_game_names : ?[[(Text, Text)]];
+        squad_points : ?[(Text, Text, Point)];
+        squad_in_game_names : ?[(Text, [(Text, Text)])];
         messages : ?[Chat];
         user : [Text];
         winers : [Text];
@@ -145,8 +145,8 @@ module {
         game_type : Text;
         end_date : Text;
         title : Text;
-        in_game_names : ?[(Text, Text)];
-        points : ?[(Text, Point)];
+        in_game_names : ?[(Text, Text, Text)];
+        points : ?[(Text, Text, Point)];
         tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount]
     };

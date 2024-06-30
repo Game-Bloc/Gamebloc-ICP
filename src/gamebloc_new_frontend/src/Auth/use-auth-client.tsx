@@ -207,6 +207,8 @@ export const useAuthClient = (options = defaultOptions) => {
         )
       }
 
+      console.log("web socket status", _ws)
+
       setWs(_ws)
     } catch (err) {
       console.log("Error on auth:", err)
