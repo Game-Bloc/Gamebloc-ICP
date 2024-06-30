@@ -73,7 +73,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
     }
 
     // Check the game type and enforce player count limit
-    const gameType = Object.keys(data.game_type)[0].toUpperCase()
+    const gameType = data.game_type.toUpperCase()
     let maxPlayersAllowed = 4 // Default to 4 for SQUAD
 
     if (gameType === "DUO") {
@@ -89,15 +89,27 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
     console.log("id", id)
     console.log("igns", playerIGNs)
 
+    // Prepare the correct format for playerIGNs
+    const updatedPlayerIGNs: [string, [string, string][]] = [
+      selectedPlayers.map((player) => player.name).join(", "), // Join player names with a comma and space
+      selectedPlayers.map((player) => {
+        const principal_id = player.principal_id
+        const ignEntry = playerIGNs.find(([pid]) => pid === principal_id)
+        const ign = ignEntry ? ignEntry[1] : "" // Get IGN if found, otherwise default to empty string
+        return [principal_id, ign]
+      }),
+    ]
+
     // Perform join operation
     joinTournamentSqaud(
       squad_id,
       id,
-      playerIGNs,
+      updatedPlayerIGNs,
       "Tournament Joined",
       "Error, try again.",
       "/dashboard",
     )
+    console.log("updatedPlayerIGNs:", updatedPlayerIGNs)
   }
 
   return (
@@ -277,15 +289,15 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                       <></>
                     ) : (
                       <>
-                        {Object.keys(data.game_type)[0].toUpperCase() ===
-                          "DUO" && selectedPlayers.length < 2 ? (
+                        {data.game_type.toUpperCase() === "DUO" &&
+                        selectedPlayers.length < 2 ? (
                           <p className="w-full text-center">
                             You need to add {2 - selectedPlayers.length}{" "}
                             {`${selectedPlayers.length !== 0 ? "more" : ""}`}{" "}
                             players to join this tournament
                           </p>
-                        ) : Object.keys(data.game_type)[0].toUpperCase() ===
-                            "SQUAD" && selectedPlayers.length < 4 ? (
+                        ) : data.game_type.toUpperCase() === "SQUAD" &&
+                          selectedPlayers.length < 4 ? (
                           <p className="w-full text-center">
                             You need to add {4 - selectedPlayers.length}{" "}
                             {`${selectedPlayers.length !== 0 ? "more" : ""}`}{" "}
