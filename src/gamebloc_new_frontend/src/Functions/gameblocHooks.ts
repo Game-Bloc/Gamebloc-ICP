@@ -285,7 +285,7 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
-      const ign: [string, string, string] = [userId, playerIgn, name]
+      const ign: [string, string, string] = [name, userId, playerIgn]
       const join_tournament = await whoamiActor.join_tournament(name, id, ign)
       setIsLoading(false)
       popUp(successMsg, route)
