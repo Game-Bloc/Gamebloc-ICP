@@ -416,14 +416,14 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
-    igns: [string, [string, string][]],
+    igns: [string, string, string][],
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
       setIsLoading(true)
-      const join = await whoamiActor2.join_tournament_with_squad(
+      const join = await whoamiActor.join_tournament_with_squad(
         squad_id,
         id,
         igns,

@@ -8,6 +8,7 @@ import { LuMinus, LuPlus } from "react-icons/lu"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
+
 interface Props {
   modal: () => void
   squad: any
@@ -32,23 +33,23 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
   )
   const [color, setColor] = useState("#ffffff")
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([])
-  const [playerIGNs, setPlayerIGNs] = useState<[string, string][]>([])
+  const [playerIGNs, setPlayerIGNs] = useState<[string, string, string][]>([])
 
   const togglePlayer = (player: any) => {
     const isSelected = selectedPlayers.some((p) => p.name === player.name)
     if (isSelected) {
       setSelectedPlayers(selectedPlayers.filter((p) => p.name !== player.name))
-      setPlayerIGNs(playerIGNs.filter((ign) => ign[0] !== player.principal_id))
+      setPlayerIGNs(playerIGNs.filter((ign) => ign[1] !== player.principal_id))
     } else {
       setSelectedPlayers([...selectedPlayers, player])
-      setPlayerIGNs([...playerIGNs, [player.principal_id, ""]])
+      setPlayerIGNs([...playerIGNs, [player.name, player.principal_id, ""]])
     }
   }
 
   const handlePlayerIGNChange = (principal_id: any, value: string) => {
     setPlayerIGNs((prev) =>
       prev.map((ign) =>
-        ign[0] === principal_id ? [principal_id, value] : ign,
+        ign[1] === principal_id ? [ign[0], principal_id, value] : ign,
       ),
     )
   }
@@ -66,7 +67,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
 
   const joinTournament = () => {
     // Check if any IGN field is empty
-    const isEmptyIGN = playerIGNs.some(([_, ign]) => ign.trim() === "")
+    const isEmptyIGN = playerIGNs.some(([_, __, ign]) => ign.trim() === "")
     if (isEmptyIGN) {
       errorPopUp("Please fill in all the in-game names.")
       return
@@ -89,27 +90,15 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
     console.log("id", id)
     console.log("igns", playerIGNs)
 
-    // Prepare the correct format for playerIGNs
-    const updatedPlayerIGNs: [string, [string, string][]] = [
-      selectedPlayers.map((player) => player.name).join(", "), // Join player names with a comma and space
-      selectedPlayers.map((player) => {
-        const principal_id = player.principal_id
-        const ignEntry = playerIGNs.find(([pid]) => pid === principal_id)
-        const ign = ignEntry ? ignEntry[1] : "" // Get IGN if found, otherwise default to empty string
-        return [principal_id, ign]
-      }),
-    ]
-
     // Perform join operation
     joinTournamentSqaud(
       squad_id,
       id,
-      updatedPlayerIGNs,
+      playerIGNs,
       "Tournament Joined",
       "Error, try again.",
       "/dashboard",
     )
-    console.log("updatedPlayerIGNs:", updatedPlayerIGNs)
   }
 
   return (
@@ -240,7 +229,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                       </div>
                       <div className="my-4 border border-solid border-[#fff]/10 w-full" />
                       <div className="flex-col flex mt-4 ">
-                        {playerIGNs.map(([principalId, ign], index) => (
+                        {playerIGNs.map(([name, principalId, ign], index) => (
                           <div
                             key={index}
                             className="flex w-full flex-col md:flex-row gap-4 lg:gap-8"
@@ -254,7 +243,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                                   className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                                   readOnly
                                   type="text"
-                                  value={selectedPlayers[index]?.name || ""}
+                                  value={name || ""}
                                 />
                               </div>
                             </div>
