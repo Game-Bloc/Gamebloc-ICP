@@ -69,7 +69,7 @@ const AdminViewTournamentDetails = () => {
   const [playerPoints, setPlayerPoints] = useState<[string, string, Points][]>(
     [],
   )
-  const [squadPoints, setSquadPoints] = useState<[string, Points][]>([])
+  const [squadPoints, setSquadPoints] = useState<[string, string, Points][]>([])
 
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
@@ -190,6 +190,8 @@ const AdminViewTournamentDetails = () => {
   }
 
   const saveChanges = () => {
+    console.log("squad Points", squadPoints)
+    console.log("palyers Points", playerPoints)
     {
       game_type[0] === true
         ? assign_solo_point(

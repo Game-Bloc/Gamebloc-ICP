@@ -14,8 +14,9 @@ const Results = ({ tourData }: prop) => {
   // Flatten and map the dataSource to the result array
   const result = tourData.flatMap((state) =>
     state.points.flatMap((innerArray) =>
-      innerArray.map(([id, pointsObject]) => ({
+      innerArray.map(([name, id, pointsObject]) => ({
         id,
+        name: name,
         principal: id.substring(0, 3) + "......" + id.substring(60, 64),
         killPoints: pointsObject.kill_points,
         totalPoints: pointsObject.total_points,
@@ -41,7 +42,7 @@ const Results = ({ tourData }: prop) => {
       dataIndex: "position",
       key: "position",
     },
-    { title: "IGN", dataIndex: "ign", key: "ign" },
+    { title: "Username", dataIndex: "name", key: "name" },
     { title: "Principal", dataIndex: "principal", key: "principal" },
     {
       title: "Position Points",

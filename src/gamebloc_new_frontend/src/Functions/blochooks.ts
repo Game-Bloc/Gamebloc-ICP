@@ -35,14 +35,15 @@ export const useFetchAllTournaments = () => {
           const convertedPoints = data.points.map((pointsArray) =>
             pointsArray.map((pointPair) => [
               pointPair[0],
+              pointPair[1],
               {
-                kill_points: Number(pointPair[1].kill_points),
-                total_points: Number(pointPair[1].total_points),
-                position_points: Number(pointPair[1].position_points),
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
               },
             ]),
           )
-          console.log("convertedPoints", convertedPoints)
+          // console.log("convertedPoints", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -113,14 +114,15 @@ export const useUpdateTournament = () => {
           const convertedPoints = data.points.map((pointsArray) =>
             pointsArray.map((pointPair) => [
               pointPair[0],
+              pointPair[1],
               {
-                kill_points: Number(pointPair[1].kill_points),
-                total_points: Number(pointPair[1].total_points),
-                position_points: Number(pointPair[1].position_points),
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
               },
             ]),
           )
-          console.log("convertedPoints update", convertedPoints)
+          // console.log("convertedPoints update", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
