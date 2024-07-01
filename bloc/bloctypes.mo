@@ -134,7 +134,7 @@ module {
         game : Text;
         squad : [Squad];
         squad_points : ?[(Text, Text, Point)];
-        squad_in_game_names : ?[(Text, [(Text, Text)])];
+        squad_in_game_names : ?[[(Text, Text, Text)]];
         messages : ?[Chat];
         user : [Text];
         winers : [Text];
