@@ -66,7 +66,9 @@ const AdminViewTournamentDetails = () => {
   const { noData, updating, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-  const [playerPoints, setPlayerPoints] = useState<[string, Points][]>([])
+  const [playerPoints, setPlayerPoints] = useState<[string, string, Points][]>(
+    [],
+  )
   const [squadPoints, setSquadPoints] = useState<[string, Points][]>([])
 
   const tourData = data
@@ -152,6 +154,7 @@ const AdminViewTournamentDetails = () => {
       dataIndex: "position",
       key: "position",
     },
+    { title: "Username", dataIndex: "name", key: "name" },
     { title: "IGN", dataIndex: "ign", key: "ign" },
     { title: "Principal", dataIndex: "principal", key: "principal" },
     {

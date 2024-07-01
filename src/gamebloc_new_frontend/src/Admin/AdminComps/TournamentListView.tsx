@@ -36,10 +36,11 @@ const transformTournamentData = (tournamentDataArray, userProfile) => {
   }
 
   const players = in_game_names.flatMap((lobby, lobbyIndex) =>
-    lobby.map(([id, ign], index) => {
+    lobby.map(([name, id, ign], index) => {
       // console.log("id, ign:", id, ign)
       return {
         position: lobbyIndex * no_of_participants + index + 1,
+        name: name,
         ign: ign,
         userId: id,
         principal: id.substring(0, 3) + "......" + id.substring(60, 64),
@@ -70,14 +71,17 @@ const TournamentListView = ({
   const [currentPlayer, setCurrentPlayer] = useState(null)
 
   useEffect(() => {
-    const initialPoints: [string, Points][] = dataSource.map((player) => [
-      player.userId,
-      {
-        position_points: player.position_points,
-        kill_points: player.kill_points,
-        total_points: player.total_points,
-      },
-    ])
+    const initialPoints: [string, string, Points][] = dataSource.map(
+      (player) => [
+        player.name,
+        player.userId,
+        {
+          position_points: player.position_points,
+          kill_points: player.kill_points,
+          total_points: player.total_points,
+        },
+      ],
+    )
     setPlayerPoints(initialPoints)
   }, [dataSource])
 
