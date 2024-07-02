@@ -43,6 +43,17 @@ export const useFetchAllTournaments = () => {
               },
             ]),
           )
+          const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
           // console.log("convertedPoints", convertedPoints)
           const tournamentData = {
             creator: data.creator,
@@ -65,7 +76,7 @@ export const useFetchAllTournaments = () => {
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
             winners: data.winers.map((winner: any) => winner),
-            squad_points: data.squad_points.map((points: any) => points),
+            squad_points: convertedSquadPoints,
             squad_in_game_names: data.squad_in_game_names.map(
               (points: any) => points,
             ),
@@ -122,6 +133,17 @@ export const useUpdateTournament = () => {
               },
             ]),
           )
+          const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
           // console.log("convertedPoints update", convertedPoints)
           const tournamentData = {
             creator: data.creator,
@@ -144,7 +166,7 @@ export const useUpdateTournament = () => {
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
             winners: data.winers.map((winner: any) => winner),
-            squad_points: data.squad_points.map((points: any) => points),
+            squad_points: convertedSquadPoints,
             squad_in_game_names: data.squad_in_game_names.map(
               (points: any) => points,
             ),

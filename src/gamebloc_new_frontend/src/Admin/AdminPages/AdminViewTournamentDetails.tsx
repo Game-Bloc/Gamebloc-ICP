@@ -18,10 +18,14 @@ import {
 import { useGetAllSquad, useUpdateAllSquad } from "../../Functions/blochooks"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { useUpdateTournament } from "../../Functions/blochooks"
+import { useFetchAllTournaments } from "../../Functions/blochooks"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
 import Results from "../AdminComps/Results"
 import SquadListView from "../AdminComps/SquadListView"
+import SquadResult from "../AdminComps/SquadResult"
+import FallbackLoading from "../../components/Modals/FallBackLoader"
 
 interface DataType {
   position: React.Key
@@ -52,6 +56,9 @@ const AdminViewTournamentDetails = () => {
     isAssigningPoints,
     isLoading,
   } = useGameblocHooks()
+  const { updateTournament } = useUpdateTournament()
+  const { fetchAllTournaments, loading } = useFetchAllTournaments()
+  const tournament = useAppSelector((state) => state.tournamentData)
   const data = useAppSelector((state) => state.tournamentData)
   const principal_id_text = useAppSelector(
     (state) => state.userProfile.principal_id,
@@ -75,11 +82,20 @@ const AdminViewTournamentDetails = () => {
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
   const _point = tourData[0].points.length === 0
+  const _squad_point = tourData[0].squad_points.length === 0
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
     .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
   console.log("state", game_type[0])
+
+  useEffect(() => {
+    if (tournament.length > 0 || null || undefined) {
+      updateTournament()
+    } else {
+      fetchAllTournaments()
+    }
+  }, [])
 
   useEffect(() => {
     if (squad_data.length > 0) {
@@ -214,158 +230,166 @@ const AdminViewTournamentDetails = () => {
     }
   }
 
-  return (
-    <div className="bg-[#02070E]">
-      <section className="flex bg-[#02070E]">
-        <AdminHeader />
-        <AdminSidebar />
-        <div className="flex flex-col w-full">
-          <div className="m-4 ">
-            <div className="ml-[17rem]">
-              <div className="mt-[4rem]">
-                <h1 className="text-primary-second font-[600] text-[2rem]">
-                  Tournaments
-                </h1>
-                {data
-                  .filter((tour: any) => tour.id_hash === id)
-                  .map((list: any) => (
-                    <div key={list.id_hash} className="mt-8">
-                      <div className="flex bg-[#070C12] p-4 flex-row justify-between items-start  w-full">
-                        <div className="flex flex-col">
-                          <div className="flex gap-4">
-                            <img
-                              src={`reloaded.svg`}
-                              alt=""
-                              className="w-[6.75rem] h-[6.375rem] m-0"
-                            />
-                            <div className="flex flex-col ">
-                              <p className="text-[1.2rem]  font-semibold text-white">
-                                {list.title}
-                              </p>
-                              <p className="text-[0.9rem] mb-[.7rem] text-[#E49A83]">
-                                {list.creator}
-                              </p>
-                              <div className="flex gap-4">
-                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                                  <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {Object.keys(list.tournament_type)[0]}
-                                  </p>
-                                </div>
-                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                                  <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {list.game_type}
-                                  </p>
-                                </div>
-                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                                  <p className="text-[.7rem] text-[#ABCCFF]">
-                                    Battle Royale
-                                  </p>
-                                </div>
-                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                                  <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {list.no_of_participants} Slots
-                                  </p>
-                                </div>
-                                <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
-                                  <p className="text-[.7rem] text-[#ABCCFF]">
-                                    {list.no_of_winners} Winners
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex gap-4 mt-[.7rem]">
-                                <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
-                                  {" "}
-                                  Start: {formatDate(list.starting_date)}
-                                </p>
-                                <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
-                                  Ends: {formatDate2(list.end_date)}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className=" mt-[1rem] flex gap-4">
-                            <div className="flex bg-[#297FFF]/15 h-[4rem] w-fit">
-                              <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
-                              <div className="flex justify-center items-center px-4 ">
-                                <div className="flex flex-col">
-                                  <p className="text-[.8rem] text-white font-semibold">
-                                    Registration
-                                  </p>
-                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                    {Object.keys(
-                                      list.tournament_type,
-                                    )[0].toUpperCase() == "CROWDFUNDED"
-                                      ? `$${list.entry_prize}`
-                                      : "Free"}
-                                  </p>
-                                </div>
-                                <div className="flex ml-[2rem] flex-col">
-                                  <p className="text-[.8rem] text-white font-semibold">
-                                    {" "}
-                                    Prize
-                                  </p>
-                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                    {Object.keys(
-                                      list.tournament_type,
-                                    )[0].toUpperCase() === "CROWDFUNDED" &&
-                                    list.game_type.toUpperCase() === "SINGLE"
-                                      ? `$${
-                                          list.entry_prize * list.users.length
-                                        }`
-                                      : Object.keys(
-                                          list.tournament_type,
-                                        )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        list.game_type.toUpperCase() === "DUO"
-                                      ? `$${
-                                          list.entry_prize * squadCount(list)
-                                        }`
-                                      : Object.keys(
-                                          list.tournament_type,
-                                        )[0].toUpperCase() == "CROWDFUNDED" &&
-                                        list.game_type.toUpperCase() === "SQUAD"
-                                      ? `$${
-                                          list.entry_prize * squadCount(list)
-                                        }`
-                                      : `$${list.total_prize}`}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div className="flex  h-[4rem] bg-[#297FFF]/15 w-fit">
-                              <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
-                              <div className="flex justify-center items-center px-4 ">
-                                <div className="flex flex-col">
-                                  <p className="text-[.8rem] text-white font-semibold">
-                                    Players
-                                  </p>
-                                  <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
-                                    {list.game_type.toUpperCase() === "SINGLE"
-                                      ? `${list.users.length}`
-                                      : `${squadCount(list)}`}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* Row */}
-                        <div className="flex h-[12rem] flex-col">
-                          <div className="w-full flex justify-end">
-                            <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <FallbackLoading />
+      </div>
+    )
+  } else {
+    return (
+      <div className="bg-[#02070E]">
+        <section className="flex bg-[#02070E]">
+          <AdminHeader />
+          <AdminSidebar />
+          <div className="flex flex-col w-full">
+            <div className="m-4 ">
+              <div className="ml-[17rem]">
+                <div className="mt-[4rem]">
+                  <h1 className="text-primary-second font-[600] text-[2rem]">
+                    Tournaments
+                  </h1>
+                  {data
+                    .filter((tour: any) => tour.id_hash === id)
+                    .map((list: any) => (
+                      <div key={list.id_hash} className="mt-8">
+                        <div className="flex bg-[#070C12] p-4 flex-row justify-between items-start  w-full">
+                          <div className="flex flex-col">
+                            <div className="flex gap-4">
                               <img
-                                src={`ongoing-status.png`}
-                                className="m-0"
+                                src={`reloaded.svg`}
                                 alt=""
+                                className="w-[6.75rem] h-[6.375rem] m-0"
                               />
-                              <p className="text-[#BCBCBC] text-[.8rem]">
-                                Ongoing
-                              </p>
+                              <div className="flex flex-col ">
+                                <p className="text-[1.2rem]  font-semibold text-white">
+                                  {list.title}
+                                </p>
+                                <p className="text-[0.9rem] mb-[.7rem] text-[#E49A83]">
+                                  {list.creator}
+                                </p>
+                                <div className="flex gap-4">
+                                  <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                    <p className="text-[.7rem] text-[#ABCCFF]">
+                                      {Object.keys(list.tournament_type)[0]}
+                                    </p>
+                                  </div>
+                                  <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                    <p className="text-[.7rem] text-[#ABCCFF]">
+                                      {list.game_type}
+                                    </p>
+                                  </div>
+                                  <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                    <p className="text-[.7rem] text-[#ABCCFF]">
+                                      Battle Royale
+                                    </p>
+                                  </div>
+                                  <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                    <p className="text-[.7rem] text-[#ABCCFF]">
+                                      {list.no_of_participants} Slots
+                                    </p>
+                                  </div>
+                                  <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
+                                    <p className="text-[.7rem] text-[#ABCCFF]">
+                                      {list.no_of_winners} Winners
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex gap-4 mt-[.7rem]">
+                                  <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
+                                    {" "}
+                                    Start: {formatDate(list.starting_date)}
+                                  </p>
+                                  <p className="text-[.8rem] text-[#E4E4E4] leading-[21px] font-[100]">
+                                    Ends: {formatDate2(list.end_date)}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className=" mt-[1rem] flex gap-4">
+                              <div className="flex bg-[#297FFF]/15 h-[4rem] w-fit">
+                                <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
+                                <div className="flex justify-center items-center px-4 ">
+                                  <div className="flex flex-col">
+                                    <p className="text-[.8rem] text-white font-semibold">
+                                      Registration
+                                    </p>
+                                    <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                      {Object.keys(
+                                        list.tournament_type,
+                                      )[0].toUpperCase() == "CROWDFUNDED"
+                                        ? `$${list.entry_prize}`
+                                        : "Free"}
+                                    </p>
+                                  </div>
+                                  <div className="flex ml-[2rem] flex-col">
+                                    <p className="text-[.8rem] text-white font-semibold">
+                                      {" "}
+                                      Prize
+                                    </p>
+                                    <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                      {Object.keys(
+                                        list.tournament_type,
+                                      )[0].toUpperCase() === "CROWDFUNDED" &&
+                                      list.game_type.toUpperCase() === "SINGLE"
+                                        ? `$${
+                                            list.entry_prize * list.users.length
+                                          }`
+                                        : Object.keys(
+                                            list.tournament_type,
+                                          )[0].toUpperCase() == "CROWDFUNDED" &&
+                                          list.game_type.toUpperCase() === "DUO"
+                                        ? `$${
+                                            list.entry_prize * squadCount(list)
+                                          }`
+                                        : Object.keys(
+                                            list.tournament_type,
+                                          )[0].toUpperCase() == "CROWDFUNDED" &&
+                                          list.game_type.toUpperCase() ===
+                                            "SQUAD"
+                                        ? `$${
+                                            list.entry_prize * squadCount(list)
+                                          }`
+                                        : `$${list.total_prize}`}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex  h-[4rem] bg-[#297FFF]/15 w-fit">
+                                <div className="bg-[#ABCCFF] h-[4rem] w-[.3rem]" />
+                                <div className="flex justify-center items-center px-4 ">
+                                  <div className="flex flex-col">
+                                    <p className="text-[.8rem] text-white font-semibold">
+                                      Players
+                                    </p>
+                                    <p className="text-[1rem] text-[#ABCCFF] mt-[.2rem] font-normal">
+                                      {list.game_type.toUpperCase() === "SINGLE"
+                                        ? `${list.users.length}`
+                                        : `${squadCount(list)}`}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
+                          {/* Row */}
+                          <div className="flex h-[12rem] flex-col">
+                            <div className="w-full flex justify-end">
+                              <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
+                                <img
+                                  src={`ongoing-status.png`}
+                                  className="m-0"
+                                  alt=""
+                                />
+                                <p className="text-[#BCBCBC] text-[.8rem]">
+                                  Ongoing
+                                </p>
+                              </div>
+                            </div>
 
-                          {/* <div className="flex h-full items-end">
+                            {/* <div className="flex h-full items-end">
                             <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
@@ -383,11 +407,11 @@ const AdminViewTournamentDetails = () => {
                               </button>
                             </div>
                           </div> */}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
-                        <div className="flex mr-8 justify-between items-center">
-                          {/* <div className="flex items-center">
+                        <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
+                          <div className="flex mr-8 justify-between items-center">
+                            {/* <div className="flex items-center">
                             <ConfigProvider
                               theme={{
                                 algorithm: theme.darkAlgorithm,
@@ -450,111 +474,120 @@ const AdminViewTournamentDetails = () => {
                             </div>
                           </div> */}
 
-                          {_point ? (
-                            <p className="text-[1.2rem] ml-8 font-semibold text-white">
-                              Assign points
-                            </p>
-                          ) : (
-                            <p className="text-[1.2rem]  font-semibold text-white">
-                              Collated Result
-                            </p>
-                          )}
+                            {_point ? (
+                              <p className="text-[1.2rem] ml-8 font-semibold text-white">
+                                Assign points
+                              </p>
+                            ) : (
+                              <p className="text-[1.2rem]  font-semibold text-white">
+                                Collated Result
+                              </p>
+                            )}
 
-                          {_point ? (
-                            <div className="flex justify-center items-center ">
-                              {game_type[0] === true ? (
-                                <button
-                                  onClick={() => saveChanges()}
-                                  className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
-                                >
-                                  {isLoading ? (
-                                    <div className="flex items-center  gap-2">
-                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
-                                        Wait
+                            {_point ? (
+                              <div className="flex justify-center items-center ">
+                                {game_type[0] === true ? (
+                                  <button
+                                    onClick={() => saveChanges()}
+                                    className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                                  >
+                                    {isLoading ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={isLoading}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <p className="text-[.85rem] text-white">
+                                        Save Changes
                                       </p>
-                                      <ClipLoader
-                                        color={color}
-                                        loading={isLoading}
-                                        cssOverride={override}
-                                        size={10}
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                      />
-                                    </div>
-                                  ) : (
-                                    <p className="text-[.85rem] text-white">
-                                      Save Changes
-                                    </p>
-                                  )}
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={() => saveChanges()}
-                                  className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
-                                >
-                                  {isAssigningPoints ? (
-                                    <div className="flex items-center  gap-2">
-                                      <p className="text-[0.65rem] mr-2  text-white font-bold sm:text-[.85rem]">
-                                        Wait
+                                    )}
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => saveChanges()}
+                                    className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                                  >
+                                    {isAssigningPoints ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2  text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={isAssigningPoints}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <p className="text-[.85rem] text-white">
+                                        Save Points
                                       </p>
-                                      <ClipLoader
-                                        color={color}
-                                        loading={isAssigningPoints}
-                                        cssOverride={override}
-                                        size={10}
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                      />
-                                    </div>
-                                  ) : (
-                                    <p className="text-[.85rem] text-white">
-                                      Save Points
-                                    </p>
-                                  )}
-                                </button>
-                              )}
-                            </div>
+                                    )}
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                          {_squad_point ? (
+                            <div className="my-8 border border-solid border-[#2E3438] w-full" />
                           ) : (
                             <></>
                           )}
+                          {game_type[0] === true ? (
+                            <>
+                              {_point ? (
+                                <TournamentListView
+                                  tourData={tourData}
+                                  rowSelection={rowSelection}
+                                  columns={columns}
+                                  dataSearch={dataSearch}
+                                  setPlayerPoints={setPlayerPoints}
+                                  playerPoints={playerPoints}
+                                />
+                              ) : (
+                                // <TournamentGridView players={players} />
+                                <Results tourData={tourData} />
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {_squad_point ? (
+                                <SquadListView
+                                  players={players}
+                                  setSquadPoints={setSquadPoints}
+                                  setPlayerPoints={setPlayerPoints}
+                                />
+                              ) : (
+                                <SquadResult tourData={tourData} />
+                              )}
+                            </>
+                          )}
                         </div>
-                        <div className="my-8 border border-solid border-[#2E3438] w-full" />
-                        {game_type[0] === true ? (
-                          <>
-                            {_point ? (
-                              <TournamentListView
-                                tourData={tourData}
-                                rowSelection={rowSelection}
-                                columns={columns}
-                                dataSearch={dataSearch}
-                                setPlayerPoints={setPlayerPoints}
-                                playerPoints={playerPoints}
-                              />
-                            ) : (
-                              // <TournamentGridView players={players} />
-                              <Results tourData={tourData} />
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            <SquadListView
-                              players={players}
-                              setSquadPoints={setSquadPoints}
-                              setPlayerPoints={setPlayerPoints}
-                            />
-                          </>
-                        )}
+                        {/*  */}
                       </div>
-                      {/*  */}
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
-  )
+        </section>
+      </div>
+    )
+  }
 }
 
 export default AdminViewTournamentDetails
