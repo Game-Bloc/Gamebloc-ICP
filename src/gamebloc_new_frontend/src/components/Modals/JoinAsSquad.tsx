@@ -295,7 +295,15 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                         ) : (
                           <div className="flex w-full mt-4 justify-center items-center">
                             <button
-                              onClick={() => joinTournament()}
+                              onClick={
+                                players.map((squad: any) => squad.captain) ===
+                                username
+                                  ? () => joinTournament()
+                                  : () =>
+                                      errorPopUp(
+                                        "Only a squad captain can join on your behalf",
+                                      )
+                              }
                               className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
                             >
                               {isLoading ? (
