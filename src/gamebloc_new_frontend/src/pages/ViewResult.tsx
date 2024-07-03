@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom"
 
 const ViewResult = () => {
   const navigate = useNavigate()
+
   return (
     <div className="">
       <section className="flex">

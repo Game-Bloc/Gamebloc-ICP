@@ -1,6 +1,18 @@
 import React from "react"
 
-const SliverCard = () => {
+interface prop {
+  tourData: any
+  no_winner: number
+}
+
+const SliverCard = ({ tourData, no_winner }: prop) => {
+  const squadCount = () => {
+    let totalCount = 0
+    tourData?.squad?.forEach(
+      (player: any) => (totalCount += player?.members?.length),
+    )
+    return totalCount
+  }
   return (
     <div className=" w-full h-[fit] rounded-md bg-gradient-to-r from-[transparent]   to-[#606363] p-[.04rem]">
       <div className="relative flex flex-col h-full justify-center items-center w-full rounded-md  from-[#1B1517]   to-[#292825]   bg-gradient-to-r  py-[.5rem] ">
@@ -19,7 +31,44 @@ const SliverCard = () => {
           <div className="border border-white/10 border-l h-8 mx-[4rem]" />
           <div className="flex flex-col">
             <p className="text-white/60 text-[.8rem]">Prize</p>
-            <p className="text-[#eda323] text-[1rem]">$350</p>
+            <p className="text-[#eda323] text-[1rem]">
+              {no_winner === 1
+                ? ``
+                : no_winner === 2
+                ? Object.keys(tourData.tournament_type)[0].toUpperCase() ===
+                    "CROWDFUNDED" &&
+                  tourData.game_type.toUpperCase() === "SINGLE"
+                  ? `$${(
+                      tourData.entry_prize *
+                      tourData?.users?.length *
+                      0.4
+                    ).toFixed(2)}`
+                  : Object.keys(tourData.tournament_type)[0].toUpperCase() ==
+                      "CROWDFUNDED" &&
+                    tourData.game_type.toUpperCase() === "DUO"
+                  ? `$${(tourData.entry_prize * squadCount() * 0.4).toFixed(2)}`
+                  : Object.keys(tourData.tournament_type)[0].toUpperCase() ==
+                      "CROWDFUNDED" &&
+                    tourData.game_type.toUpperCase() === "SQUAD"
+                  ? `$${(tourData.entry_prize * squadCount() * 0.4).toFixed(2)}`
+                  : `$${(tourData.total_prize * 0.4).toFixed(2)}`
+                : Object.keys(tourData.tournament_type)[0].toUpperCase() ===
+                    "CROWDFUNDED" &&
+                  tourData.game_type.toUpperCase() === "SINGLE"
+                ? `$${(
+                    tourData.entry_prize *
+                    tourData?.users?.length *
+                    0.3
+                  ).toFixed(2)}`
+                : Object.keys(tourData.tournament_type)[0].toUpperCase() ==
+                    "CROWDFUNDED" && tourData.game_type.toUpperCase() === "DUO"
+                ? `$${(tourData.entry_prize * squadCount() * 0.3).toFixed(2)}`
+                : Object.keys(tourData.tournament_type)[0].toUpperCase() ==
+                    "CROWDFUNDED" &&
+                  tourData.game_type.toUpperCase() === "SQUAD"
+                ? `$${(tourData.entry_prize * squadCount() * 0.3).toFixed(2)}`
+                : `$${(tourData.total_prize * 0.3).toFixed(2)}`}
+            </p>
           </div>
         </div>
       </div>
