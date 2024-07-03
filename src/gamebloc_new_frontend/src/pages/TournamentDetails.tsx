@@ -22,6 +22,11 @@ const TournamentDetail = () => {
   const [isImageLoaded, setImageLoaded] = useState(false)
   const tournamentData = useAppSelector((state) => state.tournamentData)
   const { updating, updateTournament } = useUpdateTournament()
+  const tourData = tournamentData
+    .filter((tour: any) => tour.id_hash === id)
+    .map((list: any) => list)
+  const _point = tourData[0].points.length === 0
+  const _squad_point = tourData[0].squad_points.length === 0
 
   const items: TabsProps["items"] = [
     {
@@ -186,21 +191,61 @@ const TournamentDetail = () => {
                           )}
                         </div>
                         <div className="border-solid border mt-8  border-[#2E3438] rounded-[0.625rem]">
-                          <div className="flex flex-col my-[.9rem] mx-4 ">
-                            <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
-                              {data.title}
-                            </p>
-                            <div className="flex mt-[6px]  items-center flex-row">
-                              <img
-                                src={`check-yellow.png`}
-                                alt=""
-                                className=" w-[.5rem] flex h-[.5rem]  m-0"
-                              />
-
-                              <p className="ml-1 text-white text-[.6rem] ">
-                                {data.creator}
+                          <div className="flex flex-row justify-between items-center my-[.9rem] mx-4 ">
+                            <div className="flex flex-col ">
+                              <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
+                                {data.title}
                               </p>
+                              <div className="flex mt-[6px]  items-center flex-row">
+                                <img
+                                  src={`check-yellow.png`}
+                                  alt=""
+                                  className=" w-[.5rem] flex h-[.5rem]  m-0"
+                                />
+
+                                <p className="ml-1 text-white text-[.6rem] ">
+                                  {data.creator}
+                                </p>
+                              </div>
                             </div>
+                            {_point && _squad_point ? (
+                              <></>
+                            ) : !_point && _squad_point ? (
+                              <p
+                                onClick={() =>
+                                  navigate(
+                                    `/active-tournament/${data.id_hash}/view_result`,
+                                  )
+                                }
+                                className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
+                              >
+                                View Result
+                              </p>
+                            ) : !_squad_point && _point ? (
+                              <p
+                                onClick={() =>
+                                  navigate(
+                                    `/active-tournament/${data.id_hash}/view_result`,
+                                  )
+                                }
+                                className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
+                              >
+                                View Result
+                              </p>
+                            ) : !_point && !_squad_point ? (
+                              <p
+                                onClick={() =>
+                                  navigate(
+                                    `/active-tournament/${data.id_hash}/view_result`,
+                                  )
+                                }
+                                className="text-primary-second rounded-md pt-1 pb-[.15rem]  px-[.6rem]  sm:px-4   border border-solid sm:py-2  border-primary-second hover:text-black hover:bg-primary-second  text-[0.85rem] sm:text-sm cursor-pointer"
+                              >
+                                View Result
+                              </p>
+                            ) : (
+                              <></>
+                            )}
                           </div>
                           <div className="my-4 border border-solid border-[#2E3438] w-full" />
 

@@ -174,7 +174,7 @@ export const useUpdateTournament = () => {
             points: convertedPoints,
             lobbies: data.lobbies.map((points: any) => points),
           }
-          console.log(tournamentData)
+          // console.log(tournamentData)
           dispatch(updateActiveTournament(tournamentData))
           tourArray.push(tournamentData)
         }
@@ -210,6 +210,28 @@ export const useGetTournamentMessages = () => {
         if (update && update.length !== 0) {
           // console.log("message function working")
           for (const data of update) {
+            const convertedPoints = data.points.map((pointsArray) =>
+              pointsArray.map((pointPair) => [
+                pointPair[0],
+                pointPair[1],
+                {
+                  kill_points: Number(pointPair[2].kill_points),
+                  total_points: Number(pointPair[2].total_points),
+                  position_points: Number(pointPair[2].position_points),
+                },
+              ]),
+            )
+            const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+              pointsArray.map((pointPair) => [
+                pointPair[0],
+                pointPair[1],
+                {
+                  kill_points: Number(pointPair[2].kill_points),
+                  total_points: Number(pointPair[2].total_points),
+                  position_points: Number(pointPair[2].position_points),
+                },
+              ]),
+            )
             const tournamentData = {
               creator: data.creator,
               creator_id: data.creator_id,
@@ -231,15 +253,15 @@ export const useGetTournamentMessages = () => {
               tournament_type: data.tournament_type,
               users: data.user.map((user: any) => user),
               winners: data.winers.map((winner: any) => winner),
-              squad_points: data.squad_points.map((points: any) => points),
+              squad_points: convertedSquadPoints,
               squad_in_game_names: data.squad_in_game_names.map(
                 (points: any) => points,
               ),
               in_game_names: data.in_game_names.map((points: any) => points),
-              points: data.points.map((points: any) => points),
+              points: convertedPoints,
               lobbies: data.lobbies.map((points: any) => points),
             }
-            console.log(tournamentData)
+            // console.log(tournamentData)
 
             dispatch(updateActiveTournament(tournamentData))
           }
@@ -284,7 +306,7 @@ export const useGetAllSquad = () => {
             requests: data.requests.map((gamer: string) => gamer),
             points: data.points.map((points: any) => points),
           }
-          console.log("checking squads", squads)
+          // console.log("checking squads", squads)
           dispatch(addSquad(squads))
         }
         setUpdating(false)

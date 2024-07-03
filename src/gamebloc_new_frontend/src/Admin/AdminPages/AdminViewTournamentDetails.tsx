@@ -379,12 +379,22 @@ const AdminViewTournamentDetails = () => {
                             <div className="w-full flex justify-end">
                               <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
                                 <img
-                                  src={`ongoing-status.png`}
+                                  src={
+                                    game_type[0] && _point
+                                      ? `ongoing-status.png`
+                                      : !game_type[0] && _squad_point
+                                      ? `ongoing-status.png`
+                                      : `ended.png`
+                                  }
                                   className="m-0"
                                   alt=""
                                 />
                                 <p className="text-[#BCBCBC] text-[.8rem]">
-                                  Ongoing
+                                  {game_type[0] && _point
+                                    ? `Ongoing`
+                                    : !game_type[0] && _squad_point
+                                    ? `Ongoing`
+                                    : `Completed`}
                                 </p>
                               </div>
                             </div>

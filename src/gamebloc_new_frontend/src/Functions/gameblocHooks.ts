@@ -804,6 +804,7 @@ export const useGameblocHooks = () => {
         principal,
       )
       popUp(success, route)
+      window.location.reload()
     } catch (err) {
       errorPopUp(error)
       setIsLoading(false)
@@ -824,6 +825,12 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsAssigningPoints(true)
+
+      await whoamiActor2.assign_squad_points(
+        tournament_id,
+        squad_id_and_points,
+        principal,
+      )
       assign_solo_point(
         tournament_id,
         principal,
@@ -831,11 +838,6 @@ export const useGameblocHooks = () => {
         success,
         error,
         route,
-      )
-      await whoamiActor2.assign_squad_points(
-        tournament_id,
-        squad_id_and_points,
-        principal,
       )
       console.log("Assigned")
       setIsAssigningPoints(false)
