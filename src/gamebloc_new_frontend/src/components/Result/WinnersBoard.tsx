@@ -16,28 +16,46 @@ const WinnersBoard: React.FC = () => {
   console.log("tour-", tourData)
 
   return (
-    <div>
-      {tourData.no_of_winners === 1 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] h-[20rem] w-full mt-8  p-4">
-          <GoldCard tourData={tourData} no_winner={tourData.no_of_winners} />
+    <>
+      {tourData[0].no_of_winners === 1 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+          <GoldCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
         </div>
-      ) : tourData.no_of_winners === 2 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] h-[20rem] w-full mt-8  p-4">
-          <GoldCard tourData={tourData} no_winner={tourData.no_of_winners} />
-          <SliverCard tourData={tourData} no_winner={tourData.no_of_winners} />
+      ) : tourData[0].no_of_winners === 2 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+          <GoldCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
+          <SliverCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] h-[20rem] w-full mt-8  p-4">
-          <GoldCard tourData={tourData} no_winner={tourData.no_of_winners} />
-          <SliverCard tourData={tourData} no_winner={tourData.no_of_winners} />
-          <BronzeCard tourData={tourData} no_winner={tourData.no_of_winners} />
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+          <GoldCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
+          <SliverCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
+          <BronzeCard
+            tourData={tourData[0]}
+            no_winner={tourData[0].no_of_winners}
+          />
         </div>
       )}
 
       {/* <GoldCard />
       <SliverCard />
       <BronzeCard /> */}
-    </div>
+    </>
   )
 }
 

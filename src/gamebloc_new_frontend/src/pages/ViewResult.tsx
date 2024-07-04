@@ -2,6 +2,8 @@ import React from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import WinnersBoard from "../components/Result/WinnersBoard"
+import ResultTable from "../components/Result/ResultTable"
+
 import { IoIosArrowRoundBack } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
 
@@ -28,6 +30,7 @@ const ViewResult = () => {
                   <p className="text-primary-second ml-2 text-[0.8rem]">Back</p>
                 </div>
                 <WinnersBoard />
+                <ResultTable />
               </div>
             </div>
           </div>
