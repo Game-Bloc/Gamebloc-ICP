@@ -3,9 +3,17 @@ import React from "react"
 interface prop {
   tourData: any
   no_winner: number
+  sortedPlayersResult: any
+  sortedSquadResult: any
 }
 
-const GoldCard = ({ tourData, no_winner }: prop) => {
+const GoldCard = ({
+  tourData,
+  no_winner,
+  sortedSquadResult,
+  sortedPlayersResult,
+}: prop) => {
+  const single = tourData.game_type.toUpperCase() === "SINGLE"
   const squadCount = () => {
     let totalCount = 0
     tourData?.squad?.forEach(
@@ -13,6 +21,7 @@ const GoldCard = ({ tourData, no_winner }: prop) => {
     )
     return totalCount
   }
+
   return (
     <div className=" w-full h-[fit] rounded-md bg-gradient-to-r from-[transparent]   to-[#5B4228] p-[.04rem]">
       <div className="relative flex flex-col h-full justify-center items-center w-full rounded-md  from-[#1A1310]   to-[#2B2316]   bg-gradient-to-r  py-[.5rem] ">
@@ -22,11 +31,17 @@ const GoldCard = ({ tourData, no_winner }: prop) => {
         <div className="rounded-md h-[fit] w-[10rem]">
           <img src={`codm.png`} alt="" className="rounded-md" />
         </div>
-        <p className="font-black text-[1rem] text-white mt-3">Deonorla</p>
+        <p className="font-black text-[1rem] text-white mt-3">
+          {single ? sortedPlayersResult[0]?.name : sortedSquadResult[0]?.name}
+        </p>
         <div className="mt-6 flex ">
           <div className="flex flex-col">
             <p className="text-white/60 text-[.8rem]">Total Point</p>
-            <p className="text-[#eda323] text-[1rem]">180</p>
+            <p className="text-[#eda323] text-[1rem]">
+              {single
+                ? sortedPlayersResult[0]?.totalPoints
+                : sortedSquadResult[0]?.totalPoints}
+            </p>
           </div>
           <div className="border border-white/10 border-l h-8 mx-[4rem]" />
           <div className="flex flex-col">

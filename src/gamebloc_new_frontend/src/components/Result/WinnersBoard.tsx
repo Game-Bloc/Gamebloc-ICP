@@ -13,6 +13,50 @@ const WinnersBoard: React.FC = () => {
   const tourData = tournamentData
     .filter((list: any) => list.id_hash == id)
     .map((data: any) => data)
+
+  const playerResult = tourData.flatMap((state) =>
+    state.points.flatMap((innerArray) =>
+      innerArray.map(([name, id, pointsObject]) => ({
+        id,
+        name: name,
+        principal: id.substring(0, 3) + "......" + id.substring(60, 64),
+        killPoints: pointsObject.kill_points,
+        totalPoints: pointsObject.total_points,
+        positionPoints: pointsObject.position_points,
+      })),
+    ),
+  )
+
+  const squadResult = tourData.flatMap((state) =>
+    state.squad_points.flatMap((innerArray) =>
+      innerArray.map(([squad_name, id, pointsObject]) => ({
+        id,
+        name: squad_name,
+        squad_id: id.substring(0, 3) + "......" + id.substring(23, 26),
+        killPoints: pointsObject.kill_points,
+        totalPoints: pointsObject.total_points,
+        positionPoints: pointsObject.position_points,
+      })),
+    ),
+  )
+
+  const sortedResult2 = squadResult.sort(
+    (a, b) => b.totalPoints - a.totalPoints,
+  )
+  const sortedResult = playerResult.sort(
+    (a, b) => b.totalPoints - a.totalPoints,
+  )
+
+  const sortedPlayersResult = sortedResult.map((item, index) => ({
+    ...item,
+    position: index + 1,
+  }))
+
+  const sortedSquadResult = sortedResult2.map((item, index) => ({
+    ...item,
+    position: index + 1,
+  }))
+
   console.log("tour-", tourData)
 
   return (
@@ -22,6 +66,8 @@ const WinnersBoard: React.FC = () => {
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
         </div>
       ) : tourData[0].no_of_winners === 2 ? (
@@ -29,10 +75,14 @@ const WinnersBoard: React.FC = () => {
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
           <SliverCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
         </div>
       ) : (
@@ -40,14 +90,20 @@ const WinnersBoard: React.FC = () => {
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
           <SliverCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
           <BronzeCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
+            sortedPlayersResult={sortedPlayersResult}
+            sortedSquadResult={sortedSquadResult}
           />
         </div>
       )}
