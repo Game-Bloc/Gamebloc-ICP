@@ -197,5 +197,6 @@ module {
     public type Member = {
         name : Text;
         principal_id : Text
-    }
+    };
+
 }
