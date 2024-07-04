@@ -197,5 +197,18 @@ module {
     public type Member = {
         name : Text;
         principal_id : Text
+    };
+
+     type Letter =  {
+        letter : Text;// "D"
+        valuePoint : Nat; // 2
+        position : Text; // "empty
+    };
+
+    type Word = {
+        word : [Letter]; // ["D", "E, "A", "R"]
+        actualWord : Text; // DEAR
+        totalPoint : Nat;
     }
+
 }
