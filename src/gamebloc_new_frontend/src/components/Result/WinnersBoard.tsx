@@ -18,14 +18,14 @@ const WinnersBoard: React.FC = () => {
   return (
     <>
       {tourData[0].no_of_winners === 1 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full  p-4">
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
           />
         </div>
       ) : tourData[0].no_of_winners === 2 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full  p-4">
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}
@@ -36,7 +36,7 @@ const WinnersBoard: React.FC = () => {
           />
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full mt-8  p-4">
+        <div className="grid grid-cols-1 md:grid-cols-2  xl:grid-cols-3 gap-4 xl:gap-8 justify-center items-center  rounded-[0.625rem] w-full  p-4">
           <GoldCard
             tourData={tourData[0]}
             no_winner={tourData[0].no_of_winners}

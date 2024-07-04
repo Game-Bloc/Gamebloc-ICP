@@ -29,6 +29,9 @@ const ViewResult = () => {
                   <IoIosArrowRoundBack className="text-primary-second" />
                   <p className="text-primary-second ml-2 text-[0.8rem]">Back</p>
                 </div>
+                <h1 className="text-white font-[600] text-[1.4rem] mt-4 p-4">
+                  Winners
+                </h1>
                 <WinnersBoard />
                 <ResultTable />
               </div>
