@@ -85,9 +85,23 @@ const Chat = ({ data }: Props) => {
         ref={scrollContainerRef}
         className="flex  flex-col h-[27rem] max-h-[50rem] overflow-x-hidden overflow-y-scroll"
       >
-        {data.messages.map((message: any, index: any) => (
-          <ChatCard1 key={index} tourData={data} message={message} />
-        ))}
+        {data.users.some((index: any) => index.includes(username)) ||
+        data.squad.some((players: any) =>
+          players.members.some((gamer: any) => gamer.name.includes(username)),
+        ) ? (
+          data.messages.map((message: any, index: any) => (
+            <ChatCard1 key={index} tourData={data} message={message} />
+          ))
+        ) : (
+          <div className="w-full flex justify-center items-center mt-[3rem]">
+            <div className="flex flex-col mb-4 ">
+              <img src={`empty.svg`} alt="" />
+              <p className="text-white text-[.8rem] mt-8 text-center">
+                Join this tournament to view chats.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* <ChatCard2 /> */}
       </div>

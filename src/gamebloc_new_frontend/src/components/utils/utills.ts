@@ -168,3 +168,32 @@ export function hasDateReached(givenDate) {
   // Compare the date strings
   return currentDateStr >= targetDateStr
 }
+
+export function inProgress(givenDate) {
+  let dateMatch = givenDate.match(/\d{4}-\d{2}-\d{2}/)
+  let date = dateMatch[0]
+  // Parse the given date string into year, month, and day
+  const [year, month, day] = date.split("-").map(Number)
+
+  // Create a comparable string for the given date
+  const targetDateStr = `${year.toString().padStart(4, "0")}${month
+    .toString()
+    .padStart(2, "0")}${day.toString().padStart(2, "0")}`
+
+  // Get the current date components
+  const currentDate = new Date()
+  const currentYear = currentDate.getFullYear()
+  const currentMonth = currentDate.getMonth() + 1 // Months are zero-indexed
+  const currentDay = currentDate.getDate()
+
+  // Create a comparable string for the current date
+  const currentDateStr = `${currentYear
+    .toString()
+    .padStart(4, "0")}${currentMonth.toString().padStart(2, "0")}${currentDay
+    .toString()
+    .padStart(2, "0")}`
+
+  // console.log("ended", currentDateStr >= targetDateStr)
+  // Compare the date strings
+  return currentDateStr >= targetDateStr
+}
