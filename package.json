@@ -20,7 +20,7 @@
     "@ant-design/icons": "^5.2.6",
     "@babel/eslint-parser": "^7.23.3",
     "@dfinity/agent": "^0.20.2",
-    "@dfinity/auth-client": "^0.20.2",
+    "@dfinity/auth-client": "^1.0.1",
     "@dfinity/candid": "^0.20.2",
     "@dfinity/principal": "^0.20.2",
     "@headlessui/react": "^1.7.18",
