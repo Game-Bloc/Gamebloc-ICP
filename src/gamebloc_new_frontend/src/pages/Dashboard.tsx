@@ -24,6 +24,8 @@ const Dashboard = () => {
   const {
     getProfile,
     isLoadingProfile,
+    updatingProfile,
+    updateProfile,
     getMyNotifications,
     getNotificationId,
     getChatmessage,
@@ -32,16 +34,20 @@ const Dashboard = () => {
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
-  const notifi = useAppSelector((state) => state.notification)
+  const username = useAppSelector((state) => state.userProfile.username)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
-  const userSession = localStorage.getItem("userSession")
+  const userSession = sessionStorage.getItem("userSession")
 
   useEffect(() => {
     getICPrice()
     if (isAuthenticated) {
-      getProfile()
+      if (username === "") {
+        getProfile()
+      } else {
+        updateProfile()
+      }
       getChatmessage(20)
       if (userSession === "true") {
         setAccountModal(false)

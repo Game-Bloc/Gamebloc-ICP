@@ -65,6 +65,7 @@ const Profile = () => {
   const {
     getProfile,
     isLoadingProfile,
+    updateProfile,
     fetching,
     getICPBalance,
     getTransactions,
@@ -80,7 +81,12 @@ const Profile = () => {
     setTransferModal(!transferModal)
   }
   useEffect(() => {
-    getProfile()
+    if (username === "") {
+      getProfile()
+    } else {
+      updateProfile()
+    }
+
     updateTournament()
     getNotificationId(_principal)
     getICPBalance()
