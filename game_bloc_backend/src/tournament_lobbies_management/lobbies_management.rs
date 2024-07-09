@@ -193,26 +193,26 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
     });
 }
 
-// #[update]
-// pub fn structure_tournament_into_duo_lobbies(name: String, id: String) {
-//     TOURNAMENT_STORE.with(|tournament_store| {
-//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-//         tournament.user.push(name);
-//         tournament_store.borrow_mut().insert(id, tournament);
-//     });
-// }
-//
-// #[update]
-// pub fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
-//     TOURNAMENT_STORE.with(|tournament_store| {
-//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-//         SQUAD_STORE.with(|squad_store| {
-//             let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-//             tournament.squad.push(squad);
-//         });
-//         tournament_store.borrow_mut().insert(id, tournament);
-//     });
-// }
+#[update]
+pub fn structure_tournament_into_duo_lobbies(name: String, id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.user.push(name);
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+
+#[update]
+pub fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        SQUAD_STORE.with(|squad_store| {
+            let squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+            tournament.squad.push(squad);
+        });
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
 
 ///Tournament lobbies restructuring function
 #[update]
