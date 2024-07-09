@@ -1,30 +1,26 @@
-import { ConfigProvider, Table, theme } from "antd"
-import React, { useEffect, useState } from "react"
-import { useAppSelector } from "../../redux/hooks"
+import React from "react"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
-
+import { ConfigProvider, Table, theme } from "antd"
 type prop = {
   tourData: any
 }
-
-const Results = ({ tourData }: prop) => {
+const Result_1 = ({ tourData }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
   const result = tourData.flatMap((state) =>
-    state.points.flatMap((innerArray) =>
-      innerArray.map(([name, id, pointsObject]) => ({
+    state.squad_points.flatMap((innerArray) =>
+      innerArray.map(([squad_name, id, pointsObject]) => ({
         id,
-        name: name,
-        principal: id.substring(0, 3) + "......" + id.substring(60, 64),
+        name: squad_name,
+        squad_id: id.substring(0, 3) + "......" + id.substring(23, 26),
         killPoints: pointsObject.kill_points,
         totalPoints: pointsObject.total_points,
         positionPoints: pointsObject.position_points,
       })),
     ),
   )
-
   // Sort the result array by killPoints in descending order
   const sortedResult = result.sort((a, b) => b.totalPoints - a.totalPoints)
 
@@ -34,16 +30,14 @@ const Results = ({ tourData }: prop) => {
     position: index + 1,
   }))
 
-  console.log("Result with Position", resultWithPosition)
-
   const columns = [
     {
       title: "Position",
       dataIndex: "position",
       key: "position",
     },
-    { title: "Username", dataIndex: "name", key: "name" },
-    { title: "Principal", dataIndex: "principal", key: "principal" },
+    { title: "Squad Name", dataIndex: "name", key: "name" },
+    { title: "Squad Id", dataIndex: "squad_id", key: "squad_id" },
     {
       title: "Position Points",
       dataIndex: "positionPoints",
@@ -52,7 +46,6 @@ const Results = ({ tourData }: prop) => {
     { title: "Kill Points", dataIndex: "killPoints", key: "killPoints" },
     { title: "Total Points", dataIndex: "totalPoints", key: "totalPoints" },
   ]
-
   if (isLoading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -86,4 +79,4 @@ const Results = ({ tourData }: prop) => {
   }
 }
 
-export default Results
+export default Result_1

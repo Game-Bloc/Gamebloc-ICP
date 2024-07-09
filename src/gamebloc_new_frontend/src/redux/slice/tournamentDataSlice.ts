@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 type solo_points = {
+  name: string
   principal: string
   points: {
     kill_points: number

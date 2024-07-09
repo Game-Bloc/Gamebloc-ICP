@@ -13,8 +13,18 @@ type TableRowSelection<T> = TableProps<T>["rowSelection"]
 
 type prop = {
   players: any[]
-  setSquadPoints: any
-  setPlayerPoints: any
+  setSquadPoints: React.Dispatch<
+    React.SetStateAction<[string, string, Points][]>
+  >
+  setPlayerPoints: React.Dispatch<
+    React.SetStateAction<[string, string, Points][]>
+  >
+}
+
+interface Points {
+  position_points: number
+  kill_points: number
+  total_points: number
 }
 
 interface DataType {
@@ -149,15 +159,16 @@ const SquadListView = ({ players, setSquadPoints, setPlayerPoints }: prop) => {
 
     // Update player points
     setPlayerPoints((prevPoints) => [
-      ...prevPoints.filter(([pid]) => pid !== id),
-      [id, points],
+      ...prevPoints.filter(([_, pid]) => pid !== id),
+      [currentPlayer.name, id, points],
     ])
 
     // Update squad points
     updatedData.forEach((squad) => {
       setSquadPoints((prevPoints) => [
-        ...prevPoints.filter(([sid]) => sid !== squad.id),
+        ...prevPoints.filter(([sname, sid]) => sid !== squad.id),
         [
+          squad.squad_name,
           squad.id,
           {
             kill_points: squad.kill_points,

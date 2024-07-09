@@ -17,6 +17,7 @@ import AdminLogin from "./Admin/AdminPages/AdminLogin"
 import Prepaid from "./pages/Prepaid"
 import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
+import ViewResult from "./pages/ViewResult"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -33,6 +34,10 @@ const App = () => {
             <Route
               path="/active-tournament/:id"
               element={<TournamentDetails />}
+            />
+            <Route
+              path="/active-tournament/:id/view_result"
+              element={<ViewResult />}
             />
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />

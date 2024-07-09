@@ -1,14 +1,13 @@
-import { ConfigProvider, Table, theme } from "antd"
-import React, { useEffect, useState } from "react"
-import { useAppSelector } from "../../redux/hooks"
+import React from "react"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
+import { ConfigProvider, Table, theme } from "antd"
 
-type prop = {
+interface prop {
   tourData: any
 }
 
-const Results = ({ tourData }: prop) => {
+const Table_1 = ({ tourData }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
@@ -79,6 +78,7 @@ const Results = ({ tourData }: prop) => {
             rowClassName={() => "rowClassName1"}
             dataSource={resultWithPosition}
             rowKey={"position"}
+            scroll={{ x: true }}
           />
         </ConfigProvider>
       </div>
@@ -86,4 +86,4 @@ const Results = ({ tourData }: prop) => {
   }
 }
 
-export default Results
+export default Table_1

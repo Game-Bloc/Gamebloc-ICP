@@ -31,12 +31,12 @@ const FreeRegistration = () => {
   const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
-    if (isAuthenticated && tournament.length > 0) {
+    if (tournament.length > 0) {
       updateTournament()
     } else {
       fetchAllTournaments()
     }
-  }, [isAuthenticated])
+  }, [])
 
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)

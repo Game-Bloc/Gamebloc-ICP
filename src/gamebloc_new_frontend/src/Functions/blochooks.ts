@@ -35,14 +35,26 @@ export const useFetchAllTournaments = () => {
           const convertedPoints = data.points.map((pointsArray) =>
             pointsArray.map((pointPair) => [
               pointPair[0],
+              pointPair[1],
               {
-                kill_points: Number(pointPair[1].kill_points),
-                total_points: Number(pointPair[1].total_points),
-                position_points: Number(pointPair[1].position_points),
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
               },
             ]),
           )
-          console.log("convertedPoints", convertedPoints)
+          const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
+          // console.log("convertedPoints", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -64,7 +76,7 @@ export const useFetchAllTournaments = () => {
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
             winners: data.winers.map((winner: any) => winner),
-            squad_points: data.squad_points.map((points: any) => points),
+            squad_points: convertedSquadPoints,
             squad_in_game_names: data.squad_in_game_names.map(
               (points: any) => points,
             ),
@@ -113,14 +125,26 @@ export const useUpdateTournament = () => {
           const convertedPoints = data.points.map((pointsArray) =>
             pointsArray.map((pointPair) => [
               pointPair[0],
+              pointPair[1],
               {
-                kill_points: Number(pointPair[1].kill_points),
-                total_points: Number(pointPair[1].total_points),
-                position_points: Number(pointPair[1].position_points),
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
               },
             ]),
           )
-          console.log("convertedPoints update", convertedPoints)
+          const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
+          // console.log("convertedPoints update", convertedPoints)
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -142,7 +166,7 @@ export const useUpdateTournament = () => {
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
             winners: data.winers.map((winner: any) => winner),
-            squad_points: data.squad_points.map((points: any) => points),
+            squad_points: convertedSquadPoints,
             squad_in_game_names: data.squad_in_game_names.map(
               (points: any) => points,
             ),
@@ -150,7 +174,7 @@ export const useUpdateTournament = () => {
             points: convertedPoints,
             lobbies: data.lobbies.map((points: any) => points),
           }
-          console.log(tournamentData)
+          // console.log(tournamentData)
           dispatch(updateActiveTournament(tournamentData))
           tourArray.push(tournamentData)
         }
@@ -179,58 +203,80 @@ export const useGetTournamentMessages = () => {
   const [noData, setNoData] = useState<boolean>(false)
 
   const updateMessages = async () => {
-    if (isAuthenticated) {
-      try {
-        setUpdating(true)
-        const update: any = await whoamiActor.get_all_tournament()
-        if (update && update.length !== 0) {
-          // console.log("message function working")
-          for (const data of update) {
-            const tournamentData = {
-              creator: data.creator,
-              creator_id: data.creator_id,
-              messages: data.messages.map((message: any) => message),
-              end_date: data.end_date,
-              entry_prize: data.entry_prize,
-              game: data.game,
-              game_type: data.game_type,
-              id_hash: data.id_hash,
-              idx: data.idx,
-              no_of_participants: Number(data.no_of_participants),
-              no_of_winners: data.no_of_winners,
-              squad: data.squad.map((squad: any) => squad),
-              starting_date: data.starting_date,
-              status: data.status,
-              title: data.title,
-              total_prize: Number(data.total_prize),
-              tournament_rules: data.tournament_rules,
-              tournament_type: data.tournament_type,
-              users: data.user.map((user: any) => user),
-              winners: data.winers.map((winner: any) => winner),
-              squad_points: data.squad_points.map((points: any) => points),
-              squad_in_game_names: data.squad_in_game_names.map(
-                (points: any) => points,
-              ),
-              in_game_names: data.in_game_names.map((points: any) => points),
-              points: data.points.map((points: any) => points),
-              lobbies: data.lobbies.map((points: any) => points),
-            }
-            console.log(tournamentData)
-
-            dispatch(updateActiveTournament(tournamentData))
+    // if (isAuthenticated) {
+    try {
+      setUpdating(true)
+      const update: any = await whoamiActor.get_all_tournament()
+      if (update && update.length !== 0) {
+        // console.log("message function working")
+        for (const data of update) {
+          const convertedPoints = data.points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
+          const convertedSquadPoints = data.squad_points.map((pointsArray) =>
+            pointsArray.map((pointPair) => [
+              pointPair[0],
+              pointPair[1],
+              {
+                kill_points: Number(pointPair[2].kill_points),
+                total_points: Number(pointPair[2].total_points),
+                position_points: Number(pointPair[2].position_points),
+              },
+            ]),
+          )
+          const tournamentData = {
+            creator: data.creator,
+            creator_id: data.creator_id,
+            messages: data.messages.map((message: any) => message),
+            end_date: data.end_date,
+            entry_prize: data.entry_prize,
+            game: data.game,
+            game_type: data.game_type,
+            id_hash: data.id_hash,
+            idx: data.idx,
+            no_of_participants: Number(data.no_of_participants),
+            no_of_winners: data.no_of_winners,
+            squad: data.squad.map((squad: any) => squad),
+            starting_date: data.starting_date,
+            status: data.status,
+            title: data.title,
+            total_prize: Number(data.total_prize),
+            tournament_rules: data.tournament_rules,
+            tournament_type: data.tournament_type,
+            users: data.user.map((user: any) => user),
+            winners: data.winers.map((winner: any) => winner),
+            squad_points: convertedSquadPoints,
+            squad_in_game_names: data.squad_in_game_names.map(
+              (points: any) => points,
+            ),
+            in_game_names: data.in_game_names.map((points: any) => points),
+            points: convertedPoints,
+            lobbies: data.lobbies.map((points: any) => points),
           }
-          setUpdating(false)
-        } else {
-          setNoData(true)
+          // console.log(tournamentData)
+
+          dispatch(updateActiveTournament(tournamentData))
         }
-      } catch (err) {
-        console.log("Error getting messages:", err)
-      } finally {
         setUpdating(false)
+      } else {
+        setNoData(true)
       }
-    } else {
-      console.log("User not authenticated")
+    } catch (err) {
+      console.log("Error getting messages:", err)
+    } finally {
+      setUpdating(false)
     }
+    // } else {
+    //   console.log("User not authenticated")
+    // }
   }
 
   return { updateMessages }
@@ -260,7 +306,7 @@ export const useGetAllSquad = () => {
             requests: data.requests.map((gamer: string) => gamer),
             points: data.points.map((points: any) => points),
           }
-          console.log("checking squads", squads)
+          // console.log("checking squads", squads)
           dispatch(addSquad(squads))
         }
         setUpdating(false)

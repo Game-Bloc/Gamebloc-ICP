@@ -42,6 +42,7 @@ export const useGameblocHooks = () => {
   const [isAssigningPoints, setIsAssigningPoints] = useState<boolean>(false)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
+  const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -100,7 +101,7 @@ export const useGameblocHooks = () => {
         if (window.location.pathname === "/dashboard") {
           window.location.reload()
         }
-        localStorage.setItem("userState", "true")
+        sessionStorage.setItem("userState", "true")
         // console.log("Account Created")
       } else {
         setIsLoading(false)
@@ -172,16 +173,52 @@ export const useGameblocHooks = () => {
           initializeState: true,
         }
         dispatch(updateUserProfile(profileData))
-        localStorage.setItem("userSession", "true")
+        sessionStorage.setItem("userSession", "true")
       } else {
         setIsAccount(false)
         console.log("No account created yet")
       }
     } catch (err) {
-      localStorage.setItem("userSession", "false")
+      sessionStorage.setItem("userSession", "false")
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
+    }
+  }
+
+  const updateProfile = async () => {
+    try {
+      setUpdatingProfile(true)
+      const user: any = await whoamiActor.getSelf()
+
+      const profileData: UserProfileState = {
+        age: user.age,
+        canister_id: user.canister_id,
+        date: user.date,
+        id_hash: user.id_hash,
+        is_mod: false,
+        role: user.role,
+        points: [Number(user.points[0])],
+        account_id: user.account_id,
+        principal_id: user.principal_id,
+        squad_badge: user.squad_badge,
+        status: { Online: true },
+        tournaments_created: user.tournaments_created,
+        username: user.username,
+        wins: user.wins,
+        losses: user.losses[0],
+        attendance: user.attendance[0],
+        initializeState: true,
+      }
+      dispatch(updateUserProfile(profileData))
+      sessionStorage.setItem("userSession", "true")
+      setIsAccount(true)
+      console.log("Updating profile")
+    } catch (err) {
+      sessionStorage.setItem("userSession", "false")
+      console.log("Error getting profile", err)
+    } finally {
+      setUpdatingProfile(false)
     }
   }
 
@@ -285,7 +322,7 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsLoading(true)
-      const ign: [string, string] = [userId, playerIgn]
+      const ign: [string, string, string] = [name, userId, playerIgn]
       const join_tournament = await whoamiActor.join_tournament(name, id, ign)
       setIsLoading(false)
       popUp(successMsg, route)
@@ -416,7 +453,7 @@ export const useGameblocHooks = () => {
   const joinTournamentSqaud = async (
     squad_id: string,
     id: string,
-    igns: [string, string][],
+    igns: [string, string, string][],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -804,6 +841,7 @@ export const useGameblocHooks = () => {
         principal,
       )
       popUp(success, route)
+      window.location.reload()
     } catch (err) {
       errorPopUp(error)
       setIsLoading(false)
@@ -824,6 +862,12 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsAssigningPoints(true)
+
+      await whoamiActor2.assign_squad_points(
+        tournament_id,
+        squad_id_and_points,
+        principal,
+      )
       assign_solo_point(
         tournament_id,
         principal,
@@ -831,11 +875,6 @@ export const useGameblocHooks = () => {
         success,
         error,
         route,
-      )
-      await whoamiActor2.assign_squad_points(
-        tournament_id,
-        squad_id_and_points,
-        principal,
       )
       console.log("Assigned")
       setIsAssigningPoints(false)
@@ -856,6 +895,8 @@ export const useGameblocHooks = () => {
     fetching,
     isAssigningPoints,
     isAdmin,
+    updatingProfile,
+    updateProfile,
     getPlayers,
     getTransactions,
     getICPrice,

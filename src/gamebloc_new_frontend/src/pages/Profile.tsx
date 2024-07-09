@@ -65,6 +65,7 @@ const Profile = () => {
   const {
     getProfile,
     isLoadingProfile,
+    updateProfile,
     fetching,
     getICPBalance,
     getTransactions,
@@ -80,7 +81,12 @@ const Profile = () => {
     setTransferModal(!transferModal)
   }
   useEffect(() => {
-    getProfile()
+    if (username === "") {
+      getProfile()
+    } else {
+      updateProfile()
+    }
+
     updateTournament()
     getNotificationId(_principal)
     getICPBalance()
@@ -109,7 +115,7 @@ const Profile = () => {
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
                   </h1>
-                  <div className=" flex flex-col w-full sm:w-fit justify-center items-center md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
+                  <div className=" flex flex-col w-full sm:w-fit justify-center  md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
                     <div className="flex">
                       <div className="mr-4 lg:mr-[3rem]">
                         <Avatar
@@ -172,7 +178,7 @@ const Profile = () => {
 
                     <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
-                    <div className="mt-[.5rem]  gap-6 flex flex-col md:flex-row md:flex-wrap ">
+                    <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
                       <div className="flex flex-col justify-start">
                         <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                           Principal I.D{" "}

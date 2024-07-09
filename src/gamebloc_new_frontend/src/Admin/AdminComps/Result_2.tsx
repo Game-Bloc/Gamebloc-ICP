@@ -1,14 +1,12 @@
-import { ConfigProvider, Table, theme } from "antd"
-import React, { useEffect, useState } from "react"
-import { useAppSelector } from "../../redux/hooks"
+import React from "react"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
+import { ConfigProvider, Table, theme } from "antd"
 
 type prop = {
   tourData: any
 }
-
-const Results = ({ tourData }: prop) => {
+const Result_2 = ({ tourData }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
@@ -86,4 +84,4 @@ const Results = ({ tourData }: prop) => {
   }
 }
 
-export default Results
+export default Result_2
