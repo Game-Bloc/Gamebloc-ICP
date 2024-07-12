@@ -98,10 +98,17 @@ pub fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, 
 pub fn set_mod(identity: Principal) {
     PROFILE_STORE.with(|profile_store| {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
-        profile.role = match profile.role.unwrap() {
-            Role::Player => Some(Role::Mod),
-            _ => {
-                Some(Role::Mod)
+        profile.role = match profile.role {
+            None => {
+               Some(Role::Mod)
+            }
+            Some(role) => {
+                match role {
+                    Role::Player => Some(Role::Mod),
+                    _ => {
+                        Some(Role::Mod)
+                    }
+                }
             }
         };
         profile_store.borrow_mut().insert(identity.to_text(), profile);
