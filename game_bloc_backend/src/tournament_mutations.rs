@@ -55,7 +55,7 @@ pub fn start_tournament(id: String) {
 }
 
 #[update]
-pub fn end_tournament(id: String, principal: Principal, )
+pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8)
     -> bool
 {
     if get_self(principal).is_mod {
@@ -76,19 +76,19 @@ pub fn end_tournament(id: String, principal: Principal, )
                 GameType::TeamvTeam => {}
                 GameType::Single => {
                     // winners.append(&mut winning_players);
-                    tournament.points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                    tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                         tournament.winers.push(id_mapping.0.clone())
                     });
                 }
                 GameType::Duo => {
                     // winners.append(&mut winning_squad);
-                    tournament.squad_points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                         tournament.winers.push(id_mapping.0.clone())
                     });
                 }
                 GameType::Squad => {
                     // winners.append(&mut winning_squad);
-                    tournament.squad_points.clone().unwrap()[..3].iter().for_each(|id_mapping|{
+                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                         tournament.winers.push(id_mapping.0.clone())
                     });
                 }
