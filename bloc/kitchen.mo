@@ -25,19 +25,19 @@ import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
 
-import AccountIdentifier "utils";
+import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
 
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
 
-import IndexTypes "indextypes";
-import Bloctypes "bloctypes";
-import LedgerTypes "ledgertypes";
-import Utils "utils";
-import Ledgertypes "ledgertypes";
-import HTTP "http";
+import IndexTypes "types/indextypes";
+import Bloctypes "types/bloctypes";
+import LedgerTypes "types/ledgertypes";
+
+import Utils "utils/utils";
+import HTTP "utils/http";
 import Hex "utils/Hex";
 
 shared ({ caller }) actor class Kitchen() {
