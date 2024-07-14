@@ -827,7 +827,7 @@ export const useGameblocHooks = () => {
 
   const end_tournament = async (id: string, principal_id: Principal) => {
     try {
-      await whoamiActor2.end_tournament("", principal)
+      // await whoamiActor2.end_tournament("", principal)
     } catch (error) {}
   }
 
