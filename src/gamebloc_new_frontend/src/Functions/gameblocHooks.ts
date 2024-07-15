@@ -825,6 +825,12 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const end_tournament = async (id: string, principal_id: Principal) => {
+    try {
+      // await whoamiActor2.end_tournament("", principal)
+    } catch (error) {}
+  }
+
   const assign_solo_point = async (
     tournament_id: string,
     principal: Principal,

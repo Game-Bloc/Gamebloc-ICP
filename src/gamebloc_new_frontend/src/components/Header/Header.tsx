@@ -148,27 +148,27 @@ const Header = () => {
                 )}
               </div>
             </Tooltip>
-            <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh>
-              <div
-                onClick={() => setProfileModal(!profileModal)}
-                className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
+            {/* <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh> */}
+            <div
+              onClick={() => setProfileModal(!profileModal)}
+              className="flex items-center relative cursor-pointer rounded-[9999px] bg-[#fff]/10"
+            >
+              <Avatar
+                style={{
+                  backgroundColor: "#f6b8fc",
+                  color: "#01070E",
+                  fontSize: ".8rem",
+                }}
+                size={40}
               >
-                <Avatar
-                  style={{
-                    backgroundColor: "#f6b8fc",
-                    color: "#01070E",
-                    fontSize: ".8rem",
-                  }}
-                  size={40}
-                >
-                  {initials}
-                </Avatar>
+                {initials}
+              </Avatar>
 
-                <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
-                  {username}
-                </p>
-              </div>
-            </Tooltip>
+              <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
+                {username}
+              </p>
+            </div>
+            {/* </Tooltip> */}
             {profileModal && (
               <div
                 onClick={() => setProfileModal(false)}

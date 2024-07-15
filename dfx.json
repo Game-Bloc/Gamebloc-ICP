@@ -22,7 +22,7 @@
         }
       }
     },
- 
+
     "icp_index": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/index/index.did",
@@ -35,7 +35,12 @@
     },
 
     "gamebloc_new_frontend": {
-      "dependencies": ["kitchen", "game_bloc_backend", "icp_index", "icp_ledger"],
+      "dependencies": [
+        "kitchen",
+        "game_bloc_backend",
+        "icp_index",
+        "icp_ledger"
+      ],
       "frontend": {
         "entrypoint": "src/gamebloc_new_frontend/src/index.html"
       },
