@@ -72,7 +72,7 @@ const FreeRegistration = () => {
             </h2>
             <p className=" mb-4 mt-4 text-[0.7rem] text-center text-white xl:text-[1rem] ">
               {" "}
-              Be the First to create a tournamnent
+              Be the First to create a tournament
             </p>
 
             <button
