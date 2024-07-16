@@ -20,21 +20,27 @@ const Stats = () => {
       name: "Tournament created",
       value: tour_created === 0 ? 0.001 : tour_created,
     },
-    { name: "Tournament joined", value: attendance === 0 ? 0.3 : attendance },
+    {
+      name: "Tournament joined",
+      value: attendance === 0 || undefined ? 0.3 : attendance,
+    },
     {
       name: "Tournament won",
-      value: _wins === 0 ? 0.001 : _wins,
+      value: _wins === 0 || undefined ? 0.001 : _wins,
     },
-    { name: "Tournament lost", value: losses === 0 ? 0.01 : losses },
+    {
+      name: "Tournament lost",
+      value: losses === 0 || undefined ? 0.01 : losses,
+    },
   ]
   const winRatio = [
     {
       action: "Wins",
-      stat: _wins === 0 ? 0.001 : _wins,
+      stat: _wins === 0 || undefined ? 0.001 : _wins,
     },
     {
       action: "Losses",
-      stat: losses === 0 ? 0.5 : losses,
+      stat: losses === 0 || undefined ? 0.5 : losses,
     },
   ]
 
