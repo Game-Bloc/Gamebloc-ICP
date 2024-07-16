@@ -15,9 +15,9 @@ export interface UserProfileState {
   status: any | null
   tournaments_created: number
   username: string | null
-  wins: number | null
-  losses: number | null
-  attendance: number | null
+  wins: number | undefined
+  losses: number | undefined
+  attendance: number | undefined
   initializeState: boolean
 }
 
