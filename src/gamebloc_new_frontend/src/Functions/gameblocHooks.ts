@@ -825,16 +825,24 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const end_tournament = async (id: string, principal_id: Principal) => {
+  const end_tournament = async (
+    id: string,
+    principal_id: Principal,
+    no_of_winners: number,
+  ) => {
     try {
-      // await whoamiActor2.end_tournament("", principal)
-    } catch (error) {}
+      await whoamiActor2.end_tournament(id, principal_id, no_of_winners)
+      console.log("Tournament Ended")
+    } catch (error) {
+      console.log("error getting profile", error)
+    }
   }
 
   const assign_solo_point = async (
     tournament_id: string,
     principal: Principal,
     user_id_and_points: any[],
+    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -846,6 +854,7 @@ export const useGameblocHooks = () => {
         user_id_and_points,
         principal,
       )
+      end_tournament(tournament_id, principal, no_of_winners)
       popUp(success, route)
       window.location.reload()
     } catch (err) {
@@ -862,6 +871,7 @@ export const useGameblocHooks = () => {
     principal: Principal,
     user_id_and_points: any[],
     squad_id_and_points: any[],
+    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -878,6 +888,7 @@ export const useGameblocHooks = () => {
         tournament_id,
         principal,
         user_id_and_points,
+        no_of_winners,
         success,
         error,
         route,
