@@ -162,7 +162,7 @@ const Profile = () => {
                               <div className="flex flex-row">
                                 <p className="text-[1rem] text-white mr-4">≈</p>
                                 <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
-                                  ${(balance * _icp2Usd).toFixed(8)}
+                                  ${(balance * _icp2Usd).toFixed(2)}
                                 </p>
                               </div>
                             </div>
