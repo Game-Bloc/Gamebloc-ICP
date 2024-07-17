@@ -32,8 +32,14 @@ import { allNotification } from "../redux/slice/notificationSlice"
 import { MultiSelect } from "@tremor/react"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
-    useAuth()
+  const {
+    isAuthenticated,
+    whoamiActor,
+    whoamiActor2,
+    ledgerActor,
+    indexActor,
+    principal,
+  } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -179,7 +185,9 @@ export const useGameblocHooks = () => {
         console.log("No account created yet")
       }
     } catch (err) {
-      sessionStorage.setItem("userSession", "false")
+      if (!isAuthenticated) {
+        sessionStorage.setItem("userSession", "false")
+      }
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -215,7 +223,9 @@ export const useGameblocHooks = () => {
       setIsAccount(true)
       console.log("Updating profile")
     } catch (err) {
-      sessionStorage.setItem("userSession", "false")
+      if (!isAuthenticated) {
+        sessionStorage.setItem("userSession", "false")
+      }
       console.log("Error getting profile", err)
     } finally {
       setUpdatingProfile(false)
