@@ -32,8 +32,14 @@ import { allNotification } from "../redux/slice/notificationSlice"
 import { MultiSelect } from "@tremor/react"
 
 export const useGameblocHooks = () => {
-  const { whoamiActor, whoamiActor2, ledgerActor, indexActor, principal } =
-    useAuth()
+  const {
+    isAuthenticated,
+    whoamiActor,
+    whoamiActor2,
+    ledgerActor,
+    indexActor,
+    principal,
+  } = useAuth()
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -179,7 +185,9 @@ export const useGameblocHooks = () => {
         console.log("No account created yet")
       }
     } catch (err) {
-      sessionStorage.setItem("userSession", "false")
+      if (!isAuthenticated) {
+        sessionStorage.setItem("userSession", "false")
+      }
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -215,7 +223,9 @@ export const useGameblocHooks = () => {
       setIsAccount(true)
       console.log("Updating profile")
     } catch (err) {
-      sessionStorage.setItem("userSession", "false")
+      if (!isAuthenticated) {
+        sessionStorage.setItem("userSession", "false")
+      }
       console.log("Error getting profile", err)
     } finally {
       setUpdatingProfile(false)
@@ -825,16 +835,24 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const end_tournament = async (id: string, principal_id: Principal) => {
+  const end_tournament = async (
+    id: string,
+    principal_id: Principal,
+    no_of_winners: number,
+  ) => {
     try {
-      // await whoamiActor2.end_tournament("", principal)
-    } catch (error) {}
+      await whoamiActor2.end_tournament(id, principal_id, no_of_winners)
+      console.log("Tournament Ended")
+    } catch (error) {
+      console.log("error getting profile", error)
+    }
   }
 
   const assign_solo_point = async (
     tournament_id: string,
     principal: Principal,
     user_id_and_points: any[],
+    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -846,6 +864,7 @@ export const useGameblocHooks = () => {
         user_id_and_points,
         principal,
       )
+      end_tournament(tournament_id, principal, no_of_winners)
       popUp(success, route)
       window.location.reload()
     } catch (err) {
@@ -862,6 +881,7 @@ export const useGameblocHooks = () => {
     principal: Principal,
     user_id_and_points: any[],
     squad_id_and_points: any[],
+    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -878,6 +898,7 @@ export const useGameblocHooks = () => {
         tournament_id,
         principal,
         user_id_and_points,
+        no_of_winners,
         success,
         error,
         route,

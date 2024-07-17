@@ -95,7 +95,7 @@ export const useFetchAllTournaments = () => {
       }
     } catch (err) {
       sessionStorage.setItem("noTournament", "true")
-      console.log("Error:", err)
+      console.log("Fetch Error:", err)
     } finally {
       setIsLoading(false)
     }
@@ -185,7 +185,7 @@ export const useUpdateTournament = () => {
       }
     } catch (err) {
       sessionStorage.setItem("noTournament", "true")
-      console.log("Error:", err)
+      console.log("update Error:", err)
     } finally {
       setUpdating(false)
     }

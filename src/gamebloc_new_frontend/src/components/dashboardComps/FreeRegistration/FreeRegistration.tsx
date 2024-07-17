@@ -31,12 +31,17 @@ const FreeRegistration = () => {
   const [accountModal, setAccountModal] = useState<boolean>(false)
 
   useEffect(() => {
+    // const intervalId = setInterval(() => {
     if (tournament.length > 0) {
       updateTournament()
     } else {
       fetchAllTournaments()
     }
-  }, [])
+    // }, 2000)
+
+    // Clean up the interval on component unmount
+    // return () => clearInterval(intervalId)
+  }, [isAuthenticated])
 
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
@@ -72,7 +77,7 @@ const FreeRegistration = () => {
             </h2>
             <p className=" mb-4 mt-4 text-[0.7rem] text-center text-white xl:text-[1rem] ">
               {" "}
-              Be the First to create a tournamnent
+              Be the First to create a tournament
             </p>
 
             <button

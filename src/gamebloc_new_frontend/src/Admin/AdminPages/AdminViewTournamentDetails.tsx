@@ -83,11 +83,12 @@ const AdminViewTournamentDetails = () => {
     .map((list: any) => list)
   const _point = tourData[0].points.length === 0
   const _squad_point = tourData[0].squad_points.length === 0
+  const no_of_winners = tourData[0].no_of_winners
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
     .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
-  console.log("state", game_type[0])
+  console.log("data", tourData[0])
 
   useEffect(() => {
     if (tournament.length > 0 || null || undefined) {
@@ -214,6 +215,7 @@ const AdminViewTournamentDetails = () => {
             id,
             _principal,
             playerPoints,
+            no_of_winners,
             "Players points saved",
             "Error setting players points",
             "",
@@ -223,6 +225,7 @@ const AdminViewTournamentDetails = () => {
             _principal,
             playerPoints,
             squadPoints,
+            no_of_winners,
             "Players and squads points saved",
             "Error setting points",
             "",

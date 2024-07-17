@@ -56,6 +56,8 @@ const CreateTournament = () => {
   const [endDate, setEndDate] = useState<string>("")
   const [tournamentID, setTournamentID] = useState<string>("")
   const [active, setActive] = useState<string>("first")
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  const [icpValue, setIcpValue] = useState<number>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const {
     isLoading,
@@ -92,6 +94,7 @@ const CreateTournament = () => {
       const value = initialTime.concat(" ", initialDate)
       setStartingDate(value)
     }
+
     if (tournamentType === "Crowdfunded") {
       setTourType("Crowdfunded")
       setVariantType({ Crowdfunded: null })
@@ -111,6 +114,20 @@ const CreateTournament = () => {
     // getTournamentCount,
   ])
   console.log(balance)
+
+  useEffect(() => {
+    const calculateIcpValue = () => {
+      const dollarAmount = tourType === "Prepaid" ? +poolPrize : +entryPrice
+      if (_icp2Usd > 0 && dollarAmount > 0) {
+        const icpValue = dollarAmount / _icp2Usd
+        setIcpValue(icpValue)
+      } else {
+        setIcpValue(0)
+      }
+    }
+
+    calculateIcpValue()
+  }, [poolPrize, entryPrice, _icp2Usd, tourType])
 
   useEffect(() => {
     if (close) {
@@ -652,11 +669,21 @@ const CreateTournament = () => {
                       </div>
 
                       <div className="flex-col flex m-4 ">
-                        <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                          {tourType === "Prepaid"
-                            ? " Pool Price in $"
-                            : " Entry Price in $"}
-                        </p>
+                        <div className="flex w-full justify-between items-center flex-row">
+                          <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                            {tourType === "Prepaid"
+                              ? " Pool Price in $"
+                              : " Entry Price in $"}
+                          </p>
+                          <div className="flex flex-row">
+                            <p className="text-[1rem] text-white mr-4">≈</p>
+                            <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
+                              {icpValue !== null
+                                ? `${icpValue.toFixed(8)} ICP`
+                                : "Calculating..."}
+                            </p>
+                          </div>
+                        </div>
                         <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#141414] hover:border-primary-second border-solid border rounded-lg flex">
                           <input
                             className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
