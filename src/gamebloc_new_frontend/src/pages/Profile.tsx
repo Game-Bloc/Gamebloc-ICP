@@ -55,6 +55,7 @@ const Profile = () => {
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
@@ -147,16 +148,24 @@ const Profile = () => {
                               />
                             </div>
                           ) : (
-                            <>
-                              <p className="text-bold text-[1rem] mr-1  sm:text-[1ßrem]  text-[#ffffff]">
-                                {balance}
-                              </p>
-                              <img
-                                src={`Icp.svg`}
-                                className="w-6 h-6 m-0"
-                                alt=""
-                              />
-                            </>
+                            <div className="flex flex-row gap-4">
+                              <div className="flex flex-row">
+                                <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
+                                  {balance}
+                                </p>
+                                <img
+                                  src={`Icp.svg`}
+                                  className="w-6 h-6 m-0"
+                                  alt=""
+                                />
+                              </div>
+                              <div className="flex flex-row">
+                                <p className="text-[1rem] text-white mr-4">≈</p>
+                                <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
+                                  ${(balance * _icp2Usd).toFixed(8)}
+                                </p>
+                              </div>
+                            </div>
                           )}
                         </div>
                         <div className="flex items-center">
