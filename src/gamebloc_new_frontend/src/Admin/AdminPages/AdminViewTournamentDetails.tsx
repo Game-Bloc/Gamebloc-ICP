@@ -260,7 +260,7 @@ const AdminViewTournamentDetails = () => {
                           <div className="flex flex-col">
                             <div className="flex gap-4">
                               <img
-                                src={`reloaded.svg`}
+                                src={`xbox-pad.jpg`}
                                 alt=""
                                 className="w-[6.75rem] h-[6.375rem] m-0"
                               />
