@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import type { TableColumnsType } from "antd"
 import { ConfigProvider, Select, Table, theme } from "antd"
 import NewModal from "../../components/Modals/Newmodal"
@@ -36,32 +36,22 @@ interface DataType {
   points: []
   lobbies: []
 }
-
-const NewTournamentTable = () => {
+const CompletedTournamentTable = () => {
   const navigate = useNavigate()
   const data = useAppSelector((state) => state.tournamentData)
   const [search, setSearch] = useState<string>("")
   const [openTournamentModal, setOpeTournamentnModal] = useState<boolean>(false)
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
-
-  // const dataSearch = data.filter((obj) => {
-  //   return Object.keys(obj).some((key) =>
-  //     obj[key]
-  //       .toString()
-  //       .toLowerCase()
-  //       .includes(search.toString().toLowerCase()),
-  //   )
-  // })
-  const newTournament = data
+  const completedTournament = data
     .filter(
       (tour: any) =>
-        Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS",
+        Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED",
     )
     .map((tour: any) => tour)
-  console.log("data", newTournament)
+  console.log("completedTournament", completedTournament)
 
-  const dataSearch = newTournament.filter((obj) => {
+  const dataSearch = completedTournament.filter((obj) => {
     // Check if any key matches the search term
     const keyMatches = Object.keys(obj).some((key) =>
       key.toLowerCase().includes(search.toLowerCase()),
@@ -288,4 +278,4 @@ const NewTournamentTable = () => {
   )
 }
 
-export default NewTournamentTable
+export default CompletedTournamentTable
