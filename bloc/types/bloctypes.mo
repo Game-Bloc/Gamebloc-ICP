@@ -112,7 +112,7 @@ module {
         name : Text;
         wins : ?Nat8;
         losses : ?Nat8;
-        attenance : ?Nat8;
+        attendance : ?Nat8;
         tag : Text;
         members : [Member];
         requests : [Text];
