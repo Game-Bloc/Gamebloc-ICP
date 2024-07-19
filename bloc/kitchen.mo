@@ -456,39 +456,75 @@ shared ({ caller }) actor class Kitchen() {
         });
     };
 
-    public shared ({ caller }) func updateBalance(_amount : Nat64, ) : async Bool {
+    public shared ({ caller }) func updateBalance(_amount : Nat64, deposit : Bool) : async Bool {
+        var _balance = BalanceHashMap.get(caller);
+        if (deposit){
+            switch (_balance) {
+                case null {
+                    return false
+                };
+                case (?(_balance)) {
+                    var newBalance : Bloctypes.UserBalance = {
+                        user = _balance.user;
+                        balance = _balance.balance + _amount;
+                    };
+                    var updated = BalanceHashMap.replace(caller, newBalance);
+                    return true
+                }
+            }
+        } else {
+            switch (_balance) {
+                case null {
+                    return false
+                };
+                case (?(_balance)) {
+                    var newBalance : Bloctypes.UserBalance = {
+                        user = _balance.user;
+                        balance = _balance.balance - _amount;
+                    };
+                    var updated = BalanceHashMap.replace(caller, newBalance);
+                    return true
+                }
+            }
+        }
+        
+    };
+
+    public shared ({ caller }) func checkLastBalance() : async Nat64 {
         var _balance = BalanceHashMap.get(caller);
         switch (_balance) {
             case null {
-                return false
+                return 0
             };
             case (?(_balance)) {
-                var newBalance : Bloctypes.UserBalance = {
-                    user = _balance.user;
-                    balance = _balance.balance + _amount;
-                };
-                var updated = BalanceHashMap.replace(caller, newBalance);
-                return true
+                return _balance.balance
             }
         }
+        // return _balance.balance;
     };
 
-    // public shared ({ caller }) func checkLastBalance() : async Nat64{
-    //     var _balance = BalanceHashMap.get(caller);
-    //     switch (_balance) {
-    //         case null {
-    //             return false
-    //         };
-    //         case (?(_balance)) {
-    //             var newBalance : Bloctypes.UserBalance = {
-    //                 user = _balance.user;
-    //                 balance = _balance.balance + _amount;
-    //             };
-    //             var updated = BalanceHashMap.replace(caller, newBalance);
-    //             return true
+    func checkUserLastBalance(caller : Principal) : Nat64 {
+        var _balance = BalanceHashMap.get(caller);
+        switch (_balance) {
+            case null {
+                return 0
+            };
+            case (?(_balance)) {
+                return _balance.balance
+            }
+        }
+        // return _balance.balance;
+    };
+
+    // public shared ({ caller }) func checkStatus() : async Bool {
+    //     var balance = checkUserLastBalance(caller);
+    //     var token = await icp_balance2(caller);
+    //     if (balance != token.e8s){
+    //         if (balance < token.e8s) {
+    //             await notify("Deposit Successful", "You have successfully deposited " # Nat64.toText(token.e8s - balance) # "ICP into your account.", caller, Time.now(), 1, AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller)))
     //         }
+    //         return true;
     //     }
-    //     return _balance.balance;
     // };
 
 
