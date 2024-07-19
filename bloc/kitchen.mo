@@ -1176,13 +1176,13 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func archive_tournament(id : Text) {
-        try {
-            await RustBloc.archive_tournament(id)
-        } catch err {
-            throw (err)
-        }
-    };
+    // public shared ({ caller }) func archive_tournament(id : Text) {
+    //     try {
+    //         await RustBloc.archive_tournament(id)
+    //     } catch err {
+    //         throw (err)
+    //     }
+    // };
 
     public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
         // assert(caller == userCanisterId);
