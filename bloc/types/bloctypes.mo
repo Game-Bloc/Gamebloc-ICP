@@ -1,4 +1,6 @@
 import Principal "mo:base/Principal";
+import Ledgertypes "ledgertypes";
+
 // import Principal
 
 module {
@@ -33,6 +35,16 @@ module {
         tournamentTitle : Text;
         tournament_id_hash : Text;
         date : Text;
+
+    };
+
+    public type Pay = {
+        tournamentTitle : Text;
+        tournament_id_hash : Text;
+        user : Principal;
+        account : Text;
+        date : Text;
+        amount : Ledgertypes.Tokens;
 
     };
 

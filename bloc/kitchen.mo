@@ -55,8 +55,11 @@ shared ({ caller }) actor class Kitchen() {
     private stable var SupportedGames : [Text] = [];
     private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
     private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
+    private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
+
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
+    var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
     var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
@@ -114,6 +117,31 @@ shared ({ caller }) actor class Kitchen() {
     //
     // Ledger Canister
     //
+
+    public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
+        // var mod = await is_mod(caller);
+        try {
+            if(await is_mod(caller)){
+                for (pay in Iter.fromArray(pays)){
+                    // var _account = pay.account;
+                    var block = await ICPLedger.send_dfx({
+                        to = pay.account;
+                        fee = { e8s = 10_000 }; //0.0001 ICP
+                        memo = 0;
+                        from_subaccount = null;
+                        created_at_time = ?{
+                            timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
+                        };
+                        amount = pay.amount
+                    });
+                };
+            };
+        } catch err {
+            throw (err);
+        }
+
+        
+    };
 
     // Using the caller
     public shared ({ caller }) func getLedgerBalance() : async Result.Result<Nat, Text> {
