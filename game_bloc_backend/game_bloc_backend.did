@@ -32,6 +32,9 @@ type Squad = record {
   status : SquadType;
   members : vec Member;
   name : text;
+  wins : opt nat8;
+  losses : opt nat8;
+  attendance : opt nat8;
   captain : text;
   requests : vec text;
   points : opt vec record { text; text; Point };
@@ -138,6 +141,7 @@ service : () -> {
   structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
   structure_tournament_into_squad_lobbies : (text, text) -> ();
+  test_end_tournament : (text, principal, nat8) -> (bool);
   three_lobbies_merge : (text) -> ();
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
