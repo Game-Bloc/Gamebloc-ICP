@@ -21,13 +21,13 @@ const AssignPointsModal = ({ modal, player, onSave }: Prop) => {
   const [pointsDeduction, setPointsDeduction] = useState<number>(0)
 
   const calculateTotalPoints = () => {
-    return kills + positionPoints - pointsDeduction
+    return kills * 5 + positionPoints - pointsDeduction
   }
 
   const handleSave = () => {
     const totalPoints = calculateTotalPoints()
     const points: Points = {
-      kill_points: kills,
+      kill_points: kills * 5,
       position_points: positionPoints,
       total_points: totalPoints,
     }

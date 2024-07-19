@@ -262,7 +262,7 @@ const AdminViewTournamentDetails = () => {
                               <img
                                 src={`xbox-pad.jpg`}
                                 alt=""
-                                className="w-[6.75rem] h-[6.375rem] m-0"
+                                className="w-[6.75rem] h-[6.375rem] m-0 object-fill"
                               />
                               <div className="flex flex-col ">
                                 <p className="text-[1.2rem]  font-semibold text-white">

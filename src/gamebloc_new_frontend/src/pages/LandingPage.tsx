@@ -16,13 +16,14 @@ import { useAppSelector } from "../redux/hooks"
 import { useNavigate } from "react-router-dom"
 
 const LandingPage = () => {
+  const navigate = useNavigate()
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
   const { principal, isAuthenticated, whoamiActor } = useAuth()
   const { getProfile, getProfile2, isLoadingProfile, isAccount } =
     useGameblocHooks()
   const state = useAppSelector((state) => state.userProfile.initializeState)
-  const navigate = useNavigate()
+  const userSession = sessionStorage.getItem("userSession")
 
   const handleModal = () => {
     setOpenModal(!openModal)
@@ -40,6 +41,8 @@ const LandingPage = () => {
       getProfile2()
       if (state) {
         navigate("/dashboard")
+      } else if (userSession === "true") {
+        setAccountModal(false)
       } else {
         setAccountModal(true)
       }
