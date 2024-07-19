@@ -8,6 +8,7 @@ dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
+
 dfx identity use deon
 
 
@@ -21,6 +22,7 @@ export TOKEN_NAME="ICP"
 
 #  candid-extractor target/wasm32-unknown-unknown/release/game_bloc_backend.wasm > src/game_bloc_backend/game_bloc_backend.did
 #  candid-extractor target/wasm32-unknown-unknown/release/game_bloc_backend.wasm > game_bloc_backend/src/game_bloc_backend.did
+
 cargo build --release --target wasm32-unknown-unknown --package game_bloc_backend 
 
 dfx deploy icp_ledger --argument "(variant {Init =record {minting_account = \"${MINT_ACC}\";
