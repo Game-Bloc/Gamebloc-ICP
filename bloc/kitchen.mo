@@ -1168,6 +1168,22 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : Nat8) : async Bool {
+        try {
+            await RustBloc.test_end_tournament(id, caller, no_of_winners)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func archive_tournament(id : Text) {
+        try {
+            await RustBloc.archive_tournament(id)
+        } catch err {
+            throw (err)
+        }
+    };
+
     public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
         // assert(caller == userCanisterId);
         let result : Bloctypes.UserProfile = await RustBloc.getSelf(caller);
