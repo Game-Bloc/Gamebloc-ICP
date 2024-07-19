@@ -38,6 +38,11 @@ module {
 
     };
 
+    public type UserBalance = {
+        user : Principal;
+        balance : Nat64;
+    };
+
     public type Pay = {
         tournamentTitle : Text;
         tournament_id_hash : Text;

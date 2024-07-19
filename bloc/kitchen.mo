@@ -52,16 +52,19 @@ shared ({ caller }) actor class Kitchen() {
     private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
     private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
     private stable var feedback_id : Nat = 0;
+    private stable var volume : Nat64 = 0;
     private stable var SupportedGames : [Text] = [];
     private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
     private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
     private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
+    private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
 
 
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
     var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
     var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
+    var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
 
     var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
     var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
@@ -84,6 +87,7 @@ shared ({ caller }) actor class Kitchen() {
         NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
 
         messageEntries := Iter.toArray(MessageHashMap.entries());
+        BalanceEntries := Iter.toArray(BalanceHashMap.entries());
 
         // Passwords
         PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
@@ -93,6 +97,7 @@ shared ({ caller }) actor class Kitchen() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
         ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
         MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+        BalanceHashMap := HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
         NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 
         ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
@@ -118,6 +123,14 @@ shared ({ caller }) actor class Kitchen() {
     // Ledger Canister
     //
 
+    public func updateVolume(_amount : Nat64) : (){
+        volume += _amount;
+    };
+
+    public shared func getVolume() : async Nat64 {
+        volume;
+    };
+
     public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
         // var mod = await is_mod(caller);
         try {
@@ -139,8 +152,6 @@ shared ({ caller }) actor class Kitchen() {
         } catch err {
             throw (err);
         }
-
-        
     };
 
     // Using the caller
@@ -155,6 +166,8 @@ shared ({ caller }) actor class Kitchen() {
             return #err(Error.message(err))
         }
     };
+
+
 
     // using the canister
     public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
@@ -433,6 +446,52 @@ shared ({ caller }) actor class Kitchen() {
         };
         unique
     };
+
+    public shared ({ caller }) func initBalance(me : Principal) : async () {
+        var token = await icp_balance2(caller);
+
+        BalanceHashMap.put(caller, {
+            user = caller;
+            balance = token.e8s;
+        });
+    };
+
+    public shared ({ caller }) func updateBalance(_amount : Nat64, ) : async Bool {
+        var _balance = BalanceHashMap.get(caller);
+        switch (_balance) {
+            case null {
+                return false
+            };
+            case (?(_balance)) {
+                var newBalance : Bloctypes.UserBalance = {
+                    user = _balance.user;
+                    balance = _balance.balance + _amount;
+                };
+                var updated = BalanceHashMap.replace(caller, newBalance);
+                return true
+            }
+        }
+    };
+
+    // public shared ({ caller }) func checkLastBalance() : async Nat64{
+    //     var _balance = BalanceHashMap.get(caller);
+    //     switch (_balance) {
+    //         case null {
+    //             return false
+    //         };
+    //         case (?(_balance)) {
+    //             var newBalance : Bloctypes.UserBalance = {
+    //                 user = _balance.user;
+    //                 balance = _balance.balance + _amount;
+    //             };
+    //             var updated = BalanceHashMap.replace(caller, newBalance);
+    //             return true
+    //         }
+    //     }
+    //     return _balance.balance;
+    // };
+
+
 
 
     public func logIn(caller : Principal) : async Bool {
