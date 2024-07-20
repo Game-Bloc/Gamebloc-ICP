@@ -56,6 +56,8 @@ const AdminViewTournamentDetails = () => {
     assign_squad_point,
     isAssigningPoints,
     isLoading,
+    updating,
+    archive_tournament,
   } = useGameblocHooks()
   const { updateTournament } = useUpdateTournament()
   const { fetchAllTournaments, loading } = useFetchAllTournaments()
@@ -71,7 +73,7 @@ const AdminViewTournamentDetails = () => {
   const [players, setPlayers] = useState<any[]>([])
   const { updateAllSquads } = useUpdateAllSquad()
   const squad_data = useAppSelector((state) => state.squad)
-  const { noData, updating, getAllSquads } = useGetAllSquad()
+  const { noData, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -208,6 +210,19 @@ const AdminViewTournamentDetails = () => {
     setSearch(value)
   }
 
+  const handleArchiveModal = () => {
+    setOpenModal(!openModal)
+  }
+
+  const archive = () => {
+    archive_tournament(
+      id,
+      "Archived Successfully.",
+      "Error, try again.",
+      "/admin-tournament-view",
+    )
+  }
+
   const saveChanges = () => {
     console.log("squad Points", squadPoints)
     console.log("palyers Points", playerPoints)
@@ -234,11 +249,6 @@ const AdminViewTournamentDetails = () => {
           )
     }
   }
-
-  const handleArchiveModal = () => {
-    setOpenModal(!openModal)
-  }
-  const archive = () => {}
 
   if (loading) {
     return (
@@ -414,11 +424,29 @@ const AdminViewTournamentDetails = () => {
                                 onClick={() => setOpenModal(true)}
                                 className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
                               >
-                                <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
-                                <p className="ml-[.4rem] text-white text-[.8rem]">
-                                  {" "}
-                                  Archive Tournament
-                                </p>
+                                {updating ? (
+                                  <div className="flex items-center  gap-2">
+                                    <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                      Wait
+                                    </p>
+                                    <ClipLoader
+                                      color={color}
+                                      loading={updating}
+                                      cssOverride={override}
+                                      size={10}
+                                      aria-label="Loading Spinner"
+                                      data-testid="loader"
+                                    />
+                                  </div>
+                                ) : (
+                                  <>
+                                    <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                    <p className="ml-[.4rem] text-white text-[.8rem]">
+                                      {" "}
+                                      Archive Tournament
+                                    </p>
+                                  </>
+                                )}
                               </button>
                               {/* <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
@@ -619,8 +647,7 @@ const AdminViewTournamentDetails = () => {
           <Modal
             modal={handleArchiveModal}
             _function={archive}
-            message="Are you
-                      sure you want to archive this tournament ?, this action cannot be undone. "
+            message="Are you Sure you want to archive this tournnament"
           />
         )}
       </div>

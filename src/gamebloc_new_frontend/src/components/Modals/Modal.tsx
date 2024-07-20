@@ -20,7 +20,7 @@ const Modal = ({ modal, _function, message }: Prop) => {
             <div className="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
               <div className="relative  bg-primary-first rounded-lg text-center overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-lg sm:w-full">
                 <div className=" bg-primary-first px-4 pt-5 shadow-md pb-4 sm:p-6 sm:pb-4">
-                  <div className=" flex  flex-col w-full  sm:w-[28rem] p-4 h-[11rem]  ">
+                  <div className=" flex  flex-col w-full  sm:w-[28rem] p-4 h-fit  ">
                     {/* <h4 className="font-medium text-[#08172E] text-white/90 text-base ">
                       Sign Out of Gamebloc
                     </h4> */}
@@ -34,7 +34,9 @@ const Modal = ({ modal, _function, message }: Prop) => {
                       </button>
                       <button
                         className="py-2 px-8 ml-4 bg-[#EF4444] text-[#ffffff] w-full  text-xs sm:text-sm "
-                        onClick={() => _function()}
+                        onClick={() => {
+                          _function(), modal(false)
+                        }}
                       >
                         Yes, I’m Sure
                       </button>
