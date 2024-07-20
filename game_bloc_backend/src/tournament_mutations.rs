@@ -55,8 +55,8 @@ pub fn start_tournament(id: String) {
 }
 
 #[update]
-pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
-                      -> bool
+pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8)
+    -> bool
 {
     if get_self(principal).is_mod {
         TOURNAMENT_STORE.with(|tournament_store| {
@@ -71,23 +71,23 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                 GameType::TeamvTeam => {}
                 GameType::Single => {
                     // winners.append(&mut winning_players);
-                    tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
-                        PROFILE_STORE.with(|profile_store| {
-                            let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
-                            profile.wins = profile.wins + 1;
-                            profile.attendance = match profile.attendance {
-                                None => {
-                                    Some(1)
-                                }
-                                Some(attendance) => {
-                                    Some(attendance + 1)
-                                }
-                            };
-                            profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
-                        });
+                    tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                            PROFILE_STORE.with(|profile_store| {
+                                let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                profile.wins = profile.wins + 1;
+                                profile.attendance = match profile.attendance {
+                                    None => {
+                                        Some(1)
+                                    }
+                                    Some(attendance) => {
+                                        Some(attendance + 1)
+                                    }
+                                };
+                                profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
+                            });
                         tournament.winers.push(id_mapping.0.clone())
                     });
-                    tournament.points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping| {
+                    tournament.points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                         PROFILE_STORE.with(|profile_store| {
                             let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
                             profile.losses = match profile.losses {
@@ -97,7 +97,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                                 Some(lossses) => {
                                     Some(lossses + 1)
                                 }
-                            };
+                            } ;
                             profile.attendance = match profile.attendance {
                                 None => {
                                     Some(1)
@@ -111,12 +111,13 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                     });
                 }
                 GameType::Duo => {
-                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
+                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                         SQUAD_STORE.with(|squad_store| {
                             let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
                             squad.wins = match squad.wins {
                                 None => {
                                     Some(1)
+
                                 }
                                 Some(wins) => {
                                     Some(wins + 1)
@@ -134,7 +135,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                         });
                         tournament.winers.push(id_mapping.0.clone())
                     });
-                    tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping| {
+                    tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                         SQUAD_STORE.with(|squad_store| {
                             let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
                             squad.losses = match squad.losses {
@@ -144,7 +145,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                                 Some(lossses) => {
                                     Some(lossses + 1)
                                 }
-                            };
+                            } ;
                             squad.attendance = match squad.attendance {
                                 None => {
                                     Some(1)
@@ -158,12 +159,13 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                     });
                 }
                 GameType::Squad => {
-                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
+                    tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                         SQUAD_STORE.with(|squad_store| {
                             let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
                             squad.wins = match squad.wins {
                                 None => {
                                     Some(1)
+
                                 }
                                 Some(wins) => {
                                     Some(wins + 1)
@@ -181,7 +183,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                         });
                         tournament.winers.push(id_mapping.0.clone())
                     });
-                    tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping| {
+                    tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                         SQUAD_STORE.with(|squad_store| {
                             let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
                             squad.losses = match squad.losses {
@@ -191,7 +193,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
                                 Some(lossses) => {
                                     Some(lossses + 1)
                                 }
-                            };
+                            } ;
                             squad.attendance = match squad.attendance {
                                 None => {
                                     Some(1)
@@ -215,8 +217,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners: u8)
     }
 }
 
-#[update]
-pub fn archive_tournament(id: String)
+pub fn archive_tournament(id: String,)
 {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
@@ -231,8 +232,8 @@ pub fn archive_tournament(id: String)
 }
 
 #[update]
-pub fn test_end_tournament(id: String, principal: Principal, number_of_winners: u8)
-                           -> bool
+pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u8)
+                      -> bool
 {
     // if get_self(principal).is_mod {
     // let mut winners = Vec::new();
@@ -252,19 +253,19 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners: 
             GameType::TeamvTeam => {}
             GameType::Single => {
                 // winners.append(&mut winning_players);
-                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
+                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                     tournament.winers.push(id_mapping.0.clone())
                 });
             }
             GameType::Duo => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
+                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                     tournament.winers.push(id_mapping.0.clone())
                 });
             }
             GameType::Squad => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping| {
+                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                     tournament.winers.push(id_mapping.0.clone())
                 });
             }
@@ -283,7 +284,7 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners: 
 }
 
 #[update]
-pub fn join_tournament(name: String, id: String, ign: (String, String, String)) {
+pub fn join_tournament(name: String, id: String, ign: (String,String, String)) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         tournament.user.push(name);
@@ -301,7 +302,7 @@ pub fn join_tournament(name: String, id: String, ign: (String, String, String)) 
 }
 
 #[update]
-pub fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String, String, String)>, new_member_ign: Option<Vec<(String, String, String)>>) {
+pub fn  join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String, String, String)>, new_member_ign: Option<Vec<(String, String, String)>>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         SQUAD_STORE.with(|squad_store| {
