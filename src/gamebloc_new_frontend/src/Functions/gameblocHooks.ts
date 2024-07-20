@@ -860,6 +860,15 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const start_tournament = async (id: string) => {
+    try {
+      await whoamiActor2.start_tournament(id)
+      console.log("Tournament successfully started")
+    } catch (err) {
+      console.log("error startinng tournament", err)
+    }
+  }
+
   const end_tournament = async (
     id: string,
     principal_id: Principal,
@@ -977,5 +986,6 @@ export const useGameblocHooks = () => {
     multiSelect_user_profile,
     assign_squad_point,
     archive_tournament,
+    start_tournament,
   }
 }

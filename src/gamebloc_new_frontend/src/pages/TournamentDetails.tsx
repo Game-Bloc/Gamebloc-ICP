@@ -12,16 +12,20 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import Chat from "../components/tournament/Chat"
 import { DotChartOutlined } from "@ant-design/icons"
 import { useUpdateTournament } from "../Functions/blochooks"
-import { LocalStorage } from "@dfinity/auth-client"
+import { inProgress } from "../components/utils/utills"
+import { useGameblocHooks } from "../Functions/gameblocHooks"
+import { useAuth } from "../Auth/use-auth-client"
 const gameImage = require("../../assets/category1.svg").default
 
 const TournamentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
   const tournamentData = useAppSelector((state) => state.tournamentData)
   const { updating, updateTournament } = useUpdateTournament()
+  const { start_tournament } = useGameblocHooks()
   const tourData = tournamentData
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
@@ -29,7 +33,7 @@ const TournamentDetail = () => {
   const _squad_point = tourData[0].squad_points.length === 0
 
   const status = Object.keys(tourData[0].status)[0].toUpperCase() === "ARCHIVED"
-  console.log("Status", status)
+
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -73,9 +77,14 @@ const TournamentDetail = () => {
     img.src = gameImage
   }, [gameImage])
 
+  // console.log("starting date", tourData[0].starting_date)
+
   useEffect(() => {
     updateTournament()
-  }, [])
+    if (inProgress(tourData[0].starting_date)) {
+      start_tournament(id)
+    }
+  }, [isAuthenticated])
 
   if (status) {
     return (
