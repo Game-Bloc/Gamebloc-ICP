@@ -366,12 +366,20 @@ export const useGameblocHooks = () => {
           principal_id: principal,
         },
       ]
+
+      const wins: any = []
+      const losses: any = []
+      const attendance: any = []
+
       const squad = {
         tag,
         id_hash,
         status,
         members,
         name,
+        wins,
+        losses,
+        attendance,
         captain,
         requests,
         points,
@@ -835,6 +843,23 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const archive_tournament = async (
+    id: string,
+    success: string,
+    error: string,
+    route,
+  ) => {
+    try {
+      setUpdating(true)
+      await whoamiActor2.archive_tournament(id)
+      popUp(success, route)
+    } catch (err) {
+      errorPopUp(error)
+      console.log("error archiving tournament", err)
+      setUpdating(false)
+    }
+  }
+
   const end_tournament = async (
     id: string,
     principal_id: Principal,
@@ -951,5 +976,6 @@ export const useGameblocHooks = () => {
     assign_solo_point,
     multiSelect_user_profile,
     assign_squad_point,
+    archive_tournament,
   }
 }

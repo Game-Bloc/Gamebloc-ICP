@@ -293,7 +293,7 @@ export const useGetAllSquad = () => {
       setUpdating(true)
       const fetchSquads: any = await whoamiActor.get_all_squad()
       dispatch(clearSquad())
-      // console.log("All Squads", fetchSquads)
+      console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
         for (const data of fetchSquads) {
           const squads: SquadState = {
@@ -302,6 +302,9 @@ export const useGetAllSquad = () => {
             status: data.status,
             name: data.name,
             tag: data.tag,
+            wins: data.wins,
+            losses: data.losses[0],
+            attendance: data.attendance[0],
             members: data.members.map((member: string) => member),
             requests: data.requests.map((gamer: string) => gamer),
             points: data.points.map((points: any) => points),
@@ -334,7 +337,7 @@ export const useUpdateAllSquad = () => {
       setUpdating(true)
 
       const fetchSquads: any = await whoamiActor.get_all_squad()
-      // console.log("update Squads", fetchSquads)
+      console.log("update Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
         for (const data of fetchSquads) {
           const squads: SquadState = {
@@ -343,6 +346,9 @@ export const useUpdateAllSquad = () => {
             status: data.status,
             name: data.name,
             tag: data.tag,
+            wins: data.wins,
+            losses: data.losses[0],
+            attendance: data.attendance[0],
             members: data.members.map((member: string) => member),
             requests: data.requests.map((gamer: string) => gamer),
             points: data.points.map((points: any) => points),
