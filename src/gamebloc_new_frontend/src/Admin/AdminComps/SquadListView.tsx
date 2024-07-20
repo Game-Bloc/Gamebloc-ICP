@@ -19,6 +19,7 @@ type prop = {
   setPlayerPoints: React.Dispatch<
     React.SetStateAction<[string, string, Points][]>
   >
+  tourData: any
 }
 
 interface Points {
@@ -106,11 +107,20 @@ const transformSquadData = (squads, players) => {
   })
 }
 
-const SquadListView = ({ players, setSquadPoints, setPlayerPoints }: prop) => {
-  const squads = useAppSelector((state) => state.squad)
+const SquadListView = ({
+  players,
+  setSquadPoints,
+  setPlayerPoints,
+  tourData,
+}: prop) => {
+  // const squads = useAppSelector((state) => state.squad)
   const [dataSource, setDataSource] = useState([])
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [currentPlayer, setCurrentPlayer] = useState(null)
+
+  const squads = tourData[0].squad
+  console.log("players", players)
+  // console.log("false", squads)
 
   useEffect(() => {
     const transformedData = transformSquadData(squads, players)

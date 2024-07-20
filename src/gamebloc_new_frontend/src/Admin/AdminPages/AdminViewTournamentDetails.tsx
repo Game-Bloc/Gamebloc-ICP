@@ -133,8 +133,12 @@ const AdminViewTournamentDetails = () => {
           return squad
             .map((player: any) => {
               return player.map(
-                ([principalId, inGameName]: [string, string]) => {
-                  return { principalId, inGameName }
+                ([username, principalId, inGameName]: [
+                  string,
+                  string,
+                  string,
+                ]) => {
+                  return { username, principalId, inGameName }
                 },
               )
             })
@@ -625,6 +629,7 @@ const AdminViewTournamentDetails = () => {
                             <>
                               {_squad_point ? (
                                 <SquadListView
+                                  tourData={tourData}
                                   players={players}
                                   setSquadPoints={setSquadPoints}
                                   setPlayerPoints={setPlayerPoints}
