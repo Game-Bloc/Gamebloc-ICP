@@ -97,6 +97,7 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
+  archive_tournament : (text) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
