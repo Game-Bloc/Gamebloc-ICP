@@ -366,6 +366,7 @@ export const useGameblocHooks = () => {
           principal_id: principal,
         },
       ]
+
       const wins: any = []
       const losses: any = []
       const attendance: any = []
@@ -842,11 +843,30 @@ export const useGameblocHooks = () => {
     }
   }
 
-  const archive_tournament = async () => 
-    // try {
-    //   setIsLoading(true)
-    //   await whoamiActor2.
-    // }
+  const archive_tournament = async (
+    id: string,
+    success: string,
+    error: string,
+    route,
+  ) => {
+    try {
+      setUpdating(true)
+      await whoamiActor2.archive_tournament(id)
+      popUp(success, route)
+    } catch (err) {
+      errorPopUp(error)
+      console.log("error archiving tournament", err)
+      setUpdating(false)
+    }
+  }
+
+  const start_tournament = async (id: string) => {
+    try {
+      await whoamiActor2.start_tournament(id)
+      console.log("Tournament successfully started")
+    } catch (err) {
+      console.log("error startinng tournament", err)
+    }
   }
 
   const end_tournament = async (
@@ -965,5 +985,7 @@ export const useGameblocHooks = () => {
     assign_solo_point,
     multiSelect_user_profile,
     assign_squad_point,
+    archive_tournament,
+    start_tournament,
   }
 }
