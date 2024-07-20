@@ -77,12 +77,16 @@ const TournamentDetail = () => {
     img.src = gameImage
   }, [gameImage])
 
-  // console.log("starting date", tourData[0].starting_date)
+  // console.log("starting date", Object.keys(tourData[0].status)[0].toUpperCase())
 
   useEffect(() => {
     updateTournament()
     if (inProgress(tourData[0].starting_date)) {
-      start_tournament(id)
+      if (
+        Object.keys(tourData[0].status)[0].toUpperCase() !== "GAMEINPROGRESS"
+      ) {
+        start_tournament(id)
+      }
     }
   }, [isAuthenticated])
 
