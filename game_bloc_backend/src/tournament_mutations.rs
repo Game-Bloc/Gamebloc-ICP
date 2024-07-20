@@ -290,7 +290,7 @@ pub fn join_tournament(name: String, id: String, ign: (String, String, String)) 
         match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::Single => {
                 match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
-                    Ordering::Equal => {
+                    Ordering::Greater => {
                         tournament.user.push(name);
                         match tournament.clone().in_game_names {
                             None => {
@@ -316,7 +316,7 @@ pub fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
-            Ordering::Equal => {
+            Ordering::Greater => {
                 SQUAD_STORE.with(|squad_store| {
                     let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
                     if new_member_ign.is_some() {
