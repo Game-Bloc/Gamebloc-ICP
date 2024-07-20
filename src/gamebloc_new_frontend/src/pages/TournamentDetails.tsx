@@ -84,9 +84,10 @@ const TournamentDetail = () => {
     updateTournament()
     if (inProgress(tourData[0].starting_date)) {
       if (
-        Object.keys(tourData[0].status)[0].toUpperCase() !== "GAMEINPROGRESS"
+        Object.keys(tourData[0].status)[0].toUpperCase() === "ACCEPTINGPLAYERS"
       ) {
         start_tournament(id)
+      } else {
       }
     }
   }, [isAuthenticated])
