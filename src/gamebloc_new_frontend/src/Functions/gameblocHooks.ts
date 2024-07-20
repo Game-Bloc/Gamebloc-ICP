@@ -366,12 +366,19 @@ export const useGameblocHooks = () => {
           principal_id: principal,
         },
       ]
+      const wins: any = []
+      const losses: any = []
+      const attendance: any = []
+
       const squad = {
         tag,
         id_hash,
         status,
         members,
         name,
+        wins,
+        losses,
+        attendance,
         captain,
         requests,
         points,
@@ -833,6 +840,13 @@ export const useGameblocHooks = () => {
       console.log("error getting profile", err)
       setIsLoading(false)
     }
+  }
+
+  const archive_tournament = async () => 
+    // try {
+    //   setIsLoading(true)
+    //   await whoamiActor2.
+    // }
   }
 
   const end_tournament = async (

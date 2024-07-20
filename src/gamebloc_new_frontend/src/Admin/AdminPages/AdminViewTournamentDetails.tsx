@@ -26,6 +26,7 @@ import Results from "../AdminComps/Results"
 import SquadListView from "../AdminComps/SquadListView"
 import SquadResult from "../AdminComps/SquadResult"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
+import Modal from "../../components/Modals/Modal"
 
 interface DataType {
   position: React.Key
@@ -72,6 +73,7 @@ const AdminViewTournamentDetails = () => {
   const squad_data = useAppSelector((state) => state.squad)
   const { noData, updating, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
+  const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, string, Points][]>(
     [],
@@ -232,6 +234,11 @@ const AdminViewTournamentDetails = () => {
           )
     }
   }
+
+  const handleArchiveModal = () => {
+    setOpenModal(!openModal)
+  }
+  const archive = () => {}
 
   if (loading) {
     return (
@@ -402,8 +409,18 @@ const AdminViewTournamentDetails = () => {
                               </div>
                             </div>
 
-                            {/* <div className="flex h-full items-end">
-                            <div className="flex justify-between  gap-4 items-center ">
+                            <div className="flex h-full items-end">
+                              <button
+                                onClick={() => setOpenModal(true)}
+                                className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                              >
+                                <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                <p className="ml-[.4rem] text-white text-[.8rem]">
+                                  {" "}
+                                  Archive Tournament
+                                </p>
+                              </button>
+                              {/* <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
                                 <p className="ml-[.4rem]  text-white text-[.8rem]">
@@ -418,8 +435,8 @@ const AdminViewTournamentDetails = () => {
                                   End
                                 </p>
                               </button>
+                            </div> */}
                             </div>
-                          </div> */}
                           </div>
                         </div>
                         <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
@@ -598,6 +615,14 @@ const AdminViewTournamentDetails = () => {
             </div>
           </div>
         </section>
+        {openModal && (
+          <Modal
+            modal={handleArchiveModal}
+            _function={archive}
+            message="Are you
+                      sure you want to archive this tournament ?, this action cannot be undone. "
+          />
+        )}
       </div>
     )
   }
