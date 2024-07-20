@@ -287,11 +287,11 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners: 
 pub fn join_tournament(name: String, id: String, ign: (String, String, String)) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        tournament.user.push(name);
         match GameType::from_str(tournament.game_type.clone().as_str()) {
             GameType::Single => {
                 match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
                     Ordering::Equal => {
+                        tournament.user.push(name);
                         match tournament.clone().in_game_names {
                             None => {
                                 tournament.in_game_names = Some(vec![ign.clone()]);
