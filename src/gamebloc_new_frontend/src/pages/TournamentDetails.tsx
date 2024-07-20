@@ -24,6 +24,7 @@ const TournamentDetail = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
   const tournamentData = useAppSelector((state) => state.tournamentData)
+  const role = useAppSelector((state) => state.userProfile.role)
   const { updating, updateTournament } = useUpdateTournament()
   const { start_tournament } = useGameblocHooks()
   const tourData = tournamentData
@@ -78,7 +79,7 @@ const TournamentDetail = () => {
   }, [gameImage])
 
   // console.log("starting date", Object.keys(tourData[0].status)[0].toUpperCase())
-
+  // console.log("Role", Object.keys(role[0])[0].toUpperCase())
   useEffect(() => {
     updateTournament()
     if (inProgress(tourData[0].starting_date)) {

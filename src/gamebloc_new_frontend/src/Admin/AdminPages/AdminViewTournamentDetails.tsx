@@ -57,6 +57,8 @@ const AdminViewTournamentDetails = () => {
     isAssigningPoints,
     isLoading,
     updating,
+    isEnding,
+    end_tournament,
     archive_tournament,
   } = useGameblocHooks()
   const { updateTournament } = useUpdateTournament()
@@ -76,6 +78,7 @@ const AdminViewTournamentDetails = () => {
   const { noData, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [endModal, setEndModal] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, string, Points][]>(
     [],
@@ -218,12 +221,27 @@ const AdminViewTournamentDetails = () => {
     setOpenModal(!openModal)
   }
 
+  const handleEndModal = () => {
+    setEndModal(!endModal)
+  }
+
   const archive = () => {
     archive_tournament(
       id,
       "Archived Successfully.",
       "Error, try again.",
       "/admin-tournament-view",
+    )
+  }
+
+  const end = () => {
+    end_tournament(
+      id,
+      _principal,
+      no_of_winners,
+      "Tournament Ended successfully",
+      "Error, try again",
+      "",
     )
   }
 
@@ -236,7 +254,6 @@ const AdminViewTournamentDetails = () => {
             id,
             _principal,
             playerPoints,
-            no_of_winners,
             "Players points saved",
             "Error setting players points",
             "",
@@ -246,7 +263,6 @@ const AdminViewTournamentDetails = () => {
             _principal,
             playerPoints,
             squadPoints,
-            no_of_winners,
             "Players and squads points saved",
             "Error setting points",
             "",
@@ -424,34 +440,64 @@ const AdminViewTournamentDetails = () => {
                             </div>
 
                             <div className="flex h-full items-end">
-                              <button
-                                onClick={() => setOpenModal(true)}
-                                className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
-                              >
-                                {updating ? (
-                                  <div className="flex items-center  gap-2">
-                                    <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
-                                      Wait
-                                    </p>
-                                    <ClipLoader
-                                      color={color}
-                                      loading={updating}
-                                      cssOverride={override}
-                                      size={10}
-                                      aria-label="Loading Spinner"
-                                      data-testid="loader"
-                                    />
-                                  </div>
-                                ) : (
-                                  <>
-                                    <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
-                                    <p className="ml-[.4rem] text-white text-[.8rem]">
-                                      {" "}
-                                      Archive Tournament
-                                    </p>
-                                  </>
-                                )}
-                              </button>
+                              <div className="flex justify-between  gap-4 items-center ">
+                                <button
+                                  onClick={() => setEndModal(true)}
+                                  className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                >
+                                  {isEnding ? (
+                                    <div className="flex items-center  gap-2">
+                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                        Wait
+                                      </p>
+                                      <ClipLoader
+                                        color={color}
+                                        loading={isEnding}
+                                        cssOverride={override}
+                                        size={10}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                      <p className="ml-[.4rem] text-white text-[.8rem]">
+                                        {" "}
+                                        End Tournament
+                                      </p>
+                                    </>
+                                  )}
+                                </button>
+                                <button
+                                  onClick={() => setOpenModal(true)}
+                                  className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                >
+                                  {updating ? (
+                                    <div className="flex items-center  gap-2">
+                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                        Wait
+                                      </p>
+                                      <ClipLoader
+                                        color={color}
+                                        loading={updating}
+                                        cssOverride={override}
+                                        size={10}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <>
+                                      {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
+                                      <p className="ml-[.4rem] text-white text-[.8rem]">
+                                        {" "}
+                                        Archive Tournament
+                                      </p>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
                               {/* <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
@@ -652,7 +698,14 @@ const AdminViewTournamentDetails = () => {
           <Modal
             modal={handleArchiveModal}
             _function={archive}
-            message="Are you Sure you want to archive this tournnament"
+            message="Are you Sure you want to archive this tournament?"
+          />
+        )}
+        {endModal && (
+          <Modal
+            modal={handleEndModal}
+            _function={end}
+            message="Are you sure you want to end this tournament?"
           />
         )}
       </div>
