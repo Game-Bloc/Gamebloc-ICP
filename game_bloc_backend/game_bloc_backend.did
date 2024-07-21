@@ -47,6 +47,7 @@ type Squad = record {
   requests : vec text;
   points : opt vec record { text; text; Point };
 };
+
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
 type TournamentAccount = record {
