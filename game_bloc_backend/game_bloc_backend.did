@@ -1,5 +1,7 @@
 type Chat = record { id : text; name : text; time : text; message : text };
+
 type GameType = variant { Duo; Squad; TeamvTeam; Single };
+
 type LobbyAccount = record {
   idx : nat8;
   status : TournamentStatus;
@@ -17,15 +19,21 @@ type LobbyAccount = record {
   tournament_type : TournamentType;
   lobby_rules : text;
 };
+
 type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
+
 type Member = record { name : text; principal_id : text };
+
 type Point = record {
   kill_points : nat;
   total_points : nat;
   position_points : nat;
 };
+
 type Result = variant { Ok : nat8; Err : nat8 };
+
 type Role = variant { Mod; Player };
+
 type Squad = record {
   tag : text;
   id_hash : text;
@@ -146,4 +154,5 @@ service : () -> {
   three_lobbies_merge : (text) -> ();
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
+  update_tournament_details : (text, text) -> ();
 }

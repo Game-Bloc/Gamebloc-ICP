@@ -359,3 +359,12 @@ pub fn join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String
         tournament_store.borrow_mut().insert(id, tournament.clone());
     });
 }
+
+#[update]
+pub fn update_tournament_details(id: String, tournament_rules: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.tournament_rules = tournament_rules;
+        tournament_store.borrow_mut().insert(id, tournament);
+    })
+}
