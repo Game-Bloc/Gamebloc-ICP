@@ -98,7 +98,8 @@ const Players = ({ data }: Props) => {
         )}
       </div>
       <div className="flex flex-col w-full justify-center items-center">
-        {hasDateReached(data.end_date) ? (
+        {hasDateReached(data.end_date) ||
+        Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
           <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
             <p className="font-semibold">Ended</p>
           </button>

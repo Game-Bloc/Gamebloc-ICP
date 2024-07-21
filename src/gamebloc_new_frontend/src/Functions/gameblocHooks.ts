@@ -880,7 +880,7 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setIsEnding(true)
-      await whoamiActor2.end_tournament(id, principal_id, no_of_winners)
+      await whoamiActor2.test_end_tournament(id, principal_id, no_of_winners)
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")

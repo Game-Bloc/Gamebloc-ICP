@@ -1,9 +1,26 @@
-import React from "react"
+import React, { useEffect } from "react"
 import AdminHeader from "../AdminComps/AdminHeader"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import AdminTabBar from "../AdminComps/AdminTabBar"
+import {
+  useFetchAllTournaments,
+  useUpdateTournament,
+} from "../../Functions/blochooks"
+import { useAppSelector } from "../../redux/hooks"
 
 const AdminTournamentView = () => {
+  const { updateTournament } = useUpdateTournament()
+  const { fetchAllTournaments, loading } = useFetchAllTournaments()
+  const tournament = useAppSelector((state) => state.tournamentData)
+
+  useEffect(() => {
+    if (tournament.length > 0 || null || undefined) {
+      updateTournament()
+    } else {
+      fetchAllTournaments()
+    }
+  }, [])
+
   return (
     <div className="bg-[#02070E]">
       <section className="flex bg-[#02070E]">
