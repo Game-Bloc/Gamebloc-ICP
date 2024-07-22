@@ -20,3 +20,25 @@ ckBTC {
     
 }
 
+"cketh_minter": {
+      "type": "custom",
+      "candid": "",
+      "wasm": "",
+      "remote": {
+        "id" : {
+          "ic": "sv3dd-oaaaa-aaaar-qacoa-cai"
+        }
+      }
+    },
+
+     "ckbtc_minter": {
+      "type": "custom",
+      "candid": "",
+      "wasm": "",
+      "remote": {
+        "id" : {
+          "ic": "mqygn-kiaaa-aaaar-qaadq-cai"
+        }
+      }
+    },
+
