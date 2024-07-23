@@ -39,6 +39,49 @@ body.no-scroll {
   resize: none;
 }
 
+/* STEP CSS EDIT */
+.step {
+  display: flex;
+  flex-direction: row !important;
+}
+
+:where(
+    .css-dev-only-do-not-override-1lmxa3x
+  ).ant-steps.ant-steps-horizontal:not(.ant-steps-label-vertical)
+  .ant-steps-item-tail {
+  display: none;
+}
+
+:where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-vertical
+  > .ant-steps-item
+  .ant-steps-item-icon {
+  margin-inline-end: 6px;
+}
+
+:where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-vertical
+  > .ant-steps-item:not(:last-child)
+  > .ant-steps-item-container
+  > .ant-steps-item-tail {
+  display: block;
+}
+
+:where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-small
+  .ant-steps-item-tail {
+  top: 8px;
+  width: 100%;
+  height: 2px;
+}
+
+:where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-vertical
+  > .ant-steps-item
+  > .ant-steps-item-container
+  > .ant-steps-item-tail {
+  rotate: -90deg;
+  height: 120%;
+  top: -1rem;
+  left: 65%;
+}
+
 /* Antd table css styles */
 
 /* thead[class*="ant-table-thead"] th {

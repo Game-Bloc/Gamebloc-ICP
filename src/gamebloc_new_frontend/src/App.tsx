@@ -18,6 +18,7 @@ import Prepaid from "./pages/Prepaid"
 import AdminTournamentView from "./Admin/AdminPages/AdminTournamentView"
 import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDetails"
 import ViewResult from "./pages/ViewResult"
+import PaymentModal from "./components/Modals/PaymentModal"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -42,6 +43,7 @@ const App = () => {
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/world-chat" element={<WorldChat />} />
+            <Route path="/payment" element={<PaymentModal />} />
           </Route>
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}
