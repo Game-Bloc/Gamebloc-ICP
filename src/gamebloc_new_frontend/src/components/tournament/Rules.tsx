@@ -11,6 +11,7 @@ import parse from "html-react-parser"
 import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
 import { hasDateReached, inProgress } from "../utils/utills"
+import PaymentModal from "../Modals/PaymentModal"
 interface Props {
   data: any
 }
@@ -30,6 +31,7 @@ const Rules = ({ data }: Props) => {
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
 
   const override = {
     display: "block",
@@ -102,9 +104,7 @@ const Rules = ({ data }: Props) => {
                 onClick={
                   isAuthenticated
                     ? () => {
-                        data.game_type.toUpperCase() === "SINGLE"
-                          ? setOpenSoloModal(true)
-                          : setOpenSquadModal(true)
+                        setOpenPaymentModal(true)
                       }
                     : () => handleLoginModal()
                 }
@@ -132,7 +132,7 @@ const Rules = ({ data }: Props) => {
         )}
       </div>
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
-      {openSoloModal && (
+      {/* {openSoloModal && (
         <JoinAsSolo
           modal={handleSoloModal}
           owner={owner}
@@ -147,6 +147,16 @@ const Rules = ({ data }: Props) => {
           id={id}
           squad={squad}
           data={data}
+        />
+      )} */}
+      {openPaymentModal && (
+        <PaymentModal
+          id={id}
+          squad={squad}
+          data={data}
+          squad_id={squad_id}
+          owner={owner}
+          userId={principal}
         />
       )}
     </div>

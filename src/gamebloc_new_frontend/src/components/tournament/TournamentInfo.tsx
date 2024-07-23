@@ -15,6 +15,7 @@ import LoginModal2 from "../Modals/LoginModal2"
 import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
 import { hasDateReached, inProgress } from "../utils/utills"
+import PaymentModal from "../Modals/PaymentModal"
 interface Props {
   data: any
 }
@@ -36,6 +37,7 @@ const TournamentInfo = ({ data }: Props) => {
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
 
   const override = {
     display: "block",
@@ -593,9 +595,7 @@ const TournamentInfo = ({ data }: Props) => {
                   onClick={
                     isAuthenticated
                       ? () => {
-                          data.game_type.toUpperCase() === "SINGLE"
-                            ? setOpenSoloModal(true)
-                            : setOpenSquadModal(true)
+                          setOpenPaymentModal(true)
                         }
                       : () => handleLoginModal()
                   }
@@ -623,7 +623,7 @@ const TournamentInfo = ({ data }: Props) => {
           )}
         </div>
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
-        {openSoloModal && (
+        {/* {openSoloModal && (
           <JoinAsSolo
             modal={handleSoloModal}
             owner={owner}
@@ -638,6 +638,16 @@ const TournamentInfo = ({ data }: Props) => {
             id={id}
             squad={squad}
             data={data}
+          />
+        )} */}
+        {openPaymentModal && (
+          <PaymentModal
+            id={id}
+            squad={squad}
+            data={data}
+            squad_id={squad_id}
+            owner={owner}
+            userId={principal}
           />
         )}
       </div>

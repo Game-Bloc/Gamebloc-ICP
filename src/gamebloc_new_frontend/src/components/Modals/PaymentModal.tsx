@@ -11,9 +11,12 @@ import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
 
 interface Props {
-  modal: () => void
-  _principal: any
-  notification_id: number
+  owner: string
+  id: string
+  userId: string
+  squad: any
+  data: any
+  squad_id: string
 }
 const override = {
   display: "block",
@@ -21,7 +24,8 @@ const override = {
   borderColor: "white",
 }
 
-const PaymentModal = () => {
+const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
+  const [active, setActive] = useState<string>("first")
   const [recipient, setRecipient] = useState<string>("")
   const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
@@ -100,29 +104,36 @@ const PaymentModal = () => {
                         ]}
                       />
                     </ConfigProvider>
-                    <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
-                      Select payment option
-                    </p>
-                    <PaymentCard
-                      onChange={onChange}
-                      paymentTitle="CkUsdc"
-                      img="ckusdc.svg"
-                    />
-                    <PaymentCard
-                      onChange={onChange}
-                      paymentTitle="ICP"
-                      img="Icp.svg"
-                    />
-                    <div className="flex flex-co mt-4 ">
-                      <div className="flex justify-between items-center">
-                        <p className="text-[.9rem] lg:text-[1rem]  text-primary-second/80  ">
-                          Transfer Amount
+                    {active === "first" && (
+                      <>
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                          Select payment option
                         </p>
-                        <p className=" text-[.9rem] lg:text-[1rem]  text-primary-second/80  ">
-                          $5
-                        </p>
-                      </div>
-                    </div>
+                        <PaymentCard
+                          onChange={onChange}
+                          paymentTitle="CkUsdc"
+                          img="ckusdc.svg"
+                        />
+                        <PaymentCard
+                          onChange={onChange}
+                          paymentTitle="ICP"
+                          img="Icp.svg"
+                        />
+                        <div className="flex flex-col mt-4 p-4">
+                          <div className="flex justify-between items-center w-full">
+                            <p className="text-[.9rem] lg:text-[1rem]  text-white/80  ">
+                              Transfer Amount
+                            </p>
+                            <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
+                              $5.00
+                            </p>
+                          </div>
+                        </div>
+                        <button className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second">
+                          Approve
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
