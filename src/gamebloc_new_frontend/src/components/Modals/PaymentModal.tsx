@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import {
@@ -9,6 +9,8 @@ import {
 } from "@ant-design/icons"
 import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
+import SoloModal from "./payment/SoloModal"
+import SquadModal from "./payment/SquadModal"
 
 interface Props {
   owner: string
@@ -25,7 +27,8 @@ const override = {
 }
 
 const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
-  const [active, setActive] = useState<string>("first")
+  const animationContainer = useRef(null)
+  const [active, setActive] = useState<string>("third")
   const [recipient, setRecipient] = useState<string>("")
   const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
@@ -35,7 +38,7 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
-
+  const game_type = data.game_type.toUpperCase() === "SINGLE"
   const onChange: CheckboxProps["onChange"] = (e) => {
     console.log(`checked = ${e.target.checked}`)
   }
@@ -129,10 +132,37 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                             </p>
                           </div>
                         </div>
-                        <button className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second">
+                        <button
+                          onClick={() => setActive("second")}
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
                           Approve
                         </button>
                       </>
+                    )}
+                    {active === "second" && (
+                      <div>
+                        {game_type ? (
+                          <SoloModal owner={owner} id={id} userId={userId} />
+                        ) : (
+                          <SquadModal
+                            squad={squad}
+                            data={data}
+                            squad_id={squad_id}
+                            id={id}
+                          />
+                        )}
+                      </div>
+                    )}
+                    {active === "third" && (
+                      <div className="mt-2">
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                          Confirmation
+                        </p>
+                        <div className="mt-8">
+                          {/* <div ref={animationContainer}></div> */}
+                        </div>
+                      </div>
                     )}
                   </div>
                 </div>

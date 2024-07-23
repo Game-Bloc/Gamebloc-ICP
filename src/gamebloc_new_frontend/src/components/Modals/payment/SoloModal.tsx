@@ -45,7 +45,7 @@ const SoloModal = ({ owner, id, userId }: Props) => {
     <div className="">
       <div className="flex  flex-col">
         <h2 className="text-primary-second text-center text-base  mb-4 ">
-          Enter your current Codm In Game Name to join this tournament
+          Codm In Game Name
         </h2>
         <div className="flex-col flex mt-4 ">
           <p className="text-[.8rem] sm:text-base mt-[.8rem] font-normal text-white">
