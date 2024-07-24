@@ -282,8 +282,8 @@ const CreateTournament = () => {
       errorPopUp("Field Input is invalid !")
     } else {
       if (
-        (tourType === "Prepaid" && balance > +poolPrize) ||
-        (tourType === "Crowdfunded" && balance > +entryPrice)
+        (tourType === "Prepaid" && balance > icpValue) ||
+        (tourType === "Crowdfunded" && balance > icpValue)
       ) {
         createTournament(
           1,
