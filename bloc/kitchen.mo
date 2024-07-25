@@ -167,6 +167,23 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    // public func transferICPFrom(_from : AccountIdentifier, _to : AccountIdentifier, _amount : Nat) : async LedgerTypes.Result_2 {
+    //     try {
+    //         let transfer = await ICPLedger.icrc2_transfer_from({
+    //             to = _to;
+    //             fee = null;
+    //             spender_subaccount = null;
+    //             from = _from;
+    //             memo = null;
+    //             created_at_time = Nat64.fromIntWrap(Time.now());
+    //             amount = _amount;
+    //         });
+    //         return #ok(transfer);
+    //     } catch (err) {
+    //         retrun #err(Error.nessage(err));
+    //     }
+    // };
+
 
 
     // using the canister
