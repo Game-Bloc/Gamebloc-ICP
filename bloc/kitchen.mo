@@ -2,9 +2,9 @@ import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import AccountIdentifier "mo:account-identifier";
-import Account "mo:account";
-import { now } = "mo:base/Time";
+// import Account "mo:account";
 
+import { now } = "mo:base/Time";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
@@ -1155,18 +1155,21 @@ shared ({ caller }) actor class Kitchen() {
     // Tournaments
     //
 
+    public type Subaccount = [Nat8];
+    public type Account = { owner : Principal; subaccount : ?Subaccount };
+
     public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
             await update_tournaments_created(caller);
             TournamentHashMap.put(caller, tournamentAccount);
             var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
-            var _to : LedgerTypes.Account = {
+            var _to  = {
                 owner = gbc_admin;
                 subaccount = null
             };
 
-            var _from : LedgerTypes.Account = {
+            var _from = {
                 owner = fromPrincipal;
                 subaccount = null
             };
