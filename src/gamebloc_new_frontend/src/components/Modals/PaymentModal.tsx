@@ -3,6 +3,7 @@ import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import {
   CheckCircleOutlined,
+  CheckOutlined,
   DollarOutlined,
   LoadingOutlined,
   UsergroupAddOutlined,
@@ -11,6 +12,7 @@ import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
 import SoloModal from "./payment/SoloModal"
 import SquadModal from "./payment/SquadModal"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   owner: string
@@ -27,8 +29,8 @@ const override = {
 }
 
 const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
-  const animationContainer = useRef(null)
-  const [active, setActive] = useState<string>("third")
+  const navigate = useNavigate()
+  const [active, setActive] = useState<string>("first")
   const [recipient, setRecipient] = useState<string>("")
   const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
@@ -36,13 +38,14 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   const [date, setDate] = useState<number>()
   const [createdAt, setCreatedAt] = useState<string>("")
   const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type = data.game_type.toUpperCase() === "SINGLE"
-  const onChange: CheckboxProps["onChange"] = (e) => {
-    console.log(`checked = ${e.target.checked}`)
-  }
 
+  const handlePaymentChange = (payment: string) => {
+    setSelectedPayment(payment)
+  }
   return (
     <div>
       <div
@@ -113,14 +116,18 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                           Select payment option
                         </p>
                         <PaymentCard
-                          onChange={onChange}
+                          onChange={() => handlePaymentChange("CkUsdc")}
                           paymentTitle="CkUsdc"
                           img="ckusdc.svg"
+                          selectedPayment={selectedPayment}
+                          handlePaymentChange={handlePaymentChange}
                         />
                         <PaymentCard
-                          onChange={onChange}
+                          onChange={() => handlePaymentChange("ICP")}
                           paymentTitle="ICP"
                           img="Icp.svg"
+                          selectedPayment={selectedPayment}
+                          handlePaymentChange={handlePaymentChange}
                         />
                         <div className="flex flex-col mt-4 p-4">
                           <div className="flex justify-between items-center w-full">
@@ -156,12 +163,18 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                     )}
                     {active === "third" && (
                       <div className="mt-2">
-                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
-                          Confirmation
-                        </p>
-                        <div className="mt-8">
-                          {/* <div ref={animationContainer}></div> */}
+                        <div className="mt-8 mb-4 flex w-full justify-center">
+                          <img src={`check2.png`} alt="" />
                         </div>
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                          successful
+                        </p>
+                        <button
+                          onClick={() => navigate("/dashboard")}
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          Back to Tournament
+                        </button>
                       </div>
                     )}
                   </div>

@@ -95,7 +95,7 @@ const SquadModal = ({ squad, data, squad_id, id }: Props) => {
       playerIGNs,
       "Tournament Joined",
       "Error, try again.",
-      "/dashboard",
+      "",
     )
   }
   return (

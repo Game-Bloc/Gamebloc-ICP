@@ -5,18 +5,33 @@ import {
 } from "@ant-design/icons"
 import { Checkbox, ConfigProvider, Steps } from "antd"
 import { CheckboxChangeEvent } from "antd/es/checkbox"
-import React from "react"
+import React, { useState } from "react"
 
 interface prop {
-  onChange: (e: CheckboxChangeEvent) => void
+  onChange: () => void
   img: string
   paymentTitle: string
+  selectedPayment: string | null
+  handlePaymentChange: (payment: string) => void
 }
 
-const PaymentCard = ({ onChange, img, paymentTitle }: prop) => {
+const PaymentCard = ({
+  onChange,
+  img,
+  paymentTitle,
+  selectedPayment,
+  handlePaymentChange,
+}: prop) => {
   return (
     <div className="mt-[-1rem] mb-4 md:mt-0 p-2">
-      <div className="flex  justify-between items-center py-8  px-6 w-full h-[3rem] rounded-md bg-white/20">
+      <div
+        onClick={() => handlePaymentChange(paymentTitle)}
+        className={`${
+          selectedPayment === paymentTitle
+            ? `bg-primary-second/20 border border-solid border-primary-second`
+            : `bg-white/20`
+        } flex cursor-pointer  justify-between items-center py-8   px-6 w-full h-[3rem] rounded-md `}
+      >
         <div className="flex items-center w-full">
           <img src={`${img}`} alt="" className="w-5 h-5 m-0" />
           <div className="flex ml-8 flex-col ">
@@ -40,7 +55,10 @@ const PaymentCard = ({ onChange, img, paymentTitle }: prop) => {
               },
             }}
           >
-            <Checkbox onChange={onChange} />
+            <Checkbox
+              onChange={onChange}
+              checked={selectedPayment === paymentTitle}
+            />
           </ConfigProvider>
         </div>
       </div>

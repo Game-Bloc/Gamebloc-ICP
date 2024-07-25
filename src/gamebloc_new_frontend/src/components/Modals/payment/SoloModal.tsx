@@ -34,7 +34,7 @@ const SoloModal = ({ owner, id, userId }: Props) => {
         playerIgn,
         "You have successfully joined this tournament",
         "Something went wrong try again",
-        "/dashboard",
+        "",
       )
     } else {
       errorPopUp("Ign is empty !")
