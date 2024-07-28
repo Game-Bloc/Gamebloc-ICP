@@ -10,6 +10,10 @@ interface Props {
 const ChatCard2 = ({ message, userName }: Props) => {
   const userId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
+  const role = useAppSelector((state) => state.userProfile.role)
+  const _role = Object.keys(role[0])[0].toUpperCase()
+  const mod = "ESTYLOBAM"
+  // const mod = "DEONORLA"
 
   return (
     <div
@@ -37,7 +41,13 @@ const ChatCard2 = ({ message, userName }: Props) => {
               message.message.username === userName ? "" : "flex-row-reverse"
             } `}
           >
-            <div className="bg-primary-second/20 rounded-xl p-3 min-w-[6rem]   max-w-[27rem]">
+            <div
+              className={` ${
+                username.toUpperCase() === mod
+                  ? `bg-green-600/50`
+                  : `bg-primary-second/20`
+              }  rounded-xl p-3 min-w-[6rem]  max-w-[27rem]`}
+            >
               <div className="flex items-center ">
                 <p
                   className={`${

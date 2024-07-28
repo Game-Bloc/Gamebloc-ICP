@@ -67,7 +67,6 @@ const LandingPage = () => {
         <About setModal={setOpenModal} />
         <Footer />
         {openModal && <LoginModal modal={handleModal} />}
-        {accountModal && <WelcomeModal modal={handleAccModal} />}
       </div>
     )
   }

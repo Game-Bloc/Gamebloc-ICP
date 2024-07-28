@@ -105,32 +105,41 @@ const Chat = ({ data }: Props) => {
 
         {/* <ChatCard2 /> */}
       </div>
-      <div className="w-full mt-2 flex justify-center items-center">
-        <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
-          <textarea
-            className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
-            placeholder="Leave a comment"
-            rows={1}
-            value={message}
-            onChange={onMessageChange}
-          />
+
+      {data.users.some((index: any) => index.includes(username)) ||
+      data.squad.some((players: any) =>
+        players.members.some((gamer: any) => gamer.name.includes(username)),
+      ) ? (
+        <div className="w-full mt-2 flex justify-center items-center">
+          <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
+            <textarea
+              className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+              placeholder="Leave a comment"
+              rows={1}
+              value={message}
+              onChange={onMessageChange}
+            />
+          </div>
+          {message === "" ? (
+            <></>
+          ) : (
+            <IoSend
+              onClick={
+                isAuthenticated
+                  ? () => {
+                      sendMessage()
+                      setMessage("")
+                    }
+                  : () => handleLoginModal()
+              }
+              className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
+            />
+          )}
         </div>
-        {message === "" ? (
-          <></>
-        ) : (
-          <IoSend
-            onClick={
-              isAuthenticated
-                ? () => {
-                    sendMessage()
-                    setMessage("")
-                  }
-                : () => handleLoginModal()
-            }
-            className="text-gray mr-0 my-0 ml-4 text-[1.5rem]"
-          />
-        )}
-      </div>
+      ) : (
+        <></>
+      )}
+
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
     </div>
   )

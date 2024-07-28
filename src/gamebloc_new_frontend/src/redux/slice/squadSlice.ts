@@ -6,6 +6,9 @@ export interface SquadState {
   captain: string
   status: any
   name: string
+  wins: any
+  losses: any
+  attendance: any
   tag: string
   members: string[]
   requests: string[]

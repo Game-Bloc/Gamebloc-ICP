@@ -24,7 +24,7 @@ const RecommendedCard = ({ data, index }: Props) => {
   return (
     <div
       onClick={() => navigate(`/active-tournament/${data.id_hash}`)}
-      className=" bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
+      className=" relative bg-[#040D17]/80 h-fit  flex flex-col rounded-xl "
     >
       {!isImageLoaded ? (
         <div className="flex flex-col w-full h-full justify-center items-center">
@@ -33,7 +33,35 @@ const RecommendedCard = ({ data, index }: Props) => {
           </Skeleton.Node>
         </div>
       ) : (
-        <img src={cardImg} alt="" className="rounded-[12px] m-0  w-full" />
+        <div className="relative">
+          <img src={cardImg} alt="" className="rounded-[12px] m-0  w-full" />
+          {Object.keys(data.status)[0].toUpperCase() === "ARCHIVED" ? (
+            <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center bg-[#FEE4E2] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#D92D20] ">
+                {Object.keys(data.status)[0]}
+              </p>
+            </div>
+          ) : Object.keys(data.status)[0].toUpperCase() ===
+            "ACCEPTINGPLAYERS" ? (
+            <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center bg-[#D1FADF] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#039855] ">
+                Accepting Players
+              </p>
+            </div>
+          ) : Object.keys(data.status)[0].toUpperCase() === "GAMEINPROGRESS" ? (
+            <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center bg-[#FFD98F] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#B88217] ">
+                In Progress
+              </p>
+            </div>
+          ) : (
+            <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center bg-[#FEE4E2] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#D92D20] ">
+                Ended
+              </p>
+            </div>
+          )}
+        </div>
       )}
 
       <div className="mt-[.5rem] p-[.5rem] flex flex-col w-full">

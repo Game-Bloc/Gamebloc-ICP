@@ -4,6 +4,7 @@ import type { TabsProps } from "antd"
 import NewTournamentTable from "./NewTournamentTable"
 import OngoingTournamentTable from "./OngoingTournamentTable"
 import CompletedTournamentTable from "./CompletedTournamentTable"
+import ArchivedTournament from "./ArchivedTournament"
 
 const AdminTabBar = () => {
   const onChange = (key: string) => {}
@@ -22,6 +23,11 @@ const AdminTabBar = () => {
       key: "3",
       label: `Completed Tournaments`,
       children: <CompletedTournamentTable />,
+    },
+    {
+      key: "4",
+      label: `Archived Tournaments`,
+      children: <ArchivedTournament />,
     },
   ]
   return (

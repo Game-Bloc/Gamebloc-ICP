@@ -31,6 +31,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
+
   const [color, setColor] = useState("#ffffff")
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([])
   const [playerIGNs, setPlayerIGNs] = useState<[string, string, string][]>([])
@@ -100,6 +101,9 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
       "/dashboard",
     )
   }
+
+  // const captain = players.map((squad: any) => squad.captain)[0]
+  // console.log("captain", captain)
 
   return (
     <div>
@@ -296,8 +300,9 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
                           <div className="flex w-full mt-4 justify-center items-center">
                             <button
                               onClick={
-                                players.map((squad: any) => squad.captain) ===
-                                username
+                                players.map(
+                                  (squad: any) => squad.captain,
+                                )[0] === username
                                   ? () => joinTournament()
                                   : () =>
                                       errorPopUp(

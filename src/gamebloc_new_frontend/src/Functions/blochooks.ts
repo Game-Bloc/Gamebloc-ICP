@@ -301,6 +301,9 @@ export const useGetAllSquad = () => {
             captain: data.captain,
             status: data.status,
             name: data.name,
+            wins: data.wins,
+            losses: data.losses[0],
+            attendance: data.attendance[0],
             tag: data.tag,
             members: data.members.map((member: string) => member),
             requests: data.requests.map((gamer: string) => gamer),
@@ -342,12 +345,15 @@ export const useUpdateAllSquad = () => {
             captain: data.captain,
             status: data.status,
             name: data.name,
+            wins: data.wins,
+            losses: data.losses[0],
+            attendance: data.attendance[0],
             tag: data.tag,
             members: data.members.map((member: string) => member),
             requests: data.requests.map((gamer: string) => gamer),
             points: data.points.map((points: any) => points),
           }
-          console.log("updating squads", squads)
+          // console.log("updating squads", squads)
           dispatch(updateSquad(squads))
         }
         setUpdating(false)

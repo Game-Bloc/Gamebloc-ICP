@@ -44,6 +44,7 @@ export const useGameblocHooks = () => {
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isEnding, setIsEnding] = useState<boolean>(false)
   const [isAccount, setIsAccount] = useState<boolean>(false)
   const [isAssigningPoints, setIsAssigningPoints] = useState<boolean>(false)
   const accountId = useAppSelector((state) => state.userProfile.account_id)
@@ -366,12 +367,20 @@ export const useGameblocHooks = () => {
           principal_id: principal,
         },
       ]
+
+      const wins: any = []
+      const losses: any = []
+      const attendance: any = []
+
       const squad = {
         tag,
         id_hash,
         status,
         members,
         name,
+        wins,
+        losses,
+        attendance,
         captain,
         requests,
         points,
@@ -835,16 +844,50 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const archive_tournament = async (
+    id: string,
+    success: string,
+    error: string,
+    route,
+  ) => {
+    try {
+      setUpdating(true)
+      await whoamiActor2.archive_tournament(id)
+      popUp(success, route)
+    } catch (err) {
+      errorPopUp(error)
+      console.log("error archiving tournament", err)
+      setUpdating(false)
+    }
+  }
+
+  const start_tournament = async (id: string) => {
+    try {
+      await whoamiActor2.start_tournament(id)
+      console.log("Tournament successfully started")
+    } catch (err) {
+      console.log("error startinng tournament", err)
+    }
+  }
+
   const end_tournament = async (
     id: string,
     principal_id: Principal,
     no_of_winners: number,
+    success: string,
+    error: string,
+    route,
   ) => {
     try {
-      await whoamiActor2.end_tournament(id, principal_id, no_of_winners)
+      setIsEnding(true)
+      await whoamiActor2.test_end_tournament(id, principal_id, no_of_winners)
+      setIsEnding(false)
+      popUp(success, route)
       console.log("Tournament Ended")
     } catch (error) {
-      console.log("error getting profile", error)
+      console.log("error ending tournament", error)
+      errorPopUp(error)
+      setIsEnding(false)
     }
   }
 
@@ -852,7 +895,6 @@ export const useGameblocHooks = () => {
     tournament_id: string,
     principal: Principal,
     user_id_and_points: any[],
-    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -864,7 +906,7 @@ export const useGameblocHooks = () => {
         user_id_and_points,
         principal,
       )
-      end_tournament(tournament_id, principal, no_of_winners)
+
       popUp(success, route)
       window.location.reload()
     } catch (err) {
@@ -881,7 +923,6 @@ export const useGameblocHooks = () => {
     principal: Principal,
     user_id_and_points: any[],
     squad_id_and_points: any[],
-    no_of_winners: number,
     success: string,
     error: string,
     route,
@@ -898,7 +939,6 @@ export const useGameblocHooks = () => {
         tournament_id,
         principal,
         user_id_and_points,
-        no_of_winners,
         success,
         error,
         route,
@@ -920,6 +960,7 @@ export const useGameblocHooks = () => {
     noData,
     isAccount,
     fetching,
+    isEnding,
     isAssigningPoints,
     isAdmin,
     updatingProfile,
@@ -951,5 +992,8 @@ export const useGameblocHooks = () => {
     assign_solo_point,
     multiSelect_user_profile,
     assign_squad_point,
+    archive_tournament,
+    start_tournament,
+    end_tournament,
   }
 }
