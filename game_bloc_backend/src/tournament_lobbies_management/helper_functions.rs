@@ -30,7 +30,8 @@ pub(crate) fn squad_or_player_religator(mut tournament: &mut TournamentAccount, 
     }
 }
 
-pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, mut participant_queue: Vec<String>, mut squad_queue: Vec<Squad>) {
+pub(crate) fn squad_or_player_promoter(mut tournament: &mut TournamentAccount, mut participant_queue: Vec<String>, squad_queue: Vec<Squad>) {
+
     match GameType::from_str(tournament.game_type.clone().as_str()) {
         GameType::Single => {
             let mut count = participant_queue.len() / 100;

@@ -177,14 +177,14 @@ pub enum GameType {
 }
 
 impl GameType {
-    pub fn name(&self) -> String {
-        match self {
-            GameType::TeamvTeam => "primary".to_string(),
-            GameType::Single => "unique".to_string(),
-            GameType::Duo => "unique".to_string(),
-            GameType::Squad => "unique".to_string(),
-        }
-    }
+    // pub fn name(&self) -> String {
+    //     match self {
+    //         GameType::TeamvTeam => "primary".to_string(),
+    //         GameType::Single => "unique".to_string(),
+    //         GameType::Duo => "unique".to_string(),
+    //         GameType::Squad => "unique".to_string(),
+    //     }
+    // }
     pub fn from_str(name: &str) -> GameType {
         match name {
             "TeamvTeam" => GameType::TeamvTeam,
@@ -233,11 +233,11 @@ pub enum SquadType {
     Closed,
 }
 
-impl AppMessage {
-    pub fn candid_serialize(&self) -> Vec<u8> {
-        encode_one(&self).unwrap()
-    }
-}
+// impl AppMessage {
+//     pub fn candid_serialize(&self) -> Vec<u8> {
+//         encode_one(&self).unwrap()
+//     }
+// }
 
 // For a type to be used in a `StableBTreeMap`, it needs to implement the `Storable`
 // trait, which specifies how the type can be serialized/deserialized.

@@ -118,7 +118,7 @@ pub fn set_mod(identity: Principal) {
 #[query]
 pub fn is_mod(identity: Principal) -> bool {
     PROFILE_STORE.with(|profile_store| {
-        let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
+        let profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         match profile.role.unwrap() {
             Role::Player => return false,
             Role::Mod => return true
