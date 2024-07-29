@@ -31,7 +31,7 @@ import AccountIdentifier "utils/utils";
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
-import ICRC1 "canister:icrc1_ledger";
+// import ICRC1 "canister:icrc1_ledger";
 
 import IndexTypes "types/indextypes";
 import Bloctypes "types/bloctypes";
@@ -262,18 +262,18 @@ shared ({ caller }) actor class Kitchen() {
         })
     };
 
-    public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
-        await ICRC1.icrc2_transfer_from({
-            to = _to;
-            fee = null;
-            spender_subaccount = null;
-            from = _from;
-            memo = null;
-            created_at_time = null;
-            amount = _amount;
+    // public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
+    //     await ICRC1.icrc2_transfer_from({
+    //         to = _to;
+    //         fee = null;
+    //         spender_subaccount = null;
+    //         from = _from;
+    //         memo = null;
+    //         created_at_time = null;
+    //         amount = _amount;
 
-        });
-    };
+    //     });
+    // };
 
     /// Ledger Canister Ends
 
@@ -1162,39 +1162,39 @@ shared ({ caller }) actor class Kitchen() {
         try {
             await update_tournaments_created(caller);
             TournamentHashMap.put(caller, tournamentAccount);
-            var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+            // var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
-            var _to  = {
-                owner = gbc_admin;
-                subaccount = null
-            };
+            // var _to  = {
+            //     owner = gbc_admin;
+            //     subaccount = null
+            // };
 
-            var _from = {
-                owner = fromPrincipal;
-                subaccount = null
-            };
+            // var _from = {
+            //     owner = fromPrincipal;
+            //     subaccount = null
+            // };
 
-            if (tournamentAccount.tournament_type == #Crowdfunded) {
-                var result = await ICRC1.icrc2_transfer_from({
-                    to = _to;
-                    fee = null;
-                    spender_subaccount = null;
-                    from = _from;
-                    memo = null;
-                    created_at_time = null;
-                    amount = Nat8.toNat(tournamentAccount.entry_prize);
-                });
-            } else { //Should be #prepaid
-                var result = await ICRC1.icrc2_transfer_from({
-                    to = _to;
-                    fee = null;
-                    spender_subaccount = null;
-                    from = _from;
-                    memo = null;
-                    created_at_time = null;
-                    amount = tournamentAccount.total_prize;
-                });
-            };
+            // if (tournamentAccount.tournament_type == #Crowdfunded) {
+            //     var result = await ICRC1.icrc2_transfer_from({
+            //         to = _to;
+            //         fee = null;
+            //         spender_subaccount = null;
+            //         from = _from;
+            //         memo = null;
+            //         created_at_time = null;
+            //         amount = Nat8.toNat(tournamentAccount.entry_prize);
+            //     });
+            // } else { //Should be #prepaid
+            //     var result = await ICRC1.icrc2_transfer_from({
+            //         to = _to;
+            //         fee = null;
+            //         spender_subaccount = null;
+            //         from = _from;
+            //         memo = null;
+            //         created_at_time = null;
+            //         amount = tournamentAccount.total_prize;
+            //     });
+            // };
             
             await RustBloc.create_tournament(tournamentAccount);
 

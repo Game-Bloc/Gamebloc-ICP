@@ -9,18 +9,7 @@
     "kitchen": {
       "main": "bloc/kitchen.mo",
       "type": "motoko",
-      "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index", "icrc1_ledger"]
-    },
-
-    "icrc1_ledger": {
-      "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/95787355499f3be929f2ab302ed44cdad7c64061/rs/rosetta-api/icrc1/ledger/ledger.did",
-      "wasm": "https://download.dfinity.systems/ic/95787355499f3be929f2ab302ed44cdad7c64061/canisters/ic-icrc1-ledger.wasm.gz",
-      "remote": {
-        "id": {
-          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-        }
-      }
+      "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index"]
     },
 
     "icp_ledger": {
