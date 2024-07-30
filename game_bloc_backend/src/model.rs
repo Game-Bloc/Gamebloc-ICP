@@ -77,6 +77,12 @@ pub_struct!(
      title: String,
      squad_points: Option<Vec<(String,String,Point)>>,
      points: Option<Vec<(String,String,Point)>>,
+     squad_vector_mod_1: Option<Vec<(String,String,Point)>>,
+     points_vector_mod_1: Option<Vec<(String,String,Point)>>,
+     squad_vector_mod_2: Option<Vec<(String,String,Point)>>,
+     points_vector_mod_2: Option<Vec<(String,String,Point)>>,
+     squad_vector_mod_3: Option<Vec<(String,String,Point)>>,
+     points_vector_mod_3: Option<Vec<(String,String,Point)>>,
      in_game_names: Option<Vec<(String,String,String)>>,
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
@@ -150,6 +156,13 @@ pub_struct!(
     id: String,
     time: String,
     message: String,
+});
+
+pub_struct!(Contestant {
+    name: String,
+    point: u128,
+    wins: u8,
+    losses: u8,
 });
 
 

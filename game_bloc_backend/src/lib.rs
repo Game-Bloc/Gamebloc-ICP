@@ -165,6 +165,54 @@ pub fn leave_or_remove_squad_member(principal: Principal, id: String) {
     });
 }
 
+#[query]
+pub fn get_leaderboard() -> Vec<Contestant> {
+    PROFILE_STORE.with(|profile_store| {
+        let mut contestant = Contestant {
+            ..Default::default()
+        };
+        let mut leaderboard: Vec<Contestant> = Vec::new();
+        profile_store.borrow().iter().for_each(|user| {
+            let user:UserProfile = (*user.1).clone().try_into().unwrap();
+            match user.points {
+                None => {}
+                Some(point) => {
+                    let mut point_gathered: u128 = 0;
+                    contestant.name = (user.username).parse().unwrap();
+                    contestant.losses = user.losses.unwrap();
+                    contestant.wins = user.wins;
+                    for x in point.iter() {
+                        let points:(String,String,Point) = (*x).clone().try_into().unwrap();
+                        point_gathered = point_gathered + (points.2 as Point).total_points;
+                    }
+                    contestant.point = point_gathered;
+                    leaderboard.push(contestant.clone());
+                }
+            }
+        });
+        leaderboard
+    })
+}
+
+#[update]
+pub fn assign_points(identity: String, user_id_and_point: (String, String, Point)) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&identity).cloned().unwrap();
+        match profile.points {
+            None => {
+                profile.points = Some( vec![user_id_and_point]);
+            }
+            Some(points) => {
+                let mut updated_points = points;
+                updated_points.push(user_id_and_point);
+                profile.points = Some(updated_points);
+            }
+        }
+        profile_store.borrow_mut().insert(identity, profile);
+    });
+}
+
+
 
 #[init]
 fn init() {
