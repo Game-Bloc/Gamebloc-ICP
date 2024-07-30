@@ -2,9 +2,9 @@ import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import AccountIdentifier "mo:account-identifier";
-// import AccountIdentifier "mo:account";
-import { now } = "mo:base/Time";
+// import Account "mo:account";
 
+import { now } = "mo:base/Time";
 import Bool "mo:base/Bool";
 import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
@@ -31,6 +31,7 @@ import AccountIdentifier "utils/utils";
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
+// import ICRC1 "canister:icrc1_ledger";
 
 import IndexTypes "types/indextypes";
 import Bloctypes "types/bloctypes";
@@ -245,6 +246,8 @@ shared ({ caller }) actor class Kitchen() {
         await ICPIndex.icrc1_balance_of(account)
     };
 
+
+
     // Transfers ICP from the caller to receipient
     public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
         await ICPLedger.send_dfx({
@@ -258,6 +261,19 @@ shared ({ caller }) actor class Kitchen() {
             amount = amount
         })
     };
+
+    // public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
+    //     await ICRC1.icrc2_transfer_from({
+    //         to = _to;
+    //         fee = null;
+    //         spender_subaccount = null;
+    //         from = _from;
+    //         memo = null;
+    //         created_at_time = null;
+    //         amount = _amount;
+
+    //     });
+    // };
 
     /// Ledger Canister Ends
 
@@ -283,6 +299,8 @@ shared ({ caller }) actor class Kitchen() {
     //     await ICPIndex.get_account_identifier_transactions(args);
     // };
 
+
+
     public func index_status() : async IndexTypes.Status {
         await ICPIndex.status()
     };
@@ -299,29 +317,7 @@ shared ({ caller }) actor class Kitchen() {
 
     type Memo = Nat64;
 
-    // public func transferICP(recipient : Text, amount : ICP, fee : ICP,  memo : Memo, created_at : TimeStamp) : async LedgerTypes.Result_5 {
-    //     // try {
-    //     await ICPLedger.transfer({
-    //             from_subaccount = null;
-    //             to = AccountIdentifier.fromPrincipal(Principal.fromText(recipient), null);
-    //             amount = amount;
-    //             fee = fee;
-    //             memo = memo;
-    //             created_at_time = ?created_at;
-    //         });
-    //     //     switch(transferLog) {
-    //     //         case(#Ok(transferLog)) {
-    //     //             #ok(transferLog);
-    //     //         };
-    //     //         case(#Err(error)) {
-    //     //             return #err("An error occured!");
-    //     //         };
-    //     //     };
-    //     // } catch(err) {
-    //     //     return #err(Error.message(err));
-    //     // };
-    // };
-
+    
     public func transferWinnerReward(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
         try {
             let transferLog = await ICPLedger.icrc1_transfer({
@@ -464,14 +460,14 @@ shared ({ caller }) actor class Kitchen() {
         unique
     };
 
-    public shared ({ caller }) func initBalance(me : Principal) : async () {
-        var token = await icp_balance2(caller);
+    // public shared ({ caller }) func initBalance(me : Principal) : async () {
+    //     var token = await icp_balance2(caller);
 
-        BalanceHashMap.put(caller, {
-            user = caller;
-            balance = token.e8s;
-        });
-    };
+    //     BalanceHashMap.put(caller, {
+    //         user = caller;
+    //         balance = token.e8s;
+    //     });
+    // };
 
     public shared ({ caller }) func updateBalance(_amount : Nat64, deposit : Bool) : async Bool {
         var _balance = BalanceHashMap.get(caller);
@@ -604,15 +600,15 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // Notify icp deposits
-    public shared ({ caller }) func newTransactions(_length : Nat64) : async () {
-        let newTransactions = await ICPLedger.query_blocks({
-            start = lastCheckedBlock;
-            length = _length;
-        });
+    // public shared ({ caller }) func newTransactions(_length : Nat64) : async () {
+    //     let newTransactions = await ICPLedger.query_blocks({
+    //         start = lastCheckedBlock;
+    //         length = _length;
+    //     });
 
         
 
-    };
+    // };
 
     stable var lastCheckedBlock : Nat64 = 0;
 
@@ -1153,17 +1149,56 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-
+    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe");
 
     //
     // Tournaments
     //
 
+    public type Subaccount = [Nat8];
+    public type Account = { owner : Principal; subaccount : ?Subaccount };
+
     public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
         try {
             await update_tournaments_created(caller);
             TournamentHashMap.put(caller, tournamentAccount);
-            await RustBloc.create_tournament(tournamentAccount)
+            // var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+
+            // var _to  = {
+            //     owner = gbc_admin;
+            //     subaccount = null
+            // };
+
+            // var _from = {
+            //     owner = fromPrincipal;
+            //     subaccount = null
+            // };
+
+            // if (tournamentAccount.tournament_type == #Crowdfunded) {
+            //     var result = await ICRC1.icrc2_transfer_from({
+            //         to = _to;
+            //         fee = null;
+            //         spender_subaccount = null;
+            //         from = _from;
+            //         memo = null;
+            //         created_at_time = null;
+            //         amount = Nat8.toNat(tournamentAccount.entry_prize);
+            //     });
+            // } else { //Should be #prepaid
+            //     var result = await ICRC1.icrc2_transfer_from({
+            //         to = _to;
+            //         fee = null;
+            //         spender_subaccount = null;
+            //         from = _from;
+            //         memo = null;
+            //         created_at_time = null;
+            //         amount = tournamentAccount.total_prize;
+            //     });
+            // };
+            
+            await RustBloc.create_tournament(tournamentAccount);
+
+            // return result
         } catch err {
             throw (err)
         }
@@ -1232,6 +1267,11 @@ shared ({ caller }) actor class Kitchen() {
         } catch err {
             throw (err)
         }
+    };
+
+    public shared func getUserPrincipal(name : Text) : async Principal {
+        var result = await RustBloc.get_profile(name);
+        return Principal.fromText(result.principal_id);
     };
 
     public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
