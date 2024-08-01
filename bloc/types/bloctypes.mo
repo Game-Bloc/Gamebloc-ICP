@@ -167,6 +167,12 @@ module {
         title : Text;
         in_game_names : ?[(Text, Text, Text)];
         points : ?[(Text, Text, Point)];
+        points_vector_mod_1 : ?[(Text, Text, Point)];
+        points_vector_mod_2 : ?[(Text, Text, Point)];
+        points_vector_mod_3 : ?[(Text, Text, Point)];
+        squad_vector_mod_1 : ?[(Text, Text, Point)];
+        squad_vector_mod_2 : ?[(Text, Text, Point)];
+        squad_vector_mod_3 : ?[(Text, Text, Point)];
         tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount]
     };
