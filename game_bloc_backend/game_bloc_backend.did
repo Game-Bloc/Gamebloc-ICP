@@ -1,11 +1,7 @@
 type Chat = record { id : text; name : text; time : text; message : text };
-type Contestant = record {
-  name : text;
-  wins : nat8;
-  losses : nat8;
-  point : nat;
-};
+
 type GameType = variant { Duo; Squad; TeamvTeam; Single };
+
 type LobbyAccount = record {
   idx : nat8;
   status : TournamentStatus;
@@ -23,15 +19,21 @@ type LobbyAccount = record {
   tournament_type : TournamentType;
   lobby_rules : text;
 };
+
 type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
+
 type Member = record { name : text; principal_id : text };
+
 type Point = record {
   kill_points : nat;
   total_points : nat;
   position_points : nat;
 };
+
 type Result = variant { Ok : nat8; Err : nat8 };
+
 type Role = variant { Mod; Player };
+
 type Squad = record {
   tag : text;
   id_hash : text;
@@ -45,6 +47,7 @@ type Squad = record {
   requests : vec text;
   points : opt vec record { text; text; Point };
 };
+
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
 type TournamentAccount = record {
@@ -69,13 +72,7 @@ type TournamentAccount = record {
   starting_date : text;
   no_of_participants : nat;
   tournament_lobby_type : opt TournamentLobbyType;
-  points_vector_mod_1 : opt vec record { text; text; Point };
-  points_vector_mod_2 : opt vec record { text; text; Point };
-  points_vector_mod_3 : opt vec record { text; text; Point };
   no_of_winners : nat8;
-  squad_vector_mod_1 : opt vec record { text; text; Point };
-  squad_vector_mod_2 : opt vec record { text; text; Point };
-  squad_vector_mod_3 : opt vec record { text; text; Point };
   tournament_type : TournamentType;
   entry_prize : nat8;
   points : opt vec record { text; text; Point };
@@ -109,7 +106,7 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_points : (text, record { text; text; Point }) -> ();
+  archive_tournament : (text) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
@@ -131,7 +128,6 @@ service : () -> {
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
   get_all_user : () -> (vec UserProfile) query;
-  get_leaderboard : () -> (vec Contestant) query;
   get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
   get_profile : (text) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;

@@ -264,6 +264,12 @@ export const useGameblocHooks = () => {
     end_date: string,
     title: string,
     squad_points: [],
+    squad_vector_mod_1: [],
+    points_vector_mod_1: [],
+    squad_vector_mod_2: [],
+    points_vector_mod_2: [],
+    squad_vector_mod_3: [],
+    points_vector_mod_3: [],
     squad_in_game_names: [],
     in_game_names: [],
     points: [],
@@ -301,6 +307,12 @@ export const useGameblocHooks = () => {
         title,
         squad_points,
         points,
+        squad_vector_mod_1,
+        points_vector_mod_1,
+        squad_vector_mod_2,
+        points_vector_mod_2,
+        squad_vector_mod_3,
+        points_vector_mod_3,
         in_game_names,
         tournament_lobby_type,
         lobbies,
@@ -864,7 +876,7 @@ export const useGameblocHooks = () => {
   const start_tournament = async (id: string) => {
     try {
       await whoamiActor2.start_tournament(id)
-      console.log("Tournament successfully started")
+      console.log("Tournament successfully start ed")
     } catch (err) {
       console.log("error startinng tournament", err)
     }
