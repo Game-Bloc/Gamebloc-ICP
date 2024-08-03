@@ -152,6 +152,7 @@ service : () -> {
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
+  archive_tournament : (text) -> ();
   structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
   structure_tournament_into_squad_lobbies : (text, text) -> ();
