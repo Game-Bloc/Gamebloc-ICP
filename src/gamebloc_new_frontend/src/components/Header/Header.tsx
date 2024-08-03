@@ -12,6 +12,7 @@ import { CiUser } from "react-icons/ci"
 import { PiSignOutThin } from "react-icons/pi"
 import { useAuth } from "../../Auth/use-auth-client"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
+import { MdLeaderboard } from "react-icons/md"
 import LoginModal2 from "../Modals/LoginModal2"
 import WelcomeModal from "../Modals/WelcomeModal"
 import SignOutModal from "../Modals/SignOutModal"
@@ -70,6 +71,12 @@ const Header = () => {
       action: () => {},
       link: isAuthenticated ? "/world-chat" : "",
       icon: HiChatBubbleOvalLeft,
+    },
+    {
+      name: "Leaderboard",
+      action: () => {},
+      link: "/leaderboard",
+      icon: MdLeaderboard,
     },
   ]
   const closeNotification = () => {
