@@ -966,7 +966,7 @@ export const useGameblocHooks = () => {
   }
 
   const update_user_points = async (
-    identity: string,
+    identity: Principal,
     username: string,
     userId: string,
     points: any,
@@ -977,13 +977,27 @@ export const useGameblocHooks = () => {
         userId,
         points,
       ]
+      setIsLoading(true)
       const update = await whoamiActor2.assign_points(
         identity,
         user_id_and_point,
       )
       console.log("user struct updated")
+      setIsLoading(false)
     } catch (err) {
       console.log("Can't update user point", err)
+      setIsLoading(false)
+    }
+  }
+
+  const get_leaderboard = async () => {
+    try {
+      setIsLoading(true)
+      const leaderboard = await whoamiActor2.get_leaderboard()
+      console.log("Leaderboard", leaderboard)
+    } catch (err) {
+      setIsLoading(false)
+      console.log("Can't get leaderboard stats", err)
     }
   }
 
@@ -1030,5 +1044,6 @@ export const useGameblocHooks = () => {
     start_tournament,
     end_tournament,
     update_user_points,
+    get_leaderboard,
   }
 }

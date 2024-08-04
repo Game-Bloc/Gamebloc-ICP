@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { Principal } from "@dfinity/principal"
+import ClipLoader from "react-spinners/ClipLoader"
 
 type Prop = {
   modal: () => void
   player: any
   onSave: (points: any) => void
   game_type: any
+}
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
 }
 
 type Points = {
@@ -16,18 +24,25 @@ type Points = {
 }
 
 const AssignPointsModal = ({ modal, player, onSave, game_type }: Prop) => {
-  const { update_user_points } = useGameblocHooks()
+  const { update_user_points, isLoading } = useGameblocHooks()
+  const [color, setColor] = useState("#ffffff")
   const [kills, setKills] = useState<number>(player?.kill_points || 0)
   const [positionPoints, setPositionPoints] = useState<number>(
     player?.position_points || 0,
   )
   const [pointsDeduction, setPointsDeduction] = useState<number>(0)
-
+  const _principal = player.userId
+  const __principal = player.id
   const calculateTotalPoints = () => {
     return kills * 5 + positionPoints - pointsDeduction
   }
   console.log("player", player)
-  console.log("identity", game_type[0] === true ? player.principal : player.id)
+  console.log(
+    "identity",
+    game_type[0] === true
+      ? Principal.fromText(_principal)
+      : Principal.fromText(__principal),
+  )
   console.log("username", player.name)
   console.log("id", game_type[0] === true ? player.userId : player.id)
 
@@ -40,7 +55,9 @@ const AssignPointsModal = ({ modal, player, onSave, game_type }: Prop) => {
       total_points: totalPoints,
     }
     update_user_points(
-      game_type[0] === true ? player.principal : player.id,
+      game_type[0] === true
+        ? Principal.fromText(player.userId)
+        : Principal.fromText(player.id),
       player.name,
       game_type[0] === true ? player.userId : player.id,
       points,
@@ -226,7 +243,23 @@ const AssignPointsModal = ({ modal, player, onSave, game_type }: Prop) => {
                         className="bg-[#303B9C] py-2 px-4 flex justify-around items-center"
                         onClick={handleSave}
                       >
-                        <p className="text-[.85rem] text-white">Done</p>
+                        {isLoading ? (
+                          <div className="flex items-center  gap-2">
+                            <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                              Wait
+                            </p>
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={10}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          </div>
+                        ) : (
+                          <p className="text-[.85rem] text-white">Done</p>
+                        )}
                       </button>
                     </div>
                   </div>

@@ -109,7 +109,7 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_points : (text, record { text; text; Point }) -> ();
+  assign_points : (principal, record { text; text; Point }) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );

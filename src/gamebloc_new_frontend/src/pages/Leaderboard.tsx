@@ -1,8 +1,14 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
+import { useGameblocHooks } from "../Functions/gameblocHooks"
 
 const Leaderboard = () => {
+  const { get_leaderboard, isLoading } = useGameblocHooks()
+
+  useEffect(() => {
+    get_leaderboard()
+  }, [])
   return (
     <div className="">
       <section className="flex">
