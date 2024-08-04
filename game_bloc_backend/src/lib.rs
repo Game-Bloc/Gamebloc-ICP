@@ -190,7 +190,10 @@ pub fn get_leaderboard() -> Vec<Contestant> {
                 }
             }
         });
-        leaderboard
+        let mut sorted_leaderboard = leaderboard;
+        sorted_leaderboard.sort_by_key(|k| k.point);
+
+        sorted_leaderboard
     })
 }
 
