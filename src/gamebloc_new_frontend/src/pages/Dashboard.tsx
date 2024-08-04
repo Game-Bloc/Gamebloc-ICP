@@ -54,8 +54,6 @@ const Dashboard = () => {
       } else {
         setAccountModal(true)
       }
-    } else {
-      setAccountModal(false)
     }
   }, [isAuthenticated, userSession])
 

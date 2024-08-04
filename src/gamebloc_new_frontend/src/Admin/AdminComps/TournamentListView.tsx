@@ -10,6 +10,7 @@ interface Props {
   setPlayerPoints: any
   playerPoints: any
   tourData: any
+  game_type: any
 }
 
 interface Points {
@@ -62,6 +63,7 @@ const TournamentListView = ({
   setPlayerPoints,
   playerPoints,
   tourData,
+  game_type,
 }: Props) => {
   const userProfile = useAppSelector((state) => state.userProfile)
   const [dataSource, setDataSource] = useState(
@@ -153,6 +155,7 @@ const TournamentListView = ({
           modal={hideModal}
           player={currentPlayer}
           onSave={(points) => handleSave(currentPlayer.userId, points)}
+          game_type={game_type}
         />
       )}
     </div>

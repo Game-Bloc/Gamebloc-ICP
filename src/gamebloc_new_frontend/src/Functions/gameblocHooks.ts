@@ -186,9 +186,9 @@ export const useGameblocHooks = () => {
         console.log("No account created yet")
       }
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -199,7 +199,7 @@ export const useGameblocHooks = () => {
     try {
       setUpdatingProfile(true)
       const user: any = await whoamiActor.getSelf()
-
+      console.log("Profile", user)
       const profileData: UserProfileState = {
         age: user.age,
         canister_id: user.canister_id,
@@ -224,9 +224,9 @@ export const useGameblocHooks = () => {
       setIsAccount(true)
       console.log("Updating profile")
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setUpdatingProfile(false)
@@ -965,6 +965,28 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const update_user_points = async (
+    identity: string,
+    username: string,
+    userId: string,
+    points: any,
+  ) => {
+    try {
+      const user_id_and_point: [string, string, any] = [
+        username,
+        userId,
+        points,
+      ]
+      const update = await whoamiActor2.assign_points(
+        identity,
+        user_id_and_point,
+      )
+      console.log("user struct updated")
+    } catch (err) {
+      console.log("Can't update user point", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -1007,5 +1029,6 @@ export const useGameblocHooks = () => {
     archive_tournament,
     start_tournament,
     end_tournament,
+    update_user_points,
   }
 }

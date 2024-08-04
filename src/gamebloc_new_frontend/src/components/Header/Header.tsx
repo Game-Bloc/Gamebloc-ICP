@@ -22,6 +22,7 @@ import MobileNoti from "../notifications/MobileNoti"
 const Header = () => {
   const navigate = useNavigate()
   const { isAuthenticated, logout } = useAuth()
+  const { getProfile } = useGameblocHooks()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const notifi = useAppSelector((state) => state.notification)
@@ -94,7 +95,6 @@ const Header = () => {
 
   const signOut = () => {
     localStorage.clear()
-    sessionStorage.clear()
     logout()
     navigate("/dashboard")
     setOpenModal(false)
