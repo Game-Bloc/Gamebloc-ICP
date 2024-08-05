@@ -14,14 +14,12 @@ import {
   updateICP,
   updateId,
 } from "../redux/slice/icpBalanceSlice"
-import { message } from "antd"
 import {
   chatState,
   clearChat,
   pushToChat,
   updateChat,
 } from "../redux/slice/chatSlice"
-import { toNamespacedPath } from "path/posix"
 import {
   addTransactions,
   clearTransaction,
@@ -29,7 +27,11 @@ import {
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
 import { allNotification } from "../redux/slice/notificationSlice"
-import { MultiSelect } from "@tremor/react"
+import {
+  clearBoard,
+  LeaderboardState,
+  updateLeaderboard,
+} from "../redux/slice/leaderboardSlice"
 
 export const useGameblocHooks = () => {
   const {
@@ -992,11 +994,26 @@ export const useGameblocHooks = () => {
 
   const get_leaderboard = async () => {
     try {
-      setIsLoading(true)
+      setUpdating(true)
       const leaderboard = await whoamiActor2.get_leaderboard()
-      console.log("Leaderboard", leaderboard)
+      dispatch(clearBoard())
+      for (const data of leaderboard) {
+        const board: LeaderboardState = {
+          losses: data.losses,
+          name: data.name,
+          point: Number(data.point),
+          wins: data.wins,
+        }
+        // console.log("board", board)
+        dispatch(updateLeaderboard(board))
+      }
+
+      if (leaderboard) {
+        setUpdating(false)
+        // console.log("Leaderboard", leaderboard)
+      }
     } catch (err) {
-      setIsLoading(false)
+      setUpdating(false)
       console.log("Can't get leaderboard stats", err)
     }
   }

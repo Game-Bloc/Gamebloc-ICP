@@ -19,6 +19,7 @@ import icpReducer from "./slice/icpBalanceSlice"
 import chatReducer from "./slice/chatSlice"
 import transactionReducer from "./slice/transactionSlice"
 import notificationReducer from "./slice/notificationSlice"
+import leaderboardReducer from "./slice/leaderboardSlice"
 
 const persistConfig = {
   key: "root",
@@ -37,6 +38,7 @@ const reducer = combineReducers({
   chat: chatReducer,
   transaction: transactionReducer,
   notification: notificationReducer,
+  leaderboard: leaderboardReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)
