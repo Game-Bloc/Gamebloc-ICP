@@ -14,7 +14,7 @@ const Leaderboard = () => {
     get_leaderboard()
   }, [])
 
-  const sortedBoard = leaderboard.sort((a, b) => b.point - a.point)
+  const sortedBoard = [...leaderboard]?.sort((a, b) => b?.point - a?.point)
   const board = sortedBoard.map((players, index) => {
     return { ...players, position: index + 1 }
   })
