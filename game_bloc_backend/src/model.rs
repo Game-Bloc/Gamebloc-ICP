@@ -68,7 +68,6 @@ pub_struct!(
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
      winers: Vec<String>,
-     winners : Vec<Winners>,
      entry_prize: u8,
      total_prize: u128,
      no_of_winners: u8,
@@ -87,13 +86,16 @@ pub_struct!(
      in_game_names: Option<Vec<(String,String,String)>>,
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
+     winners : Option<Vec<Winners>>, // This should be updateable and fetchable
+     ended : Option<bool>,
+
 });
 
 pub_struct!(
     Winners{
         positions : String,
         amount : u128,
-        user : Principal,
+        user_account : String, // This is usually updated
     }
 );
 
