@@ -68,6 +68,7 @@ pub_struct!(
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
      winers: Vec<String>,
+     winners : Vec<Winners>,
      entry_prize: u8,
      total_prize: u128,
      no_of_winners: u8,
@@ -87,6 +88,14 @@ pub_struct!(
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
 });
+
+pub_struct!(
+    Winners{
+        positions : String,
+        amount : u128,
+        user : Principal,
+    }
+);
 
 // impl CandidType for i128 {
 //     fn _ty() -> Type {

@@ -31,11 +31,12 @@ import AccountIdentifier "utils/utils";
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
-// import ICRC1 "canister:icrc1_ledger";
+import ICRC1 "canister:icrc1_ledger";
 
 import IndexTypes "types/indextypes";
 import Bloctypes "types/bloctypes";
 import LedgerTypes "types/ledgertypes";
+import CKTypes "types/ck_types";
 
 import Utils "utils/utils";
 import HTTP "utils/http";
@@ -138,7 +139,7 @@ shared ({ caller }) actor class Kitchen() {
             if(await is_mod(caller)){
                 for (pay in Iter.fromArray(pays)){
                     // var _account = pay.account;
-                    var block = await ICPLedger.send_dfx({
+                    var block = await ICPLedger.send_dfx({ // might have ton use transfer_From()
                         to = pay.account;
                         fee = { e8s = 10_000 }; //0.0001 ICP
                         memo = 0;
@@ -262,18 +263,19 @@ shared ({ caller }) actor class Kitchen() {
         })
     };
 
-    // public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
-    //     await ICRC1.icrc2_transfer_from({
-    //         to = _to;
-    //         fee = null;
-    //         spender_subaccount = null;
-    //         from = _from;
-    //         memo = null;
-    //         created_at_time = null;
-    //         amount = _amount;
+    public func transferICPFrom(_from : CKTypes.Account, _to : CKTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
+        await ICRC1.icrc2_transfer_from({
+            to = _to;
+            fee = null;
+            spender_subaccount = null;
+            from = _from;
+            memo = null;
+            created_at_time = null;
+            amount = _amount;
 
-    //     });
-    // };
+        });
+    };
+
 
     /// Ledger Canister Ends
 
@@ -1155,46 +1157,59 @@ shared ({ caller }) actor class Kitchen() {
     // Tournaments
     //
 
-    public type Subaccount = [Nat8];
-    public type Account = { owner : Principal; subaccount : ?Subaccount };
+    // public type Subaccount = [Nat8];
+    // public type Account = { owner : Principal; subaccount : ?Subaccount };
 
-    public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount) : async Bloctypes.Result {
+    public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
+        if (icp_price == 0){
+            Error.reject("Cannnot get ICP price at the moment, please check app later")
+        }
         try {
             await update_tournaments_created(caller);
             TournamentHashMap.put(caller, tournamentAccount);
-            // var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+            var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
-            // var _to  = {
-            //     owner = gbc_admin;
-            //     subaccount = null
-            // };
+            var _to : CKTypes.Account = {
+                owner = gbc_admin;
+                subaccount = null
+            };
 
-            // var _from = {
-            //     owner = fromPrincipal;
-            //     subaccount = null
-            // };
+            var _from : CKTypes.Account = {
+                owner = fromPrincipal;
+                subaccount = null
+            };
 
-            // if (tournamentAccount.tournament_type == #Crowdfunded) {
-            //     var result = await ICRC1.icrc2_transfer_from({
-            //         to = _to;
-            //         fee = null;
-            //         spender_subaccount = null;
-            //         from = _from;
-            //         memo = null;
-            //         created_at_time = null;
-            //         amount = Nat8.toNat(tournamentAccount.entry_prize);
-            //     });
-            // } else { //Should be #prepaid
-            //     var result = await ICRC1.icrc2_transfer_from({
-            //         to = _to;
-            //         fee = null;
-            //         spender_subaccount = null;
-            //         from = _from;
-            //         memo = null;
-            //         created_at_time = null;
-            //         amount = tournamentAccount.total_prize;
-            //     });
-            // };
+            if (tournamentAccount.tournament_type == #Crowdfunded) {
+
+                try {
+                    // var actual_price = amount / icp_price;
+                    var result = await ICRC1.icrc2_transfer_from({
+                        to = _to;
+                        fee = null;
+                        spender_subaccount = null;
+                        from = _from;
+                        memo = null;
+                        created_at_time = null;
+                        amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price;
+                    });
+                } catch (err) {
+                    // return #err(Error.reject(err));
+                }
+                
+                // if (result == #Err){
+                //         Error.reject(result);
+                // }
+            } else { //Should be #prepaid
+                var result = await ICRC1.icrc2_transfer_from({
+                    to = _to;
+                    fee = null;
+                    spender_subaccount = null;
+                    from = _from;
+                    memo = null;
+                    created_at_time = null;
+                    amount = tournamentAccount.total_prize/icp_price;
+                });
+            };
             
             await RustBloc.create_tournament(tournamentAccount);
 
