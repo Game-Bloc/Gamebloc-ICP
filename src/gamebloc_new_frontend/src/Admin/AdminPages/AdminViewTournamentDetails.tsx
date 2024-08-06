@@ -665,6 +665,7 @@ const AdminViewTournamentDetails = () => {
                                   dataSearch={dataSearch}
                                   setPlayerPoints={setPlayerPoints}
                                   playerPoints={playerPoints}
+                                  game_type={game_type}
                                 />
                               ) : (
                                 // <TournamentGridView players={players} />
@@ -679,6 +680,7 @@ const AdminViewTournamentDetails = () => {
                                   players={players}
                                   setSquadPoints={setSquadPoints}
                                   setPlayerPoints={setPlayerPoints}
+                                  game_type={game_type}
                                 />
                               ) : (
                                 <SquadResult tourData={tourData} />

@@ -5,6 +5,7 @@ import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
+import { MdLeaderboard } from "react-icons/md"
 import { useAuth } from "../../Auth/use-auth-client"
 
 const Sidebar = () => {
@@ -28,6 +29,12 @@ const Sidebar = () => {
       name: "World Chat",
       link: isAuthenticated ? "/world-chat" : "",
       icon: HiChatBubbleOvalLeft,
+    },
+    {
+      name: "Leaderboard",
+      action: () => {},
+      link: "/leaderboard",
+      icon: MdLeaderboard,
     },
   ]
 

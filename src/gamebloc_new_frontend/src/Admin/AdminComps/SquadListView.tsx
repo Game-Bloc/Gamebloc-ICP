@@ -20,6 +20,7 @@ type prop = {
     React.SetStateAction<[string, string, Points][]>
   >
   tourData: any
+  game_type: any
 }
 
 interface Points {
@@ -112,6 +113,7 @@ const SquadListView = ({
   setSquadPoints,
   setPlayerPoints,
   tourData,
+  game_type,
 }: prop) => {
   // const squads = useAppSelector((state) => state.squad)
   const [dataSource, setDataSource] = useState([])
@@ -235,6 +237,7 @@ const SquadListView = ({
           modal={hideModal}
           player={currentPlayer}
           onSave={(points) => handleSave(currentPlayer.id, points)}
+          game_type={game_type}
         />
       )}
     </div>

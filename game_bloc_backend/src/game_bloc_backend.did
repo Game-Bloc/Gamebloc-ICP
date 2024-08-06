@@ -109,7 +109,7 @@ type UserProfile = record {
 };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
-  assign_points : (principal, record { text; text; Point }) -> ();
+  assign_points : (text, record { text; text; Point }) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
@@ -152,7 +152,6 @@ service : () -> {
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
-  archive_tournament : (text) -> ();
   structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
   structure_tournament_into_squad_lobbies : (text, text) -> ();

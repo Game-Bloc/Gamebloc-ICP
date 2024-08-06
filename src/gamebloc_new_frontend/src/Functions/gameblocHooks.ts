@@ -14,14 +14,12 @@ import {
   updateICP,
   updateId,
 } from "../redux/slice/icpBalanceSlice"
-import { message } from "antd"
 import {
   chatState,
   clearChat,
   pushToChat,
   updateChat,
 } from "../redux/slice/chatSlice"
-import { toNamespacedPath } from "path/posix"
 import {
   addTransactions,
   clearTransaction,
@@ -29,7 +27,11 @@ import {
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
 import { allNotification } from "../redux/slice/notificationSlice"
-import { MultiSelect } from "@tremor/react"
+import {
+  clearBoard,
+  LeaderboardState,
+  updateLeaderboard,
+} from "../redux/slice/leaderboardSlice"
 
 export const useGameblocHooks = () => {
   const {
@@ -186,9 +188,9 @@ export const useGameblocHooks = () => {
         console.log("No account created yet")
       }
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -199,7 +201,7 @@ export const useGameblocHooks = () => {
     try {
       setUpdatingProfile(true)
       const user: any = await whoamiActor.getSelf()
-
+      console.log("Profile", user)
       const profileData: UserProfileState = {
         age: user.age,
         canister_id: user.canister_id,
@@ -224,9 +226,9 @@ export const useGameblocHooks = () => {
       setIsAccount(true)
       console.log("Updating profile")
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setUpdatingProfile(false)
@@ -264,6 +266,12 @@ export const useGameblocHooks = () => {
     end_date: string,
     title: string,
     squad_points: [],
+    squad_vector_mod_1: [],
+    points_vector_mod_1: [],
+    squad_vector_mod_2: [],
+    points_vector_mod_2: [],
+    squad_vector_mod_3: [],
+    points_vector_mod_3: [],
     squad_in_game_names: [],
     in_game_names: [],
     points: [],
@@ -301,6 +309,12 @@ export const useGameblocHooks = () => {
         title,
         squad_points,
         points,
+        squad_vector_mod_1,
+        points_vector_mod_1,
+        squad_vector_mod_2,
+        points_vector_mod_2,
+        squad_vector_mod_3,
+        points_vector_mod_3,
         in_game_names,
         tournament_lobby_type,
         lobbies,
@@ -864,7 +878,7 @@ export const useGameblocHooks = () => {
   const start_tournament = async (id: string) => {
     try {
       await whoamiActor2.start_tournament(id)
-      console.log("Tournament successfully started")
+      console.log("Tournament successfully start ed")
     } catch (err) {
       console.log("error startinng tournament", err)
     }
@@ -953,6 +967,57 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const update_user_points = async (
+    identity: Principal,
+    username: string,
+    userId: string,
+    points: any,
+  ) => {
+    try {
+      const user_id_and_point: [string, string, any] = [
+        username,
+        userId,
+        points,
+      ]
+      setIsLoading(true)
+      const update = await whoamiActor2.assign_points(
+        identity,
+        user_id_and_point,
+      )
+      console.log("user struct updated")
+      setIsLoading(false)
+    } catch (err) {
+      console.log("Can't update user point", err)
+      setIsLoading(false)
+    }
+  }
+
+  const get_leaderboard = async () => {
+    try {
+      setUpdating(true)
+      const leaderboard = await whoamiActor2.get_leaderboard()
+      dispatch(clearBoard())
+      for (const data of leaderboard) {
+        const board: LeaderboardState = {
+          losses: data.losses,
+          name: data.name,
+          point: Number(data.point),
+          wins: data.wins,
+        }
+        // console.log("board", board)
+        dispatch(updateLeaderboard(board))
+      }
+
+      if (leaderboard) {
+        setUpdating(false)
+        // console.log("Leaderboard", leaderboard)
+      }
+    } catch (err) {
+      setUpdating(false)
+      console.log("Can't get leaderboard stats", err)
+    }
+  }
+
   return {
     isLoading,
     isLoadingProfile,
@@ -995,5 +1060,7 @@ export const useGameblocHooks = () => {
     archive_tournament,
     start_tournament,
     end_tournament,
+    update_user_points,
+    get_leaderboard,
   }
 }

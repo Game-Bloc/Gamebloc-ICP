@@ -190,14 +190,17 @@ pub fn get_leaderboard() -> Vec<Contestant> {
                 }
             }
         });
-        leaderboard
+        let mut sorted_leaderboard = leaderboard;
+        sorted_leaderboard.sort_by_key(|k| k.point);
+
+        sorted_leaderboard
     })
 }
 
 #[update]
-pub fn assign_points(identity: String, user_id_and_point: (String, String, Point)) {
+pub fn assign_points(identity: Principal, user_id_and_point: (String, String, Point)) {
     PROFILE_STORE.with(|profile_store| {
-        let mut profile = profile_store.borrow().get(&identity).cloned().unwrap();
+        let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         match profile.points {
             None => {
                 profile.points = Some( vec![user_id_and_point]);
@@ -208,7 +211,7 @@ pub fn assign_points(identity: String, user_id_and_point: (String, String, Point
                 profile.points = Some(updated_points);
             }
         }
-        profile_store.borrow_mut().insert(identity, profile);
+        profile_store.borrow_mut().insert(identity.to_text(), profile);
     });
 }
 

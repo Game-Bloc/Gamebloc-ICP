@@ -12,6 +12,7 @@ import { CiUser } from "react-icons/ci"
 import { PiSignOutThin } from "react-icons/pi"
 import { useAuth } from "../../Auth/use-auth-client"
 import { HiChatBubbleOvalLeft } from "react-icons/hi2"
+import { MdLeaderboard } from "react-icons/md"
 import LoginModal2 from "../Modals/LoginModal2"
 import WelcomeModal from "../Modals/WelcomeModal"
 import SignOutModal from "../Modals/SignOutModal"
@@ -21,6 +22,7 @@ import MobileNoti from "../notifications/MobileNoti"
 const Header = () => {
   const navigate = useNavigate()
   const { isAuthenticated, logout } = useAuth()
+  const { getProfile } = useGameblocHooks()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const notifi = useAppSelector((state) => state.notification)
@@ -71,6 +73,12 @@ const Header = () => {
       link: isAuthenticated ? "/world-chat" : "",
       icon: HiChatBubbleOvalLeft,
     },
+    {
+      name: "Leaderboard",
+      action: () => {},
+      link: "/leaderboard",
+      icon: MdLeaderboard,
+    },
   ]
   const closeNotification = () => {
     setMobileNotiModal(false)
@@ -87,7 +95,6 @@ const Header = () => {
 
   const signOut = () => {
     localStorage.clear()
-    sessionStorage.clear()
     logout()
     navigate("/dashboard")
     setOpenModal(false)

@@ -12,15 +12,18 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import Chat from "../components/tournament/Chat"
 import { DotChartOutlined } from "@ant-design/icons"
 import { useUpdateTournament } from "../Functions/blochooks"
-import { inProgress } from "../components/utils/utills"
+import { convertToMilliseconds, inProgress } from "../components/utils/utills"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { useAuth } from "../Auth/use-auth-client"
+import { useCountdown } from "../components/utils/CountDown"
 const gameImage = require("../../assets/category1.svg").default
 
 const TournamentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
+  const [count, setCount] = useState(0)
+  const [days, hours, minutes, seconds] = useCountdown(count)
   const [loading, setLoading] = useState<boolean>(true)
   const [isImageLoaded, setImageLoaded] = useState(false)
   const tournamentData = useAppSelector((state) => state.tournamentData)
@@ -71,6 +74,12 @@ const TournamentDetail = () => {
   }
 
   useEffect(() => {
+    const inputDateString = tourData[0].starting_date
+    const result = convertToMilliseconds(inputDateString)
+    setCount(result)
+  }, [])
+
+  useEffect(() => {
     const img = new Image()
     img.onload = () => {
       setImageLoaded(true)
@@ -82,7 +91,7 @@ const TournamentDetail = () => {
   // console.log("Role", Object.keys(role[0])[0].toUpperCase())
   useEffect(() => {
     updateTournament()
-    if (inProgress(tourData[0].starting_date)) {
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
       if (
         Object.keys(tourData[0].status)[0].toUpperCase() === "ACCEPTINGPLAYERS"
       ) {
