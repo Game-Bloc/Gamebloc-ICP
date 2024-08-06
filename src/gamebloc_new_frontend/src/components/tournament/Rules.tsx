@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
@@ -10,8 +10,13 @@ import LoginModal2 from "../Modals/LoginModal2"
 import parse from "html-react-parser"
 import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
-import { hasDateReached, inProgress } from "../utils/utills"
+import {
+  convertToMilliseconds,
+  hasDateReached,
+  inProgress,
+} from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
+import { useCountdown } from "../utils/CountDown"
 interface Props {
   data: any
 }
@@ -19,6 +24,8 @@ interface Props {
 const Rules = ({ data }: Props) => {
   const { id } = useParams()
   const { isAuthenticated } = useAuth()
+  const [count, setCount] = useState(0)
+  const [days, hours, minutes, seconds] = useCountdown(count)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
@@ -61,6 +68,12 @@ const Rules = ({ data }: Props) => {
     setOpenSquadModal(!openSquadModal)
   }
 
+  useEffect(() => {
+    const inputDateString = data.starting_date
+    const result = convertToMilliseconds(inputDateString)
+    setCount(result)
+  }, [])
+
   return (
     <div className="">
       <div className="flex flex-col mx-4 max-h-[27rem] h-[25rem]  overflow-x-hidden overflow-y-scroll">
@@ -70,8 +83,7 @@ const Rules = ({ data }: Props) => {
         />
       </div>
       <div className="flex flex-col w-full justify-center items-center">
-        {hasDateReached(data.end_date) ||
-        Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
+        {Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
           <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
             <p className="font-semibold">Ended</p>
           </button>
@@ -86,7 +98,7 @@ const Rules = ({ data }: Props) => {
                   gamer.name.includes(owner),
                 ),
               ) ? (
-              inProgress(data.starting_date) ? (
+              days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
                 </button>
@@ -95,7 +107,7 @@ const Rules = ({ data }: Props) => {
                   <p className="font-semibold">Joined</p>
                 </button>
               )
-            ) : inProgress(data.starting_date) ? (
+            ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
               <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                 <p className="font-semibold">In progress</p>
               </button>

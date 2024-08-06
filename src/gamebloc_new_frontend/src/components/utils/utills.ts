@@ -197,3 +197,50 @@ export function inProgress(givenDate) {
   // Compare the date strings
   return currentDateStr >= targetDateStr
 }
+
+  export const convertToMilliseconds = (inputDateString: String) => {
+    const dateTimeMatch = inputDateString.match(
+      /(\d{1,2}:\d{2}\s*[APMapm]+)\s*(\d{4}-\d{2}-\d{2})/,
+    )
+
+    if (!dateTimeMatch) {
+      console.error("Invalid date format")
+      return NaN
+    }
+
+    const [, time, date] = dateTimeMatch
+
+    // Extract hours, minutes, and AM/PM from the time part
+    const [hoursStr, minutesStr] = time.split(":")
+    const hours = parseInt(hoursStr, 10)
+    const minutes = parseInt(minutesStr, 10)
+    const isPM = /pm/i.test(time)
+
+    // Extract year, month, and day from the date part
+    const [yearStr, monthStr, dayStr] = date.split("-")
+    const year = parseInt(yearStr, 10)
+    const month = parseInt(monthStr, 10) - 1
+    const day = parseInt(dayStr, 10)
+
+    // Convert 12-hour format to 24-hour format
+    let adjustedHours = hours
+    if (isPM && hours !== 12) {
+      adjustedHours += 12
+    } else if (!isPM && hours === 12) {
+      adjustedHours = 0
+    }
+
+    // Create a new Date object with the components
+    const dateObject = new Date(year, month, day, adjustedHours, minutes)
+
+    // Check for invalid date
+    if (isNaN(dateObject.getTime())) {
+      console.error("Invalid date")
+      return NaN
+    }
+
+    // Get the timestamp in milliseconds
+    const timestampInMilliseconds = dateObject.getTime()
+
+    return timestampInMilliseconds
+  }

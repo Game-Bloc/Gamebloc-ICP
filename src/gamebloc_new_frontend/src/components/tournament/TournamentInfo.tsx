@@ -561,8 +561,7 @@ const TournamentInfo = ({ data }: Props) => {
           </div>
         </div>
         <div className="flex flex-col w-full justify-center items-center">
-          {hasDateReached(data.end_date) ||
-          Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
+          {Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
             <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
               <p className="font-semibold">Ended</p>
             </button>
@@ -577,7 +576,7 @@ const TournamentInfo = ({ data }: Props) => {
                     gamer.name.includes(owner),
                   ),
                 ) ? (
-                inProgress(data.starting_date) ? (
+                days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                   <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                     <p className="font-semibold">In progress</p>
                   </button>
@@ -586,7 +585,7 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="font-semibold">Joined</p>
                   </button>
                 )
-              ) : inProgress(data.starting_date) ? (
+              ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
                 </button>
