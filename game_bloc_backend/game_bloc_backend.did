@@ -62,6 +62,7 @@ type TournamentAccount = record {
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
+  ended : opt bool;
   squad_in_game_names : opt vec vec record { text; text; text };
   squad : vec Squad;
   lobbies : opt vec LobbyAccount;
@@ -76,6 +77,7 @@ type TournamentAccount = record {
   squad_vector_mod_1 : opt vec record { text; text; Point };
   squad_vector_mod_2 : opt vec record { text; text; Point };
   squad_vector_mod_3 : opt vec record { text; text; Point };
+  winners : opt vec Winners;
   tournament_type : TournamentType;
   entry_prize : nat8;
   points : opt vec record { text; text; Point };
@@ -107,6 +109,7 @@ type UserProfile = record {
   tournaments_created : nat8;
   points : opt vec record { text; text; Point };
 };
+type Winners = record { user_account : text; position : text; amount : nat };
 service : () -> {
   add_to_squad : (Member, principal, text) -> ();
   assign_points : (text, record { text; text; Point }) -> ();
@@ -125,7 +128,7 @@ service : () -> {
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
-  end_tournament : (text, principal, nat8) -> (bool);
+  end_tournament : (text, principal, nat8, vec Winners) -> (bool);
   getSelf : (principal) -> (UserProfile) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
