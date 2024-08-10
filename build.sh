@@ -41,7 +41,8 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 #         amount=500_000
 #     })'
 
-dfx deploy --network local --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icrc1_ledger --argument '
+# --specified-id ryjl3-tyaaa-aaaaa-aaaaa-cai
+dfx deploy --network local  icrc1_ledger --argument '
   (variant {
     Init = record {
       token_name = "Local ICP";

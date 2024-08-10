@@ -44,6 +44,7 @@ pub_struct!(UserProfile {
      tournaments_created:u8,
      points: Option<Vec<(String,String,Point)>>,
      username: String,
+    //deprecated
      is_mod: bool,
      role: Option<Role>,
      principal_id: String,
@@ -93,7 +94,7 @@ pub_struct!(
 
 pub_struct!(
     Winners{
-        positions : String,
+        position : String,
         amount : u128,
         user_account : String, // This is usually updated
     }
@@ -175,7 +176,6 @@ pub_struct!(Contestant {
     wins: u8,
     losses: u8,
 });
-
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum Status {
