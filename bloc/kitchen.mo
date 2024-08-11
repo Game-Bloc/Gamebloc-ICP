@@ -1214,12 +1214,12 @@ shared ({ caller }) actor class Kitchen() {
 
                 var _to : CKTypes.Account = {
                     owner = gbc_admin;
-                    subaccount = null
+                    subaccount = null;
                 };
 
                 var _from : CKTypes.Account = {
                     owner = fromPrincipal;
-                    subaccount = null
+                    subaccount = null;
                 };
 
                 if (tournamentAccount.tournament_type == #Crowdfunded) {
