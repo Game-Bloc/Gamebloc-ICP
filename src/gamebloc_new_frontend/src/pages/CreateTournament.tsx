@@ -27,6 +27,7 @@ import { GameType } from "../../../declarations/kitchen/kitchen.did"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useAuth } from "../Auth/use-auth-client"
 import Editor from "../components/Texteditor/Editor"
+import PaymentModal2 from "../components/Modals/PaymentModal2"
 const loader = require("../../assets/category1.svg").default
 const loader1 = require("../../assets/category2.svg").default
 const loader2 = require("../../assets/category3.svg").default
@@ -71,6 +72,8 @@ const CreateTournament = () => {
   const name = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const creator_id = useAppSelector((state) => state.userProfile.id_hash)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const override = {
     display: "block",
@@ -748,12 +751,12 @@ const CreateTournament = () => {
                       <div className="mt-4 mx-4 lg:mx-0 mb-4 flex justify-center items-center">
                         <button
                           onClick={() => {
-                            testFunction()
-                            addTournament()
+                            setOpenPaymentModal(true)
                           }}
                           className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
                         >
-                          {isLoading ? (
+                          Proceed
+                          {/* {isLoading ? (
                             <ClipLoader
                               color={color}
                               loading={isLoading}
@@ -764,7 +767,7 @@ const CreateTournament = () => {
                             />
                           ) : (
                             <p className="font-semibold">Create Tournament</p>
-                          )}
+                          )} */}
                         </button>
                       </div>
                     </div>
@@ -774,6 +777,14 @@ const CreateTournament = () => {
             </div>
           </div>
         </section>
+        {openPaymentModal && (
+          <PaymentModal2
+            owner={name}
+            icp={icpValue}
+            entryPrice={entryPrice}
+            poolPrice={poolPrize}
+          />
+        )}
       </div>
     )
   }

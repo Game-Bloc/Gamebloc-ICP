@@ -10,17 +10,13 @@ import {
 } from "@ant-design/icons"
 import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
-import SoloModal from "./payment/SoloModal"
-import SquadModal from "./payment/SquadModal"
 import { useNavigate } from "react-router-dom"
 
 interface Props {
   owner: string
-  id: string
-  userId?: string
-  squad?: any
-  data?: any
-  squad_id?: string
+  icp: number
+  poolPrice: string
+  entryPrice: string
 }
 const override = {
   display: "block",
@@ -28,7 +24,7 @@ const override = {
   borderColor: "white",
 }
 
-const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
+const PaymentModal2 = ({ owner, icp, poolPrice, entryPrice }: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
   const [recipient, setRecipient] = useState<string>("")
@@ -41,7 +37,6 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
-  const game_type = data.game_type.toUpperCase() === "SINGLE"
 
   const handlePaymentChange = (payment: string) => {
     setSelectedPayment(payment)
@@ -135,7 +130,7 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              $5.00
+                              {icp} ICP
                             </p>
                           </div>
                         </div>
@@ -147,20 +142,7 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                         </button>
                       </>
                     )}
-                    {active === "second" && (
-                      <div>
-                        {game_type ? (
-                          <SoloModal owner={owner} id={id} userId={userId} />
-                        ) : (
-                          <SquadModal
-                            squad={squad}
-                            data={data}
-                            squad_id={squad_id}
-                            id={id}
-                          />
-                        )}
-                      </div>
-                    )}
+                    {active === "second" && <div></div>}
                     {active === "third" && (
                       <div className="mt-2">
                         <div className="mt-8 mb-4 flex w-full justify-center">
@@ -188,4 +170,4 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   )
 }
 
-export default PaymentModal
+export default PaymentModal2
