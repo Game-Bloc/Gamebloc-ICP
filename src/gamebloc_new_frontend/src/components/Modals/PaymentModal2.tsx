@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom"
 import { generateDate } from "../utils/utills"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
+import { RiCloseFill } from "react-icons/ri"
 
 interface Props {
   owner: string
@@ -23,6 +24,7 @@ interface Props {
   poolPrice: string
   entryPrice: string
   tourType: any
+  modal: () => void
   create_tour: () => void
 }
 const override = {
@@ -35,6 +37,7 @@ const PaymentModal2 = ({
   owner,
   icp,
   done,
+  modal,
   updating,
   poolPrice,
   entryPrice,
@@ -91,10 +94,14 @@ const PaymentModal2 = ({
             <div className="flex items-center justify-center min-h-full ">
               <div className="relative border-white/10 border border-solid bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
                 <div className="bg-primary-first py-4   flex flex-col justify-center items-center">
-                  {/* <RiCloseFill
-                    onClick={modal}
-                    className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
-                  /> */}
+                  {active === "first" && paid === false ? (
+                    <RiCloseFill
+                      onClick={modal}
+                      className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
+                    />
+                  ) : (
+                    <></>
+                  )}
                   <div className="">
                     <img
                       src={`Icp.svg`}

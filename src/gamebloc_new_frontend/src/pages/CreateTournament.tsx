@@ -249,6 +249,10 @@ const CreateTournament = () => {
     })
   }
 
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
+
   const create_tour = () => {
     console.log("Participants", noOfUsers)
     console.log("Winners", noOfWinners)
@@ -324,7 +328,7 @@ const CreateTournament = () => {
       [],
       [],
       [],
-      "You have successfully created a Tournament",
+      "Successful",
       "Try again something went wrong",
       "",
     )
@@ -779,6 +783,7 @@ const CreateTournament = () => {
         {openPaymentModal && (
           <PaymentModal2
             done={done}
+            modal={handleModal}
             updating={updating}
             owner={principal}
             icp={icpValue}
