@@ -13,10 +13,13 @@ import PaymentCard from "./payment/PaymentCard"
 import { useNavigate } from "react-router-dom"
 import { generateDate } from "../utils/utills"
 import { Principal } from "@dfinity/principal"
+import ClipLoader from "react-spinners/ClipLoader"
 
 interface Props {
   owner: string
   icp: number
+  done: boolean
+  updating: boolean
   poolPrice: string
   entryPrice: string
   tourType: any
@@ -31,6 +34,8 @@ const override = {
 const PaymentModal2 = ({
   owner,
   icp,
+  done,
+  updating,
   poolPrice,
   entryPrice,
   tourType,
@@ -38,16 +43,13 @@ const PaymentModal2 = ({
 }: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
-  const [recipient, setRecipient] = useState<string>("")
-  const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
   const [date, setDate] = useState<number>()
   const [createdAt, setCreatedAt] = useState<string>("")
-  const { paid, payICPfee } = useGameblocHooks()
+  const { paid, isLoading, payICPfee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
-  const balance = useAppSelector((state) => state.IcpBalance.balance)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
 
@@ -60,10 +62,11 @@ const PaymentModal2 = ({
     setSelectedPayment(payment)
   }
 
+  console.log("Done status", done)
   const payFee = () => {
     payICPfee(
       "16efdc385d2c87b7c2e4913689bd228656841e4689c65a2720e03507e2d5f5e2",
-      tourType === "Prepaid" ? +poolPrice : +entryPrice,
+      +icp.toFixed(8),
       date,
       _principal,
       createdAt,
@@ -123,17 +126,27 @@ const PaymentModal2 = ({
                         items={[
                           {
                             title: "Pay",
-                            status: "finish",
-                            icon: <DollarOutlined className="w-4 h-4" />,
+                            status: paid === true ? "finish" : "process",
+                            icon:
+                              paid === true ? (
+                                <DollarOutlined className="w-4 h-4" />
+                              ) : (
+                                <LoadingOutlined className="w-4 h-4" />
+                              ),
                           },
                           {
                             title: "Join",
-                            status: "process",
-                            icon: <UsergroupAddOutlined className="w-4 h-4" />,
+                            status: done === true ? "finish" : "process",
+                            icon:
+                              done === true ? (
+                                <UsergroupAddOutlined className="w-4 h-4" />
+                              ) : (
+                                <LoadingOutlined className="w-4 h-4" />
+                              ),
                           },
                           {
                             title: "Success",
-                            status: "wait",
+                            status: done && paid === true ? "finish" : "wait",
                             icon: <CheckCircleOutlined className="w-4 h-4" />,
                           },
                         ]}
@@ -173,8 +186,7 @@ const PaymentModal2 = ({
                         <button
                           disabled={selectedPayment === "ICP" ? false : true}
                           onClick={() =>
-                            // paid === true ? setActive("second") : payFee()
-                            create_tour()
+                            paid === true ? setActive("second") : payFee()
                           }
                           className={`flex mt-8 text-black text-[.9rem] ${
                             selectedPayment === "ICP"
@@ -182,22 +194,51 @@ const PaymentModal2 = ({
                               : "bg-primary-second/15"
                           } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                         >
-                          {paid === false ? "Approve" : "Next"}
+                          {isLoading ? (
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {paid === false ? "Approve" : "Next"}
+                            </p>
+                          )}
                         </button>
                         <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                          By proceeding you approve a fee of $
-                          {tourType === "Prepaid" ? poolPrice : entryPrice} to
-                          be deducted from your wallet.
+                          By proceeding you approve the amount of $
+                          {tourType === "Prepaid" ? poolPrice : entryPrice}{" "}
+                          worth of ICP to be deducted from your wallet.
                         </p>
                       </>
                     )}
                     {active === "second" && (
                       <div className="mt-2">
                         <button
-                          onClick={() => create_tour}
+                          onClick={() =>
+                            done === true ? setActive("third") : create_tour()
+                          }
                           className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
                         >
-                          Create Tournament
+                          {updating ? (
+                            <ClipLoader
+                              color={color}
+                              loading={updating}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {" "}
+                              {done === true ? "Next" : "Create Tournament"}
+                            </p>
+                          )}
                         </button>
                       </div>
                     )}
@@ -210,10 +251,10 @@ const PaymentModal2 = ({
                           successful
                         </p>
                         <button
-                          onClick={() => navigate("/dashboard")}
+                          onClick={() => navigate("/profile")}
                           className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
                         >
-                          Back to Tournament
+                          Profile
                         </button>
                       </div>
                     )}

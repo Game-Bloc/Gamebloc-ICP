@@ -60,13 +60,8 @@ const CreateTournament = () => {
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [icpValue, setIcpValue] = useState<number>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const {
-    isLoading,
-    createTournament,
-    getICPBalance,
-    getProfile,
-    isLoadingProfile,
-  } = useGameblocHooks()
+  const { done, updating, createTournament, getICPBalance, getProfile } =
+    useGameblocHooks()
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
@@ -254,7 +249,7 @@ const CreateTournament = () => {
     })
   }
 
-  const testFunction = () => {
+  const create_tour = () => {
     console.log("Participants", noOfUsers)
     console.log("Winners", noOfWinners)
     console.log("Creator", name)
@@ -295,7 +290,7 @@ const CreateTournament = () => {
     }
   }
 
-  const create_tour = () => {
+  const _tour = () => {
     createTournament(
       1,
       tournamentID,
@@ -331,7 +326,7 @@ const CreateTournament = () => {
       [],
       "You have successfully created a Tournament",
       "Try again something went wrong",
-      "/profile",
+      "",
     )
   }
 
@@ -688,7 +683,7 @@ const CreateTournament = () => {
                               ? " Pool Price in $"
                               : " Entry Price in $"}
                           </p>
-                          <div className="flex flex-row">
+                          <div className="flex mt-[.8rem] flex-row">
                             <p className="text-[1rem] text-white mr-4">≈</p>
                             <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
                               {icpValue !== null
@@ -783,12 +778,14 @@ const CreateTournament = () => {
         </section>
         {openPaymentModal && (
           <PaymentModal2
+            done={done}
+            updating={updating}
             owner={principal}
             icp={icpValue}
             entryPrice={entryPrice}
             poolPrice={poolPrize}
             tourType={tourType}
-            create_tour={testFunction}
+            create_tour={_tour}
           />
         )}
       </div>

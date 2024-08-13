@@ -53,6 +53,7 @@ export const useGameblocHooks = () => {
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
   const [paid, setPaid] = useState<boolean>(false)
+  const [done, setDone] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -283,7 +284,7 @@ export const useGameblocHooks = () => {
     route: string,
   ) => {
     try {
-      setIsLoading(true)
+      setUpdating(true)
       const creator_id: [string] = [owner_id]
 
       const tournamentData = {
@@ -322,18 +323,18 @@ export const useGameblocHooks = () => {
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {
+        setDone(true)
+        console.log("passed through")
         popUp(successMsg, route)
-        setIsLoading(false)
-      } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
+        setUpdating(false)
+        console.log("Ended")
       }
     } catch (err) {
       errorPopUp(errorMsg)
-      setIsLoading(false)
+      setUpdating(false)
       console.log("Error creating tournament:", err)
     } finally {
-      setIsLoading(false)
+      setUpdating(false)
     }
   }
 
@@ -1080,6 +1081,7 @@ export const useGameblocHooks = () => {
 
   return {
     paid,
+    done,
     isLoading,
     isLoadingProfile,
     updating,
