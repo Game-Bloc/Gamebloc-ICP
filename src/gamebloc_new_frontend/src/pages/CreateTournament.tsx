@@ -270,7 +270,7 @@ const CreateTournament = () => {
     console.log("End Time", endDate)
   }
 
-  const addTournament = () => {
+  const proceed_to_payment = () => {
     if (
       noOfUsers === 0 ||
       noOfWinners === 0 ||
@@ -288,47 +288,51 @@ const CreateTournament = () => {
         (tourType === "Prepaid" && balance > icpValue) ||
         (tourType === "Crowdfunded" && balance > icpValue)
       ) {
-        createTournament(
-          1,
-          tournamentID,
-          { AcceptingPlayers: null },
-          name,
-          [],
-          creator_id,
-          game_name,
-          [],
-          [],
-          [],
-          BigInt(+poolPrize),
-          tournamentRules,
-          startingDate,
-          variantType,
-          +entryPrice,
-          noOfWinners,
-          BigInt(noOfUsers),
-          gameType,
-          endDate,
-          title,
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          "You have successfully created a Tournament",
-          "Try again something went wrong",
-          "/profile",
-        )
+        setOpenPaymentModal(true)
       } else {
         errorPopUp("Your ICP balance is low, pls fund your account.")
       }
     }
+  }
+
+  const create_tour = () => {
+    createTournament(
+      1,
+      tournamentID,
+      { AcceptingPlayers: null },
+      name,
+      [],
+      creator_id,
+      game_name,
+      [],
+      [],
+      [],
+      BigInt(+poolPrize),
+      tournamentRules,
+      startingDate,
+      variantType,
+      +entryPrice,
+      noOfWinners,
+      BigInt(noOfUsers),
+      gameType,
+      endDate,
+      title,
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      "You have successfully created a Tournament",
+      "Try again something went wrong",
+      "/profile",
+    )
   }
 
   if (!isAuthenticated) {
@@ -751,7 +755,7 @@ const CreateTournament = () => {
                       <div className="mt-4 mx-4 lg:mx-0 mb-4 flex justify-center items-center">
                         <button
                           onClick={() => {
-                            setOpenPaymentModal(true)
+                            proceed_to_payment()
                           }}
                           className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
                         >
@@ -779,10 +783,12 @@ const CreateTournament = () => {
         </section>
         {openPaymentModal && (
           <PaymentModal2
-            owner={name}
+            owner={principal}
             icp={icpValue}
             entryPrice={entryPrice}
             poolPrice={poolPrize}
+            tourType={tourType}
+            create_tour={testFunction}
           />
         )}
       </div>

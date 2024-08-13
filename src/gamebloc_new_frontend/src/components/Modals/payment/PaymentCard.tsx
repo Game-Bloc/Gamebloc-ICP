@@ -13,6 +13,7 @@ interface prop {
   paymentTitle: string
   selectedPayment: string | null
   handlePaymentChange: (payment: string) => void
+  owner: string
 }
 
 const PaymentCard = ({
@@ -21,6 +22,7 @@ const PaymentCard = ({
   paymentTitle,
   selectedPayment,
   handlePaymentChange,
+  owner,
 }: prop) => {
   return (
     <div className="mt-[-1rem] mb-4 md:mt-0 p-2">
@@ -38,7 +40,11 @@ const PaymentCard = ({
             <p className="text-white font-bold text-[1rem] mb-1">
               {paymentTitle}
             </p>
-            <p className="text-white text-[.6rem] ">te55ew.....Y67e</p>
+            <p className="text-white text-[.6rem] ">
+              {owner
+                ? owner.substring(0, 7) + "......" + owner.substring(58, 64)
+                : null}
+            </p>
           </div>
         </div>
 

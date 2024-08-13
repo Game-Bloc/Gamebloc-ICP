@@ -11,12 +11,16 @@ import {
 import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
 import { useNavigate } from "react-router-dom"
+import { generateDate } from "../utils/utills"
+import { Principal } from "@dfinity/principal"
 
 interface Props {
   owner: string
   icp: number
   poolPrice: string
   entryPrice: string
+  tourType: any
+  create_tour: () => void
 }
 const override = {
   display: "block",
@@ -24,23 +28,53 @@ const override = {
   borderColor: "white",
 }
 
-const PaymentModal2 = ({ owner, icp, poolPrice, entryPrice }: Props) => {
+const PaymentModal2 = ({
+  owner,
+  icp,
+  poolPrice,
+  entryPrice,
+  tourType,
+  create_tour,
+}: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
   const [recipient, setRecipient] = useState<string>("")
   const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
-  const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
   const [createdAt, setCreatedAt] = useState<string>("")
-  const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
+  const { paid, payICPfee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
+  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const _principal = Principal.fromText(principal)
+
+  useEffect(() => {
+    setCreatedAt(generateDate())
+    setDate(Date.now())
+  }, [])
 
   const handlePaymentChange = (payment: string) => {
     setSelectedPayment(payment)
   }
+
+  const payFee = () => {
+    payICPfee(
+      "16efdc385d2c87b7c2e4913689bd228656841e4689c65a2720e03507e2d5f5e2",
+      tourType === "Prepaid" ? +poolPrice : +entryPrice,
+      date,
+      _principal,
+      createdAt,
+      notification_id,
+      username,
+      "Payment Approved",
+      "Something went wrong",
+      "",
+    )
+  }
+
   return (
     <div>
       <div
@@ -107,7 +141,7 @@ const PaymentModal2 = ({ owner, icp, poolPrice, entryPrice }: Props) => {
                     </ConfigProvider>
                     {active === "first" && (
                       <>
-                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1rem] md:text-[1.1rem] text-semibold">
                           Select payment option
                         </p>
                         {/* <PaymentCard
@@ -123,26 +157,50 @@ const PaymentModal2 = ({ owner, icp, poolPrice, entryPrice }: Props) => {
                           img="Icp.svg"
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
+                          owner={owner}
                         />
-                        <div className="flex flex-col mt-4 p-4">
-                          <div className="flex justify-between items-center w-full">
-                            <p className="text-[.9rem] lg:text-[1rem]  text-white/80  ">
+                        <div className="flex flex-col mt-2 lg:mt-4 p-4">
+                          <div className="flex flex-col lg:flex-row  justify-between items-center w-full">
+                            <p className="text-[.8rem] lg:text-[1rem]  text-white/80  ">
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {icp} ICP
+                              {icp.toFixed(8)} ICP
                             </p>
                           </div>
                         </div>
+
                         <button
-                          onClick={() => setActive("second")}
-                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                          disabled={selectedPayment === "ICP" ? false : true}
+                          onClick={() =>
+                            // paid === true ? setActive("second") : payFee()
+                            create_tour()
+                          }
+                          className={`flex mt-8 text-black text-[.9rem] ${
+                            selectedPayment === "ICP"
+                              ? "bg-primary-second"
+                              : "bg-primary-second/15"
+                          } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                         >
-                          Approve
+                          {paid === false ? "Approve" : "Next"}
                         </button>
+                        <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                          By proceeding you approve a fee of $
+                          {tourType === "Prepaid" ? poolPrice : entryPrice} to
+                          be deducted from your wallet.
+                        </p>
                       </>
                     )}
-                    {active === "second" && <div></div>}
+                    {active === "second" && (
+                      <div className="mt-2">
+                        <button
+                          onClick={() => create_tour}
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          Create Tournament
+                        </button>
+                      </div>
+                    )}
                     {active === "third" && (
                       <div className="mt-2">
                         <div className="mt-8 mb-4 flex w-full justify-center">

@@ -42,6 +42,7 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type = data.game_type.toUpperCase() === "SINGLE"
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const handlePaymentChange = (payment: string) => {
     setSelectedPayment(payment)
@@ -128,6 +129,7 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                           img="Icp.svg"
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
+                          owner={principal}
                         />
                         <div className="flex flex-col mt-4 p-4">
                           <div className="flex justify-between items-center w-full">
