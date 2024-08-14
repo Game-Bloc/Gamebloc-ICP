@@ -90,7 +90,7 @@ const PaymentModal = ({
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
-        // console.log("icp", _icp2Usd)
+        console.log("icp", _icp2Usd)
       } else {
         setIcpValue(0)
       }
