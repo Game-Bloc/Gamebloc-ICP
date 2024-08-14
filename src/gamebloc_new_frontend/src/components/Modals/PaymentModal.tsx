@@ -294,8 +294,12 @@ const PaymentModal = ({
                         <button
                           disabled={selectedPayment === "ICP" ? false : true}
                           onClick={
-                            players.map((squad: any) => squad.captain)[0] ===
-                            username
+                            data.game_type === "Single"
+                              ? () =>
+                                  paid === true ? setActive("second") : payFee()
+                              : players.map(
+                                  (squad: any) => squad.captain,
+                                )[0] === username
                               ? () =>
                                   paid === true ? setActive("second") : payFee()
                               : () =>
