@@ -47,12 +47,8 @@ const PaymentModal = ({
 }: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
-  const [recipient, setRecipient] = useState<string>("")
-  const [warning, setWarning] = useState<string>("")
   const [color, setColor] = useState("#ffffff")
-  const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
-  const [amount, setAmount] = useState<number>(null)
   const [icp, setIcpValue] = useState<number>(null)
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [createdAt, setCreatedAt] = useState<string>("")
@@ -94,8 +90,7 @@ const PaymentModal = ({
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
-        console.log("icp", _icp2Usd)
-        console.log("icp...", icpValue)
+        // console.log("icp", _icp2Usd)
       } else {
         setIcpValue(0)
       }
@@ -267,7 +262,6 @@ const PaymentModal = ({
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
                         /> */}
-
                         <PaymentCard
                           onChange={() => handlePaymentChange("ICP")}
                           paymentTitle="ICP"
@@ -291,63 +285,77 @@ const PaymentModal = ({
                             </p>
                           </div>
                         </div>
-                        <button
-                          disabled={selectedPayment === "ICP" ? false : true}
-                          onClick={
-                            data.game_type === "Single"
-                              ? () =>
-                                  paid === true ? setActive("second") : payFee()
-                              : players.map(
-                                  (squad: any) => squad.captain,
-                                )[0] === username
-                              ? () =>
-                                  paid === true ? setActive("second") : payFee()
-                              : () =>
-                                  errorPopUp(
-                                    "Only a squad captain can join on your behalf",
-                                  )
-                          }
-                          className={`flex mt-8 text-black text-[.9rem] ${
-                            selectedPayment === "ICP"
-                              ? "bg-primary-second"
-                              : "bg-primary-second/15"
-                          } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
-                        >
-                          {isLoading ? (
-                            <ClipLoader
-                              color={color}
-                              loading={isLoading}
-                              cssOverride={override}
-                              size={20}
-                              aria-label="Loading Spinner"
-                              data-testid="loader"
-                            />
-                          ) : (
-                            <p className="font-semibold">
-                              {paid === true ? "Next" : "Approve"}
-                            </p>
-                          )}
-                        </button>
-
-                        <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                          By proceeding you approve the amount of $
-                          {Object.keys(
-                            data.tournament_type,
-                          )[0].toUpperCase() === "PREPAID"
-                            ? data.total_prize
-                            : data.game_type === "squad" &&
-                              Object.keys(
-                                data.tournament_type,
-                              )[0].toUpperCase() !== "PREPAID"
-                            ? +data.entry_prize * 4
-                            : data.game_type === "Duo" &&
-                              Object.keys(
-                                data.tournament_type,
-                              )[0].toUpperCase() !== "PREPAID"
-                            ? +data.entry_prize * 2
-                            : data.entry_prize}{" "}
-                          worth of ICP to be deducted from your wallet.
-                        </p>
+                        {_icp2Usd === null || 0 || undefined ? (
+                          <p></p>
+                        ) : (
+                          <button
+                            disabled={selectedPayment === "ICP" ? false : true}
+                            onClick={
+                              data.game_type === "Single"
+                                ? () =>
+                                    paid === true
+                                      ? setActive("second")
+                                      : payFee()
+                                : players.map(
+                                    (squad: any) => squad.captain,
+                                  )[0] === username
+                                ? () =>
+                                    paid === true
+                                      ? setActive("second")
+                                      : payFee()
+                                : () =>
+                                    errorPopUp(
+                                      "Only a squad captain can join on your behalf",
+                                    )
+                            }
+                            className={`flex mt-8 text-black text-[.9rem] ${
+                              selectedPayment === "ICP"
+                                ? "bg-primary-second"
+                                : "bg-primary-second/15"
+                            } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
+                          >
+                            {isLoading ? (
+                              <ClipLoader
+                                color={color}
+                                loading={isLoading}
+                                cssOverride={override}
+                                size={20}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                              />
+                            ) : (
+                              <p className="font-semibold">
+                                {paid === true ? "Next" : "Approve"}
+                              </p>
+                            )}
+                          </button>
+                        )}
+                        {_icp2Usd === null || 0 || undefined ? (
+                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                            Pls check back some other time, ICP price is
+                            currently unavailable
+                          </p>
+                        ) : (
+                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                            By proceeding you approve the amount of $
+                            {Object.keys(
+                              data.tournament_type,
+                            )[0].toUpperCase() === "PREPAID"
+                              ? data.total_prize
+                              : data.game_type === "squad" &&
+                                Object.keys(
+                                  data.tournament_type,
+                                )[0].toUpperCase() !== "PREPAID"
+                              ? +data.entry_prize * 4
+                              : data.game_type === "Duo" &&
+                                Object.keys(
+                                  data.tournament_type,
+                                )[0].toUpperCase() !== "PREPAID"
+                              ? +data.entry_prize * 2
+                              : data.entry_prize}{" "}
+                            worth of ICP to be deducted from your wallet.
+                          </p>
+                        )}
                       </>
                     )}
                     {active === "second" && (

@@ -58,6 +58,7 @@ const PaymentModal2 = ({
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   useEffect(() => {
     setCreatedAt(generateDate())
@@ -220,44 +221,54 @@ const PaymentModal2 = ({
                             </p>
                           </div>
                         </div>
-
-                        <button
-                          disabled={selectedPayment === "ICP" ? false : true}
-                          onClick={() =>
-                            paid === true ? setActive("second") : payFee()
-                          }
-                          className={`flex mt-8 text-black text-[.9rem] ${
-                            selectedPayment === "ICP"
-                              ? "bg-primary-second"
-                              : "bg-primary-second/15"
-                          } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
-                        >
-                          {isLoading ? (
-                            <ClipLoader
-                              color={color}
-                              loading={isLoading}
-                              cssOverride={override}
-                              size={20}
-                              aria-label="Loading Spinner"
-                              data-testid="loader"
-                            />
-                          ) : (
-                            <p className="font-semibold">
-                              {paid === false ? "Approve" : "Next"}
-                            </p>
-                          )}
-                        </button>
-                        <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                          By proceeding you approve the amount of $
-                          {tourType === "Prepaid"
-                            ? poolPrice
-                            : gameType === "squad" && tourType !== "Prepaid"
-                            ? +entryPrice * 4
-                            : gameType === "Duo" && tourType !== "Prepaid"
-                            ? +entryPrice * 2
-                            : entryPrice}{" "}
-                          worth of ICP to be deducted from your wallet.
-                        </p>
+                        {_icp2Usd === null || 0 || undefined ? (
+                          <p></p>
+                        ) : (
+                          <button
+                            disabled={selectedPayment === "ICP" ? false : true}
+                            onClick={() =>
+                              paid === true ? setActive("second") : payFee()
+                            }
+                            className={`flex mt-8 text-black text-[.9rem] ${
+                              selectedPayment === "ICP"
+                                ? "bg-primary-second"
+                                : "bg-primary-second/15"
+                            } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
+                          >
+                            {isLoading ? (
+                              <ClipLoader
+                                color={color}
+                                loading={isLoading}
+                                cssOverride={override}
+                                size={20}
+                                aria-label="Loading Spinner"
+                                data-testid="loader"
+                              />
+                            ) : (
+                              <p className="font-semibold">
+                                {paid === false ? "Approve" : "Next"}
+                              </p>
+                            )}
+                          </button>
+                        )}
+                        {_icp2Usd === null || 0 || undefined ? (
+                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                            Pls check back some other time, ICP price is
+                            currently unavailable
+                          </p>
+                        ) : (
+                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                            By proceeding you approve the amount of $
+                            {tourType === "Prepaid"
+                              ? poolPrice
+                              : gameType === "squad" && tourType !== "Prepaid"
+                              ? +entryPrice * 4
+                              : gameType === "Duo" && tourType !== "Prepaid"
+                              ? +entryPrice * 2
+                              : entryPrice}{" "}
+                            worth of ICP to be deducted from your wallet.
+                          </p>
+                        )}
                       </>
                     )}
                     {active === "second" && (
