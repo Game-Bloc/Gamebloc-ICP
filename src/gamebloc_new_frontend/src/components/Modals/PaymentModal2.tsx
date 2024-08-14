@@ -19,6 +19,7 @@ import { RiCloseFill } from "react-icons/ri"
 interface Props {
   owner: string
   icp: number
+  gameType: string
   done: boolean
   updating: boolean
   poolPrice: string
@@ -38,6 +39,7 @@ const PaymentModal2 = ({
   icp,
   done,
   modal,
+  gameType,
   updating,
   poolPrice,
   entryPrice,
@@ -48,6 +50,7 @@ const PaymentModal2 = ({
   const [active, setActive] = useState<string>("first")
   const [color, setColor] = useState("#ffffff")
   const [date, setDate] = useState<number>()
+  const [amount, setAmount] = useState<number>(null)
   const [createdAt, setCreatedAt] = useState<string>("")
   const { paid, isLoading, payICPfee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
@@ -59,26 +62,48 @@ const PaymentModal2 = ({
   useEffect(() => {
     setCreatedAt(generateDate())
     setDate(Date.now())
+    if (gameType === "Duo") {
+      setAmount(+icp.toFixed(8) * 2)
+    } else if (gameType === "Squad") {
+      setAmount(+icp.toFixed(8) * 4)
+    } else {
+      setAmount(+icp.toFixed(8))
+    }
   }, [])
 
   const handlePaymentChange = (payment: string) => {
     setSelectedPayment(payment)
   }
 
-  console.log("Done status", done)
+  console.log("gameType", gameType)
   const payFee = () => {
-    payICPfee(
-      "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
-      +icp.toFixed(8),
-      date,
-      _principal,
-      createdAt,
-      notification_id,
-      username,
-      "Payment Approved",
-      "Something went wrong",
-      "",
-    )
+    if (tourType === "Prepaid") {
+      payICPfee(
+        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        +icp.toFixed(8),
+        date,
+        _principal,
+        createdAt,
+        notification_id,
+        username,
+        "Payment Approved",
+        "Something went wrong",
+        "",
+      )
+    } else {
+      payICPfee(
+        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        amount,
+        date,
+        _principal,
+        createdAt,
+        notification_id,
+        username,
+        "Payment Approved",
+        "Something went wrong",
+        "",
+      )
+    }
   }
 
   return (
@@ -185,7 +210,13 @@ const PaymentModal2 = ({
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {icp.toFixed(8)} ICP
+                              {gameType === "Duo" && tourType === "Crowdfunded"
+                                ? +icp.toFixed(8) * 2
+                                : gameType === "Squad" &&
+                                  tourType === "Crowdfunded"
+                                ? +icp.toFixed(8) * 4
+                                : icp.toFixed(8)}{" "}
+                              ICP
                             </p>
                           </div>
                         </div>
@@ -218,7 +249,13 @@ const PaymentModal2 = ({
                         </button>
                         <p className="mt-2 text-white/80 text-center text-[.7rem]">
                           By proceeding you approve the amount of $
-                          {tourType === "Prepaid" ? poolPrice : entryPrice}{" "}
+                          {tourType === "Prepaid"
+                            ? poolPrice
+                            : gameType === "squad" && tourType !== "Prepaid"
+                            ? +entryPrice * 4
+                            : gameType === "Duo" && tourType !== "Prepaid"
+                            ? +entryPrice * 2
+                            : entryPrice}{" "}
                           worth of ICP to be deducted from your wallet.
                         </p>
                       </>

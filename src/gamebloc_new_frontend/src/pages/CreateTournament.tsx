@@ -783,6 +783,7 @@ const CreateTournament = () => {
         {openPaymentModal && (
           <PaymentModal2
             done={done}
+            gameType={gameType}
             modal={handleModal}
             updating={updating}
             owner={principal}

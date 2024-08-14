@@ -172,6 +172,7 @@ const Rules = ({ data }: Props) => {
           data={data}
           squad_id={squad_id}
           owner={owner}
+          creator={data.creator}
           userId={principal}
           modal={handleModal}
         />

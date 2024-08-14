@@ -17,10 +17,12 @@ import { generateDate } from "../utils/utills"
 import { Principal } from "@dfinity/principal"
 import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
+import { errorPopUp } from "../utils/ErrorModal"
 
 interface Props {
   owner: string
   id: string
+  creator: any
   userId?: string
   squad?: any
   data?: any
@@ -37,6 +39,7 @@ const PaymentModal = ({
   modal,
   owner,
   id,
+  creator,
   userId,
   squad,
   data,
@@ -49,6 +52,7 @@ const PaymentModal = ({
   const [color, setColor] = useState("#ffffff")
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
+  const [amount, setAmount] = useState<number>(null)
   const [icp, setIcpValue] = useState<number>(null)
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [createdAt, setCreatedAt] = useState<string>("")
@@ -69,9 +73,19 @@ const PaymentModal = ({
   const _principal = Principal.fromText(principal)
   const tourType =
     Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
+  const players = squad.filter((player: any) =>
+    player.members.some((member: any) => member.name === username),
+  )
+
   useEffect(() => {
     setCreatedAt(generateDate())
     setDate(Date.now())
+    if (
+      creator === owner ||
+      Object.keys(data.tournament_type)[0].toUpperCase() === "PREPAID"
+    ) {
+      setActive("second")
+    }
   }, [])
 
   useEffect(() => {
@@ -80,6 +94,8 @@ const PaymentModal = ({
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
+        console.log("icp", _icp2Usd)
+        console.log("icp...", icpValue)
       } else {
         setIcpValue(0)
       }
@@ -89,18 +105,46 @@ const PaymentModal = ({
   }, [_icp2Usd])
 
   const payFee = () => {
-    payICPfee(
-      "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
-      +icp.toFixed(8),
-      date,
-      _principal,
-      createdAt,
-      notification_id,
-      username,
-      "Payment Approved",
-      "Something went wrong",
-      "",
-    )
+    if (data.game_type === "Duo") {
+      payICPfee(
+        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        +icp?.toFixed(8) * 2,
+        date,
+        _principal,
+        createdAt,
+        notification_id,
+        username,
+        "Payment Approved",
+        "Something went wrong",
+        "",
+      )
+    } else if (data.game_type === "Squad") {
+      payICPfee(
+        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        +icp?.toFixed(8) * 4,
+        date,
+        _principal,
+        createdAt,
+        notification_id,
+        username,
+        "Payment Approved",
+        "Something went wrong",
+        "",
+      )
+    } else {
+      payICPfee(
+        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        +icp?.toFixed(8),
+        date,
+        _principal,
+        createdAt,
+        notification_id,
+        username,
+        "Payment Approved",
+        "Something went wrong",
+        "",
+      )
+    }
   }
 
   const handlePaymentChange = (payment: string) => {
@@ -115,17 +159,10 @@ const PaymentModal = ({
     error: string,
     route: string,
   ) => {
-    console.log("squad_id", squad_id)
-    console.log("id", id)
-    console.log("playerIGNs", playerIGNs)
-    //  joinTournamentSqaud(
-    //    squad_id,
-    //    id,
-    //    playerIGNs,
-    //    success,
-    //    error,
-    //    route,
-    //  )
+    // console.log("squad_id", squad_id)
+    // console.log("id", id)
+    // console.log("playerIGNs", playerIGNs)
+    joinTournamentSqaud(squad_id, id, playerIGNs, success, error, route)
   }
 
   const join_tour_solo = (
@@ -230,6 +267,7 @@ const PaymentModal = ({
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
                         /> */}
+
                         <PaymentCard
                           onChange={() => handlePaymentChange("ICP")}
                           paymentTitle="ICP"
@@ -244,14 +282,26 @@ const PaymentModal = ({
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {icp.toFixed(8)} ICP
+                              {data.game_type === "Duo"
+                                ? +icp?.toFixed(8) * 2
+                                : data.game_type === "Squad"
+                                ? +icp?.toFixed(8) * 4
+                                : icp?.toFixed(8)}{" "}
+                              ICP
                             </p>
                           </div>
                         </div>
                         <button
                           disabled={selectedPayment === "ICP" ? false : true}
-                          onClick={() =>
-                            paid === true ? setActive("second") : payFee()
+                          onClick={
+                            players.map((squad: any) => squad.captain)[0] ===
+                            username
+                              ? () =>
+                                  paid === true ? setActive("second") : payFee()
+                              : () =>
+                                  errorPopUp(
+                                    "Only a squad captain can join on your behalf",
+                                  )
                           }
                           className={`flex mt-8 text-black text-[.9rem] ${
                             selectedPayment === "ICP"
@@ -270,16 +320,28 @@ const PaymentModal = ({
                             />
                           ) : (
                             <p className="font-semibold">
-                              {paid === false ? "Approve" : "Next"}
+                              {paid === true ? "Next" : "Approve"}
                             </p>
                           )}
                         </button>
+
                         <p className="mt-2 text-white/80 text-center text-[.7rem]">
                           By proceeding you approve the amount of $
-                          {Object.keys(data.tournament_type)[0].toUpperCase() ==
-                          "PREPAID"
+                          {Object.keys(
+                            data.tournament_type,
+                          )[0].toUpperCase() === "PREPAID"
                             ? data.total_prize
-                            : data.entry_prize}
+                            : data.game_type === "squad" &&
+                              Object.keys(
+                                data.tournament_type,
+                              )[0].toUpperCase() !== "PREPAID"
+                            ? +data.entry_prize * 4
+                            : data.game_type === "Duo" &&
+                              Object.keys(
+                                data.tournament_type,
+                              )[0].toUpperCase() !== "PREPAID"
+                            ? +data.entry_prize * 2
+                            : data.entry_prize}{" "}
                           worth of ICP to be deducted from your wallet.
                         </p>
                       </>
