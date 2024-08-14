@@ -97,12 +97,12 @@ const PaymentModal = ({
     }
 
     calculateIcpValue()
-  }, [_icp2Usd])
+  }, [])
 
   const payFee = () => {
     if (data.game_type === "Duo") {
       payICPfee(
-        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
         +icp?.toFixed(8) * 2,
         date,
         _principal,
@@ -115,7 +115,7 @@ const PaymentModal = ({
       )
     } else if (data.game_type === "Squad") {
       payICPfee(
-        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
         +icp?.toFixed(8) * 4,
         date,
         _principal,
@@ -128,7 +128,7 @@ const PaymentModal = ({
       )
     } else {
       payICPfee(
-        "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
         +icp?.toFixed(8),
         date,
         _principal,
@@ -285,7 +285,7 @@ const PaymentModal = ({
                             </p>
                           </div>
                         </div>
-                        {_icp2Usd === null || 0 || undefined ? (
+                        {_icp2Usd === 0 ? (
                           <p></p>
                         ) : (
                           <button
@@ -330,7 +330,7 @@ const PaymentModal = ({
                             )}
                           </button>
                         )}
-                        {_icp2Usd === null || 0 || undefined ? (
+                        {_icp2Usd === 0 ? (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             Pls check back some other time, ICP price is
                             currently unavailable
