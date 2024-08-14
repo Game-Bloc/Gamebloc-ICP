@@ -31,7 +31,7 @@ import AccountIdentifier "utils/utils";
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
-import ICRC1 "canister:icrc1_ledger";
+// import ICRC1 "canister:icrc1_ledger";
 
 import IndexTypes "types/indextypes";
 import Bloctypes "types/bloctypes";
@@ -41,6 +41,7 @@ import CKTypes "types/ck_types";
 import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
+import CkTypes "types/ck_types";
 
 shared ({ caller }) actor class Kitchen() {
 
@@ -305,18 +306,18 @@ shared ({ caller }) actor class Kitchen() {
         })
     };
 
-    public func transferICPFrom(_from : CKTypes.Account, _to : CKTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
-        await ICRC1.icrc2_transfer_from({
-            to = _to;
-            fee = null;
-            spender_subaccount = null;
-            from = _from;
-            memo = null;
-            created_at_time = null;
-            amount = _amount;
+    // public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
+    //     await ICPLedger.icrc2_transfer_from({
+    //         to = _to;
+    //         fee = null;
+    //         spender_subaccount = null;
+    //         from = _from;
+    //         memo = null;
+    //         created_at_time = null;
+    //         amount = _amount;
 
-        });
-    };
+    //     });
+    // };
 
 
     /// Ledger Canister Ends
@@ -1212,12 +1213,12 @@ shared ({ caller }) actor class Kitchen() {
                 TournamentHashMap.put(caller, tournamentAccount);
                 var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
-                var _to : CKTypes.Account = {
+                var toAccount : LedgerTypes.Account = {
                     owner = gbc_admin;
                     subaccount = null;
                 };
 
-                var _from : CKTypes.Account = {
+                var fromAccount : LedgerTypes.Account = {
                     owner = fromPrincipal;
                     subaccount = null;
                 };
@@ -1226,11 +1227,17 @@ shared ({ caller }) actor class Kitchen() {
 
                     try {
                         // var actual_price = amount / icp_price;
-                        var result = await ICRC1.icrc2_transfer_from({
-                            to = _to;
+                        var result = await ICPLedger.icrc2_transfer_from({
+                            to = {
+                    owner = gbc_admin;
+                    subaccount = null;
+                };
                             fee = null;
                             spender_subaccount = null;
-                            from = _from;
+                            from = {
+                    owner = fromPrincipal;
+                    subaccount = null;
+                };
                             memo = null;
                             created_at_time = null;
                             amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
@@ -1240,11 +1247,17 @@ shared ({ caller }) actor class Kitchen() {
                     }
                     
                 } else { //Should be #prepaid
-                    var result = await ICRC1.icrc2_transfer_from({
-                        to = _to;
+                    var result = await ICPLedger.icrc2_transfer_from({
+                        to = {
+                    owner = gbc_admin;
+                    subaccount = null;
+                };
                         fee = null;
                         spender_subaccount = null;
-                        from = _from;
+                        from = {
+                    owner = fromPrincipal;
+                    subaccount = null;
+                };
                         memo = null;
                         created_at_time = null;
                         amount = tournamentAccount.total_prize/icp_price;
@@ -1388,12 +1401,12 @@ shared ({ caller }) actor class Kitchen() {
         } else {
             try {
 
-                var _to : CKTypes.Account = {
+                var _to : LedgerTypes.Account = {
                     owner = gbc_admin;
                     subaccount = null
                 };
 
-                var _from : CKTypes.Account = {
+                var _from : LedgerTypes.Account = {
                     owner = caller;
                     subaccount = null
                 };
@@ -1406,11 +1419,17 @@ shared ({ caller }) actor class Kitchen() {
 
                     try {
                         // var actual_price = amount / icp_price;
-                        var result = await ICRC1.icrc2_transfer_from({
-                            to = _to;
+                        var result = await ICPLedger.icrc2_transfer_from({
+                            to = {
+                    owner = gbc_admin;
+                    subaccount = null
+                };
                             fee = null;
                             spender_subaccount = null;
-                            from = _from;
+                            from = {
+                    owner = caller;
+                    subaccount = null
+                };
                             memo = null;
                             created_at_time = null;
                             amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 4; //In USD
@@ -1426,11 +1445,17 @@ shared ({ caller }) actor class Kitchen() {
 
                     try {
                         // var actual_price = amount / icp_price;
-                        var result = await ICRC1.icrc2_transfer_from({
-                            to = _to;
+                        var result = await ICPLedger.icrc2_transfer_from({
+                            to = {
+                    owner = gbc_admin;
+                    subaccount = null
+                };
                             fee = null;
                             spender_subaccount = null;
-                            from = _from;
+                            from = {
+                    owner = caller;
+                    subaccount = null
+                };
                             memo = null;
                             created_at_time = null;
                             amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 2; //In USD
@@ -1456,12 +1481,12 @@ shared ({ caller }) actor class Kitchen() {
             try {
                 var tournamentAccount = await get_tournament(id);
 
-                var _to : CKTypes.Account = {
+                var _to : LedgerTypes.Account = {
                     owner = gbc_admin;
                     subaccount = null
                 };
 
-                var _from : CKTypes.Account = {
+                var _from : LedgerTypes.Account = {
                     owner = caller;
                     subaccount = null
                 };
@@ -1470,11 +1495,17 @@ shared ({ caller }) actor class Kitchen() {
                 if (tournamentAccount.tournament_type == #Crowdfunded) {
                         try {
                             // var actual_price = amount / icp_price;
-                            var result = await ICRC1.icrc2_transfer_from({
-                                to = _to;
+                            var result = await ICPLedger.icrc2_transfer_from({
+                                to = {
+                    owner = gbc_admin;
+                    subaccount = null
+                };
                                 fee = null;
                                 spender_subaccount = null;
-                                from = _from;
+                                from = {
+                    owner = caller;
+                    subaccount = null
+                };
                                 memo = null;
                                 created_at_time = null;
                                 amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
