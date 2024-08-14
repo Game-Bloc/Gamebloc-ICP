@@ -195,6 +195,10 @@ const TournamentInfo = ({ data }: Props) => {
     setCount(result)
   }, [])
 
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
+
   if (updating) {
     return (
       <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
@@ -647,6 +651,7 @@ const TournamentInfo = ({ data }: Props) => {
             squad_id={squad_id}
             owner={owner}
             userId={principal}
+            modal={handleModal}
           />
         )}
       </div>

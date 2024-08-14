@@ -68,7 +68,7 @@ const PaymentModal2 = ({
   console.log("Done status", done)
   const payFee = () => {
     payICPfee(
-      "16efdc385d2c87b7c2e4913689bd228656841e4689c65a2720e03507e2d5f5e2",
+      "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
       +icp.toFixed(8),
       date,
       _principal,

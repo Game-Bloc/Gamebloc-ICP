@@ -45,19 +45,6 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/world-chat" element={<WorldChat />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route
-              path="/payment"
-              element={
-                <PaymentModal
-                  owner={""}
-                  id={""}
-                  userId={""}
-                  squad={undefined}
-                  data={undefined}
-                  squad_id={""}
-                />
-              }
-            />
           </Route>
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}

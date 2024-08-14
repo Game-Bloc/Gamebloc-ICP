@@ -13,6 +13,10 @@ import PaymentCard from "./payment/PaymentCard"
 import SoloModal from "./payment/SoloModal"
 import SquadModal from "./payment/SquadModal"
 import { useNavigate } from "react-router-dom"
+import { generateDate } from "../utils/utills"
+import { Principal } from "@dfinity/principal"
+import { RiCloseFill } from "react-icons/ri"
+import ClipLoader from "react-spinners/ClipLoader"
 
 interface Props {
   owner: string
@@ -21,6 +25,7 @@ interface Props {
   squad?: any
   data?: any
   squad_id?: string
+  modal: () => void
 }
 const override = {
   display: "block",
@@ -28,7 +33,15 @@ const override = {
   borderColor: "white",
 }
 
-const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
+const PaymentModal = ({
+  modal,
+  owner,
+  id,
+  userId,
+  squad,
+  data,
+  squad_id,
+}: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
   const [recipient, setRecipient] = useState<string>("")
@@ -36,17 +49,97 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
   const [color, setColor] = useState("#ffffff")
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
+  const [icp, setIcpValue] = useState<number>(null)
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [createdAt, setCreatedAt] = useState<string>("")
-  const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
+  const {
+    paid,
+    done,
+    isLoading,
+    payICPfee,
+    joinTournamentSqaud,
+    joinTournament,
+  } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
+  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type = data.game_type.toUpperCase() === "SINGLE"
   const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const _principal = Principal.fromText(principal)
+  const tourType =
+    Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
+  useEffect(() => {
+    setCreatedAt(generateDate())
+    setDate(Date.now())
+  }, [])
+
+  useEffect(() => {
+    const calculateIcpValue = () => {
+      const dollarAmount = tourType ? +data.total_prize : +data.entry_prize
+      if (_icp2Usd > 0 && dollarAmount > 0) {
+        const icpValue = dollarAmount / _icp2Usd
+        setIcpValue(icpValue)
+      } else {
+        setIcpValue(0)
+      }
+    }
+
+    calculateIcpValue()
+  }, [_icp2Usd])
+
+  const payFee = () => {
+    payICPfee(
+      "87baf3adfba79b407337212611da1f52d8db5518a592412f5d7d319c12a8a59e",
+      +icp.toFixed(8),
+      date,
+      _principal,
+      createdAt,
+      notification_id,
+      username,
+      "Payment Approved",
+      "Something went wrong",
+      "",
+    )
+  }
 
   const handlePaymentChange = (payment: string) => {
     setSelectedPayment(payment)
   }
+
+  const join_tour_squad = (
+    squad_id: any,
+    id: any,
+    playerIGNs: any,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    console.log("squad_id", squad_id)
+    console.log("id", id)
+    console.log("playerIGNs", playerIGNs)
+    //  joinTournamentSqaud(
+    //    squad_id,
+    //    id,
+    //    playerIGNs,
+    //    success,
+    //    error,
+    //    route,
+    //  )
+  }
+
+  const join_tour_solo = (
+    owner: any,
+    id: any,
+    userId: any,
+    playerIgn: any,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    joinTournament(owner, id, userId, playerIgn, success, error, route)
+  }
+
   return (
     <div>
       <div
@@ -60,10 +153,14 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
             <div className="flex items-center justify-center min-h-full ">
               <div className="relative border-white/10 border border-solid bg-primary-first w-[90%] md:max-w-[55%]  lg:max-w-[40%] 2xl:max-w-[30%] rounded-[25px] overflow-hidden">
                 <div className="bg-primary-first py-4   flex flex-col justify-center items-center">
-                  {/* <RiCloseFill
-                    onClick={modal}
-                    className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
-                  /> */}
+                  {active === "first" && paid === false ? (
+                    <RiCloseFill
+                      onClick={modal}
+                      className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
+                    />
+                  ) : (
+                    <></>
+                  )}
                   <div className="">
                     <img
                       src={`Icp.svg`}
@@ -95,17 +192,27 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                         items={[
                           {
                             title: "Pay",
-                            status: "finish",
-                            icon: <DollarOutlined className="w-4 h-4" />,
+                            status: paid === true ? "finish" : "process",
+                            icon:
+                              paid === true ? (
+                                <DollarOutlined className="w-4 h-4" />
+                              ) : (
+                                <LoadingOutlined className="w-4 h-4" />
+                              ),
                           },
                           {
                             title: "Join",
-                            status: "process",
-                            icon: <UsergroupAddOutlined className="w-4 h-4" />,
+                            status: done === true ? "finish" : "process",
+                            icon:
+                              done === true ? (
+                                <UsergroupAddOutlined className="w-4 h-4" />
+                              ) : (
+                                <LoadingOutlined className="w-4 h-4" />
+                              ),
                           },
                           {
                             title: "Success",
-                            status: "wait",
+                            status: done && paid === true ? "finish" : "wait",
                             icon: <CheckCircleOutlined className="w-4 h-4" />,
                           },
                         ]}
@@ -137,28 +244,68 @@ const PaymentModal = ({ owner, id, userId, squad, data, squad_id }: Props) => {
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              $5.00
+                              {icp.toFixed(8)} ICP
                             </p>
                           </div>
                         </div>
                         <button
-                          onClick={() => setActive("second")}
-                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                          disabled={selectedPayment === "ICP" ? false : true}
+                          onClick={() =>
+                            paid === true ? setActive("second") : payFee()
+                          }
+                          className={`flex mt-8 text-black text-[.9rem] ${
+                            selectedPayment === "ICP"
+                              ? "bg-primary-second"
+                              : "bg-primary-second/15"
+                          } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                         >
-                          Approve
+                          {isLoading ? (
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {paid === false ? "Approve" : "Next"}
+                            </p>
+                          )}
                         </button>
+                        <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                          By proceeding you approve the amount of $
+                          {Object.keys(data.tournament_type)[0].toUpperCase() ==
+                          "PREPAID"
+                            ? data.total_prize
+                            : data.entry_prize}
+                          worth of ICP to be deducted from your wallet.
+                        </p>
                       </>
                     )}
                     {active === "second" && (
                       <div>
                         {game_type ? (
-                          <SoloModal owner={owner} id={id} userId={userId} />
+                          <SoloModal
+                            id={id}
+                            done={done}
+                            owner={owner}
+                            userId={userId}
+                            joinSolo={join_tour_solo}
+                            isLoading={isLoading}
+                            setActive={setActive}
+                          />
                         ) : (
                           <SquadModal
+                            done={done}
+                            setActive={setActive}
                             squad={squad}
                             data={data}
                             squad_id={squad_id}
+                            isLoading={isLoading}
                             id={id}
+                            joinTournamentSqaud={join_tour_squad}
                           />
                         )}
                       </div>
