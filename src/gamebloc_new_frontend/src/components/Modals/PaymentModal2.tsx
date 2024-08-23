@@ -76,7 +76,7 @@ const PaymentModal2 = ({
     setSelectedPayment(payment)
   }
 
-  console.log("icp", _icp2Usd)
+  console.log("icp", +icp.toFixed(8))
   const payFee = () => {
     if (tourType === "Prepaid") {
       payICPfee(

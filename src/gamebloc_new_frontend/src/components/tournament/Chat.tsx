@@ -111,7 +111,8 @@ const Chat = ({ data }: Props) => {
       {data.users.some((index: any) => index.includes(username)) ||
       data.squad.some((players: any) =>
         players.members.some((gamer: any) => gamer.name.includes(username)),
-      ) ? (
+      ) ||
+      Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
         <div className="w-full mt-2 flex justify-center items-center">
           <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
             <textarea
