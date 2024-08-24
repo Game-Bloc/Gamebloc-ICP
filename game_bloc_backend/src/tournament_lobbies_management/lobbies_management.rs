@@ -2,6 +2,7 @@ use crate::*;
 use crate::tournament_lobbies_management::helper_functions::*;
 
 ///Lobby (or sub tournament) CRUD
+
 #[query]
 pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -12,38 +13,132 @@ pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAc
 
 #[update]
 pub fn assign_squad_points(tournament_id: String,  squad_id_and_points: Vec<(String, String, Point)>, principal: Principal) -> bool {
-    // if get_self(principal).is_mod {
-        TOURNAMENT_STORE.with(|tournament_store| {
-           let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            let mut sorted_squad_id_and_points = squad_id_and_points;
-            sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
-            tournament.squad_points = Some(sorted_squad_id_and_points);
+    match get_self(principal).role {
+        None => {
+            println!("you're not admin");
+            false
+        }
+        Some(role) => {
+            match role {
+                Role::Player => {
+                    println!("you're not admin");
+                    false
+                }
+                Role::Mod => {
+                    TOURNAMENT_STORE.with(|tournament_store| {
+                        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                        let mut sorted_squad_id_and_points = squad_id_and_points;
+                        sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                        tournament.squad_points = Some(sorted_squad_id_and_points);
 
-            tournament_store.borrow_mut().insert(tournament_id, tournament);
-            true
-        })
-    // } else {
-    //     println!("you're not admin");
-    //     false
-    // }
+                        tournament_store.borrow_mut().insert(tournament_id, tournament);
+                        true
+                    })
+                }
+                Role::TribunalMod(mod_tag) => {
+                    match mod_tag {
+                        ModTag::Mod1 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_squad_id_and_points = squad_id_and_points;
+                                sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.squad_vector_mod_1 = Some(sorted_squad_id_and_points);
+
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                        ModTag::Mod2 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_squad_id_and_points = squad_id_and_points;
+                                sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.squad_vector_mod_2 = Some(sorted_squad_id_and_points);
+
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                        ModTag::Mod3 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_squad_id_and_points = squad_id_and_points;
+                                sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.squad_vector_mod_3 = Some(sorted_squad_id_and_points);
+
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[update]
 pub fn assign_solo_points(tournament_id: String,  user_id_and_points: Vec<(String, String, Point)>, principal: Principal,) -> bool {
-    // if get_self(principal).is_mod {
-        TOURNAMENT_STORE.with(|tournament_store| {
-            let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
-            let mut sorted_user_id_and_points  = user_id_and_points;
-            sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
-            tournament.points = Some(sorted_user_id_and_points);
-            tournament_store.borrow_mut().insert(tournament_id, tournament);
-            true
-        })
-    // } else {
-    //     println!("you're not admin");
-    //     false
-    // }
+    match get_self(principal).role {
+        None => {
+            println!("you're not admin");
+            false
+        }
+        Some(role) => {
+            match role {
+                Role::Player => {
+                    println!("you're not admin");
+                    false
+                }
+                Role::Mod => {
+                    TOURNAMENT_STORE.with(|tournament_store| {
+                        let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                        let mut sorted_user_id_and_points  = user_id_and_points;
+                        sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                        tournament.points = Some(sorted_user_id_and_points);
+                        tournament_store.borrow_mut().insert(tournament_id, tournament);
+                        true
+                    })
+                }
+                Role::TribunalMod(mod_tag) => {
+                    match mod_tag {
+                        ModTag::Mod1 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_user_id_and_points  = user_id_and_points;
+                                sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.points_vector_mod_1 = Some(sorted_user_id_and_points);
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                        ModTag::Mod2 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_user_id_and_points  = user_id_and_points;
+                                sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.points_vector_mod_2 = Some(sorted_user_id_and_points);
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                        ModTag::Mod3 => {
+                            TOURNAMENT_STORE.with(|tournament_store| {
+                                let mut tournament = tournament_store.borrow().get(&tournament_id).cloned().unwrap();
+                                let mut sorted_user_id_and_points  = user_id_and_points;
+                                sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                                tournament.points_vector_mod_3 = Some(sorted_user_id_and_points);
+                                tournament_store.borrow_mut().insert(tournament_id, tournament);
+                                true
+                            })
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+
 
 #[query]
 pub fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {

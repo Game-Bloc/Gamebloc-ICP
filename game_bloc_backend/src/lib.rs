@@ -115,14 +115,97 @@ pub fn set_mod(identity: Principal) {
     });
 }
 
+#[update]
+pub fn add_mod_to_tribunal(identity: Principal) -> bool {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
+        if validate_mod_tag_availability(ModTag::Mod1) {
+            profile.role = match profile.role {
+                None => {
+                    Some(Role::TribunalMod(ModTag::Mod1))
+                }
+                Some(role) => {
+                    match role {
+                        Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
+                        _ => {
+                            Some(Role::TribunalMod(ModTag::Mod1))
+                        }
+                    }
+                }
+            };
+        }
+       else if  validate_mod_tag_availability(ModTag::Mod2) {
+           profile.role = match profile.role {
+               None => {
+                   Some(Role::TribunalMod(ModTag::Mod2))
+               }
+               Some(role) => {
+                   match role {
+                       Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
+                       _ => {
+                           Some(Role::TribunalMod(ModTag::Mod1))
+                       }
+                   }
+               }
+           };
+        }
+       else if validate_mod_tag_availability(ModTag::Mod3) {
+           profile.role = match profile.role {
+               None => {
+                   Some(Role::TribunalMod(ModTag::Mod3))
+               }
+               Some(role) => {
+                   match role {
+                       Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
+                       _ => {
+                           Some(Role::TribunalMod(ModTag::Mod1))
+                       }
+                   }
+               }
+           };
+        }
+        else{
+            println!("tribunal mod slots is full");
+            return false
+        }
+        profile_store.borrow_mut().insert(identity.to_text(), profile);
+        return true
+    })
+}
+
 #[query]
 pub fn is_mod(identity: Principal) -> bool {
     PROFILE_STORE.with(|profile_store| {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         match profile.role.unwrap() {
             Role::Player => return false,
-            Role::Mod => return true
+            Role::Mod => return true,
+            Role::TribunalMod(mod_tag) => {
+                return true
+            }
         }
+    })
+}
+
+#[query]
+pub fn get_mods() -> Vec<UserProfile> {
+    PROFILE_STORE.with(|profile_store| {
+        let mut all_users = Vec::new();
+        profile_store.borrow().iter().for_each(|user| {
+            match &user.clone().1.role {
+                None => {}
+                Some(role) => {
+                    match role {
+                        Role::Player => {}
+                        Role::Mod => {}
+                        Role::TribunalMod(role_tag) => {
+                            all_users.push((user.clone().1).clone().try_into().unwrap())
+                        }
+                    }
+                }
+            }
+        });
+       all_users
     })
 }
 
@@ -210,6 +293,17 @@ pub fn assign_points(identity: String, user_id_and_point: (String, String, Point
         }
         profile_store.borrow_mut().insert(identity, profile);
     });
+}
+
+
+pub(crate) fn validate_mod_tag_availability(try_mod_tag: ModTag) -> bool {
+    get_mods().iter().any(|x| x.clone().role.is_some_and(|y| match y {
+        Role::Player => { false }
+        Role::Mod => { false }
+        Role::TribunalMod(mod_tag) => {
+            mod_tag == try_mod_tag
+        }
+    }))
 }
 
 
