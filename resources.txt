@@ -20,6 +20,8 @@ ckBTC {
     
 }
 
+https://github.com/dfinity/ic/blob/master/publish/canisters/BUILD.bazel
+
 "cketh_minter": {
       "type": "custom",
       "candid": "",

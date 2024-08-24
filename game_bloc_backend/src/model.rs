@@ -177,7 +177,6 @@ pub_struct!(Contestant {
     losses: u8,
 });
 
-
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum Status {
     #[default]

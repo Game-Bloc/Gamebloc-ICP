@@ -1,4 +1,5 @@
 import Principal "mo:base/Principal";
+import Nat "mo:base/Nat";
 import Ledgertypes "ledgertypes";
 
 // import Principal
@@ -181,12 +182,20 @@ module {
         squad_vector_mod_3: ?[(Text,Text,Point)];
         points_vector_mod_3: ?[(Text,Text,Point)];
         tournament_lobby_type : ?TournamentLobbyType;
-        lobbies : ?[LobbyAccount]
+        lobbies : ?[LobbyAccount];
+        winners : ?[Winners];
+        ended : ?Bool
     };
 
     public type TournamentLobbyType = {
         #SingleLobby;
         #MultiLobby;
+    };
+
+    public type Winners = {
+        position : Text;
+        amount : Nat;
+        user_account : Text
     };
 
 
@@ -231,5 +240,12 @@ module {
         name : Text;
         principal_id : Text
     };
+
+    public type Contenstant = {
+        name : Text;
+        point : Nat;
+        wins : Nat8;
+        losses : Nat8
+    }
 
 }
