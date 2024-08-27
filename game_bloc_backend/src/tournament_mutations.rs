@@ -33,9 +33,9 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
                                 Some(squad_vector_mod_3) => {
                                     squad_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
-                                            position_points :f.2.position_points + g.2.position_points,
-                                            total_points:  f.2.total_points + g.2.total_points,
-                                            kill_points: f.2.kill_points + g.2.kill_points,
+                                            position_points: (f.2.position_points + g.2.position_points)/3,
+                                            total_points:  (f.2.total_points + g.2.total_points)/3,
+                                            kill_points: (f.2.kill_points + g.2.kill_points)/3,
                                         };
                                         list.push(((f.0).parse().unwrap(),(f.1).parse().unwrap(), point))
                                     })
@@ -54,9 +54,9 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
                                 Some(squad_vector_mod_3) => {
                                     squad_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
-                                            position_points : e.2.position_points + g.2.position_points,
-                                            total_points:  e.2.total_points + g.2.total_points,
-                                            kill_points: e.2.kill_points + g.2.kill_points,
+                                            position_points : (e.2.position_points + g.2.position_points)/2,
+                                            total_points:  (e.2.total_points + g.2.total_points)/2,
+                                            kill_points: (e.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
                                     })
@@ -70,9 +70,9 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
                                     Some(squad_vector_mod_3) => {
                                         squad_vector_mod_3.iter().for_each(|g|{
                                             let point = Point{
-                                                position_points : e.2.position_points+ f.2.position_points + g.2.position_points,
-                                                total_points:  e.2.total_points + f.2.total_points + g.2.total_points,
-                                                kill_points: e.2.kill_points + f.2.kill_points + g.2.kill_points,
+                                                position_points : (e.2.position_points+ f.2.position_points + g.2.position_points)/3,
+                                                total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
+                                                kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
                                             };
                                             list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
                                         })
@@ -120,9 +120,9 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
-                                            position_points :f.2.position_points + g.2.position_points,
-                                            total_points:  f.2.total_points + g.2.total_points,
-                                            kill_points: f.2.kill_points + g.2.kill_points,
+                                            position_points: (f.2.position_points + g.2.position_points)/2,
+                                            total_points:  (f.2.total_points + g.2.total_points)/2,
+                                            kill_points: (f.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((f.0).parse().unwrap(), (f.1).parse().unwrap(), point))
                                     })
@@ -141,9 +141,9 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
-                                            position_points : e.2.position_points + g.2.position_points,
-                                            total_points:  e.2.total_points + g.2.total_points,
-                                            kill_points: e.2.kill_points + g.2.kill_points,
+                                            position_points : (e.2.position_points + g.2.position_points)/2,
+                                            total_points:  (e.2.total_points + g.2.total_points)/2,
+                                            kill_points: (e.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
                                     })
@@ -157,9 +157,9 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                     Some(points_vector_mod_3) => {
                                         points_vector_mod_3.iter().for_each(|g|{
                                             let point = Point{
-                                                position_points : e.2.position_points+ f.2.position_points + g.2.position_points,
-                                                total_points:  e.2.total_points + f.2.total_points + g.2.total_points,
-                                                kill_points: e.2.kill_points + f.2.kill_points + g.2.kill_points,
+                                                position_points : (e.2.position_points+ f.2.position_points + g.2.position_points)/3,
+                                                total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
+                                                kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
                                             };
                                             list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
                                         })
