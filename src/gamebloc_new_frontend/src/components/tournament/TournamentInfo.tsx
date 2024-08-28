@@ -32,7 +32,7 @@ const TournamentInfo = ({ data }: Props) => {
   const { updateAllSquads } = useUpdateAllSquad()
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
-  const { isLoading, getProfile } = useGameblocHooks()
+  const { isLoading, getProfile, start_tournament } = useGameblocHooks()
   const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
@@ -183,7 +183,7 @@ const TournamentInfo = ({ data }: Props) => {
 
     return formattedDate
   }
-
+  console.log(days, hours, minutes, seconds)
   useEffect(() => {
     if (squad?.length > 0) {
       updateAllSquads()
@@ -193,6 +193,10 @@ const TournamentInfo = ({ data }: Props) => {
     const inputDateString = data.starting_date
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+      console.log("started")
+      start_tournament(id)
+    }
   }, [])
 
   const handleModal = () => {

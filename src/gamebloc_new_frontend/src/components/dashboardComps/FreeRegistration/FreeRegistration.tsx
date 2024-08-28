@@ -52,7 +52,8 @@ const FreeRegistration = () => {
   const newTournament = tournament
     .filter(
       (tour: any) =>
-        Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS",
+        Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS" ||
+        "GAMEINPROGRESS",
     )
     .map((tour: any) => tour)
 
@@ -60,6 +61,7 @@ const FreeRegistration = () => {
   const changePage = ({ selected }: any) => {
     setPageNumber(selected)
   }
+  console.log(tournament)
 
   const displayTournaments = newTournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
@@ -107,7 +109,7 @@ const FreeRegistration = () => {
           <div className="m-4">
             <div className="mt-4 flex justify-between items-center">
               <h2 className="text-sm text-white sm:text-lg my-6">
-                Free Registration
+                Active Tournament
               </h2>
 
               <div className="flex justify-center items-center gap-4">
