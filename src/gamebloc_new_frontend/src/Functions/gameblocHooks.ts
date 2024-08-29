@@ -497,6 +497,7 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -508,6 +509,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
+        icp_price,
       )
       setIsLoading(false)
       popUp(successMsg, route)
