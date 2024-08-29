@@ -318,6 +318,8 @@ const CreateTournament = () => {
           [],
           [],
           [],
+          [],
+          [],
           "You have successfully created a Tournament",
           "Try again something went wrong",
           "/profile",

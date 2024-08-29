@@ -277,6 +277,8 @@ export const useGameblocHooks = () => {
     points: [],
     lobbies: [],
     tournament_lobby_type: any,
+    winners: [],
+    ended: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -318,6 +320,8 @@ export const useGameblocHooks = () => {
         in_game_names,
         tournament_lobby_type,
         lobbies,
+        winners,
+        ended,
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {
@@ -341,6 +345,7 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -348,7 +353,12 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const ign: [string, string, string] = [name, userId, playerIgn]
-      const join_tournament = await whoamiActor.join_tournament(name, id, ign)
+      const join_tournament = await whoamiActor.join_tournament(
+        name,
+        id,
+        ign,
+        icp_price,
+      )
       setIsLoading(false)
       popUp(successMsg, route)
     } catch (err) {
