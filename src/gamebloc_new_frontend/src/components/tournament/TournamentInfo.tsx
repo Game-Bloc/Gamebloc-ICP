@@ -183,7 +183,7 @@ const TournamentInfo = ({ data }: Props) => {
 
     return formattedDate
   }
-  console.log(days, hours, minutes, seconds)
+
   useEffect(() => {
     if (squad?.length > 0) {
       updateAllSquads()
@@ -193,11 +193,18 @@ const TournamentInfo = ({ data }: Props) => {
     const inputDateString = data.starting_date
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
-    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
-      console.log("started")
-      start_tournament(id)
-    }
   }, [])
+
+  const timer = setTimeout(() => {
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+      start_tournament(id)
+      console.log("Match in progress")
+    }
+  }, 5000)
+
+  useEffect(() => {
+    timer
+  }, [timer])
 
   const handleModal = () => {
     setOpenPaymentModal(false)

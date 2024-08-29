@@ -539,7 +539,7 @@ export const useGameblocHooks = () => {
 
       const args: any = {
         to: to,
-        amount: { e8s: BigInt(amount * 100000000) },
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
         fee: { e8s: defaultArgs.fee },
         memo: defaultArgs.memo,
         from_subaccount: [],
@@ -600,7 +600,7 @@ export const useGameblocHooks = () => {
 
       const args: any = {
         to: to,
-        amount: { e8s: BigInt(amount * 100000000) },
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
         fee: { e8s: defaultArgs.fee },
         memo: defaultArgs.memo,
         from_subaccount: [],
