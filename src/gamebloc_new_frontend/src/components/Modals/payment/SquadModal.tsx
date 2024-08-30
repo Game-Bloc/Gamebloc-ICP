@@ -21,10 +21,11 @@ const override = {
 }
 
 const SquadModal = ({ squad, data, squad_id, id }: Props) => {
-  const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
-  const username = useAppSelector((state) => state.userProfile.username)
+  const MySwal = withReactContent(Swal)
   const { isLoading, joinTournamentSqaud } = useGameblocHooks()
+  const username = useAppSelector((state) => state.userProfile.username)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
@@ -93,6 +94,7 @@ const SquadModal = ({ squad, data, squad_id, id }: Props) => {
       squad_id,
       id,
       playerIGNs,
+      BigInt(Math.round(icp_price)),
       "Tournament Joined",
       "Error, try again.",
       "",
