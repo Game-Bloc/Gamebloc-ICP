@@ -49,7 +49,7 @@ const Carousell = () => {
     //   tags: ["Fighting", "Action", "Battle Royle", "Multiplayer"],
     // },
     {
-      title: "THE GENESIS TOURNAMENT",
+      title: "SUPERNOVA SERIES",
       name: "Call of Duty: Mobile",
       Host: "NOVA",
       img: `img5.png`,
