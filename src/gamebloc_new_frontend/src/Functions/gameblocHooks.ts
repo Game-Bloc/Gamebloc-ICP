@@ -52,6 +52,7 @@ export const useGameblocHooks = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [paid, setPaid] = useState<boolean>(false)
   const [done, setDone] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
@@ -325,7 +326,10 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
-      const create = await whoamiActor2.create_tournament(tournamentData)
+      const create = await whoamiActor.create_tournament(
+        tournamentData,
+        BigInt(Math.round(icp_price)),
+      )
       if (create) {
         setDone(true)
         console.log("passed through")

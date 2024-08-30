@@ -22,6 +22,7 @@ interface Props {
     id: any,
     userId: any,
     playerIgn: any,
+    icp_price: bigint,
     success: string,
     error: string,
     route: string,

@@ -19,6 +19,7 @@ interface Props {
     squad_id: any,
     id: any,
     playerIGNs: any,
+    icp_price: bigint,
     success: string,
     error: string,
     route: string,
@@ -48,7 +49,7 @@ const SquadModal = ({
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
-
+  const navigate = useNavigate()
   const [color, setColor] = useState("#ffffff")
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([])
   const [playerIGNs, setPlayerIGNs] = useState<[string, string, string][]>([])
