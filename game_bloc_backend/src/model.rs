@@ -87,13 +87,13 @@ pub_struct!(
      in_game_names: Option<Vec<(String,String,String)>>,
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
-     winners : Option<Vec<Winners>>, // This should be updateable and fetchable
+     winners : Option<Vec<Winner>>, // This should be updateable and fetchable
      ended : Option<bool>,
 
 });
 
 pub_struct!(
-    Winners{
+    Winner{
         position : String,
         amount : u128,
         user_account : String, // This is usually updated
@@ -251,6 +251,7 @@ pub enum TournamentType {
     #[default]
     Crowdfunded,
     Prepaid,
+    Blitzkrieg
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentLobbyType {
