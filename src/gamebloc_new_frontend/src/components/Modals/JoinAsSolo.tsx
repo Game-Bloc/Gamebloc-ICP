@@ -22,7 +22,7 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
   const [color, setColor] = useState("#ffffff")
   const [playerIgn, setPlayerIgn] = useState<string>("")
   const { isLoading, joinTournament } = useGameblocHooks()
-
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const onIgnChange = (event: any) => {
     const input = event.target.value
     setPlayerIgn(input)
@@ -35,6 +35,7 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
         id,
         userId,
         playerIgn,
+        BigInt(Math.round(icp_price)),
         "You have successfully joined this tournament",
         "Something went wrong try again",
         "/dashboard",

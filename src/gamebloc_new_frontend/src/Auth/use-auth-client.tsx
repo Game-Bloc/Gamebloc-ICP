@@ -218,6 +218,8 @@ export const useAuthClient = (options = defaultOptions) => {
 
   async function logout() {
     await authClient?.logout()
+    setIsAuthenticated(false)
+    setIdentity(null)
     await updateClient(authClient)
     sessionStorage.setItem("userState", "false")
   }

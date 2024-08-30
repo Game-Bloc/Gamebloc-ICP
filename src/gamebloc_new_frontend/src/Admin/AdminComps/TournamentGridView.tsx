@@ -31,13 +31,13 @@ const TournamentGridView = ({ players }: ign) => {
         </div>
       ))}
 
-      {openPlayerModal && (
+      {/* {openPlayerModal && (
         <AssignPointsModal
           modal={handleModal}
           player={undefined}
           onSave={undefined}
         />
-      )}
+      )} */}
     </div>
   )
 }

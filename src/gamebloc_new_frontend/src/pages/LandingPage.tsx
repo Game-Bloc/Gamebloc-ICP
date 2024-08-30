@@ -38,7 +38,6 @@ const LandingPage = () => {
     localStorage.setItem("userSession", "false")
     if (isAuthenticated) {
       getProfile()
-      getProfile2()
       if (state) {
         navigate("/dashboard")
       } else if (userSession === "true") {

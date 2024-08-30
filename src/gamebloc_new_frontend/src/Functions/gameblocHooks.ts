@@ -14,14 +14,12 @@ import {
   updateICP,
   updateId,
 } from "../redux/slice/icpBalanceSlice"
-import { message } from "antd"
 import {
   chatState,
   clearChat,
   pushToChat,
   updateChat,
 } from "../redux/slice/chatSlice"
-import { toNamespacedPath } from "path/posix"
 import {
   addTransactions,
   clearTransaction,
@@ -29,7 +27,11 @@ import {
 import axios from "axios"
 import { Principal } from "@dfinity/principal"
 import { allNotification } from "../redux/slice/notificationSlice"
-import { MultiSelect } from "@tremor/react"
+import {
+  clearBoard,
+  LeaderboardState,
+  updateLeaderboard,
+} from "../redux/slice/leaderboardSlice"
 
 export const useGameblocHooks = () => {
   const {
@@ -50,6 +52,9 @@ export const useGameblocHooks = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  const [paid, setPaid] = useState<boolean>(false)
+  const [done, setDone] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -186,9 +191,9 @@ export const useGameblocHooks = () => {
         console.log("No account created yet")
       }
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setIsLoadingProfile(false)
@@ -199,7 +204,7 @@ export const useGameblocHooks = () => {
     try {
       setUpdatingProfile(true)
       const user: any = await whoamiActor.getSelf()
-
+      console.log("Profile", user)
       const profileData: UserProfileState = {
         age: user.age,
         canister_id: user.canister_id,
@@ -224,9 +229,9 @@ export const useGameblocHooks = () => {
       setIsAccount(true)
       console.log("Updating profile")
     } catch (err) {
-      if (!isAuthenticated) {
-        sessionStorage.setItem("userSession", "false")
-      }
+      // if (!isAuthenticated) {
+      //   sessionStorage.setItem("userSession", "false")
+      // }
       console.log("Error getting profile", err)
     } finally {
       setUpdatingProfile(false)
@@ -264,17 +269,25 @@ export const useGameblocHooks = () => {
     end_date: string,
     title: string,
     squad_points: [],
+    squad_vector_mod_1: [],
+    points_vector_mod_1: [],
+    squad_vector_mod_2: [],
+    points_vector_mod_2: [],
+    squad_vector_mod_3: [],
+    points_vector_mod_3: [],
     squad_in_game_names: [],
     in_game_names: [],
     points: [],
     lobbies: [],
     tournament_lobby_type: any,
+    winners: [],
+    ended: [],
     successMsg: string,
     errorMsg: string,
     route: string,
   ) => {
     try {
-      setIsLoading(true)
+      setUpdating(true)
       const creator_id: [string] = [owner_id]
 
       const tournamentData = {
@@ -301,24 +314,35 @@ export const useGameblocHooks = () => {
         title,
         squad_points,
         points,
+        squad_vector_mod_1,
+        points_vector_mod_1,
+        squad_vector_mod_2,
+        points_vector_mod_2,
+        squad_vector_mod_3,
+        points_vector_mod_3,
         in_game_names,
         tournament_lobby_type,
         lobbies,
+        winners,
+        ended,
       }
-      const create = await whoamiActor2.create_tournament(tournamentData)
+      const create = await whoamiActor.create_tournament(
+        tournamentData,
+        BigInt(Math.round(icp_price)),
+      )
       if (create) {
+        setDone(true)
+        console.log("passed through")
         popUp(successMsg, route)
-        setIsLoading(false)
-      } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
+        setUpdating(false)
+        console.log("Ended")
       }
     } catch (err) {
       errorPopUp(errorMsg)
-      setIsLoading(false)
+      setUpdating(false)
       console.log("Error creating tournament:", err)
     } finally {
-      setIsLoading(false)
+      setUpdating(false)
     }
   }
 
@@ -327,6 +351,7 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -334,8 +359,14 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const ign: [string, string, string] = [name, userId, playerIgn]
-      const join_tournament = await whoamiActor.join_tournament(name, id, ign)
+      const join_tournament = await whoamiActor.join_tournament(
+        name,
+        id,
+        ign,
+        icp_price,
+      )
       setIsLoading(false)
+      setDone(true)
       popUp(successMsg, route)
     } catch (err) {
       errorPopUp(errorMsg)
@@ -473,6 +504,7 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -484,8 +516,10 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
+        icp_price,
       )
       setIsLoading(false)
+      setDone(true)
       popUp(successMsg, route)
     } catch (err) {
       errorPopUp(errorMsg)
@@ -521,7 +555,7 @@ export const useGameblocHooks = () => {
 
       const args: any = {
         to: to,
-        amount: { e8s: BigInt(amount * 100000000) },
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
         fee: { e8s: defaultArgs.fee },
         memo: defaultArgs.memo,
         from_subaccount: [],
@@ -548,6 +582,65 @@ export const useGameblocHooks = () => {
         setInterval(() => {
           window.location.reload()
         }, 2000)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const payICPfee = async (
+    to: string,
+    amount: number,
+    created_at_time: any,
+    _principal: any,
+    date: string,
+    notification_id: number,
+    username,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    const defaultArgs = {
+      fee: BigInt(10_000),
+      memo: BigInt(0),
+    }
+    try {
+      setIsLoading(true)
+      const timeStamp = {
+        timestamp_nanos: BigInt(created_at_time),
+      }
+
+      const args: any = {
+        to: to,
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
+        fee: { e8s: defaultArgs.fee },
+        memo: defaultArgs.memo,
+        from_subaccount: [],
+        created_at_time: [],
+      }
+      const tokens = {
+        e8s: BigInt(amount * 100000000),
+      }
+
+      // const send = await whoamiActor.transferICP(to, tokens, timeStamp)
+      const send = await ledgerActor.send_dfx(args)
+      if (send) {
+        notify(
+          "Withdrawal Successful",
+          `You have successfully withdrawn ${amount} ICP from your account.`,
+          _principal,
+          date,
+          BigInt(notification_id),
+          username,
+        )
+        console.log("notify sent")
+        setIsLoading(false)
+        setPaid(true)
+        popUp(successMsg, route)
       }
     } catch (err) {
       setIsLoading(false)
@@ -864,7 +957,7 @@ export const useGameblocHooks = () => {
   const start_tournament = async (id: string) => {
     try {
       await whoamiActor2.start_tournament(id)
-      console.log("Tournament successfully started")
+      console.log("Tournament successfully start ed")
     } catch (err) {
       console.log("error startinng tournament", err)
     }
@@ -953,7 +1046,60 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const update_user_points = async (
+    identity: Principal,
+    username: string,
+    userId: string,
+    points: any,
+  ) => {
+    try {
+      const user_id_and_point: [string, string, any] = [
+        username,
+        userId,
+        points,
+      ]
+      setIsLoading(true)
+      const update = await whoamiActor2.assign_points(
+        identity,
+        user_id_and_point,
+      )
+      console.log("user struct updated")
+      setIsLoading(false)
+    } catch (err) {
+      console.log("Can't update user point", err)
+      setIsLoading(false)
+    }
+  }
+
+  const get_leaderboard = async () => {
+    try {
+      setUpdating(true)
+      const leaderboard = await whoamiActor2.get_leaderboard()
+      dispatch(clearBoard())
+      for (const data of leaderboard) {
+        const board: LeaderboardState = {
+          losses: data.losses,
+          name: data.name,
+          point: Number(data.point),
+          wins: data.wins,
+        }
+        // console.log("board", board)
+        dispatch(updateLeaderboard(board))
+      }
+
+      if (leaderboard) {
+        setUpdating(false)
+        // console.log("Leaderboard", leaderboard)
+      }
+    } catch (err) {
+      setUpdating(false)
+      console.log("Can't get leaderboard stats", err)
+    }
+  }
+
   return {
+    paid,
+    done,
     isLoading,
     isLoadingProfile,
     updating,
@@ -995,5 +1141,8 @@ export const useGameblocHooks = () => {
     archive_tournament,
     start_tournament,
     end_tournament,
+    update_user_points,
+    get_leaderboard,
+    payICPfee,
   }
 }

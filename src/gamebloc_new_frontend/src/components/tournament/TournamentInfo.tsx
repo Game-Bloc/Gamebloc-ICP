@@ -15,6 +15,7 @@ import LoginModal2 from "../Modals/LoginModal2"
 import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
 import { hasDateReached, inProgress } from "../utils/utills"
+import PaymentModal from "../Modals/PaymentModal"
 interface Props {
   data: any
 }
@@ -31,11 +32,12 @@ const TournamentInfo = ({ data }: Props) => {
   const { updateAllSquads } = useUpdateAllSquad()
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
-  const { isLoading, getProfile } = useGameblocHooks()
+  const { isLoading, getProfile, start_tournament } = useGameblocHooks()
   const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
 
   const override = {
     display: "block",
@@ -192,6 +194,21 @@ const TournamentInfo = ({ data }: Props) => {
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
   }, [])
+
+  const timer = setTimeout(() => {
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+      start_tournament(id)
+      console.log("Match in progress")
+    }
+  }, 5000)
+
+  useEffect(() => {
+    timer
+  }, [timer])
+
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
 
   if (updating) {
     return (
@@ -559,8 +576,7 @@ const TournamentInfo = ({ data }: Props) => {
           </div>
         </div>
         <div className="flex flex-col w-full justify-center items-center">
-          {hasDateReached(data.end_date) ||
-          Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
+          {Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
             <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
               <p className="font-semibold">Ended</p>
             </button>
@@ -575,7 +591,7 @@ const TournamentInfo = ({ data }: Props) => {
                     gamer.name.includes(owner),
                   ),
                 ) ? (
-                inProgress(data.starting_date) ? (
+                days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                   <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                     <p className="font-semibold">In progress</p>
                   </button>
@@ -584,7 +600,7 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="font-semibold">Joined</p>
                   </button>
                 )
-              ) : inProgress(data.starting_date) ? (
+              ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
                 </button>
@@ -593,9 +609,7 @@ const TournamentInfo = ({ data }: Props) => {
                   onClick={
                     isAuthenticated
                       ? () => {
-                          data.game_type.toUpperCase() === "SINGLE"
-                            ? setOpenSoloModal(true)
-                            : setOpenSquadModal(true)
+                          setOpenPaymentModal(true)
                         }
                       : () => handleLoginModal()
                   }
@@ -623,7 +637,7 @@ const TournamentInfo = ({ data }: Props) => {
           )}
         </div>
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
-        {openSoloModal && (
+        {/* {openSoloModal && (
           <JoinAsSolo
             modal={handleSoloModal}
             owner={owner}
@@ -638,6 +652,18 @@ const TournamentInfo = ({ data }: Props) => {
             id={id}
             squad={squad}
             data={data}
+          />
+        )} */}
+        {openPaymentModal && (
+          <PaymentModal
+            id={id}
+            squad={squad}
+            data={data}
+            squad_id={squad_id}
+            owner={owner}
+            creator={data.creator}
+            userId={principal}
+            modal={handleModal}
           />
         )}
       </div>
