@@ -189,6 +189,15 @@ pub enum Role {
     #[default]
     Player,
     Mod,
+    TribunalMod(ModTag)
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize,PartialEq)]
+pub enum ModTag {
+    #[default]
+    Mod1,
+    Mod2,
+    Mod3,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
