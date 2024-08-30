@@ -10,24 +10,23 @@ import {
 } from "@ant-design/icons"
 import { Checkbox, CheckboxProps, ConfigProvider, Steps } from "antd"
 import PaymentCard from "./payment/PaymentCard"
-import SoloModal from "./payment/SoloModal"
-import SquadModal from "./payment/SquadModal"
 import { useNavigate } from "react-router-dom"
 import { generateDate } from "../utils/utills"
 import { Principal } from "@dfinity/principal"
-import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
-import { errorPopUp } from "../utils/ErrorModal"
+import { RiCloseFill } from "react-icons/ri"
 
 interface Props {
   owner: string
-  id: string
-  creator: any
-  userId?: string
-  squad?: any
-  data?: any
-  squad_id?: string
+  icp: number
+  gameType: string
+  done: boolean
+  updating: boolean
+  poolPrice: string
+  entryPrice: string
+  tourType: any
   modal: () => void
+  create_tour: () => void
 }
 const override = {
   display: "block",
@@ -35,88 +34,54 @@ const override = {
   borderColor: "white",
 }
 
-const PaymentModal = ({
-  modal,
+const PaymentModal2 = ({
   owner,
-  id,
-  creator,
-  userId,
-  squad,
-  data,
-  squad_id,
+  icp,
+  done,
+  modal,
+  gameType,
+  updating,
+  poolPrice,
+  entryPrice,
+  tourType,
+  create_tour,
 }: Props) => {
   const navigate = useNavigate()
   const [active, setActive] = useState<string>("first")
   const [color, setColor] = useState("#ffffff")
   const [date, setDate] = useState<number>()
-  const [icp, setIcpValue] = useState<number>(null)
-  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  const [amount, setAmount] = useState<number>(null)
   const [createdAt, setCreatedAt] = useState<string>("")
-  const {
-    paid,
-    done,
-    isLoading,
-    payICPfee,
-    joinTournamentSqaud,
-    joinTournament,
-  } = useGameblocHooks()
+  const { paid, isLoading, payICPfee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
-  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const username = useAppSelector((state) => state.userProfile.username)
-  const balance = useAppSelector((state) => state.IcpBalance.balance)
-  const game_type = data.game_type.toUpperCase() === "SINGLE"
+  const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
-  const tourType =
-    Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
-  const players = squad.filter((player: any) =>
-    player.members.some((member: any) => member.name === username),
-  )
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   useEffect(() => {
     setCreatedAt(generateDate())
     setDate(Date.now())
-    if (
-      creator === owner ||
-      Object.keys(data.tournament_type)[0].toUpperCase() === "PREPAID"
-    ) {
-      setActive("second")
+    if (gameType === "Duo") {
+      setAmount(+icp.toFixed(8) * 2)
+    } else if (gameType === "Squad") {
+      setAmount(+icp.toFixed(8) * 4)
+    } else {
+      setAmount(+icp.toFixed(8))
     }
   }, [])
 
-  useEffect(() => {
-    const calculateIcpValue = () => {
-      const dollarAmount = tourType ? +data.total_prize : +data.entry_prize
-      if (_icp2Usd > 0 && dollarAmount > 0) {
-        const icpValue = dollarAmount / _icp2Usd
-        setIcpValue(icpValue)
-        console.log("icp", _icp2Usd)
-      } else {
-        setIcpValue(0)
-      }
-    }
+  const handlePaymentChange = (payment: string) => {
+    setSelectedPayment(payment)
+  }
 
-    calculateIcpValue()
-  }, [])
-
+  console.log("icp", +icp.toFixed(8))
   const payFee = () => {
-    if (data.game_type === "Duo") {
+    if (tourType === "Prepaid") {
       payICPfee(
         "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8) * 2,
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
-    } else if (data.game_type === "Squad") {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8) * 4,
+        +icp.toFixed(8),
         date,
         _principal,
         createdAt,
@@ -129,7 +94,7 @@ const PaymentModal = ({
     } else {
       payICPfee(
         "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8),
+        amount,
         date,
         _principal,
         createdAt,
@@ -140,36 +105,6 @@ const PaymentModal = ({
         "",
       )
     }
-  }
-
-  const handlePaymentChange = (payment: string) => {
-    setSelectedPayment(payment)
-  }
-
-  const join_tour_squad = (
-    squad_id: any,
-    id: any,
-    playerIGNs: any,
-    success: string,
-    error: string,
-    route: string,
-  ) => {
-    // console.log("squad_id", squad_id)
-    // console.log("id", id)
-    // console.log("playerIGNs", playerIGNs)
-    joinTournamentSqaud(squad_id, id, playerIGNs, success, error, route)
-  }
-
-  const join_tour_solo = (
-    owner: any,
-    id: any,
-    userId: any,
-    playerIgn: any,
-    success: string,
-    error: string,
-    route: string,
-  ) => {
-    joinTournament(owner, id, userId, playerIgn, success, error, route)
   }
 
   return (
@@ -252,7 +187,7 @@ const PaymentModal = ({
                     </ConfigProvider>
                     {active === "first" && (
                       <>
-                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1rem] md:text-[1.1rem] text-semibold">
                           Select payment option
                         </p>
                         {/* <PaymentCard
@@ -268,19 +203,20 @@ const PaymentModal = ({
                           img="Icp.svg"
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
-                          owner={principal}
+                          owner={owner}
                         />
-                        <div className="flex flex-col mt-4 p-4">
-                          <div className="flex justify-between items-center w-full">
-                            <p className="text-[.9rem] lg:text-[1rem]  text-white/80  ">
+                        <div className="flex flex-col mt-2 lg:mt-4 p-4">
+                          <div className="flex flex-col lg:flex-row  justify-between items-center w-full">
+                            <p className="text-[.8rem] lg:text-[1rem]  text-white/80  ">
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {data.game_type === "Duo"
-                                ? +icp?.toFixed(8) * 2
-                                : data.game_type === "Squad"
-                                ? +icp?.toFixed(8) * 4
-                                : icp?.toFixed(8)}{" "}
+                              {gameType === "Duo" && tourType === "Crowdfunded"
+                                ? +icp.toFixed(8) * 2
+                                : gameType === "Squad" &&
+                                  tourType === "Crowdfunded"
+                                ? +icp.toFixed(8) * 4
+                                : icp.toFixed(8)}{" "}
                               ICP
                             </p>
                           </div>
@@ -290,23 +226,8 @@ const PaymentModal = ({
                         ) : (
                           <button
                             disabled={selectedPayment === "ICP" ? false : true}
-                            onClick={
-                              data.game_type === "Single"
-                                ? () =>
-                                    paid === true
-                                      ? setActive("second")
-                                      : payFee()
-                                : players.map(
-                                    (squad: any) => squad.captain,
-                                  )[0] === username
-                                ? () =>
-                                    paid === true
-                                      ? setActive("second")
-                                      : payFee()
-                                : () =>
-                                    errorPopUp(
-                                      "Only a squad captain can join on your behalf",
-                                    )
+                            onClick={() =>
+                              paid === true ? setActive("second") : payFee()
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
                               selectedPayment === "ICP"
@@ -325,7 +246,7 @@ const PaymentModal = ({
                               />
                             ) : (
                               <p className="font-semibold">
-                                {paid === true ? "Next" : "Approve"}
+                                {paid === false ? "Approve" : "Next"}
                               </p>
                             )}
                           </button>
@@ -338,50 +259,42 @@ const PaymentModal = ({
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
-                            {Object.keys(
-                              data.tournament_type,
-                            )[0].toUpperCase() === "PREPAID"
-                              ? data.total_prize
-                              : data.game_type === "squad" &&
-                                Object.keys(
-                                  data.tournament_type,
-                                )[0].toUpperCase() !== "PREPAID"
-                              ? +data.entry_prize * 4
-                              : data.game_type === "Duo" &&
-                                Object.keys(
-                                  data.tournament_type,
-                                )[0].toUpperCase() !== "PREPAID"
-                              ? +data.entry_prize * 2
-                              : data.entry_prize}{" "}
+                            {tourType === "Prepaid"
+                              ? poolPrice
+                              : gameType === "squad" && tourType !== "Prepaid"
+                              ? +entryPrice * 4
+                              : gameType === "Duo" && tourType !== "Prepaid"
+                              ? +entryPrice * 2
+                              : entryPrice}{" "}
                             worth of ICP to be deducted from your wallet.
                           </p>
                         )}
                       </>
                     )}
                     {active === "second" && (
-                      <div>
-                        {game_type ? (
-                          <SoloModal
-                            id={id}
-                            done={done}
-                            owner={owner}
-                            userId={userId}
-                            joinSolo={join_tour_solo}
-                            isLoading={isLoading}
-                            setActive={setActive}
-                          />
-                        ) : (
-                          <SquadModal
-                            done={done}
-                            setActive={setActive}
-                            squad={squad}
-                            data={data}
-                            squad_id={squad_id}
-                            isLoading={isLoading}
-                            id={id}
-                            joinTournamentSqaud={join_tour_squad}
-                          />
-                        )}
+                      <div className="mt-2">
+                        <button
+                          onClick={() =>
+                            done === true ? setActive("third") : create_tour()
+                          }
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          {updating ? (
+                            <ClipLoader
+                              color={color}
+                              loading={updating}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {" "}
+                              {done === true ? "Next" : "Create Tournament"}
+                            </p>
+                          )}
+                        </button>
                       </div>
                     )}
                     {active === "third" && (
@@ -393,10 +306,10 @@ const PaymentModal = ({
                           successful
                         </p>
                         <button
-                          onClick={() => navigate("/dashboard")}
+                          onClick={() => navigate("/profile")}
                           className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
                         >
-                          Back to Tournament
+                          Profile
                         </button>
                       </div>
                     )}
@@ -411,4 +324,4 @@ const PaymentModal = ({
   )
 }
 
-export default PaymentModal
+export default PaymentModal2

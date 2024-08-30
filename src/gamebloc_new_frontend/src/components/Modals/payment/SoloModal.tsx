@@ -14,12 +14,31 @@ interface Props {
   owner: string
   id: string
   userId: string
+  done: boolean
+  setActive: any
+  isLoading: boolean
+  joinSolo: (
+    owner: any,
+    id: any,
+    userId: any,
+    playerIgn: any,
+    success: string,
+    error: string,
+    route: string,
+  ) => void
 }
 
-const SoloModal = ({ owner, id, userId }: Props) => {
+const SoloModal = ({
+  owner,
+  id,
+  userId,
+  isLoading,
+  done,
+  setActive,
+  joinSolo,
+}: Props) => {
   const [color, setColor] = useState("#ffffff")
   const [playerIgn, setPlayerIgn] = useState<string>("")
-  const { isLoading, joinTournament } = useGameblocHooks()
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   const onIgnChange = (event: any) => {
@@ -29,7 +48,7 @@ const SoloModal = ({ owner, id, userId }: Props) => {
 
   const joinAsSoloPlayer = () => {
     if (playerIgn.trim() !== "") {
-      joinTournament(
+      joinSolo(
         owner,
         id,
         userId,
@@ -67,7 +86,9 @@ const SoloModal = ({ owner, id, userId }: Props) => {
       </div>
       <div className="flex w-full mt-4 justify-center items-center">
         <button
-          onClick={() => joinAsSoloPlayer()}
+          onClick={() =>
+            done === true ? setActive("third") : joinAsSoloPlayer()
+          }
           className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
         >
           {isLoading ? (
@@ -85,7 +106,9 @@ const SoloModal = ({ owner, id, userId }: Props) => {
               />
             </div>
           ) : (
-            <p className="font-semibold">Join Tournament</p>
+            <p className="font-semibold">
+              {done === true ? "Next" : "Join Tournament"}
+            </p>
           )}
         </button>
       </div>

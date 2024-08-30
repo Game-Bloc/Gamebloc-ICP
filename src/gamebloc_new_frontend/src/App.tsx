@@ -20,6 +20,7 @@ import AdminViewTournamentDetails from "./Admin/AdminPages/AdminViewTournamentDe
 import ViewResult from "./pages/ViewResult"
 import PaymentModal from "./components/Modals/PaymentModal"
 import Leaderboard from "./pages/Leaderboard"
+import Series from "./pages/Series"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -43,21 +44,9 @@ const App = () => {
             />
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/supernova-series" element={<Series />} />
             <Route path="/world-chat" element={<WorldChat />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route
-              path="/payment"
-              element={
-                <PaymentModal
-                  owner={""}
-                  id={""}
-                  userId={""}
-                  squad={undefined}
-                  data={undefined}
-                  squad_id={""}
-                />
-              }
-            />
           </Route>
           <Route
             element={<AdminProtectedRoute adminAuthState={isAuthenticated} />}

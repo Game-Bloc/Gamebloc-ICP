@@ -52,6 +52,8 @@ export const useGameblocHooks = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
+  const [paid, setPaid] = useState<boolean>(false)
+  const [done, setDone] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -284,7 +286,7 @@ export const useGameblocHooks = () => {
     route: string,
   ) => {
     try {
-      setIsLoading(true)
+      setUpdating(true)
       const creator_id: [string] = [owner_id]
 
       const tournamentData = {
@@ -325,18 +327,18 @@ export const useGameblocHooks = () => {
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {
+        setDone(true)
+        console.log("passed through")
         popUp(successMsg, route)
-        setIsLoading(false)
-      } else {
-        setIsLoading(false)
-        errorPopUp(errorMsg)
+        setUpdating(false)
+        console.log("Ended")
       }
     } catch (err) {
       errorPopUp(errorMsg)
-      setIsLoading(false)
+      setUpdating(false)
       console.log("Error creating tournament:", err)
     } finally {
-      setIsLoading(false)
+      setUpdating(false)
     }
   }
 
@@ -360,6 +362,7 @@ export const useGameblocHooks = () => {
         icp_price,
       )
       setIsLoading(false)
+      setDone(true)
       popUp(successMsg, route)
     } catch (err) {
       errorPopUp(errorMsg)
@@ -512,6 +515,7 @@ export const useGameblocHooks = () => {
         icp_price,
       )
       setIsLoading(false)
+      setDone(true)
       popUp(successMsg, route)
     } catch (err) {
       errorPopUp(errorMsg)
@@ -547,7 +551,7 @@ export const useGameblocHooks = () => {
 
       const args: any = {
         to: to,
-        amount: { e8s: BigInt(amount * 100000000) },
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
         fee: { e8s: defaultArgs.fee },
         memo: defaultArgs.memo,
         from_subaccount: [],
@@ -574,6 +578,65 @@ export const useGameblocHooks = () => {
         setInterval(() => {
           window.location.reload()
         }, 2000)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const payICPfee = async (
+    to: string,
+    amount: number,
+    created_at_time: any,
+    _principal: any,
+    date: string,
+    notification_id: number,
+    username,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    const defaultArgs = {
+      fee: BigInt(10_000),
+      memo: BigInt(0),
+    }
+    try {
+      setIsLoading(true)
+      const timeStamp = {
+        timestamp_nanos: BigInt(created_at_time),
+      }
+
+      const args: any = {
+        to: to,
+        amount: { e8s: BigInt(Math.round(amount * 100000000)) },
+        fee: { e8s: defaultArgs.fee },
+        memo: defaultArgs.memo,
+        from_subaccount: [],
+        created_at_time: [],
+      }
+      const tokens = {
+        e8s: BigInt(amount * 100000000),
+      }
+
+      // const send = await whoamiActor.transferICP(to, tokens, timeStamp)
+      const send = await ledgerActor.send_dfx(args)
+      if (send) {
+        notify(
+          "Withdrawal Successful",
+          `You have successfully withdrawn ${amount} ICP from your account.`,
+          _principal,
+          date,
+          BigInt(notification_id),
+          username,
+        )
+        console.log("notify sent")
+        setIsLoading(false)
+        setPaid(true)
+        popUp(successMsg, route)
       }
     } catch (err) {
       setIsLoading(false)
@@ -1031,6 +1094,8 @@ export const useGameblocHooks = () => {
   }
 
   return {
+    paid,
+    done,
     isLoading,
     isLoadingProfile,
     updating,
@@ -1074,5 +1139,6 @@ export const useGameblocHooks = () => {
     end_tournament,
     update_user_points,
     get_leaderboard,
+    payICPfee,
   }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { Blurhash } from "react-blurhash"
 import { useGameblocHooks } from "../../../Functions/gameblocHooks"
 import { useAppSelector } from "../../../redux/hooks"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   list: any
@@ -10,6 +11,7 @@ interface Props {
 
 const CarouselCard = ({ list, setModal }: Props) => {
   const { getICPrice } = useGameblocHooks()
+  const navigate = useNavigate()
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
 
@@ -43,7 +45,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
               </p>
               <div className="flex flex-row justify-center items-center">
                 <p className="sm:font-[500] ml-1  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  5
+                  90
                 </p>
                 <img
                   src={`Icp.svg`}
@@ -52,7 +54,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                ${(Number(+_icp2Usd) * 5).toFixed(2)}
+                ${(Number(+_icp2Usd) * 90).toFixed(2)}
               </p>
             </div>
             <div className=" flex ml-4 flex-col">
@@ -80,7 +82,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
             Host: {list.Host}
           </p>
           <button
-            onClick={() => setModal(true)}
+            onClick={() => navigate("/supernova-series")}
             className="pt-1 pb-[.25rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
             Join now

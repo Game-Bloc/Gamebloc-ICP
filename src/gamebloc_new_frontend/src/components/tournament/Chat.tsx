@@ -23,6 +23,7 @@ const Chat = ({ data }: Props) => {
   const [message, setMessage] = useState<string>("")
   const { sendTournamentMessage } = useGameblocHooks()
   const { updateMessages } = useGetTournamentMessages()
+  const isMod = useAppSelector((state) => state.userProfile.role)
   const chatId = useAppSelector((state) => state.userProfile.id_hash)
   const username = useAppSelector((state) => state.userProfile.username)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
@@ -88,7 +89,8 @@ const Chat = ({ data }: Props) => {
         {data.users.some((index: any) => index.includes(username)) ||
         data.squad.some((players: any) =>
           players.members.some((gamer: any) => gamer.name.includes(username)),
-        ) ? (
+        ) ||
+        Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
           data.messages.map((message: any, index: any) => (
             <ChatCard1 key={index} tourData={data} message={message} />
           ))
@@ -109,7 +111,8 @@ const Chat = ({ data }: Props) => {
       {data.users.some((index: any) => index.includes(username)) ||
       data.squad.some((players: any) =>
         players.members.some((gamer: any) => gamer.name.includes(username)),
-      ) ? (
+      ) ||
+      Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
         <div className="w-full mt-2 flex justify-center items-center">
           <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
             <textarea

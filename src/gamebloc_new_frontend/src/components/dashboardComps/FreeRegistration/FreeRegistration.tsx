@@ -49,13 +49,21 @@ const FreeRegistration = () => {
   const handleAccModal = () => {
     setAccountModal(!accountModal)
   }
+  const newTournament = tournament
+    .filter(
+      (tour: any) =>
+        Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS" ||
+        "GAMEINPROGRESS",
+    )
+    .map((tour: any) => tour)
 
   const pageCount: number = Math.ceil(tournament?.length / tournamentPerPage)
   const changePage = ({ selected }: any) => {
     setPageNumber(selected)
   }
+  console.log(tournament)
 
-  const displayTournaments = tournament
+  const displayTournaments = newTournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
     .map((data: any, index: any) => (
       <RecommendedCard data={data} index={index} key={index} />
@@ -70,14 +78,14 @@ const FreeRegistration = () => {
   } else {
     return (
       <div>
-        {nodata || noTournamentData === "true" ? (
+        {newTournament.length === 0 ? (
           <div className="w-full flex flex-col justify-center mt-20 bg-[#040D17] p-8 items-center rounded-[1.5rem] h-[15rem]">
             <h2 className="font-valorant text-sm text-center sm:text-lg md:text-xl text-white">
               There is no active tournament yet !
             </h2>
             <p className=" mb-4 mt-4 text-[0.7rem] text-center text-white xl:text-[1rem] ">
               {" "}
-              Be the First to create a tournament
+              Create a tournament
             </p>
 
             <button
@@ -101,7 +109,7 @@ const FreeRegistration = () => {
           <div className="m-4">
             <div className="mt-4 flex justify-between items-center">
               <h2 className="text-sm text-white sm:text-lg my-6">
-                Free Registration
+                Active Tournament
               </h2>
 
               <div className="flex justify-center items-center gap-4">

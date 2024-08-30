@@ -8,10 +8,21 @@ import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 
 interface Props {
+  done: boolean
+  setActive: any
   squad: any
   data: any
   squad_id: string
   id: string
+  isLoading: boolean
+  joinTournamentSqaud: (
+    squad_id: any,
+    id: any,
+    playerIGNs: any,
+    success: string,
+    error: string,
+    route: string,
+  ) => void
 }
 
 const override = {
@@ -20,12 +31,20 @@ const override = {
   borderColor: "white",
 }
 
-const SquadModal = ({ squad, data, squad_id, id }: Props) => {
-  const navigate = useNavigate()
+const SquadModal = ({
+  squad,
+  data,
+  squad_id,
+  id,
+  done,
+  setActive,
+  isLoading,
+  joinTournamentSqaud,
+}: Props) => {
   const MySwal = withReactContent(Swal)
-  const { isLoading, joinTournamentSqaud } = useGameblocHooks()
   const username = useAppSelector((state) => state.userProfile.username)
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  // const { isLoading, joinTournamentSqaud } = useGameblocHooks()
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
@@ -257,7 +276,8 @@ const SquadModal = ({ squad, data, squad_id, id }: Props) => {
                 <button
                   onClick={
                     players.map((squad: any) => squad.captain)[0] === username
-                      ? () => joinTournament()
+                      ? () =>
+                          done === true ? setActive("third") : joinTournament()
                       : () =>
                           errorPopUp(
                             "Only a squad captain can join on your behalf",
@@ -280,7 +300,10 @@ const SquadModal = ({ squad, data, squad_id, id }: Props) => {
                       />
                     </div>
                   ) : (
-                    <p className="font-semibold">Join Tournament</p>
+                    <p className="font-semibold">
+                      {" "}
+                      {done === true ? "Next" : "Join Tournament"}
+                    </p>
                   )}
                 </button>
               </div>

@@ -32,7 +32,7 @@ const TournamentInfo = ({ data }: Props) => {
   const { updateAllSquads } = useUpdateAllSquad()
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
-  const { isLoading, getProfile } = useGameblocHooks()
+  const { isLoading, getProfile, start_tournament } = useGameblocHooks()
   const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
@@ -194,6 +194,21 @@ const TournamentInfo = ({ data }: Props) => {
     const result = convertToMilliseconds(inputDateString)
     setCount(result)
   }, [])
+
+  const timer = setTimeout(() => {
+    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+      start_tournament(id)
+      console.log("Match in progress")
+    }
+  }, 5000)
+
+  useEffect(() => {
+    timer
+  }, [timer])
+
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
 
   if (updating) {
     return (
@@ -646,7 +661,9 @@ const TournamentInfo = ({ data }: Props) => {
             data={data}
             squad_id={squad_id}
             owner={owner}
+            creator={data.creator}
             userId={principal}
+            modal={handleModal}
           />
         )}
       </div>

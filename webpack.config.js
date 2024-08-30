@@ -5,8 +5,8 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const TerserPlugin = require("terser-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 
-const LOCAL_II_CANISTER = "http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943"
-// const LOCAL_II_CANISTER = "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:4943"
+// const LOCAL_II_CANISTER = "http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943"
+const LOCAL_II_CANISTER = "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:4943"
 // const LOCAL_II_CANISTER = "http://bw4dl-smaaa-aaaaa-qaacq-cai.localhost:4943"
 
 const network =

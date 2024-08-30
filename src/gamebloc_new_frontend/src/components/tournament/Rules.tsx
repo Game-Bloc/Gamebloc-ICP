@@ -74,6 +74,10 @@ const Rules = ({ data }: Props) => {
     setCount(result)
   }, [])
 
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
+
   return (
     <div className="">
       <div className="flex flex-col mx-4 max-h-[27rem] h-[25rem]  overflow-x-hidden overflow-y-scroll">
@@ -168,7 +172,9 @@ const Rules = ({ data }: Props) => {
           data={data}
           squad_id={squad_id}
           owner={owner}
+          creator={data.creator}
           userId={principal}
+          modal={handleModal}
         />
       )}
     </div>

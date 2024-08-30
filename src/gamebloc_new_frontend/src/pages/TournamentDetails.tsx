@@ -91,14 +91,11 @@ const TournamentDetail = () => {
   // console.log("Role", Object.keys(role[0])[0].toUpperCase())
   useEffect(() => {
     updateTournament()
-    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
-      if (
-        Object.keys(tourData[0].status)[0].toUpperCase() === "ACCEPTINGPLAYERS"
-      ) {
-        start_tournament(id)
-      } else {
-      }
-    }
+    // if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+    //   console.log(days, hours, minutes, seconds)
+
+    //   start_tournament(id)
+    // }
   }, [isAuthenticated])
 
   if (status) {
@@ -333,6 +330,7 @@ const TournamentDetail = () => {
                                     className="m-0 w-[10px] h-[10px] sm:w-[16px] sm:h-[16px] "
                                     alt=""
                                   />
+
                                   <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                                     Battle Royale: {data.game_type}
                                   </p>

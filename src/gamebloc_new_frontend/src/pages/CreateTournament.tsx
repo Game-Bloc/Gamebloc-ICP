@@ -27,6 +27,7 @@ import { GameType } from "../../../declarations/kitchen/kitchen.did"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useAuth } from "../Auth/use-auth-client"
 import Editor from "../components/Texteditor/Editor"
+import PaymentModal2 from "../components/Modals/PaymentModal2"
 const loader = require("../../assets/category1.svg").default
 const loader1 = require("../../assets/category2.svg").default
 const loader2 = require("../../assets/category3.svg").default
@@ -59,18 +60,15 @@ const CreateTournament = () => {
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [icpValue, setIcpValue] = useState<number>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const {
-    isLoading,
-    createTournament,
-    getICPBalance,
-    getProfile,
-    isLoadingProfile,
-  } = useGameblocHooks()
+  const { done, updating, createTournament, getICPBalance, getProfile } =
+    useGameblocHooks()
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
   const name = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const creator_id = useAppSelector((state) => state.userProfile.id_hash)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
+  const principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const override = {
     display: "block",
@@ -251,7 +249,11 @@ const CreateTournament = () => {
     })
   }
 
-  const testFunction = () => {
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
+
+  const create_tour = () => {
     console.log("Participants", noOfUsers)
     console.log("Winners", noOfWinners)
     console.log("Creator", name)
@@ -267,7 +269,7 @@ const CreateTournament = () => {
     console.log("End Time", endDate)
   }
 
-  const addTournament = () => {
+  const proceed_to_payment = () => {
     if (
       noOfUsers === 0 ||
       noOfWinners === 0 ||
@@ -285,49 +287,51 @@ const CreateTournament = () => {
         (tourType === "Prepaid" && balance > icpValue) ||
         (tourType === "Crowdfunded" && balance > icpValue)
       ) {
-        createTournament(
-          1,
-          tournamentID,
-          { AcceptingPlayers: null },
-          name,
-          [],
-          creator_id,
-          game_name,
-          [],
-          [],
-          [],
-          BigInt(+poolPrize),
-          tournamentRules,
-          startingDate,
-          variantType,
-          +entryPrice,
-          noOfWinners,
-          BigInt(noOfUsers),
-          gameType,
-          endDate,
-          title,
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          [],
-          "You have successfully created a Tournament",
-          "Try again something went wrong",
-          "/profile",
-        )
+        setOpenPaymentModal(true)
       } else {
         errorPopUp("Your ICP balance is low, pls fund your account.")
       }
     }
+  }
+
+  const _tour = () => {
+    createTournament(
+      1,
+      tournamentID,
+      { AcceptingPlayers: null },
+      name,
+      [],
+      creator_id,
+      game_name,
+      [],
+      [],
+      [],
+      BigInt(+poolPrize),
+      tournamentRules,
+      startingDate,
+      variantType,
+      +entryPrice,
+      noOfWinners,
+      BigInt(noOfUsers),
+      gameType,
+      endDate,
+      title,
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      "Successful",
+      "Try again something went wrong",
+      "",
+    )
   }
 
   if (!isAuthenticated) {
@@ -683,7 +687,7 @@ const CreateTournament = () => {
                               ? " Pool Price in $"
                               : " Entry Price in $"}
                           </p>
-                          <div className="flex flex-row">
+                          <div className="flex mt-[.8rem] flex-row">
                             <p className="text-[1rem] text-white mr-4">≈</p>
                             <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
                               {icpValue !== null
@@ -750,12 +754,12 @@ const CreateTournament = () => {
                       <div className="mt-4 mx-4 lg:mx-0 mb-4 flex justify-center items-center">
                         <button
                           onClick={() => {
-                            testFunction()
-                            addTournament()
+                            proceed_to_payment()
                           }}
                           className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[15rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
                         >
-                          {isLoading ? (
+                          Proceed
+                          {/* {isLoading ? (
                             <ClipLoader
                               color={color}
                               loading={isLoading}
@@ -766,7 +770,7 @@ const CreateTournament = () => {
                             />
                           ) : (
                             <p className="font-semibold">Create Tournament</p>
-                          )}
+                          )} */}
                         </button>
                       </div>
                     </div>
@@ -776,6 +780,20 @@ const CreateTournament = () => {
             </div>
           </div>
         </section>
+        {openPaymentModal && (
+          <PaymentModal2
+            done={done}
+            gameType={gameType}
+            modal={handleModal}
+            updating={updating}
+            owner={principal}
+            icp={icpValue}
+            entryPrice={entryPrice}
+            poolPrice={poolPrize}
+            tourType={tourType}
+            create_tour={_tour}
+          />
+        )}
       </div>
     )
   }
