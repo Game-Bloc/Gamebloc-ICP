@@ -86,7 +86,18 @@ pub_struct!(
      in_game_names: Option<Vec<(String,String,String)>>,
      tournament_lobby_type: Option<TournamentLobbyType>,
      lobbies: Option<Vec<LobbyAccount>>,
+     winners : Option<Vec<Winner>>, // This should be updateable and fetchable
+     ended : Option<bool>,
+
 });
+
+pub_struct!(
+    Winner{
+        position : String,
+        amount : u128,
+        user_account : String, // This is usually updated
+    }
+);
 
 // impl CandidType for i128 {
 //     fn _ty() -> Type {
@@ -178,6 +189,15 @@ pub enum Role {
     #[default]
     Player,
     Mod,
+    TribunalMod(ModTag)
+}
+
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize,PartialEq)]
+pub enum ModTag {
+    #[default]
+    Mod1,
+    Mod2,
+    Mod3,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
@@ -231,6 +251,7 @@ pub enum TournamentType {
     #[default]
     Crowdfunded,
     Prepaid,
+    Blitzkrieg
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentLobbyType {
