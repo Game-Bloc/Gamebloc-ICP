@@ -35,7 +35,7 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
         id,
         userId,
         playerIgn,
-        BigInt(Math.round(icp_price)),
+        icp_price,
         "You have successfully joined this tournament",
         "Something went wrong try again",
         "/dashboard",

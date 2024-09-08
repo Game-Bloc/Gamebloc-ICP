@@ -42,6 +42,9 @@ export const useGameblocHooks = () => {
     indexActor,
     principal,
   } = useAuth()
+  const _principal = Principal.fromText(
+    "y2ysg-dlkwp-wlxuc-pzjti-znlce-6xwoa-sq7a4-tufit-doanq-v6gux-cqe",
+  )
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -328,7 +331,7 @@ export const useGameblocHooks = () => {
       }
       const create = await whoamiActor.create_tournament(
         tournamentData,
-        BigInt(Math.round(icp_price)),
+        BigInt(icp_price * 100000000),
       )
       if (create) {
         setDone(true)
@@ -351,7 +354,7 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
-    icp_price: bigint,
+    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -363,7 +366,7 @@ export const useGameblocHooks = () => {
         name,
         id,
         ign,
-        icp_price,
+        BigInt(icp_price * 100000000),
       )
       setIsLoading(false)
       setDone(true)
@@ -504,7 +507,7 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
-    icp_price: bigint,
+    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -516,7 +519,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
-        icp_price,
+        BigInt(icp_price),
       )
       setIsLoading(false)
       setDone(true)
@@ -589,6 +592,44 @@ export const useGameblocHooks = () => {
       errorPopUp(errorMsg)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const approveFee = async (
+    token: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    const _account = {
+      owner: _principal,
+      subaccount: [],
+    }
+    const approveArgs: any = {
+      fee: [],
+      memo: [],
+      from_subaccount: [],
+      created_at_time: [],
+      amount: BigInt(Math.round(token * 100000000)),
+      expected_allowance: [],
+      expires_at: [],
+      spender: _account,
+    }
+    try {
+      const approve = await ledgerActor.icrc2_approve(approveArgs)
+      if ("Ok" in approve) {
+        console.log("Fee approved")
+        setIsLoading(false)
+        setPaid(true)
+        popUp(successMsg, route)
+      } else {
+        console.log(approve.Err)
+        errorPopUp(errorMsg)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
     }
   }
 
@@ -1144,5 +1185,6 @@ export const useGameblocHooks = () => {
     update_user_points,
     get_leaderboard,
     payICPfee,
+    approveFee,
   }
 }
