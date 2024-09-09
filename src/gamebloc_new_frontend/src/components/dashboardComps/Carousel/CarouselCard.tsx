@@ -14,7 +14,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
   const navigate = useNavigate()
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [isImageLoaded, setImageLoaded] = useState<boolean>(false)
-
+  const price = 1 / _icp2Usd
   useEffect(() => {
     const img = new Image()
     img.onload = () => {
@@ -45,7 +45,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
               </p>
               <div className="flex flex-row justify-center items-center">
                 <p className="sm:font-[500] ml-1  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  90
+                  42
                 </p>
                 <img
                   src={`Icp.svg`}
@@ -54,7 +54,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 />
               </div>
               <p className="font-normal text-[#F8DBFB] sm:mb-4 ml-[.5rem]  text-[.7rem] sm:text-sm">
-                ${(Number(+_icp2Usd) * 90).toFixed(2)}
+                ${(Number(+_icp2Usd) * 42).toFixed(2)}
               </p>
             </div>
             <div className=" flex ml-4 flex-col">
@@ -63,7 +63,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
               </p>
               <div className="flex flex-row justify-start items-center">
                 <p className="sm:font-[500]  text-[#F8DBFB] text-[.8rem] sm:text-[1.7rem]">
-                  0
+                  {price.toFixed(4)}
                 </p>
                 <img
                   src={`Icp.svg`}
@@ -72,7 +72,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
                 />
               </div>
               <p className="font-normal  text-[#F8DBFB] sm:mb-4  text-[.7rem] sm:text-sm">
-                $0
+                ${(Number(+_icp2Usd) * price).toFixed(2)}
               </p>
             </div>
           </div>
