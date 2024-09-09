@@ -61,7 +61,7 @@ const FreeRegistration = () => {
   const changePage = ({ selected }: any) => {
     setPageNumber(selected)
   }
-  console.log(newTournament)
+  console.log("active-tour", newTournament)
 
   const displayTournaments = newTournament
     ?.slice(tournamentViewed, tournamentViewed + tournamentPerPage)
