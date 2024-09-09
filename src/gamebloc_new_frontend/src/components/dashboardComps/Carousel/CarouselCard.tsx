@@ -83,7 +83,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
           </p>
           <button
             onClick={() =>
-              navigate("/active-tournament/0000000009MFZS6AZ9QNZC9WW7")
+              navigate("/active-tournament/0000000009Q0QTTVA8FNSP0BVZ")
             }
             className="pt-1 pb-[.25rem]  px-[.6rem] sm:px-6 text-[.7rem] sm:text-base text-black justify-between flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
