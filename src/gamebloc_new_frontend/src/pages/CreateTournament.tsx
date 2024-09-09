@@ -38,7 +38,8 @@ const CreateTournament = () => {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
   const { id } = useParams<{ id: string }>()
-  const game_name = new URLSearchParams(location.search).get("title") || ""
+  // const game_name = new URLSearchParams(location.search).get("title") || ""
+  const game_name = "Call of Duty"
   const [color, setColor] = useState("#ffffff")
   const [poolPrize, setPoolPrize] = useState("")
   const [entryPrice, setEntryPrize] = useState("")

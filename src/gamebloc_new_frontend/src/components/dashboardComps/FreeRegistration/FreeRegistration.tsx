@@ -53,7 +53,7 @@ const FreeRegistration = () => {
     .filter(
       (tour: any) =>
         Object.keys(tour.status)[0].toUpperCase() === "ACCEPTINGPLAYERS" ||
-        "GAMEINPROGRESS",
+        Object.keys(tour.status)[0].toUpperCase() === "GAMEINPROGRESS",
     )
     .map((tour: any) => tour)
 
