@@ -196,7 +196,13 @@ const TournamentInfo = ({ data }: Props) => {
   }, [])
 
   const timer = setTimeout(() => {
-    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+    if (
+      days == 0 &&
+      hours == 0 &&
+      minutes == 0 &&
+      seconds == 0 &&
+      Object.keys(data.status)[0].toUpperCase() !== "GAMECOMPLETED"
+    ) {
       start_tournament(id)
       console.log("Match in progress")
     }
