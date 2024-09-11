@@ -780,3 +780,26 @@ pub fn update_tournament_details(id: String, tournament_rules: String) {
         tournament_store.borrow_mut().insert(id, tournament);
     })
 }
+
+#[update]
+pub fn update_tournament_pool_price(id: String, price: u128) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.total_prize = price;
+        tournament_store.borrow_mut().insert(id, tournament);
+    })
+}
+
+#[update]
+pub fn update_tournament_type_to_blitzkrieg(id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.tournament_type = match tournament.tournament_type {
+            TournamentType::Crowdfunded => TournamentType::Blitzkrieg,
+            _ => {
+                TournamentType::Blitzkrieg
+            }
+        };
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
