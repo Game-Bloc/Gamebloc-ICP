@@ -329,6 +329,8 @@ const CreateTournament = () => {
       [],
       [],
       [],
+      [],
+      [],
       "Successful",
       "Try again something went wrong",
       "",

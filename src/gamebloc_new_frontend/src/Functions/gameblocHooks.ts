@@ -52,6 +52,7 @@ export const useGameblocHooks = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false)
   const [updatingProfile, setUpdatingProfile] = useState<boolean>(false)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [paid, setPaid] = useState<boolean>(false)
   const [done, setDone] = useState<boolean>(false)
   const MySwal = withReactContent(Swal)
@@ -279,6 +280,8 @@ export const useGameblocHooks = () => {
     points: [],
     lobbies: [],
     tournament_lobby_type: any,
+    winners: [],
+    ended: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -320,8 +323,13 @@ export const useGameblocHooks = () => {
         in_game_names,
         tournament_lobby_type,
         lobbies,
+        winners,
+        ended,
       }
-      const create = await whoamiActor2.create_tournament(tournamentData)
+      const create = await whoamiActor.create_tournament(
+        tournamentData,
+        BigInt(Math.round(icp_price)),
+      )
       if (create) {
         setDone(true)
         console.log("passed through")
@@ -343,6 +351,7 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -350,7 +359,12 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       const ign: [string, string, string] = [name, userId, playerIgn]
-      const join_tournament = await whoamiActor.join_tournament(name, id, ign)
+      const join_tournament = await whoamiActor.join_tournament(
+        name,
+        id,
+        ign,
+        icp_price,
+      )
       setIsLoading(false)
       setDone(true)
       popUp(successMsg, route)
@@ -490,6 +504,7 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
+    icp_price: bigint,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -501,6 +516,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
+        icp_price,
       )
       setIsLoading(false)
       setDone(true)
