@@ -113,12 +113,14 @@ const CreateTournament = () => {
     isAuthenticated,
     // getTournamentCount,
   ])
-  console.log(balance)
+  // console.log(balance)
 
   useEffect(() => {
     const calculateIcpValue = () => {
       const dollarAmount =
-        tourType === "Prepaid" || "Blitzkrieg" ? +poolPrize : +entryPrice
+        tourType === "Prepaid" || tourType === "Blitzkrieg"
+          ? +poolPrize
+          : +entryPrice
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
@@ -192,14 +194,18 @@ const CreateTournament = () => {
     e.preventDefault()
     const priceinput = e.target.value
     setPoolPrize(priceinput)
-    setEntryPrize("")
+    if (tourType !== "Blitzkrieg") {
+      setEntryPrize("")
+    }
   }
 
   const onEntryChange = (e: any) => {
     e.preventDefault()
     const entryInput = e.target.value
     setEntryPrize(entryInput)
-    setPoolPrize("")
+    if (tourType === "Crowdfunded") {
+      setPoolPrize("")
+    }
   }
 
   const handleContent = (rules: any) => {
@@ -286,10 +292,13 @@ const CreateTournament = () => {
       initialTime.trim() === ""
     ) {
       errorPopUp("Field Input is invalid !")
+    } else if (tourType === "Blitzkrieg" && entryPrice.trim() === "") {
+      errorPopUp("Field Input is invalid !")
     } else {
       if (
         (tourType === "Prepaid" && balance > icpValue) ||
-        (tourType === "Crowdfunded" && balance > icpValue)
+        (tourType === "Crowdfunded" && balance > icpValue) ||
+        (tourType === "Blitzkrieg" && balance > icpValue)
       ) {
         setOpenPaymentModal(true)
       } else {
