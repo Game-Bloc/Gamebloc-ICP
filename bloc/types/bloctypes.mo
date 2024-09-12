@@ -69,24 +69,22 @@ module {
     };
 
     public type UserProfile = {
-        id_hash : Text;
+        account_id : Text;
         age : Nat8;
-        date : Text;
-        status : Status;
-        wins : Nat8;
         attendance : ?Nat8;
+        canister_id : Text;
+        date : Text;
+        id_hash : Text;
+        is_mod : Bool;
         losses : ?Nat8;
+        points : ?[(Text, Text, Point)];
+        principal_id : Text;
+        role : ?Role;
+        squad_badge : Text;
+        status : Status;
         tournaments_created : Nat8;
         username : Text;
-        is_mod : Bool;
-        role : ?Role;
-        principal_id : Text;
-        account_id : Text;
-        canister_id : Text;
-        squad_badge : Text;
-        points : ?[(Text, Text, Point)];
-        // role : Text
-        // ico_balance : Nat64;
+        wins : Nat8
     };
 
     public type Point = {
@@ -148,41 +146,42 @@ module {
         #Archived;
     };
 
-    public type TournamentAccount = {
-        id_hash : Text;
-        creator : Text;
-        creator_id : ?Text;
-        status : TournamentStatus;
-        idx : Nat8;
-        starting_date : Text;
-        tournament_rules : Text;
-        tournament_type : TournamentType;
-        // mods : [Text];
-        game : Text;
-        squad : [Squad];
-        squad_points : ?[(Text, Text, Point)];
-        squad_in_game_names : ?[[(Text, Text, Text)]];
-        messages : ?[Chat];
-        user : [Text];
-        winers : [Text];
-        total_prize : Nat;
-        entry_prize : Nat8;
-        no_of_winners : Nat8;
-        no_of_participants : Nat;
-        game_type : Text;
-        end_date : Text;
-        title : Text;
-        in_game_names : ?[(Text, Text, Text)];
-        points : ?[(Text, Text, Point)];
-        squad_vector_mod_1: ?[(Text,Text,Point)];
-        points_vector_mod_1: ?[(Text,Text,Point)];
-        squad_vector_mod_2: ?[(Text,Text,Point)];
-        points_vector_mod_2: ?[(Text,Text,Point)];
-        squad_vector_mod_3: ?[(Text,Text,Point)];
-        points_vector_mod_3: ?[(Text,Text,Point)];
-        tournament_lobby_type : ?TournamentLobbyType;
-        lobbies : ?[LobbyAccount]
-    };
+    public type TournamentAccount =  {
+    creator : Text;
+    creator_id : ?Text;
+    end_date : Text;
+    ended : ?Bool;
+    entry_prize : Nat8;
+    game : Text;
+    game_type : Text;
+    id_hash : Text;
+    idx : Nat8;
+    in_game_names : ?[(Text, Text, Text)];
+    lobbies : ?[LobbyAccount];
+    messages : ?[Chat];
+    no_of_participants : Nat;
+    no_of_winners : Nat8;
+    points : ?[(Text, Text, Point)];
+    points_vector_mod_1 : ?[(Text, Text, Point)];
+    points_vector_mod_2 : ?[(Text, Text, Point)];
+    points_vector_mod_3 : ?[(Text, Text, Point)];
+    squad : [Squad];
+    squad_in_game_names : ?[[(Text, Text, Text)]];
+    squad_points : ?[(Text, Text, Point)];
+    squad_vector_mod_1 : ?[(Text, Text, Point)];
+    squad_vector_mod_2 : ?[(Text, Text, Point)];
+    squad_vector_mod_3 : ?[(Text, Text, Point)];
+    starting_date : Text;
+    status : TournamentStatus;
+    title : Text;
+    total_prize : Nat;
+    tournament_lobby_type : ?TournamentLobbyType;
+    tournament_rules : Text;
+    tournament_type : TournamentType;
+    user : [Text];
+    winers : [Text];
+    winners : ?[Winner]
+  };
 
     public type TournamentLobbyType = {
         #SingleLobby;
