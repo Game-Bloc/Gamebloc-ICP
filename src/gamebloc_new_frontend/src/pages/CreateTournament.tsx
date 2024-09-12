@@ -94,14 +94,15 @@ const CreateTournament = () => {
       setStartingDate(value)
     }
 
-    if (tournamentType === "Crowdfunded") {
-      setTourType("Crowdfunded")
-      setVariantType({ Crowdfunded: null })
-    } else if (tournamentType === "Prepaid") {
+    if (tournamentType === "Prepaid") {
       setTourType("Prepaid")
       setVariantType({ Prepaid: null })
+    } else if (tournamentType === "Blitzkrieg") {
+      setTourType("Blitzkrieg")
+      setVariantType({ Blitzkrieg: null })
     } else {
       setTourType("Crowdfunded")
+      setVariantType({ Crowdfunded: null })
     }
     getTimeDate()
   }, [
@@ -116,7 +117,8 @@ const CreateTournament = () => {
 
   useEffect(() => {
     const calculateIcpValue = () => {
-      const dollarAmount = tourType === "Prepaid" ? +poolPrize : +entryPrice
+      const dollarAmount =
+        tourType === "Prepaid" || "Blitzkrieg" ? +poolPrize : +entryPrice
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
@@ -192,6 +194,7 @@ const CreateTournament = () => {
     setPoolPrize(priceinput)
     setEntryPrize("")
   }
+
   const onEntryChange = (e: any) => {
     e.preventDefault()
     const entryInput = e.target.value
@@ -571,6 +574,10 @@ const CreateTournament = () => {
                                   value: "Prepaid",
                                   label: "Prepaid",
                                 },
+                                {
+                                  value: "Blitzkrieg",
+                                  label: "Blitzkrieg",
+                                },
                               ]}
                             />
                           </ConfigProvider>
@@ -686,6 +693,8 @@ const CreateTournament = () => {
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             {tourType === "Prepaid"
                               ? " Pool Price in $"
+                              : tourType === "Blitzkrieg"
+                              ? " Pool Price in $"
                               : " Entry Price in $"}
                           </p>
                           <div className="flex mt-[.8rem] flex-row">
@@ -702,37 +711,47 @@ const CreateTournament = () => {
                             className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
                             placeholder={
                               tourType === "Prepaid"
-                                ? " Pool Price ($)"
-                                : "Entry price ($)"
+                                ? " Pool Price in $"
+                                : tourType === "Blitzkrieg"
+                                ? " Pool Price in $"
+                                : " Entry Price in $"
                             }
                             type="text"
                             onChange={
                               tourType === "Prepaid"
+                                ? onPriceChange
+                                : tourType === "Blitzkrieg"
                                 ? onPriceChange
                                 : tourType === "Crowdfunded"
                                 ? onEntryChange
                                 : onEntryChange
                             }
                             value={
-                              tourType === "Prepaid" ? poolPrize : entryPrice
+                              tourType === "Prepaid"
+                                ? poolPrize
+                                : tourType === "Blitzkrieg"
+                                ? poolPrize
+                                : entryPrice
                             }
                           />
                         </div>
                       </div>
-                      {/* <div className="flex-col flex m-4 ">
-                      <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                        Number of Participant
-                      </p>
-                      <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
-                        <input
-                          className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
-                          placeholder="Participants"
-                          type="text"
-                          onChange={onUserChange}
-                          value={noOfUsers}
-                        />
-                      </div>
-                    </div> */}
+                      {tourType === "Blitzkrieg" && (
+                        <div className="flex-col flex m-4 ">
+                          <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                            Entry Price
+                          </p>
+                          <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                            <input
+                              className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                              placeholder="Entry Price in $"
+                              type="text"
+                              onChange={onEntryChange}
+                              value={entryPrice}
+                            />
+                          </div>
+                        </div>
+                      )}
                       <div className="flex-col flex m-4 ">
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                           Tournament Description and Rules
