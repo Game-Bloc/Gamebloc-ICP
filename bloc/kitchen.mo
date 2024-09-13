@@ -136,6 +136,8 @@ shared ({ caller }) actor class Kitchen() {
         volume;
     };
 
+    // * @param pays The parameter for this method
+    // TODO: 
     public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
         // var mod = await is_mod(caller);
         try {
@@ -288,9 +290,9 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // Takes in the account id as an argument
-    public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-        await ICPIndex.icrc1_balance_of(account)
-    };
+    // public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+    //     await ICPIndex.icrc1_balance_of(account)
+    // };
 
 
 
