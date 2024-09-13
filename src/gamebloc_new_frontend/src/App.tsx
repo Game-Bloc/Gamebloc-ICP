@@ -21,6 +21,7 @@ import ViewResult from "./pages/ViewResult"
 import PaymentModal from "./components/Modals/PaymentModal"
 import Leaderboard from "./pages/Leaderboard"
 import Series from "./pages/Series"
+import Blitzkrieg from "./pages/Blitzkrieg"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
             <Route path="/prepaid-tournament" element={<Prepaid />} />
+            <Route path="/blitzkrieg-tournament" element={<Blitzkrieg />} />
             <Route
               path="/active-tournament/:id"
               element={<TournamentDetails />}
