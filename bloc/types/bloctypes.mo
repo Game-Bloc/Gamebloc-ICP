@@ -22,7 +22,7 @@ module {
         _updatedTime : Int;
     };
 
-    type Winner = {
+    public type Winner = {
         user : Principal;
         position : ?Text;
         amount : Nat;

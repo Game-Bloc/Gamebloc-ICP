@@ -1283,7 +1283,7 @@ shared ({ caller }) actor class Kitchen() {
         await RustBloc.count_all_users()
     };
 
-    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winners]) : async Bool {
+    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
         try {
             // Checks the role and other conditions before actually ending the tournament
             await RustBloc.end_tournament(id, caller, no_of_winners, winner)
