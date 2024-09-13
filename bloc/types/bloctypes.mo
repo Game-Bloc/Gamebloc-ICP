@@ -180,7 +180,7 @@ module {
     starting_date : Text;
     status : TournamentStatus;
     title : Text;
-    total_prize : Nat;
+    total_prize : Nat; // Should be in ICP
     tournament_lobby_type : ?TournamentLobbyType;
     tournament_rules : Text;
     tournament_type : TournamentType;

@@ -10,6 +10,8 @@ import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
 import Error "mo:base/Error";
 import Time "mo:base/Time";
+import Float "mo:base/Float";
+
 import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
@@ -136,8 +138,30 @@ shared ({ caller }) actor class Kitchen() {
         volume;
     };
 
+    // TODO: Test functions
+
+    func floatNum(num : Float) : Float {
+        num * 2
+    };
+
+    func floatNum2(num : Float) : Int {
+        let result = num * 2;
+        return Float.toInt(result);
+    };
+
+    func natNum(num : Nat) : Text {
+        Nat.toText(num)
+    };
+
+    func natNumText(num : Text) : ?Nat {
+        Nat.fromText(num)
+    };
+
+    // ! ENd of the todo.
+    
+
     // * @param pays The parameter for this method
-    // TODO: 
+    
     public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
         // var mod = await is_mod(caller);
         try {
