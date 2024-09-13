@@ -279,6 +279,8 @@ export const useGameblocHooks = () => {
     points: [],
     lobbies: [],
     tournament_lobby_type: any,
+    winners: [],
+    ended: [],
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -320,6 +322,8 @@ export const useGameblocHooks = () => {
         in_game_names,
         tournament_lobby_type,
         lobbies,
+        winners,
+        ended,
       }
       const create = await whoamiActor2.create_tournament(tournamentData)
       if (create) {

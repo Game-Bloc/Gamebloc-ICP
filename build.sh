@@ -41,32 +41,32 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 #         amount=500_000
 #     })'
 
-dfx deploy --network local --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icrc1_ledger --argument '
-  (variant {
-    Init = record {
-      token_name = "Local ICP";
-      token_symbol = "LICP";
-      minting_account = record {
-        owner = principal "'${OWNER}'";
-      };
-      initial_balances = vec {
-        record {
-          record {
-            owner = principal "'${OWNER}'";
-          };
-          100_000_000_000;
-        };
-      };
-      metadata = vec {};
-      transfer_fee = 10;
-      archive_options = record {
-        trigger_threshold = 2000;
-        num_blocks_to_archive = 1000;
-        controller_id = principal "'${OWNER}'";
-      }
-    }
-  })
-'
+#dfx deploy --network local --specified-id ryjl3-tyaaa-aaaaa-aaaba-cai icrc1_ledger --argument '
+#  (variant {
+#    Init = record {
+#      token_name = "Local ICP";
+#      token_symbol = "LICP";
+#      minting_account = record {
+#        owner = principal "'${OWNER}'";
+#      };
+#      initial_balances = vec {
+#        record {
+#          record {
+#            owner = principal "'${OWNER}'";
+#          };
+#          100_000_000_000;
+#        };
+#      };
+#      metadata = vec {};
+#      transfer_fee = 10;
+#      archive_options = record {
+#        trigger_threshold = 2000;
+#        num_blocks_to_archive = 1000;
+#        controller_id = principal "'${OWNER}'";
+#      }
+#    }
+#  })
+#'
 
 dfx deploy --network local --specified-id mxzaz-hqaaa-aaaar-qaada-cai ckbtc_ledger --argument '
   (variant {
