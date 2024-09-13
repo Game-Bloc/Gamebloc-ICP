@@ -50,6 +50,32 @@ const TournamentCard = ({ data, index }: Props) => {
               {Object.keys(data.tournament_type)[0].toUpperCase()}
             </p>
           </div>
+          {Object.keys(data.status)[0].toUpperCase() === "ARCHIVED" ? (
+            <div className="absolute flex top-2 right-2 bg-gradient-to-r justify-between items-center bg-[#FEE4E2] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#D92D20] ">
+                {Object.keys(data.status)[0]}
+              </p>
+            </div>
+          ) : Object.keys(data.status)[0].toUpperCase() ===
+            "ACCEPTINGPLAYERS" ? (
+            <div className="absolute flex top-2 right-2 bg-gradient-to-r justify-between items-center bg-[#D1FADF] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#039855] ">
+                Open
+              </p>
+            </div>
+          ) : Object.keys(data.status)[0].toUpperCase() === "GAMEINPROGRESS" ? (
+            <div className="absolute flex top-2 right-2 bg-gradient-to-r justify-between items-center bg-[#FFD98F] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#B88217] ">
+                In Progress
+              </p>
+            </div>
+          ) : (
+            <div className="absolute flex top-2 right-2 bg-gradient-to-r justify-between items-center bg-[#FEE4E2] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+              <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#D92D20] ">
+                Ended
+              </p>
+            </div>
+          )}
           <div className="absolute cursor-pointer bg-primary-first h-fit bottom-2 ml-3  p-[.7rem] justify-between items-center  rounded-xl  flex w-[85%]">
             <div className="flex flex-col  w-full ">
               <div className="flex items-center flex-row">

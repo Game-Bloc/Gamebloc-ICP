@@ -75,7 +75,7 @@ const Blitzkrieg = () => {
             <div className="m-4 mt-24  ">
               <div className="sm:ml-4">
                 <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
-                  BLitzkrieg Tournaments
+                  Blitzkrieg Tournaments
                 </h1>
                 <div className="w-full flex mt-8 justify-end">
                   <button
