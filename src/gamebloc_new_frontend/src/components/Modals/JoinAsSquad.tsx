@@ -31,6 +31,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   const [color, setColor] = useState("#ffffff")
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([])
@@ -96,6 +97,7 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
       squad_id,
       id,
       playerIGNs,
+      BigInt(Math.round(icp_price)),
       "Tournament Joined",
       "Error, try again.",
       "/dashboard",

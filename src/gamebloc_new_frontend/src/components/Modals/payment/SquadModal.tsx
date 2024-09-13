@@ -19,6 +19,7 @@ interface Props {
     squad_id: any,
     id: any,
     playerIGNs: any,
+    icp_price: bigint,
     success: string,
     error: string,
     route: string,
@@ -42,13 +43,13 @@ const SquadModal = ({
   joinTournamentSqaud,
 }: Props) => {
   const MySwal = withReactContent(Swal)
-  const navigate = useNavigate()
   const username = useAppSelector((state) => state.userProfile.username)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   // const { isLoading, joinTournamentSqaud } = useGameblocHooks()
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
-
+  const navigate = useNavigate()
   const [color, setColor] = useState("#ffffff")
   const [selectedPlayers, setSelectedPlayers] = useState<any[]>([])
   const [playerIGNs, setPlayerIGNs] = useState<[string, string, string][]>([])
@@ -113,6 +114,7 @@ const SquadModal = ({
       squad_id,
       id,
       playerIGNs,
+      BigInt(Math.round(icp_price)),
       "Tournament Joined",
       "Error, try again.",
       "",

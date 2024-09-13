@@ -93,7 +93,7 @@ module {
   ///   }
   /// }
   /// ```
-  public let accept : (amount : Nat) -> (accepted : Nat) = Prim.cyclesAccept;
+  public let accept :(amount : Nat) -> (accepted : Nat) = Prim.cyclesAccept;
 
   /// Indicates additional `amount` of cycles to be transferred in
   /// the next call, that is, evaluation of a shared function call or
@@ -112,16 +112,16 @@ module {
   ///
   /// actor {
   ///   func operation() : async() {
-  ///     ignore Cycles.accept(10_000_000);
+  ///     ignore Cycles.accept<system>(10_000_000);
   ///   };
   ///
   ///   public func main() : async() {
-  ///     Cycles.add(15_000_000);
+  ///     Cycles.add<system>(15_000_000);
   ///     await operation();
   ///   }
   /// }
   /// ```
-  public let add : (amount : Nat) -> () = Prim.cyclesAdd;
+  public let add :(amount : Nat) -> () = Prim.cyclesAdd;
 
   /// Reports `amount` of cycles refunded in the last `await` of the current
   /// context, or zero if no await has occurred yet.
@@ -136,7 +136,7 @@ module {
   ///
   /// actor {
   ///   func operation() : async() {
-  ///     ignore Cycles.accept(10_000_000);
+  ///     ignore Cycles.accept<system>(10_000_000);
   ///   };
   ///
   ///   public func main() : async() {

@@ -10,7 +10,6 @@ import { fromIntWrap } = "Nat64";
 
 module {
 
-
   public type Duration = { #seconds : Nat; #nanoseconds : Nat };
   public type TimerId = Nat;
 
