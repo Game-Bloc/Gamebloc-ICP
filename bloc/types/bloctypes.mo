@@ -136,7 +136,8 @@ module {
 
     public type TournamentType = {
         #Crowdfunded;
-        #Prepaid
+        #Prepaid;
+        #Blitzkrieg;
     };
 
     public type TournamentStatus = {
