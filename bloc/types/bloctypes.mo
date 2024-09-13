@@ -23,11 +23,11 @@ module {
         _updatedTime : Int;
     };
 
-    type Winner = {
-        user : Principal;
-        position : ?Text;
-        amount : Nat;
-    };
+    // type Winner = {
+    //     user_account : Text;
+    //     position : Text;
+    //     amount : Nat;
+    // };
 
     public type PoH = {
         user : Principal;
@@ -130,6 +130,7 @@ module {
     public type Role = {
         #Player;
         #Mod;
+        // #TribunalMod : ModTag;
     };
 
     public type SquadType = {
@@ -138,9 +139,9 @@ module {
     };
 
     public type TournamentType = {
-        #Blitzkrieg;
+        // #Blitzkrieg;
         #Crowdfunded;
-        #Prepaid
+        #Prepaid;
     };
 
     public type TournamentStatus = {
@@ -193,6 +194,7 @@ module {
         #MultiLobby;
     };
 
+    // ? I wonder why these just keep changing
     public type Winners = {
         position : Text;
         amount : Nat;
@@ -241,6 +243,12 @@ module {
         name : Text;
         principal_id : Text
     };
+
+    public type ModTag = {
+        #Mod1; #Mod2; #Mod3;
+    };
+
+
 
     public type Contenstant = {
         name : Text;

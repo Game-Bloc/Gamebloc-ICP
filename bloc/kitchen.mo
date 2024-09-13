@@ -242,9 +242,9 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // Takes in the account id as an argument
-    public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-        await ICPIndex.icrc1_balance_of(account)
-    };
+    // public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+    //     await ICPIndex.icrc1_balance_of(account)
+    // };
 
 
 
@@ -1212,9 +1212,9 @@ shared ({ caller }) actor class Kitchen() {
         await RustBloc.count_all_users()
     };
 
-    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8) : async Bool {
+    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winners]) : async Bool {
         try {
-            await RustBloc.end_tournament(id, caller, no_of_winners)
+            await RustBloc.end_tournament(id, caller, no_of_winners, winner)
         } catch err {
             throw (err)
         }
