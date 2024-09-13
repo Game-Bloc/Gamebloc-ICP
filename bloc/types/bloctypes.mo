@@ -130,7 +130,7 @@ module {
     public type Role = {
         #Player;
         #Mod;
-        // #TribunalMod : ModTag;
+        #TribunalMod : ModTag;
     };
 
     public type SquadType = {
@@ -139,7 +139,7 @@ module {
     };
 
     public type TournamentType = {
-        // #Blitzkrieg;
+        #Blitzkrieg;
         #Crowdfunded;
         #Prepaid;
     };
