@@ -136,6 +136,8 @@ shared ({ caller }) actor class Kitchen() {
         volume;
     };
 
+    // * @param pays The parameter for this method
+    // TODO: 
     public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
         // var mod = await is_mod(caller);
         try {
@@ -288,9 +290,9 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // Takes in the account id as an argument
-    public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-        await ICPIndex.icrc1_balance_of(account)
-    };
+    // public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+    //     await ICPIndex.icrc1_balance_of(account)
+    // };
 
 
 
@@ -1283,7 +1285,7 @@ shared ({ caller }) actor class Kitchen() {
         await RustBloc.count_all_users()
     };
 
-    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winners]) : async Bool {
+    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
         try {
             // Checks the role and other conditions before actually ending the tournament
             await RustBloc.end_tournament(id, caller, no_of_winners, winner)

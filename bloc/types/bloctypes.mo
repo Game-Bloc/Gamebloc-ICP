@@ -27,8 +27,8 @@ module {
     };
 
     public type Winner = {
-        user_account : Principal;
-        position : ?Text;
+        user_account : Text;
+        position : Text;
         amount : Nat;
     };
 
