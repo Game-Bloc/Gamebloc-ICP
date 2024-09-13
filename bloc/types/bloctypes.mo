@@ -15,6 +15,10 @@ module {
         total_point : Nat
     };
 
+    public type ModTag = {
+        #Mod1; #Mod2; #Mod3
+    };
+
     public type Access = {
         _user : Principal;
         _password : Text;
@@ -22,8 +26,8 @@ module {
         _updatedTime : Int;
     };
 
-    type Winner = {
-        user : Principal;
+    public type Winner = {
+        user_account : Principal;
         position : ?Text;
         amount : Nat;
     };
@@ -127,6 +131,7 @@ module {
     public type Role = {
         #Player;
         #Mod;
+        #TribunalMod : ModTag;
     };
 
     public type SquadType = {
