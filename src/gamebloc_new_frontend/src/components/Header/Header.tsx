@@ -64,8 +64,8 @@ const Header = () => {
       icon: MdVideogameAsset,
       subMenu: [
         { name: "Prepaid", link: "/prepaid-tournament" },
-        { name: "CrowdFunded", link: "/active-tournament" },
         { name: "Blitzkrieg", link: "/blitzkrieg-tournament" },
+        { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
     {
