@@ -66,6 +66,7 @@ const PaymentModal = ({
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type = data.game_type.toUpperCase() === "SINGLE"
   const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const _principal = Principal.fromText(principal)
   const tourType =
     Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
@@ -150,6 +151,7 @@ const PaymentModal = ({
     squad_id: any,
     id: any,
     playerIGNs: any,
+    icp_price: any,
     success: string,
     error: string,
     route: string,
@@ -157,7 +159,15 @@ const PaymentModal = ({
     // console.log("squad_id", squad_id)
     // console.log("id", id)
     // console.log("playerIGNs", playerIGNs)
-    joinTournamentSqaud(squad_id, id, playerIGNs, success, error, route)
+    joinTournamentSqaud(
+      squad_id,
+      id,
+      playerIGNs,
+      BigInt(Math.round(icp_price)),
+      success,
+      error,
+      route,
+    )
   }
 
   const join_tour_solo = (
@@ -165,11 +175,21 @@ const PaymentModal = ({
     id: any,
     userId: any,
     playerIgn: any,
+    icp_price: any,
     success: string,
     error: string,
     route: string,
   ) => {
-    joinTournament(owner, id, userId, playerIgn, success, error, route)
+    joinTournament(
+      owner,
+      id,
+      userId,
+      playerIgn,
+      BigInt(Math.round(icp_price)),
+      success,
+      error,
+      route,
+    )
   }
 
   return (

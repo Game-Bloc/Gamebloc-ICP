@@ -627,7 +627,8 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
     }
 }
 
-pub fn archive_tournament(id: String,)
+#[update]
+pub fn archive_tournament(id: String)
 {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();

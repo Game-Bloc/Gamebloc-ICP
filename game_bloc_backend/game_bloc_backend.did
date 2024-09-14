@@ -112,7 +112,9 @@ type UserProfile = record {
 };
 type Winner = record { user_account : text; position : text; amount : nat };
 service : () -> {
+  add_mod_to_tribunal : (principal) -> (bool);
   add_to_squad : (Member, principal, text) -> ();
+  archive_tournament : (text) -> ();
   assign_points : (principal, record { text; text; Point }) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
@@ -140,6 +142,7 @@ service : () -> {
   get_all_user : () -> (vec UserProfile) query;
   get_leaderboard : () -> (vec Contestant) query;
   get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
+  get_mods : () -> (vec UserProfile) query;
   get_profile : (text) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
@@ -167,4 +170,6 @@ service : () -> {
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
   update_tournament_details : (text, text) -> ();
+  update_tournament_pool_price : (text, nat) -> ();
+  update_tournament_type_to_blitzkrieg : (text) -> ();
 }
