@@ -196,7 +196,13 @@ const TournamentInfo = ({ data }: Props) => {
   }, [])
 
   const timer = setTimeout(() => {
-    if (days == 0 && hours == 0 && minutes == 0 && seconds == 0) {
+    if (
+      days == 0 &&
+      hours == 0 &&
+      minutes == 0 &&
+      seconds == 0 &&
+      Object.keys(data.status)[0].toUpperCase() !== "GAMECOMPLETED"
+    ) {
       start_tournament(id)
       console.log("Match in progress")
     }
@@ -582,8 +588,12 @@ const TournamentInfo = ({ data }: Props) => {
             </button>
           ) : (
             <>
-              {Object.keys(data.tournament_type)[0].toUpperCase() ==
-                "PREPAID" && data.creator == owner ? (
+              {(Object.keys(data.tournament_type)[0].toUpperCase() ==
+                "PREPAID" &&
+                data.creator == owner) ||
+              (Object.keys(data.tournament_type)[0].toUpperCase() ==
+                "BLITZKRIEG" &&
+                data.creator == owner) ? (
                 <div></div>
               ) : data.users.some((index: any) => index.includes(owner)) ||
                 data.squad.some((players: any) =>

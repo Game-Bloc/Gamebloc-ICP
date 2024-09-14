@@ -10,6 +10,8 @@ import Principal "mo:base/Principal";
 import Cycles "mo:base/ExperimentalCycles";
 import Error "mo:base/Error";
 import Time "mo:base/Time";
+import Float "mo:base/Float";
+
 import Int "mo:base/Int";
 import HashMap "mo:base/HashMap";
 import Result "mo:base/Result";
@@ -32,6 +34,7 @@ import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
 // import 
+// import 
 // import ICRC1 "canister:icrc1_ledger";
 
 import IndexTypes "types/indextypes";
@@ -42,7 +45,6 @@ import CKTypes "types/ck_types";
 import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
-import CkTypes "types/ck_types";
 
 shared ({ caller }) actor class Kitchen() {
 
@@ -135,6 +137,30 @@ shared ({ caller }) actor class Kitchen() {
         volume;
     };
 
+    // TODO: Test functions
+
+    func floatNum(num : Float) : Float {
+        num * 2
+    };
+
+    func floatNum2(num : Float) : Int {
+        let result = num * 2;
+        return Float.toInt(result);
+    };
+
+    func natNum(num : Nat) : Text {
+        Nat.toText(num)
+    };
+
+    func natNumText(num : Text) : ?Nat {
+        Nat.fromText(num)
+    };
+
+    // ! ENd of the todo.
+    
+
+    // * @param pays The parameter for this method
+    
     public shared ({ caller }) func payUsers( pays : [Bloctypes.Pay] ) : async () {
         // var mod = await is_mod(caller);
         try {
@@ -301,9 +327,9 @@ shared ({ caller }) actor class Kitchen() {
     };
 
     // Takes in the account id as an argument
-    public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-        await ICPIndex.icrc1_balance_of(account)
-    };
+    // public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
+    //     await ICPIndex.icrc1_balance_of(account)
+    // };
 
 
 

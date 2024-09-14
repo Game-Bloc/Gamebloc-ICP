@@ -9,16 +9,7 @@ MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
 
-dfx identity use deon
-export DEON=$(dfx identity get-principal)
-
 dfx identity use default
-export DEFAULT=$(dfx identity get-principal)
-
-dfx identity use admin
-export ADMIN=$(dfx identity get-principal)
-
-dfx identity use deon
 
 export OWNER=$(dfx identity get-principal)
 
@@ -35,34 +26,32 @@ export TOKEN_NAME="ICP"
 
 cargo build --release --target wasm32-unknown-unknown --package game_bloc_backend 
 
-dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_allowance "(record { 
-  account = ( record { 
-    owner = (principal \"${DEFAULT}\")
-  }); 
-  spender = ( record { 
-    owner = (principal \"${ADMIN}\")
-  }); 
+# dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_allowance "(record { 
+#   account = ( record { 
+#     owner = (principal \"${DEFAULT}\")
+#   }); 
+#   spender = ( record { 
+#     owner = (principal \"${ADMIN}\")
+#   }); 
    
-})"
+# })"
 
-dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_transfer_from "(record {
-  from = (record {
-        owner=(principal "${DEFAULT}")
-  }); 
-  to = (record {
-        owner=(principal "${ADMIN}")
-  });
-  amount = 90_000;
-})"
+# dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_transfer_from "(record {
+#   from = (record {
+#         owner=(principal "${DEFAULT}")
+#   }); 
+#   to = (record {
+#         owner=(principal "${ADMIN}")
+#   });
+#   amount = 90_000;
+# })"
 
-dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_approve "(record {
-  amount = 100_000; 
-  spender = record{
-    owner = principal \"${ADMIN}\";
-  } 
-})"
-
-
+# dfx canister call ryjl3-tyaaa-aaaaa-aaaba-cai icrc2_approve "(record {
+#   amount = 100_000; 
+#   spender = record{
+#     owner = principal \"${ADMIN}\";
+#   } 
+# })"
 
 
 dfx deploy icp_ledger --argument "(variant {Init =record {minting_account = \"${MINT_ACC}\";

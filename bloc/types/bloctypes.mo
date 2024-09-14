@@ -16,6 +16,10 @@ module {
         total_point : Nat
     };
 
+    public type ModTag = {
+        #Mod1; #Mod2; #Mod3
+    };
+
     public type Access = {
         _user : Principal;
         _password : Text;
@@ -23,13 +27,11 @@ module {
         _updatedTime : Int;
     };
 
-
-    // ! Deprecated
-    // type Winner = {
-    //     user : Principal;
-    //     position : ?Text;
-    //     amount : Nat;
-    // };
+    public type Winner = {
+        user_account : Text;
+        position : Text;
+        amount : Nat;
+    };
 
     public type PoH = {
         user : Principal;
@@ -72,24 +74,22 @@ module {
     };
 
     public type UserProfile = {
-        id_hash : Text;
+        account_id : Text;
         age : Nat8;
-        date : Text;
-        status : Status;
-        wins : Nat8;
         attendance : ?Nat8;
+        canister_id : Text;
+        date : Text;
+        id_hash : Text;
+        is_mod : Bool;
         losses : ?Nat8;
+        points : ?[(Text, Text, Point)];
+        principal_id : Text;
+        role : ?Role;
+        squad_badge : Text;
+        status : Status;
         tournaments_created : Nat8;
         username : Text;
-        is_mod : Bool;
-        role : ?Role;
-        principal_id : Text;
-        account_id : Text;
-        canister_id : Text;
-        squad_badge : Text;
-        points : ?[(Text, Text, Point)];
-        // role : Text
-        // ico_balance : Nat64;
+        wins : Nat8
     };
 
     public type Point = {
@@ -135,11 +135,6 @@ module {
         #TribunalMod : ModTag
     };
 
-    type ModTag = {
-        #Mod1;
-        #Mod2;
-        #Mod3
-    };
 
     public type SquadType = {
         #Open;
@@ -203,11 +198,11 @@ module {
         #MultiLobby;
     };
 
-    public type Winner = {
-        position : Text;
-        amount : Nat;
-        user_account : Text
-    };
+    // public type Winner = {
+    //     position : Text;
+    //     amount : Nat;
+    //     user_account : Text
+    // };
 
 
     public type LobbyAccount = {

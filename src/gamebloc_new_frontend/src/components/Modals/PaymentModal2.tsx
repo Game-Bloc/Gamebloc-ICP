@@ -64,11 +64,11 @@ const PaymentModal2 = ({
     setCreatedAt(generateDate())
     setDate(Date.now())
     if (gameType === "Duo") {
-      setAmount(+icp.toFixed(8) * 2)
+      setAmount(+icp.toFixed(4) * 2)
     } else if (gameType === "Squad") {
-      setAmount(+icp.toFixed(8) * 4)
+      setAmount(+icp.toFixed(4) * 4)
     } else {
-      setAmount(+icp.toFixed(8))
+      setAmount(+icp.toFixed(4))
     }
   }, [])
 
@@ -78,10 +78,10 @@ const PaymentModal2 = ({
 
   console.log("icp", +icp.toFixed(8))
   const payFee = () => {
-    if (tourType === "Prepaid") {
+    if (tourType === "Prepaid" || tourType === "Blitzkrieg") {
       payICPfee(
         "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp.toFixed(8),
+        +icp.toFixed(4),
         date,
         _principal,
         createdAt,
@@ -168,7 +168,7 @@ const PaymentModal2 = ({
                               ),
                           },
                           {
-                            title: "Join",
+                            title: "Create",
                             status: done === true ? "finish" : "process",
                             icon:
                               done === true ? (
@@ -259,11 +259,15 @@ const PaymentModal2 = ({
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
-                            {tourType === "Prepaid"
+                            {tourType === "Prepaid" || tourType === "Blitzkrieg"
                               ? poolPrice
-                              : gameType === "squad" && tourType !== "Prepaid"
+                              : gameType === "squad" &&
+                                tourType !== "Prepaid" &&
+                                tourType !== "Blitzkrieg"
                               ? +entryPrice * 4
-                              : gameType === "Duo" && tourType !== "Prepaid"
+                              : gameType === "Duo" &&
+                                tourType !== "Prepaid" &&
+                                tourType !== "Blitzkrieg"
                               ? +entryPrice * 2
                               : entryPrice}{" "}
                             worth of ICP to be deducted from your wallet.

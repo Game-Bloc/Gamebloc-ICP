@@ -93,8 +93,11 @@ const Rules = ({ data }: Props) => {
           </button>
         ) : (
           <>
-            {Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
-            data.creator == owner ? (
+            {(Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
+              data.creator == owner) ||
+            (Object.keys(data.tournament_type)[0].toUpperCase() ==
+              "BLITZKRIEG" &&
+              data.creator == owner) ? (
               <div></div>
             ) : data.users.some((index: any) => index.includes(owner)) ||
               data.squad.some((players: any) =>
