@@ -160,44 +160,58 @@ shared ({ caller }) actor class Kitchen() {
 
 
     // Check 2
-    // public shared ({ caller }) func payUsers1( id : Text ) : async () { // Tournamnet Id
-    //     // var mod = await is_mod(caller);
+    public shared ({ caller }) func payUsers1( id : Text ) : async () { // Tournamnet Id
+        var mod = await is_mod(caller);
+        var tournament = await get_tournament(id);
 
-    //     // var tournament = await get_tournament(id);
-    //     // var pays  = tournament.winners; 
+        // * Required variables for the switch cases
+        var winners  = tournament.winners; 
+        var ended = tournament.ended;
 
-    //     // // Check if tournamnet has ended
-    //     // if (tournament.ended == false){
-    //     //     // reject
-    //     // };
+        // * Check if tournamnet has ended
 
-    //     // of type  Winners{
-    //     // positions : String,
-    //     // amount : u128,
-    //     // user : Principal, // This is usually updated
+        switch(ended){
+            case(null){};
+            case(?(ended)){
+                if (ended == false){
+                    throw Error.reject("Warning! Tournamnet has to end before the payment can be initiated!");
+                };
+            }
+        };
 
+        // ? OR should i use the transfer_From feature.
+        // * That would probably require series of approvals, mendokseee
+        // TODO: Test this function's automated feat
 
-    
-    //     try {
-    //         if(await is_mod(caller)){
-    //             for (pay in Iter.fromArray(pays)){
-    //                 // var _account = pay.account;
-    //                 var block = await ICPLedger.send_dfx({ // might have ton use transfer_From()
-    //                     to = pay.user_account;
-    //                     fee = { e8s = 10_000 }; //0.0001 ICP
-    //                     memo = 0;
-    //                     from_subaccount = null;
-    //                     created_at_time = ?{
-    //                         timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
-    //                     };
-    //                     amount = pay.amount
-    //                 });
-    //             };
-    //         };
-    //     } catch err {
-    //         throw (err);
-    //     }
-    // };
+        try {
+            if(await is_mod(caller)){
+
+                 switch(winners) {
+                    case(null){
+                        throw Error.reject("You cannot initiate payment to winners that has not been set!");
+                    }; case (?(winners)){
+                         for (winner in Iter.fromArray(winners)){
+                        // var _account = pay.account;
+                        var block = await ICPLedger.send_dfx({ // might have ton use transfer_From()
+                            to = winner.user_account;
+                            fee = { e8s = 10_000 }; //0.0001 ICP
+                            memo = 0;
+                            from_subaccount = null;
+                            created_at_time = ?{
+                                timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
+                            };
+                            amount = {
+                                e8s = Nat64.fromNat(winner.amount) * 100_000_000
+                            }
+                        });
+                    };
+                    }
+                }
+            };
+        } catch err {
+            throw (err);
+        }
+    };
 
 
     // Using the caller
@@ -1552,18 +1566,18 @@ shared ({ caller }) actor class Kitchen() {
                         // var actual_price = amount / icp_price;
                         var result = await ICPLedger.icrc2_transfer_from({
                             to = {
-                    owner = gbc_admin;
-                    subaccount = null
-                };
+                                owner = gbc_admin;
+                                subaccount = null
+                            };
                             fee = null;
                             spender_subaccount = null;
                             from = {
-                    owner = caller;
-                    subaccount = null
-                };
+                                owner = caller;
+                                subaccount = null
+                            };
                             memo = null;
                             created_at_time = null;
-                            amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 4; //In USD
+                            amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 4 * 100_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer, please check your balance, try again or contact admin.");
@@ -1578,18 +1592,18 @@ shared ({ caller }) actor class Kitchen() {
                         // var actual_price = amount / icp_price;
                         var result = await ICPLedger.icrc2_transfer_from({
                             to = {
-                    owner = gbc_admin;
-                    subaccount = null
-                };
+                                owner = gbc_admin;
+                                subaccount = null
+                            };
                             fee = null;
                             spender_subaccount = null;
                             from = {
-                    owner = caller;
-                    subaccount = null
-                };
+                                owner = caller;
+                                subaccount = null
+                            };
                             memo = null;
                             created_at_time = null;
-                            amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 2; //In USD
+                            amount = (Nat8.toNat(tournament.entry_prize)/icp_price) * 2 * 100_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer, please check your balance , try again or contact admin");
@@ -1628,18 +1642,18 @@ shared ({ caller }) actor class Kitchen() {
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                    owner = gbc_admin;
-                    subaccount = null
-                };
+                                    owner = gbc_admin;
+                                    subaccount = null
+                                };
                                 fee = null;
                                 spender_subaccount = null;
                                 from = {
-                    owner = caller;
-                    subaccount = null
-                };
+                                    owner = caller;
+                                    subaccount = null
+                                };
                                 memo = null;
                                 created_at_time = null;
-                                amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
+                                amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 100_000_000; //In USD
                             });
                         } catch (err) {
                             throw Error.reject("There is an issue wih the transfer, please check your balance , try again or contact admin");
