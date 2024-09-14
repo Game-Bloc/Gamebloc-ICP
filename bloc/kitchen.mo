@@ -390,7 +390,8 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    // deprecated
+    // ! Deprecated function
+
     public func transferICP2(amount : Nat) : async Result.Result<(), Text> {
         let recipient = "rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe";
         try {
@@ -416,6 +417,25 @@ shared ({ caller }) actor class Kitchen() {
         } catch (err) {
             return #err(Error.message(err))
         }
+    };
+
+    // * Transfer tests
+    public func transferFrom(_from : Principal, _to : Principal, _amount : Nat) : async LedgerTypes.Result_2 {
+        await ICPLedger.icrc2_transfer_from({
+            to = {
+                owner = _to;
+                subaccount = null;
+            };
+            fee = null;
+            spender_subaccount = null;
+            from = {
+                owner = _from;
+                subaccount = null;
+            };
+            memo = null;
+            created_at_time = null;
+            amount = _amount;
+        });
     };
 
     public func getPrincipal() : async Principal {
