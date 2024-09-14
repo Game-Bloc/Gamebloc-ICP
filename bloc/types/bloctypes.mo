@@ -23,11 +23,13 @@ module {
         _updatedTime : Int;
     };
 
-    type Winner = {
-        user : Principal;
-        position : ?Text;
-        amount : Nat;
-    };
+
+    // ! Deprecated
+    // type Winner = {
+    //     user : Principal;
+    //     position : ?Text;
+    //     amount : Nat;
+    // };
 
     public type PoH = {
         user : Principal;
@@ -130,6 +132,13 @@ module {
     public type Role = {
         #Player;
         #Mod;
+        #TribunalMod : ModTag
+    };
+
+    type ModTag = {
+        #Mod1;
+        #Mod2;
+        #Mod3
     };
 
     public type SquadType = {
@@ -139,7 +148,8 @@ module {
 
     public type TournamentType = {
         #Crowdfunded;
-        #Prepaid
+        #Prepaid;
+        #Blitzkrieg
     };
 
     public type TournamentStatus = {
@@ -183,7 +193,7 @@ module {
         points_vector_mod_3: ?[(Text,Text,Point)];
         tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount];
-        winners : ?[Winners];
+        winners : ?[Winner];
         ended : ?Bool
     };
 
@@ -192,7 +202,7 @@ module {
         #MultiLobby;
     };
 
-    public type Winners = {
+    public type Winner = {
         position : Text;
         amount : Nat;
         user_account : Text
