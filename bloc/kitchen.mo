@@ -1286,7 +1286,7 @@ shared ({ caller }) actor class Kitchen() {
                             };
                             memo = null;
                             created_at_time = null;
-                            amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
+                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 100_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer");
@@ -1306,7 +1306,7 @@ shared ({ caller }) actor class Kitchen() {
                         };      
                         memo = null;
                         created_at_time = null;
-                        amount = tournamentAccount.total_prize/icp_price;
+                        amount = (tournamentAccount.total_prize/icp_price) * 100_000_000;
                     });
                 };
                 
@@ -1318,6 +1318,8 @@ shared ({ caller }) actor class Kitchen() {
             }
         }
     };
+
+    // ! Deprecated func
 
     // public shared ({ caller }) func create_tournament2(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
     //     if (icp_price == 0){
