@@ -39,7 +39,7 @@ const AdminChart = ({ tournament }: prop) => {
       "Jun",
       "Jul",
       "Aug",
-      "Sep",
+      "Sept",
       "Oct",
       "Nov",
       "Dec",

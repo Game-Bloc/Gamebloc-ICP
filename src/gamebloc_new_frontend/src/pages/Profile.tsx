@@ -94,6 +94,8 @@ const Profile = () => {
     getTransactions(accountId)
   }, [isAuthenticated])
 
+  console.log("icp_price", _icp2Usd)
+
   if (!isAuthenticated || isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">

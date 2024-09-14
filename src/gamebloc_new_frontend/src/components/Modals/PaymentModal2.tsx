@@ -52,7 +52,7 @@ const PaymentModal2 = ({
   const [date, setDate] = useState<number>()
   const [amount, setAmount] = useState<number>(null)
   const [createdAt, setCreatedAt] = useState<string>("")
-  const { paid, isLoading, payICPfee } = useGameblocHooks()
+  const { paid, isLoading, payICPfee, approveFee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
@@ -78,32 +78,39 @@ const PaymentModal2 = ({
 
   console.log("icp", +icp.toFixed(8))
   const payFee = () => {
-    if (tourType === "Prepaid" || tourType === "Blitzkrieg") {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp.toFixed(4),
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
+    if (tourType === "Prepaid") {
+      // payICPfee(
+      //   "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
+      //   +icp.toFixed(8),
+      //   date,
+      //   _principal,
+      //   createdAt,
+      //   notification_id,
+      //   username,
+      //   "Payment Approved",
+      //   "Something went wrong",
+      //   "",
+      // )
+      approveFee(
+        +icp.toFixed(8),
         "Payment Approved",
         "Something went wrong",
         "",
       )
     } else {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        amount,
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
+      // payICPfee(
+      //   "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
+      //   amount,
+      //   date,
+      //   _principal,
+      //   createdAt,
+      //   notification_id,
+      //   username,
+      //   "Payment Approved",
+      //   "Something went wrong",
+      //   "",
+      // )
+      approveFee(amount, "Payment Approved", "Something went wrong", "")
     }
   }
 
