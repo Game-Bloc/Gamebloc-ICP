@@ -855,12 +855,21 @@ export const useGameblocHooks = () => {
         dispatch(clearTransaction())
         for (const data of history.Ok.transactions) {
           const action = data.transaction.operation.Transfer.from == accountId
-          const timestampNanos = BigInt(
-            Number(data.transaction.created_at_time[0].timestamp_nanos),
-          )
-          const timestampMillis = Number(timestampNanos / BigInt(1000000))
+          const time_stamp =
+            data.transaction.created_at_time[0]?.timestamp_nanos
+          const timestampNanos =
+            data.transaction.created_at_time[0]?.timestamp_nanos === undefined
+              ? BigInt(1000000)
+              : BigInt(
+                  Number(data.transaction.created_at_time[0]?.timestamp_nanos),
+                )
+          const timestampMillis =
+            time_stamp === undefined
+              ? 0
+              : Number(timestampNanos / BigInt(1000000))
 
-          const date = new Date(timestampMillis)
+          const date =
+            timestampNanos === undefined ? 0 : new Date(timestampMillis)
 
           // Format the date
           const options: any = {
@@ -871,9 +880,10 @@ export const useGameblocHooks = () => {
             hour: "numeric",
             minute: "numeric",
           }
-          const formattedDate = date
-            .toLocaleString("en-US", options)
-            .replace(",", " at")
+          const formattedDate =
+            timestampNanos === undefined
+              ? ""
+              : date.toLocaleString("en-US", options).replace(",", " at")
           const transaction = {
             id: Number(data.id),
             action: action ? "sent" : "received",
