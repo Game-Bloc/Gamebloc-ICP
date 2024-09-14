@@ -241,18 +241,34 @@ const TournamentInfo = ({ data }: Props) => {
                   <div className="flex flex-col w-full rounded-md  bg-primary-first pt-[.5rem] pl-[.5rem]">
                     <p className="text-[.8rem]  text-white">Prize Pool</p>
                     <h1 className="text-[2rem] sm:text-[3rem] font-valorant bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
-                      {Object.keys(data.tournament_type)[0].toUpperCase() ===
+                      {
+                       //crowdfunded implementation changed here from this:
+                       //  {Object.keys(data.tournament_type)[0].toUpperCase() ===
+                       //    "CROWDFUNDED" &&
+                       //    data.game_type.toUpperCase() === "SINGLE"
+                       //      ? `$${data.entry_prize * data?.users?.length}`
+                       //      : Object.keys(data.tournament_type)[0].toUpperCase() ==
+                       //      "CROWDFUNDED" &&
+                       //      data.game_type.toUpperCase() === "DUO"
+                       //        ? `$${data.entry_prize * squadCount()}`
+                       //        : Object.keys(data.tournament_type)[0].toUpperCase() ==
+                       //        "CROWDFUNDED" &&
+                       //        data.game_type.toUpperCase() === "SQUAD"
+                       //          ? `$${data.entry_prize * squadCount()}`
+                       //          : `$${data.total_prize}`}
+                       // to this:
+                        Object.keys(data.tournament_type)[0].toUpperCase() ===
                         "CROWDFUNDED" &&
                       data.game_type.toUpperCase() === "SINGLE"
-                        ? `$${data.entry_prize * data?.users?.length}`
+                        ? `$${data.total_prize}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
                           data.game_type.toUpperCase() === "DUO"
-                        ? `$${data.entry_prize * squadCount()}`
+                        ? `$${data.total_prize}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
                           data.game_type.toUpperCase() === "SQUAD"
-                        ? `$${data.entry_prize * squadCount()}`
+                        ? `$${data.total_prize}`
                         : `$${data.total_prize}`}
                     </h1>
                   </div>
