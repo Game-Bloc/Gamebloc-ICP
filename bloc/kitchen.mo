@@ -1220,7 +1220,7 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-    let gbc_admin : Principal = Principal.fromText("y2ysg-dlkwp-wlxuc-pzjti-znlce-6xwoa-sq7a4-tufit-doanq-v6gux-cqe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("xhqcq-u3oqe-kkca5-s7wew-2fbwr-o7hwp-453fm-5ptra-txcfg-26q6s-iqe"); //Deon here
 
     //
     // Tournaments
@@ -1299,88 +1299,88 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    public shared ({ caller }) func create_tournament2(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
-        if (icp_price == 0){
-            Debug.print(debug_show(icp_price));
-            throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
-        } else {
-            try {
+    // public shared ({ caller }) func create_tournament2(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
+    //     if (icp_price == 0){
+    //         Debug.print(debug_show(icp_price));
+    //         throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
+    //     } else {
+    //         try {
 
-                await update_tournaments_created(caller);
-                TournamentHashMap.put(caller, tournamentAccount);
-                var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+    //             await update_tournaments_created(caller);
+    //             TournamentHashMap.put(caller, tournamentAccount);
+    //             var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
-                Debug.print(debug_show(fromPrincipal));
+    //             Debug.print(debug_show(fromPrincipal));
 
-                var toAccount : LedgerTypes.Account = {
-                    owner = gbc_admin;
-                    subaccount = null;
-                };
+    //             var toAccount : LedgerTypes.Account = {
+    //                 owner = gbc_admin;
+    //                 subaccount = null;
+    //             };
 
-                Debug.print(debug_show(toAccount));
+    //             Debug.print(debug_show(toAccount));
 
-                var fromAccount : LedgerTypes.Account = {
-                    owner = fromPrincipal;
-                    subaccount = null;
-                };
+    //             var fromAccount : LedgerTypes.Account = {
+    //                 owner = fromPrincipal;
+    //                 subaccount = null;
+    //             };
 
-                Debug.print(debug_show(fromAccount));
+    //             Debug.print(debug_show(fromAccount));
 
-                Debug.print(debug_show(tournamentAccount.tournament_type));
+    //             Debug.print(debug_show(tournamentAccount.tournament_type));
 
-                if (tournamentAccount.tournament_type == #Crowdfunded) {
+    //             if (tournamentAccount.tournament_type == #Crowdfunded) {
 
-                    try {
-                        // var actual_price = amount / icp_price;
-                        var result = await ICPLedger.icrc2_transfer_from({
-                            to = toAccount;
-                            // ! Deprecated
-                            // {
-                            //     owner = gbc_admin;
-                            //     subaccount = null;
-                            // };
-                            fee = null;
-                            spender_subaccount = null;
-                            from = fromAccount;
-                            // ! Deprecated
-                            // {
-                            //     owner = fromPrincipal;
-                            //     subaccount = null;
-                            // };
-                            memo = null;
-                            created_at_time = null;
-                            amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
-                        });
-                    } catch (err) {
-                        throw Error.reject("There is an issue wih the transfer");
-                    }
+    //                 try {
+    //                     // var actual_price = amount / icp_price;
+    //                     var result = await ICPLedger.icrc2_transfer_from({
+    //                         to = toAccount;
+    //                         // ! Deprecated
+    //                         // {
+    //                         //     owner = gbc_admin;
+    //                         //     subaccount = null;
+    //                         // };
+    //                         fee = null;
+    //                         spender_subaccount = null;
+    //                         from = fromAccount;
+    //                         // ! Deprecated
+    //                         // {
+    //                         //     owner = fromPrincipal;
+    //                         //     subaccount = null;
+    //                         // };
+    //                         memo = null;
+    //                         created_at_time = null;
+    //                         amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
+    //                     });
+    //                 } catch (err) {
+    //                     throw Error.reject("There is an issue wih the transfer");
+    //                 }
                     
-                } else { //Should be #prepaid
-                    var result = await ICPLedger.icrc2_transfer_from({
-                        to = {
-                    owner = gbc_admin;
-                    subaccount = null;
-                };
-                        fee = null;
-                        spender_subaccount = null;
-                        from = {
-                    owner = fromPrincipal;
-                    subaccount = null;
-                };
-                        memo = null;
-                        created_at_time = null;
-                        amount = tournamentAccount.total_prize/icp_price;
-                    });
-                };
+    //             } else { //Should be #prepaid
+    //                 var result = await ICPLedger.icrc2_transfer_from({
+    //                     to = {
+    //                 owner = gbc_admin;
+    //                 subaccount = null;
+    //             };
+    //                     fee = null;
+    //                     spender_subaccount = null;
+    //                     from = {
+    //                 owner = fromPrincipal;
+    //                 subaccount = null;
+    //             };
+    //                     memo = null;
+    //                     created_at_time = null;
+    //                     amount = tournamentAccount.total_prize/icp_price;
+    //                 });
+    //             };
                 
-                await RustBloc.create_tournament(tournamentAccount);
+    //             await RustBloc.create_tournament(tournamentAccount);
 
-                // return result
-            } catch err {
-                throw (err)
-            }
-        }
-    };
+    //             // return result
+    //         } catch err {
+    //             throw (err)
+    //         }
+    //     }
+    // };
 
     public func count_all_squad() : async Nat {
         await RustBloc.count_all_squad()

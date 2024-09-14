@@ -42,9 +42,7 @@ export const useGameblocHooks = () => {
     indexActor,
     principal,
   } = useAuth()
-  const _principal = Principal.fromText(
-    "y2ysg-dlkwp-wlxuc-pzjti-znlce-6xwoa-sq7a4-tufit-doanq-v6gux-cqe",
-  )
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -331,7 +329,7 @@ export const useGameblocHooks = () => {
       }
       const create = await whoamiActor.create_tournament(
         tournamentData,
-        BigInt(icp_price * 100000000),
+        BigInt(Math.round(icp_price)),
       )
       if (create) {
         setDone(true)
@@ -616,6 +614,7 @@ export const useGameblocHooks = () => {
       spender: _account,
     }
     try {
+      setIsLoading(true)
       const approve = await ledgerActor.icrc2_approve(approveArgs)
       if ("Ok" in approve) {
         console.log("Fee approved")
