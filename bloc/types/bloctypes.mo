@@ -194,7 +194,8 @@ module {
         tournament_lobby_type : ?TournamentLobbyType;
         lobbies : ?[LobbyAccount];
         winners : ?[Winner];
-        ended : ?Bool
+        ended : ?Bool;
+        // paid : Bool;
     };
 
     public type TournamentLobbyType = {
