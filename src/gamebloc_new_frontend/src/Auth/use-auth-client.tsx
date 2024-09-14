@@ -90,6 +90,10 @@ const defaultOptions = {
         : process.env.LOCAL_II_CANISTER,
   },
   loginNFID: {
+    windowOpenerFeatures:
+                `left=${window.screen.width / 2 - 525 / 2}, ` +
+                `top=${window.screen.height / 2 - 705 / 2},` +
+                `toolbar=0,location=0,menubar=0,width=525,height=705`,
     identityProvider:
       process.env.DFX_NETWORK === "ic"
         ? "https://nfid.one" + AUTH_PATH

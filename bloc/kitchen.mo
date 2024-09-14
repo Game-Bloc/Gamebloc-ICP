@@ -641,6 +641,31 @@ shared ({ caller }) actor class Kitchen() {
         userCanisterId
     };
 
+    // * For testing purposes
+
+    public func ApproveThisCanister1() : async LedgerTypes.Account {
+        return {
+            owner = userCanisterId;
+            subaccount = null;
+        }
+    };
+
+    public func ApproveThisCanister2() : async LedgerTypes.Account {
+        return {
+            owner = caller;
+            subaccount = null;
+        }
+    };
+
+    // public func ApproveThisCanister3() : async LedgerTypes.Account {
+    //     return {
+    //         owner = caller;
+    //         subaccount = null;
+    //     }
+    // };
+
+    // * End of Test
+
     public query ({ caller }) func getOwner() : async Principal {
         caller
     };
@@ -1230,15 +1255,98 @@ shared ({ caller }) actor class Kitchen() {
                         // var actual_price = amount / icp_price;
                         var result = await ICPLedger.icrc2_transfer_from({
                             to = {
-                    owner = gbc_admin;
-                    subaccount = null;
-                };
+                                owner = gbc_admin;
+                                subaccount = null;
+                            };
                             fee = null;
                             spender_subaccount = null;
                             from = {
+                                owner = fromPrincipal;
+                                subaccount = null;
+                            };
+                            memo = null;
+                            created_at_time = null;
+                            amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
+                        });
+                    } catch (err) {
+                        throw Error.reject("There is an issue wih the transfer");
+                    }
+                    
+                } else { //Should be #prepaid
+                    var result = await ICPLedger.icrc2_transfer_from({
+                        to = {
+                            owner = gbc_admin;
+                            subaccount = null;
+                        };
+                        fee = null;
+                        spender_subaccount = null;
+                        from = {
+                            owner = fromPrincipal;
+                            subaccount = null;
+                        };      
+                        memo = null;
+                        created_at_time = null;
+                        amount = tournamentAccount.total_prize/icp_price;
+                    });
+                };
+                
+                await RustBloc.create_tournament(tournamentAccount);
+
+                // return result
+            } catch err {
+                throw (err)
+            }
+        }
+    };
+
+    public shared ({ caller }) func create_tournament2(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
+        if (icp_price == 0){
+            Debug.print(debug_show(icp_price));
+            throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
+        } else {
+            try {
+
+                await update_tournaments_created(caller);
+                TournamentHashMap.put(caller, tournamentAccount);
+                var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+
+                Debug.print(debug_show(fromPrincipal));
+
+                var toAccount : LedgerTypes.Account = {
+                    owner = gbc_admin;
+                    subaccount = null;
+                };
+
+                Debug.print(debug_show(toAccount));
+
+                var fromAccount : LedgerTypes.Account = {
                     owner = fromPrincipal;
                     subaccount = null;
                 };
+
+                Debug.print(debug_show(fromAccount));
+
+                Debug.print(debug_show(tournamentAccount.tournament_type));
+
+                if (tournamentAccount.tournament_type == #Crowdfunded) {
+
+                    try {
+                        // var actual_price = amount / icp_price;
+                        var result = await ICPLedger.icrc2_transfer_from({
+                            to = toAccount;
+                            // ! Deprecated
+                            // {
+                            //     owner = gbc_admin;
+                            //     subaccount = null;
+                            // };
+                            fee = null;
+                            spender_subaccount = null;
+                            from = fromAccount;
+                            // ! Deprecated
+                            // {
+                            //     owner = fromPrincipal;
+                            //     subaccount = null;
+                            // };
                             memo = null;
                             created_at_time = null;
                             amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
@@ -1282,7 +1390,7 @@ shared ({ caller }) actor class Kitchen() {
         await RustBloc.count_all_users()
     };
 
-    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winners]) : async Bool {
+    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
         try {
             // Checks the role and other conditions before actually ending the tournament
             await RustBloc.end_tournament(id, caller, no_of_winners, winner)
