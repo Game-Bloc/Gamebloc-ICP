@@ -1233,6 +1233,7 @@ shared ({ caller }) actor class Kitchen() {
 
     public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
         if (icp_price == 0){
+            Debug.print(debug_show(icp_price));
             throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
         } else {
             try {
@@ -1241,31 +1242,43 @@ shared ({ caller }) actor class Kitchen() {
                 TournamentHashMap.put(caller, tournamentAccount);
                 var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
+                Debug.print(debug_show(fromPrincipal));
+
                 var toAccount : LedgerTypes.Account = {
                     owner = gbc_admin;
                     subaccount = null;
                 };
+
+                Debug.print(debug_show(toAccount));
 
                 var fromAccount : LedgerTypes.Account = {
                     owner = fromPrincipal;
                     subaccount = null;
                 };
 
+                Debug.print(debug_show(fromAccount));
+
+                Debug.print(debug_show(tournamentAccount.tournament_type));
+
                 if (tournamentAccount.tournament_type == #Crowdfunded) {
 
                     try {
                         // var actual_price = amount / icp_price;
                         var result = await ICPLedger.icrc2_transfer_from({
-                            to = {
-                    owner = gbc_admin;
-                    subaccount = null;
-                };
+                            to = toAccount;
+                            // ! Deprecated
+                            // {
+                            //     owner = gbc_admin;
+                            //     subaccount = null;
+                            // };
                             fee = null;
                             spender_subaccount = null;
-                            from = {
-                    owner = fromPrincipal;
-                    subaccount = null;
-                };
+                            from = fromAccount;
+                            // ! Deprecated
+                            // {
+                            //     owner = fromPrincipal;
+                            //     subaccount = null;
+                            // };
                             memo = null;
                             created_at_time = null;
                             amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
