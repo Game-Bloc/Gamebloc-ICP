@@ -184,6 +184,10 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
+    type Test = {
+        name : Text;
+    };
+
 
     // Check 2
     public shared ({ caller }) func payUsers1( id : Text ) : async () { // Tournamnet Id
@@ -1283,7 +1287,7 @@ shared ({ caller }) actor class Kitchen() {
     let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); //Deon here
 
     //
-    // Tournaments
+    // * Tournaments Features
     //
 
     // public type Subaccount = [Nat8];
@@ -1757,7 +1761,7 @@ shared ({ caller }) actor class Kitchen() {
 
 
     //
-    // HTTP outcalls
+    //  * HTTP outcalls
     //
 
     public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
@@ -1865,6 +1869,8 @@ shared ({ caller }) actor class Kitchen() {
 
     // Mod Consensus
 
+    // * Rustbloc will handle that.
+
     // Password for Wallet
 
     type VETKD_SYSTEM_API = actor {
@@ -1958,7 +1964,7 @@ shared ({ caller }) actor class Kitchen() {
 
 
 
-    ///  Websockets
+    /// *  Websockets
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
