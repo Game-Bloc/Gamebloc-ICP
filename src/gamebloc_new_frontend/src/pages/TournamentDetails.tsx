@@ -33,8 +33,15 @@ const TournamentDetail = () => {
   const tourData = tournamentData
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
-  // const _point = tourData[0].points?.length === 0
-  // const _squad_point = tourData[0].squad_points.length === 0
+
+  const _point =
+    tourData[0].points === undefined
+      ? undefined
+      : tourData[0].points.length === 0
+  const _squad_point =
+    tourData[0].squad_points === undefined
+      ? undefined
+      : tourData[0].squad_points.length === 0
 
   const status = Object.keys(tourData[0].status)[0].toUpperCase() === "ARCHIVED"
 
@@ -277,9 +284,11 @@ const TournamentDetail = () => {
                                   </p>
                                 </div>
                               </div>
-                              {/* {_point && _squad_point ? (
+                              {_point === undefined &&
+                              _squad_point === undefined ? (
                                 <></>
-                              ) : !_point && _squad_point ? (
+                              ) : _point !== undefined &&
+                                _squad_point !== undefined ? (
                                 <p
                                   onClick={() =>
                                     navigate(
@@ -290,7 +299,8 @@ const TournamentDetail = () => {
                                 >
                                   View Result
                                 </p>
-                              ) : !_squad_point && _point ? (
+                              ) : _squad_point !== undefined &&
+                                _point === undefined ? (
                                 <p
                                   onClick={() =>
                                     navigate(
@@ -301,7 +311,8 @@ const TournamentDetail = () => {
                                 >
                                   View Result
                                 </p>
-                              ) : !_point && !_squad_point ? (
+                              ) : _squad_point !== undefined &&
+                                _point === undefined ? (
                                 <p
                                   onClick={() =>
                                     navigate(
@@ -314,7 +325,7 @@ const TournamentDetail = () => {
                                 </p>
                               ) : (
                                 <></>
-                              )} */}
+                              )} 
                             </div>
                             <div className="my-4 border border-solid border-[#2E3438] w-full" />
 
