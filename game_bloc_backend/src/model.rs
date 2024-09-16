@@ -33,6 +33,7 @@ pub_struct!(
 );
 
 
+
 pub_struct!(UserProfile {
      id_hash: String,
      age: u8,
