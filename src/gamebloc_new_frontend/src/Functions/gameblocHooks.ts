@@ -843,60 +843,69 @@ export const useGameblocHooks = () => {
         start: [],
         account: account,
       }
+
       const history: any = await indexActor.get_account_transactions(args)
       console.log("Transaction History:", history.Ok.transactions)
-      console.log(
-        history.Ok.transactions.map(
-          (i) => i.transaction.operation.Transfer.amount.e8s,
-        ),
-      )
 
-      if (history) {
-        dispatch(clearTransaction())
-        for (const data of history.Ok.transactions) {
-          const action = data.transaction.operation.Transfer.from == accountId
-          const time_stamp =
-            data.transaction.created_at_time[0]?.timestamp_nanos
-          const timestampNanos =
-            data.transaction.created_at_time[0]?.timestamp_nanos === undefined
-              ? BigInt(1000000)
-              : BigInt(
-                  Number(data.transaction.created_at_time[0]?.timestamp_nanos),
-                )
-          const timestampMillis =
-            time_stamp === undefined
-              ? 0
-              : Number(timestampNanos / BigInt(1000000))
+      // Clear the current transactions from the store
+      dispatch(clearTransaction())
 
-          const date =
-            timestampNanos === undefined ? 0 : new Date(timestampMillis)
+      // Iterate through the transactions
+      for (const data of history.Ok.transactions) {
+        const operation = data.transaction.operation
 
-          // Format the date
-          const options: any = {
-            weekday: "short",
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-          }
-          const formattedDate =
-            timestampNanos === undefined
-              ? ""
-              : date.toLocaleString("en-US", options).replace(",", " at")
-          const transaction = {
-            id: Number(data.id),
-            action: action ? "sent" : "received",
-            amount:
-              Number(data.transaction.operation.Transfer.amount.e8s) /
-              100000000,
-            from: data.transaction.operation.Transfer.from,
-            to: data.transaction.operation.Transfer.to,
-            date: formattedDate,
-          }
-          dispatch(addTransactions(transaction))
-          console.log(transaction)
+        let action = ""
+        let amount = 0
+        let from = ""
+        let to = ""
+
+        // Check if it's a Transfer operation
+        if (operation.Transfer) {
+          action = operation.Transfer.from === accountId ? "sent" : "received"
+          amount = Number(operation.Transfer.amount.e8s) / 100000000 // Convert e8s to ICP
+          from = operation.Transfer.from
+          to = operation.Transfer.to
         }
+        // Check if it's an Approve operation
+        else if (operation.Approve) {
+          action = "approve"
+          amount = Number(operation.Approve.allowance.e8s) / 100000000 // Convert e8s to ICP
+          from = operation.Approve.from
+          to = operation.Approve.spender
+        }
+
+        // Handle the creation timestamp safely
+        const timestampNanos =
+          data.transaction.created_at_time?.[0]?.timestamp_nanos || BigInt(0)
+        const timestampMillis = Number(timestampNanos / BigInt(1000000))
+        const date = new Date(timestampMillis)
+
+        // Date formatting options
+        const options: any = {
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+        }
+        const formattedDate = date
+          .toLocaleString("en-US", options)
+          .replace(",", " at")
+
+        // Construct the transaction object
+        const transaction = {
+          id: Number(data.id),
+          action: action, // can be 'sent', 'received', or 'approve'
+          amount: amount,
+          from: from,
+          to: to,
+          date: formattedDate,
+        }
+
+        // Dispatch each transaction to the Redux store
+        dispatch(addTransactions(transaction))
+        console.log("Dispatched transaction:", transaction)
       }
     } catch (err) {
       console.log("Error getting transaction history:", err)
