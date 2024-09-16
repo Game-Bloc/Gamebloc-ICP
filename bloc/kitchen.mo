@@ -184,9 +184,6 @@ shared ({ caller }) actor class Kitchen() {
         }
     };
 
-    type Test = {
-        name : Text;
-    };
 
 
     // Check 2
@@ -198,6 +195,7 @@ shared ({ caller }) actor class Kitchen() {
         var winners  = tournament.winners; 
         var ended = tournament.ended;
 
+        
         // * Check if tournamnet has ended
 
         switch(ended){
@@ -221,7 +219,9 @@ shared ({ caller }) actor class Kitchen() {
                         throw Error.reject("You cannot initiate payment to winners that has not been set!");
                     }; case (?(winners)){
                          for (winner in Iter.fromArray(winners)){
-                        // var _account = pay.account;
+
+                            // ? var account = tournament.winners.
+                            // var _account = pay.account;
                         var block = await ICPLedger.send_dfx({ // might have ton use transfer_From()
                             to = winner.user_account;
                             fee = { e8s = 10_000 }; //0.0001 ICP
