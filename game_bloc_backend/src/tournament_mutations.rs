@@ -177,181 +177,6 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
     });
 }
 
-
-#[update]
-pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -> () {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        let mut list: Vec<(String,String,Point)> = vec![];
-        match tournament.clone().squad_vector_mod_1 {
-            None => {
-                match tournament.clone().squad_vector_mod_2 {
-                    None => {
-                        match tournament.clone().squad_vector_mod_3 {
-                            None => {}
-                            Some(squad_vector_mod_3) => {
-                                squad_vector_mod_3.iter().for_each(|g|{
-                                    let point = Point{
-                                        position_points : g.2.position_points,
-                                        total_points:   g.2.total_points,
-                                        kill_points:  g.2.kill_points,
-                                    };
-                                    list.push(((g.0).parse().unwrap(), (g.1).parse().unwrap(), point))
-                                })
-                            }
-                        }
-                    }
-                    Some(squad_vector_mod_2) => {
-                        squad_vector_mod_2.iter().for_each(|f|{
-                            match tournament.clone().squad_vector_mod_3 {
-                                None => {}
-                                Some(squad_vector_mod_3) => {
-                                    squad_vector_mod_3.iter().for_each(|g|{
-                                        let point = Point{
-                                            position_points: (f.2.position_points + g.2.position_points)/3,
-                                            total_points:  (f.2.total_points + g.2.total_points)/3,
-                                            kill_points: (f.2.kill_points + g.2.kill_points)/3,
-                                        };
-                                        list.push(((f.0).parse().unwrap(),(f.1).parse().unwrap(), point))
-                                    })
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-            Some(squad_vector_mod_1) => {
-                squad_vector_mod_1.iter().for_each(|e| {
-                    match tournament.clone().squad_vector_mod_2 {
-                        None => {
-                            match tournament.clone().squad_vector_mod_3 {
-                                None => {}
-                                Some(squad_vector_mod_3) => {
-                                    squad_vector_mod_3.iter().for_each(|g|{
-                                        let point = Point{
-                                            position_points : (e.2.position_points + g.2.position_points)/2,
-                                            total_points:  (e.2.total_points + g.2.total_points)/2,
-                                            kill_points: (e.2.kill_points + g.2.kill_points)/2,
-                                        };
-                                        list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                    })
-                                }
-                            }
-                        }
-                        Some(squad_vector_mod_2) => {
-                            squad_vector_mod_2.iter().for_each(|f|{
-                                match tournament.clone().squad_vector_mod_3 {
-                                    None => {}
-                                    Some(squad_vector_mod_3) => {
-                                        squad_vector_mod_3.iter().for_each(|g|{
-                                            let point = Point{
-                                                position_points : (e.2.position_points+ f.2.position_points + g.2.position_points)/3,
-                                                total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
-                                                kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
-                                            };
-                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    }
-                })
-            }
-        }
-        tournament.squad_points = Some(list);
-        tournament_store.borrow_mut().insert(id, tournament.clone());
-        true
-    });
-}
-
-#[update]
-pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) -> () {
-    TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        let mut list: Vec<(String,String,Point)> = vec![];
-        match tournament.clone().points_vector_mod_1 {
-            None => {
-                match tournament.clone().points_vector_mod_2 {
-                    None => {
-                        match tournament.clone().points_vector_mod_3 {
-                            None => {}
-                            Some(points_vector_mod_3) => {
-                                points_vector_mod_3.iter().for_each(|g|{
-                                    let point = Point{
-                                        position_points : g.2.position_points,
-                                        total_points:   g.2.total_points,
-                                        kill_points:  g.2.kill_points,
-                                    };
-                                    list.push(((g.0).parse().unwrap(), (g.1).parse().unwrap(), point))
-                                })
-                            }
-                        }
-                    }
-                    Some(points_vector_mod_2) => {
-                        points_vector_mod_2.iter().for_each(|f|{
-                            match tournament.clone().points_vector_mod_3 {
-                                None => {}
-                                Some(points_vector_mod_3) => {
-                                    points_vector_mod_3.iter().for_each(|g|{
-                                        let point = Point{
-                                            position_points: (f.2.position_points + g.2.position_points)/2,
-                                            total_points:  (f.2.total_points + g.2.total_points)/2,
-                                            kill_points: (f.2.kill_points + g.2.kill_points)/2,
-                                        };
-                                        list.push(((f.0).parse().unwrap(), (f.1).parse().unwrap(), point))
-                                    })
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-            Some(points_vector_mod_1) => {
-                points_vector_mod_1.iter().for_each(|e| {
-                    match tournament.clone().points_vector_mod_2 {
-                        None => {
-                            match tournament.clone().points_vector_mod_3 {
-                                None => {}
-                                Some(points_vector_mod_3) => {
-                                    points_vector_mod_3.iter().for_each(|g|{
-                                        let point = Point{
-                                            position_points : (e.2.position_points + g.2.position_points)/2,
-                                            total_points:  (e.2.total_points + g.2.total_points)/2,
-                                            kill_points: (e.2.kill_points + g.2.kill_points)/2,
-                                        };
-                                        list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                    })
-                                }
-                            }
-                        }
-                        Some(points_vector_mod_2) => {
-                            points_vector_mod_2.iter().for_each(|f|{
-                                match tournament.clone().points_vector_mod_3 {
-                                    None => {}
-                                    Some(points_vector_mod_3) => {
-                                        points_vector_mod_3.iter().for_each(|g|{
-                                            let point = Point{
-                                                position_points : (e.2.position_points+ f.2.position_points + g.2.position_points)/3,
-                                                total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
-                                                kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
-                                            };
-                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    }
-                })
-            }
-        }
-        tournament.squad_points = Some(list);
-        tournament_store.borrow_mut().insert(id, tournament.clone());
-        true
-    });
-}
-
 #[query]
 pub fn get_tournament(id: String) -> TournamentAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -609,7 +434,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
 
 #[update]
 pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, winner: Vec<Winner>)
-    -> bool
+                      -> bool
 {
     let old_tournament_winners = winner;
     let mut tournament_winners = Vec::new();
@@ -820,7 +645,7 @@ pub fn archive_tournament(id: String)
 
 #[update]
 pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u8)
-                      -> bool
+                           -> bool
 {
     // if get_self(principal).is_mod {
     // let mut winners = Vec::new();
