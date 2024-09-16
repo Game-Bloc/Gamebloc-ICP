@@ -5,6 +5,8 @@ dist-ssr
 *.local
 .dfx
 .history/*
+.idea/*
+.vscode/*
 
 target
 
