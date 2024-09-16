@@ -42,6 +42,7 @@ export const useGameblocHooks = () => {
     indexActor,
     principal,
   } = useAuth()
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -351,7 +352,7 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
-    icp_price: bigint,
+    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -363,7 +364,7 @@ export const useGameblocHooks = () => {
         name,
         id,
         ign,
-        icp_price,
+        BigInt(icp_price * 100000000),
       )
       setIsLoading(false)
       setDone(true)
@@ -504,7 +505,7 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
-    icp_price: bigint,
+    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -516,7 +517,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
-        icp_price,
+        BigInt(icp_price),
       )
       setIsLoading(false)
       setDone(true)
@@ -589,6 +590,45 @@ export const useGameblocHooks = () => {
       errorPopUp(errorMsg)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const approveFee = async (
+    token: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    const _account = {
+      owner: _principal,
+      subaccount: [],
+    }
+    const approveArgs: any = {
+      fee: [],
+      memo: [],
+      from_subaccount: [],
+      created_at_time: [],
+      amount: BigInt(Math.round(token * 100000000)),
+      expected_allowance: [],
+      expires_at: [],
+      spender: _account,
+    }
+    try {
+      setIsLoading(true)
+      const approve = await ledgerActor.icrc2_approve(approveArgs)
+      if ("Ok" in approve) {
+        console.log("Fee approved")
+        setIsLoading(false)
+        setPaid(true)
+        popUp(successMsg, route)
+      } else {
+        console.log(approve.Err)
+        errorPopUp(errorMsg)
+      }
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
     }
   }
 
@@ -815,12 +855,21 @@ export const useGameblocHooks = () => {
         dispatch(clearTransaction())
         for (const data of history.Ok.transactions) {
           const action = data.transaction.operation.Transfer.from == accountId
-          const timestampNanos = BigInt(
-            Number(data.transaction.created_at_time[0].timestamp_nanos),
-          )
-          const timestampMillis = Number(timestampNanos / BigInt(1000000))
+          const time_stamp =
+            data.transaction.created_at_time[0]?.timestamp_nanos
+          const timestampNanos =
+            data.transaction.created_at_time[0]?.timestamp_nanos === undefined
+              ? BigInt(1000000)
+              : BigInt(
+                  Number(data.transaction.created_at_time[0]?.timestamp_nanos),
+                )
+          const timestampMillis =
+            time_stamp === undefined
+              ? 0
+              : Number(timestampNanos / BigInt(1000000))
 
-          const date = new Date(timestampMillis)
+          const date =
+            timestampNanos === undefined ? 0 : new Date(timestampMillis)
 
           // Format the date
           const options: any = {
@@ -831,9 +880,10 @@ export const useGameblocHooks = () => {
             hour: "numeric",
             minute: "numeric",
           }
-          const formattedDate = date
-            .toLocaleString("en-US", options)
-            .replace(",", " at")
+          const formattedDate =
+            timestampNanos === undefined
+              ? ""
+              : date.toLocaleString("en-US", options).replace(",", " at")
           const transaction = {
             id: Number(data.id),
             action: action ? "sent" : "received",
@@ -1144,5 +1194,6 @@ export const useGameblocHooks = () => {
     update_user_points,
     get_leaderboard,
     payICPfee,
+    approveFee,
   }
 }
