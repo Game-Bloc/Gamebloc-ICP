@@ -33,8 +33,8 @@ const TournamentDetail = () => {
   const tourData = tournamentData
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
-  const _point = tourData[0].points.length === 0
-  const _squad_point = tourData[0].squad_points.length === 0
+  // const _point = tourData[0].points?.length === 0
+  // const _squad_point = tourData[0].squad_points.length === 0
 
   const status = Object.keys(tourData[0].status)[0].toUpperCase() === "ARCHIVED"
 
@@ -277,7 +277,7 @@ const TournamentDetail = () => {
                                   </p>
                                 </div>
                               </div>
-                              {_point && _squad_point ? (
+                              {/* {_point && _squad_point ? (
                                 <></>
                               ) : !_point && _squad_point ? (
                                 <p
@@ -314,7 +314,7 @@ const TournamentDetail = () => {
                                 </p>
                               ) : (
                                 <></>
-                              )}
+                              )} */}
                             </div>
                             <div className="my-4 border border-solid border-[#2E3438] w-full" />
 
