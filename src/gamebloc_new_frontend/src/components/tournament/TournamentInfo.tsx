@@ -242,39 +242,48 @@ const TournamentInfo = ({ data }: Props) => {
                     <p className="text-[.8rem]  text-white">Prize Pool</p>
                     <h1 className="text-[2rem] sm:text-[3rem] font-valorant bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
                       {
-                       //crowdfunded implementation changed here from this:
-                       //  {Object.keys(data.tournament_type)[0].toUpperCase() ===
-                       //    "CROWDFUNDED" &&
-                       //    data.game_type.toUpperCase() === "SINGLE"
-                       //      ? `$${data.entry_prize * data?.users?.length}`
-                       //      : Object.keys(data.tournament_type)[0].toUpperCase() ==
-                       //      "CROWDFUNDED" &&
-                       //      data.game_type.toUpperCase() === "DUO"
-                       //        ? `$${data.entry_prize * squadCount()}`
-                       //        : Object.keys(data.tournament_type)[0].toUpperCase() ==
-                       //        "CROWDFUNDED" &&
-                       //        data.game_type.toUpperCase() === "SQUAD"
-                       //          ? `$${data.entry_prize * squadCount()}`
-                       //          : `$${data.total_prize}`}
-                       // to this:
+                        //crowdfunded implementation changed here from this:
+                        //  {Object.keys(data.tournament_type)[0].toUpperCase() ===
+                        //    "CROWDFUNDED" &&
+                        //    data.game_type.toUpperCase() === "SINGLE"
+                        //      ? `$${data.entry_prize * data?.users?.length}`
+                        //      : Object.keys(data.tournament_type)[0].toUpperCase() ==
+                        //      "CROWDFUNDED" &&
+                        //      data.game_type.toUpperCase() === "DUO"
+                        //        ? `$${data.entry_prize * squadCount()}`
+                        //        : Object.keys(data.tournament_type)[0].toUpperCase() ==
+                        //        "CROWDFUNDED" &&
+                        //        data.game_type.toUpperCase() === "SQUAD"
+                        //          ? `$${data.entry_prize * squadCount()}`
+                        //          : `$${data.total_prize}`}
+                        // to this:
                         Object.keys(data.tournament_type)[0].toUpperCase() ===
-                        "CROWDFUNDED" &&
-                      data.game_type.toUpperCase() === "SINGLE"
-                        ? `$${data.total_prize}`
-                        : Object.keys(data.tournament_type)[0].toUpperCase() ==
-                            "CROWDFUNDED" &&
-                          data.game_type.toUpperCase() === "DUO"
-                        ? `$${data.total_prize}`
-                        : Object.keys(data.tournament_type)[0].toUpperCase() ==
-                            "CROWDFUNDED" &&
-                          data.game_type.toUpperCase() === "SQUAD"
-                        ? `$${data.total_prize}`
-                        : `$${data.total_prize}`}
+                          "CROWDFUNDED" &&
+                        data.game_type.toUpperCase() === "SINGLE"
+                          ? `$${data.total_prize}`
+                          : Object.keys(
+                              data.tournament_type,
+                            )[0].toUpperCase() == "CROWDFUNDED" &&
+                            data.game_type.toUpperCase() === "DUO"
+                          ? `$${data.total_prize}`
+                          : Object.keys(
+                              data.tournament_type,
+                            )[0].toUpperCase() == "CROWDFUNDED" &&
+                            data.game_type.toUpperCase() === "SQUAD"
+                          ? `$${data.total_prize}`
+                          : `$${data.total_prize}`
+                      }
                     </h1>
                   </div>
                 </div>
               </div>
-              {data.no_of_winners === 1 ? (
+              <div className="my-4">
+                <h1 className="text-[1rem]  font-valorant bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
+                  Prize : $3 per kill
+                </h1>
+              </div>
+
+              {/* {data.no_of_winners === 1 ? (
                 <div className="grid grid-cols-2 xl:grid-cols-3 gap-4 xl:gap-8 mt-4">
                   <div className=" w-full rounded-md bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] p-[.09rem]">
                     <div className="flex flex-col justify-center items-center w-full rounded-md  bg-primary-first pt-[.5rem] pl-[.5rem]">
@@ -463,7 +472,7 @@ const TournamentInfo = ({ data }: Props) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
 
               <div className="mt-[1.5rem] mb-[1.5rem] border border-solid border-[#2E3438] w-full" />
 
@@ -495,8 +504,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-[#2E3438]"
-                            : "text-[.85rem] ml-3 text-primary-second "
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]"
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second "
                         }
                       >
                         Registration
@@ -505,8 +514,8 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-[#2E3438]"
-                          : "text-[.85rem]  text-primary-second "
+                          ? "text-[.7rem] md:text-[.85rem]   text-[#2E3438]"
+                          : "text-[.7rem] md:text-[.85rem]   text-primary-second "
                       }
                     >
                       Ongoing
@@ -532,8 +541,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-[#2E3438]  "
-                            : "text-[.85rem] ml-3 text-primary-second"
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]  "
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second"
                         }
                       >
                         Registration closes
@@ -542,8 +551,8 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-[#2E3438]"
-                          : "text-[.85rem]  text-primary-second "
+                          ? "text-[.7rem] md:text-[.85rem]   text-[#2E3438]"
+                          : "text-[.7rem] md:text-[.85rem]   text-primary-second "
                       }
                     >
                       {formatDate(data.starting_date)}
@@ -569,8 +578,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-primary-second "
-                            : "text-[.85rem] ml-3 text-[#2E3438]"
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second "
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]"
                         }
                       >
                         Tournament begins
@@ -579,8 +588,8 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-primary-second "
-                          : "text-[.85rem]  text-[#2E3438]"
+                          ? "text-[.7rem] md:text-[.85rem]  text-primary-second "
+                          : "text-[.7rem] md:text-[.85rem]  text-[#2E3438]"
                       }
                     >
                       {formatDate(data.starting_date)}
