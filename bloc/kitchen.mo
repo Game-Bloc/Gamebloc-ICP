@@ -1329,7 +1329,7 @@ shared ({ caller }) actor class Kitchen() {
                                 subaccount = null;
                             };
                             memo = null;
-                            created_at_time = null;
+                            created_at_time = ?Nat64.fromIntWrap(Time.now());
                             amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 100_000_000; //In USD
                         });
                     } catch (err) {
@@ -1349,7 +1349,7 @@ shared ({ caller }) actor class Kitchen() {
                             subaccount = null;
                         };      
                         memo = null;
-                        created_at_time = null;
+                        created_at_time = ?Nat64.fromIntWrap(Time.now());
                         amount = (tournamentAccount.total_prize/icp_price) * 100_000_000;
                     });
                 };
