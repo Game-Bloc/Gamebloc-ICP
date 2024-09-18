@@ -141,6 +141,7 @@ module.exports = {
       Buffer: [require.resolve("buffer/"), "Buffer"],
       process: require.resolve("process/browser"),
     }),
+    // process.env.NODE_ENV !== "production"? 
     new CopyPlugin({
       patterns: [
         {
@@ -150,8 +151,8 @@ module.exports = {
         },
       ],
     }) 
-    // ! Im not sure if this is to be here, but imma just comment it out for now.
-    // , () => undefined,
+    // // ! Im not sure if this is to be here, but imma just comment it out for now.
+    //  : () => undefined,
   ],
   // proxy /api to port 4943 during development.
   // if you edit dfx.json to define a project-specific local network, change the port to match.
