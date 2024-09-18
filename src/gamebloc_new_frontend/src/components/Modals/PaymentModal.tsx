@@ -69,7 +69,7 @@ const PaymentModal = ({
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const _principal = Principal.fromText(principal)
   const tourType =
-    Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
+    Object.keys(data.tournament_type)[0].toUpperCase() === "PREPAID"
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )

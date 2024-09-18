@@ -79,18 +79,6 @@ const PaymentModal2 = ({
   console.log("icp", +icp.toFixed(8))
   const payFee = () => {
     if (tourType === "Prepaid") {
-      // payICPfee(
-      //   "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-      //   +icp.toFixed(8),
-      //   date,
-      //   _principal,
-      //   createdAt,
-      //   notification_id,
-      //   username,
-      //   "Payment Approved",
-      //   "Something went wrong",
-      //   "",
-      // )
       approveFee(
         +icp.toFixed(8),
         "Payment Approved",
@@ -98,18 +86,6 @@ const PaymentModal2 = ({
         "",
       )
     } else {
-      // payICPfee(
-      //   "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-      //   amount,
-      //   date,
-      //   _principal,
-      //   createdAt,
-      //   notification_id,
-      //   username,
-      //   "Payment Approved",
-      //   "Something went wrong",
-      //   "",
-      // )
       approveFee(amount, "Payment Approved", "Something went wrong", "")
     }
   }

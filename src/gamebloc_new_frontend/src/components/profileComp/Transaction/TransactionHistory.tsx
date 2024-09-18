@@ -26,7 +26,13 @@ const TransactionHistory = () => {
       render: (text, record) => (
         <div key={record.id} className="flex items-center">
           <img
-            src={record.action == "sent" ? `send.png` : `dollar-coins.png`}
+            src={
+              record.action == "sent"
+                ? `send.png`
+                : record.action == "received"
+                ? `dollar-coins.png`
+                : `approve.png`
+            }
             className="w-[1.5rem] m-0 h-[1.5rem]"
             alt=""
           />
