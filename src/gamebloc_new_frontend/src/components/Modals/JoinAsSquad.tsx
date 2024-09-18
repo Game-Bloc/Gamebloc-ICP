@@ -97,7 +97,6 @@ const JoinAsSquad = ({ modal, squad, data, squad_id, id }: Props) => {
       squad_id,
       id,
       playerIGNs,
-      icp_price,
       "Tournament Joined",
       "Error, try again.",
       "/dashboard",

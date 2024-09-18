@@ -333,10 +333,8 @@ export const useGameblocHooks = () => {
       )
       if (create) {
         setDone(true)
-        console.log("passed through")
         popUp(successMsg, route)
         setUpdating(false)
-        console.log("Ended")
       }
     } catch (err) {
       errorPopUp(errorMsg)
@@ -352,7 +350,6 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
-    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -364,7 +361,7 @@ export const useGameblocHooks = () => {
         name,
         id,
         ign,
-        BigInt(icp_price * 100000000),
+        BigInt(Math.round(icp_price)),
       )
       setIsLoading(false)
       setDone(true)
@@ -505,7 +502,6 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
-    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -517,7 +513,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
-        BigInt(icp_price),
+        BigInt(Math.round(icp_price)),
       )
       setIsLoading(false)
       setDone(true)
@@ -603,11 +599,29 @@ export const useGameblocHooks = () => {
       owner: _principal,
       subaccount: [],
     }
+    function getApproxNanoTimestamp(): number {
+      // Get the current time in milliseconds from the UNIX epoch
+      const nowMs = Date.now()
+
+      // Convert to nanoseconds
+      const nowNs = nowMs * 1e6
+
+      // Get sub-millisecond precision using performance.now()
+      const performanceMs = performance.now()
+
+      // Convert performance time to nanoseconds and combine
+      const subMillisecondNs = (performanceMs % 1) * 1e6
+
+      // Combine both parts to get the nanosecond timestamp
+      return nowNs + subMillisecondNs
+    }
+    const timestamp_nanos = getApproxNanoTimestamp()
+    const created_at_time = BigInt(timestamp_nanos)
     const approveArgs: any = {
       fee: [],
       memo: [],
       from_subaccount: [],
-      created_at_time: [],
+      created_at_time: [created_at_time],
       amount: BigInt(Math.round(token * 100000000)),
       expected_allowance: [],
       expires_at: [],

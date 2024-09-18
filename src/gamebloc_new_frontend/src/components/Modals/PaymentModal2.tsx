@@ -64,11 +64,11 @@ const PaymentModal2 = ({
     setCreatedAt(generateDate())
     setDate(Date.now())
     if (gameType === "Duo") {
-      setAmount(+icp.toFixed(4) * 2)
+      setAmount(+icp.toFixed(8) * 2)
     } else if (gameType === "Squad") {
-      setAmount(+icp.toFixed(4) * 4)
+      setAmount(+icp.toFixed(8) * 4)
     } else {
-      setAmount(+icp.toFixed(4))
+      setAmount(+icp.toFixed(8))
     }
   }, [])
 
