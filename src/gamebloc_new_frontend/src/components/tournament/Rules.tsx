@@ -118,7 +118,7 @@ const Rules = ({ data }: Props) => {
             ) : (
               <button
                 onClick={
-                  isAuthenticated
+                  principal !== ""
                     ? () => {
                         setOpenPaymentModal(true)
                       }
