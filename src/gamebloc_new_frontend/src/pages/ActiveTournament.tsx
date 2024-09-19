@@ -46,7 +46,7 @@ const ActiveTournament = () => {
       <TournamentCard data={data} index={index} key={index} />
     ))
 
-  console.log(tournament)
+  console.log(tournament);
 
   useEffect(() => {
     if (crowdfundedTournament.length === 0) {

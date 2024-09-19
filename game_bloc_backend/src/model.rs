@@ -15,8 +15,7 @@ use crate::*;
 
 macro_rules! pub_struct {
     ($name:ident {$($field:ident: $t:ty,)*}) => {
-       #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize
-       )]
+       #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
         pub struct $name {
             $(pub(crate) $field: $t),*
         }

@@ -159,6 +159,7 @@ service : () -> {
   lobbies_exterminator : (text) -> ();
   lobbies_extraditor : (text, text, record { text; text }) -> ();
   open_squad : (text, vec text, principal) -> ();
+  postpone_tournament : (text, text) -> ();
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
