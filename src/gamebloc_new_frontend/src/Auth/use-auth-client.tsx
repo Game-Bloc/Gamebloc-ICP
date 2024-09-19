@@ -212,7 +212,6 @@ export const useAuthClient = (options = defaultOptions) => {
       setWs(_ws)
     } catch (err) {
       console.log("Error on auth:", err)
-      navigate("/dashboard")
     }
   }
 
