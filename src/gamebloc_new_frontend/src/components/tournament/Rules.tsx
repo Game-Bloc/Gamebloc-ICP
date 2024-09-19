@@ -96,12 +96,14 @@ const Rules = ({ data }: Props) => {
             {Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
             data.creator == owner ? (
               <div></div>
-            ) : data.users.some((index: any) => index.includes(owner)) ||
-              data.squad.some((players: any) =>
+            ) : (data.users.some((index: any) => index.includes(owner)) &&
+                owner !== "") ||
+              (data.squad.some((players: any) =>
                 players.members.some((gamer: any) =>
                   gamer.name.includes(owner),
                 ),
-              ) ? (
+              ) &&
+                owner !== "") ? (
               days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
@@ -111,10 +113,6 @@ const Rules = ({ data }: Props) => {
                   <p className="font-semibold">Joined</p>
                 </button>
               )
-            ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
-              <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
-                <p className="font-semibold">In progress</p>
-              </button>
             ) : (
               <button
                 onClick={

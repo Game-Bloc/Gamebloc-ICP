@@ -24,6 +24,7 @@ const LandingPage = () => {
     useGameblocHooks()
   const state = useAppSelector((state) => state.userProfile.initializeState)
   const userSession = sessionStorage.getItem("userSession")
+  const _principal = useAppSelector((state) => state.userProfile.principal_id)
 
   const handleModal = () => {
     setOpenModal(!openModal)
@@ -32,13 +33,11 @@ const LandingPage = () => {
     setAccountModal(!accountModal)
   }
 
-  console.log("state", state)
-
   useEffect(() => {
     localStorage.setItem("userSession", "false")
     if (isAuthenticated) {
       getProfile()
-      if (state) {
+      if (state && _principal !== "") {
         navigate("/dashboard")
       } else if (userSession === "true") {
         setAccountModal(false)

@@ -21,7 +21,7 @@ const gameImage = require("../../assets/category1.svg").default
 const TournamentDetail = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, principal } = useAuth()
   const [count, setCount] = useState(0)
   const [days, hours, minutes, seconds] = useCountdown(count)
   const [loading, setLoading] = useState<boolean>(true)
@@ -99,7 +99,7 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     updateTournament()
-  }, [isAuthenticated])
+  }, [principal])
 
   if (status) {
     return (
