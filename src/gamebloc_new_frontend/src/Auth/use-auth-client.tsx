@@ -155,7 +155,7 @@ export const useAuthClient = (options = defaultOptions) => {
       const principal = identity.getPrincipal()
 
       setPrincipal(principal)
-      // console.log("Principal", principal)
+      console.log("Principal", principal)
       setAuthClient(client)
 
       const actor = createActor(canisterId, {
@@ -212,7 +212,6 @@ export const useAuthClient = (options = defaultOptions) => {
       setWs(_ws)
     } catch (err) {
       console.log("Error on auth:", err)
-      navigate("/dashboard")
     }
   }
 
