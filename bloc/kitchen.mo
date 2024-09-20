@@ -185,6 +185,7 @@ shared ({ caller }) actor class Kitchen() {
     };
 
 
+
     // Check 2
     public shared ({ caller }) func payUsers1( id : Text ) : async () { // Tournamnet Id
         var mod = await is_mod(caller);
@@ -194,6 +195,7 @@ shared ({ caller }) actor class Kitchen() {
         var winners  = tournament.winners; 
         var ended = tournament.ended;
 
+        
         // * Check if tournamnet has ended
 
         switch(ended){
@@ -217,7 +219,9 @@ shared ({ caller }) actor class Kitchen() {
                         throw Error.reject("You cannot initiate payment to winners that has not been set!");
                     }; case (?(winners)){
                          for (winner in Iter.fromArray(winners)){
-                        // var _account = pay.account;
+
+                            // ? var account = tournament.winners.
+                            // var _account = pay.account;
                         var block = await ICPLedger.send_dfx({ // might have ton use transfer_From()
                             to = winner.user_account;
                             fee = { e8s = 10_000 }; //0.0001 ICP
@@ -1280,10 +1284,10 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-    let gbc_admin : Principal = Principal.fromText("xhqcq-u3oqe-kkca5-s7wew-2fbwr-o7hwp-453fm-5ptra-txcfg-26q6s-iqe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("vmat4-yssls-aipkz-pm5pd-sc6ic-kg6ie-yhgcx-xn7qa-xzcii-qsa6g-qqe"); //Deon here
 
     //
-    // Tournaments
+    // * Tournaments Features
     //
 
     // public type Subaccount = [Nat8];
@@ -1325,8 +1329,9 @@ shared ({ caller }) actor class Kitchen() {
                                 subaccount = null;
                             };
                             memo = null;
-                            created_at_time = null;
-                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 100_000_000; //In USD
+                            created_at_time = ?Nat64.fromIntWrap(Time.now());
+                            // * since the price is in hundreds to bypass the datatype restrictions
+                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/(icp_price/100)) * 100_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer");
@@ -1345,8 +1350,9 @@ shared ({ caller }) actor class Kitchen() {
                             subaccount = null;
                         };      
                         memo = null;
-                        created_at_time = null;
-                        amount = (tournamentAccount.total_prize/icp_price) * 100_000_000;
+                        created_at_time = ?Nat64.fromIntWrap(Time.now());
+                        // * since the price is in hundreds to bypass the datatype restrictions
+                        amount = (tournamentAccount.total_prize/(icp_price/100)) * 100_000_000;
                     });
                 };
                 
@@ -1757,7 +1763,7 @@ shared ({ caller }) actor class Kitchen() {
 
 
     //
-    // HTTP outcalls
+    //  * HTTP outcalls
     //
 
     public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
@@ -1865,6 +1871,8 @@ shared ({ caller }) actor class Kitchen() {
 
     // Mod Consensus
 
+    // * Rustbloc will handle that.
+
     // Password for Wallet
 
     type VETKD_SYSTEM_API = actor {
@@ -1958,7 +1966,7 @@ shared ({ caller }) actor class Kitchen() {
 
 
 
-    ///  Websockets
+    /// *  Websockets
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
