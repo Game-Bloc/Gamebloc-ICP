@@ -1284,7 +1284,7 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-    let gbc_admin : Principal = Principal.fromText("rzxhz-5uh23-qh5wl-mxnix-awljx-enuzs-pg4an-ml4f4-sdwqc-aflyh-2qe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("sonw3-qccsw-77pnp-gevqb-dhawd-yzd3i-s734e-usjnf-jgxjt-dva2y-gqe"); //Deon here
 
     //
     // * Tournaments Features
@@ -1330,7 +1330,7 @@ shared ({ caller }) actor class Kitchen() {
                             };
                             memo = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 100_000_000; //In USD
+                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/icp_price) * 1_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer");
@@ -1350,7 +1350,7 @@ shared ({ caller }) actor class Kitchen() {
                         };      
                         memo = null;
                         created_at_time = ?Nat64.fromIntWrap(Time.now());
-                        amount = (tournamentAccount.total_prize/icp_price) * 100_000_000;
+                        amount = (tournamentAccount.total_prize/icp_price) * 1_000_000;
                     });
                 };
                 
