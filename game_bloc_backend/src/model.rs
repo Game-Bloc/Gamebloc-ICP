@@ -70,7 +70,9 @@ pub_struct!(
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
      winers: Vec<String>,
+    //deprecated
      entry_prize: u8,
+     entry_fee: u128,
      total_prize: u128,
      no_of_winners: u8,
      no_of_participants: u128,
