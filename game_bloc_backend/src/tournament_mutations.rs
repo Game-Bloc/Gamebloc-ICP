@@ -791,6 +791,15 @@ pub fn update_tournament_pool_price(id: String, price: u128) {
 }
 
 #[update]
+pub fn postpone_tournament(id: String, starting_date: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.starting_date = starting_date;
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+
+#[update]
 pub fn update_tournament_type_to_blitzkrieg(id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
