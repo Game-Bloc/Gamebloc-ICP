@@ -78,12 +78,6 @@
       }
     },
 
-    "gbc_token": {
-      "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/cacf86a2ea7e21150d106e9e4dda5973088f53c5/rs/rosetta-api/icrc1/ledger/ledger.did",
-      "wasm": "https://download.dfinity.systems/ic/cacf86a2ea7e21150d106e9e4dda5973088f53c5/canisters/ic-icrc1-ledger.wasm.gz"
-    },
-
     "gamebloc_new_frontend": {
       "dependencies": [
         "kitchen",
