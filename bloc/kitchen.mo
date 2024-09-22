@@ -1331,7 +1331,7 @@ shared ({ caller }) actor class Kitchen() {
                             memo = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
                             // * since the price is in hundreds to bypass the datatype restrictions
-                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/(icp_price/100)) * 100_000_000; //In USD
+                            amount = (Nat8.toNat(tournamentAccount.entry_prize)/(icp_price)) * 100_000_000; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer");
@@ -1352,7 +1352,7 @@ shared ({ caller }) actor class Kitchen() {
                         memo = null;
                         created_at_time = ?Nat64.fromIntWrap(Time.now());
                         // * since the price is in hundreds to bypass the datatype restrictions
-                        amount = (tournamentAccount.total_prize/(icp_price/100)) * 100_000_000;
+                        amount = (tournamentAccount.total_prize * 1_000_000/(icp_price)) ;
                     });
                 };
                 

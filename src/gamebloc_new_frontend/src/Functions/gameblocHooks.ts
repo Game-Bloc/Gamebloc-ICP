@@ -327,10 +327,11 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
-      console.log("value", BigInt(Math.round(icp_price * 100)))
+      console.log("value", BigInt(Math.round(icp_price)))
+      console.log("entry_prize", entry_prize)
       const create = await whoamiActor.create_tournament(
         tournamentData,
-        BigInt(Math.round(icp_price * 100)),
+        BigInt(icp_price * 100),
       )
       if (create) {
         setDone(true)
