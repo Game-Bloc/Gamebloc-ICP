@@ -264,7 +264,7 @@ export const useGameblocHooks = () => {
     starting_date: string,
     tournament_type: any,
     entry_prize: number,
-    entry_fee: number,
+    _entry_fee: any,
     no_of_winners: number,
     no_of_participants: bigint,
     game_type: string,
@@ -291,7 +291,7 @@ export const useGameblocHooks = () => {
     try {
       setUpdating(true)
       const creator_id: [string] = [owner_id]
-
+      const entry_fee: [bigint] = [_entry_fee]
       const tournamentData = {
         id_hash,
         creator,
@@ -333,7 +333,7 @@ export const useGameblocHooks = () => {
       console.log("entry_prize", entry_prize)
       const create = await whoamiActor.create_tournament(
         tournamentData,
-        BigInt(icp_price * 100),
+        BigInt(Math.round(icp_price * 100)),
       )
       if (create) {
         setDone(true)

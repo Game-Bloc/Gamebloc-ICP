@@ -1284,7 +1284,7 @@ shared ({ caller }) actor class Kitchen() {
         buffer.toArray()
     };
 
-    let gbc_admin : Principal = Principal.fromText("sonw3-qccsw-77pnp-gevqb-dhawd-yzd3i-s734e-usjnf-jgxjt-dva2y-gqe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("eayht-2b6rr-btjhj-4bvpg-h7gun-xudg4-x3t3z-kjg6f-klrrb-faz4k-nae"); //Deon here
 
     //
     // * Tournaments Features
