@@ -329,8 +329,9 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
-      console.log("value", BigInt(Math.round(icp_price)))
-      console.log("entry_prize", entry_prize)
+      console.log("value", BigInt(Math.round(icp_price * 100)))
+      console.log("entry_fee", entry_fee)
+      console.log("total prize", total_prize)
       const create = await whoamiActor.create_tournament(
         tournamentData,
         BigInt(Math.round(icp_price * 100)),
@@ -626,7 +627,7 @@ export const useGameblocHooks = () => {
       memo: [],
       from_subaccount: [],
       created_at_time: [created_at_time],
-      amount: BigInt(Math.round(token * 100000000)),
+      amount: BigInt(Math.round(token * 100000000 + 10000)),
       expected_allowance: [],
       expires_at: [],
       spender: _account,
