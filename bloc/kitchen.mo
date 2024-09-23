@@ -1359,7 +1359,7 @@ shared ({ caller }) actor class Kitchen() {
                         memo = null;
                         created_at_time = ?Nat64.fromIntWrap(Time.now());
                         // * since the price is in hundreds to bypass the datatype restrictions
-                        amount = (tournamentAccount.total_prize * 1_000_000/(icp_price)) ;
+                        amount = ((tournamentAccount.total_prize * 10_000_000_000)/icp_price);
                     });
                 };
                 
