@@ -1614,7 +1614,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                                 memo = null;
                                 created_at_time = ?Nat64.fromIntWrap(Time.now());
                                 // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * 4 * 10_000_000_000) / (icp_price); //In USD
+                                amount = (entry * 40_000_000_000) / (icp_price); //In USD
                             });
 
                         } catch (err) {
@@ -1651,7 +1651,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                                 memo = null;
                                 created_at_time = ?Nat64.fromIntWrap(Time.now());
                                 // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * 2 * 10_000_000_000) / (icp_price); //In USD
+                                amount = (entry * 20_000_000_000) / (icp_price); //In USD
                             })
                         } catch (err) {
                             throw Error.reject("There is an issue wih the transfer, please check your balance , try again or contact admin")
