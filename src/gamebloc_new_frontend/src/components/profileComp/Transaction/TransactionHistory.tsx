@@ -50,7 +50,7 @@ const TransactionHistory = () => {
       key: "amount",
       render: (text, record) => (
         <p
-          className={` ${
+          className={` whitespace-nowrap ${
             record.action === "received"
               ? "text-[#3be58c]"
               : record.action === "sent"
@@ -58,9 +58,11 @@ const TransactionHistory = () => {
               : "text-[#B88217]"
           } text-[.7rem] text-nowrap`}
         >
-          {record.action == "received"
+          {record.action === "received"
             ? `+${record.amount}`
-            : `-${record.amount}`}
+            : record.action === "sent"
+            ? `-${record.amount}`
+            : `${record.amount}`}
           <span></span> ICP
         </p>
       ),
@@ -70,7 +72,7 @@ const TransactionHistory = () => {
       dataIndex: "from",
       key: "from",
       render: (text, record) => (
-        <p className=" text-[.7rem]">
+        <p className=" whitespace-nowrap text-[.7rem]">
           {" "}
           {record.from
             ? record.from.substring(0, 7) +
@@ -85,7 +87,7 @@ const TransactionHistory = () => {
       dataIndex: "to",
       key: "to",
       render: (text, record) => (
-        <p className=" text-[.7rem]">
+        <p className=" whitespace-nowrap text-[.7rem]">
           {" "}
           {record.to
             ? record.to.substring(0, 7) + "......" + record.to.substring(58, 64)
@@ -98,7 +100,9 @@ const TransactionHistory = () => {
       dataIndex: "date",
       key: "date",
       render: (text, record) => (
-        <p className=" text-[.7rem] text-nowrap">{record.date}</p>
+        <p className="whitespace-nowraptext-[.7rem] text-nowrap">
+          {record.date}
+        </p>
       ),
     },
   ]

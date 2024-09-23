@@ -141,29 +141,43 @@ const PaymentModal2 = ({
                         className="step mt-4 ml-4 md:ml-0"
                         items={[
                           {
-                            title: "Pay",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Pay
+                              </p>
+                            ),
                             status: paid === true ? "finish" : "process",
                             icon:
                               paid === true ? (
-                                <DollarOutlined className="w-4 h-4" />
+                                <DollarOutlined className="w-2 h-2 sm:w-4 sm:h-4" />
                               ) : (
-                                <LoadingOutlined className="w-4 h-4" />
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4" />
                               ),
                           },
                           {
-                            title: "Create",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Create
+                              </p>
+                            ),
                             status: done === true ? "finish" : "process",
                             icon:
                               done === true ? (
-                                <UsergroupAddOutlined className="w-4 h-4" />
+                                <UsergroupAddOutlined className="w-2 h-2 sm:w-4 sm:h-4" />
                               ) : (
-                                <LoadingOutlined className="w-4 h-4" />
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4" />
                               ),
                           },
                           {
-                            title: "Success",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Success
+                              </p>
+                            ),
                             status: done && paid === true ? "finish" : "wait",
-                            icon: <CheckCircleOutlined className="w-4 h-4" />,
+                            icon: (
+                              <CheckCircleOutlined className="w-2 h-2 sm:w-4 sm:h-4" />
+                            ),
                           },
                         ]}
                       />
