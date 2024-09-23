@@ -1353,7 +1353,10 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                 })
             };
 
-            await RustBloc.create_tournament(tournamentAccount);
+            var result = await RustBloc.create_tournament(tournamentAccount);
+            // TODO: Notify the users, fix date, 
+            let notification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, "", 0, "");
+            result;
 
             // return result
         } catch err {
