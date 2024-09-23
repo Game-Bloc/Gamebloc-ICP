@@ -1315,7 +1315,13 @@ shared ({ caller }) actor class Kitchen() {
 
                 if (tournamentAccount.tournament_type == #Crowdfunded) {
 
-                    try {
+                    var entry = tournamentAccount.entry_fee;
+
+                    switch(entry){
+                        case(null){
+                            throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
+                        }; case (?entry){
+                            try {
                         // var actual_price = amount / icp_price;
                         var result = await ICPLedger.icrc2_transfer_from({
                             to = {
@@ -1331,12 +1337,13 @@ shared ({ caller }) actor class Kitchen() {
                             memo = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
                             // * since the price is in hundreds to bypass the datatype restrictions
-                            amount = (Nat8.toNat(tournamentAccount.entry_prize * 1_000_000)/(icp_price/100)) ; //In USD
+                            amount = (entry * 10_000_000_000)/(icp_price) ; //In USD
                         });
                     } catch (err) {
                         throw Error.reject("There is an issue wih the transfer");
                     }
-                    
+                        };
+                    }
                 } else { //Should be #prepaid
                     var result = await ICPLedger.icrc2_transfer_from({
                         to = {
