@@ -67,8 +67,6 @@
       }
     },
 
-    
-
     "cketh_index": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/95787355499f3be929f2ab302ed44cdad7c64061/rs/rosetta-api/icrc1/index/index.did",
