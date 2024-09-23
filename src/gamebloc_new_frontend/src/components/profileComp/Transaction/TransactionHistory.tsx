@@ -51,7 +51,11 @@ const TransactionHistory = () => {
       render: (text, record) => (
         <p
           className={` ${
-            record.action == "received" ? "text-[#3be58c]" : "text-[#e04438]"
+            record.action === "received"
+              ? "text-[#3be58c]"
+              : record.action === "sent"
+              ? "text-[#e04438]"
+              : "text-[#B88217]"
           } text-[.7rem] text-nowrap`}
         >
           {record.action == "received"

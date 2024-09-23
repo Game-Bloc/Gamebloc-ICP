@@ -329,9 +329,9 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
-      console.log("value", BigInt(Math.round(icp_price * 100)))
-      console.log("entry_fee", entry_fee)
-      console.log("total prize", total_prize)
+      // console.log("value", BigInt(Math.round(icp_price * 100)))
+      // console.log("entry_fee", entry_fee)
+      // console.log("total prize", total_prize)
       const create = await whoamiActor.create_tournament(
         tournamentData,
         BigInt(Math.round(icp_price * 100)),
@@ -366,7 +366,7 @@ export const useGameblocHooks = () => {
         name,
         id,
         ign,
-        BigInt(Math.round(icp_price)),
+        BigInt(Math.round(icp_price * 100)),
       )
       setIsLoading(false)
       setDone(true)
@@ -518,7 +518,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
-        BigInt(Math.round(icp_price)),
+        BigInt(Math.round(icp_price * 100)),
       )
       setIsLoading(false)
       setDone(true)
