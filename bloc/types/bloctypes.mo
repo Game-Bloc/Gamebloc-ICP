@@ -171,9 +171,9 @@ module {
         messages : ?[Chat];
         user : [Text];
         winers : [Text];
-        total_prize : ?Nat;
+        total_prize : Nat;
         entry_prize : Nat8;
-        entry_fee : Nat;
+        entry_fee : ?Nat;
         no_of_winners : Nat8;
         no_of_participants : Nat;
         game_type : Text;

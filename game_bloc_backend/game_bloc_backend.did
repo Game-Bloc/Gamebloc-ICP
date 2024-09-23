@@ -54,6 +54,7 @@ type TournamentAccount = record {
   status : TournamentStatus;
   title : text;
   creator : text;
+  entry_fee : opt nat;
   messages : opt vec Chat;
   creator_id : opt text;
   game : text;
