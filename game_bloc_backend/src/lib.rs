@@ -140,9 +140,9 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
                 }
                 Some(role) => {
                     match role {
-                        Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
+                        Role::Player => Some(Role::TribunalMod(ModTag::Mod2)),
                         _ => {
-                            Some(Role::TribunalMod(ModTag::Mod1))
+                            Some(Role::TribunalMod(ModTag::Mod2))
                         }
                     }
                 }
@@ -154,9 +154,9 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
                 }
                 Some(role) => {
                     match role {
-                        Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
+                        Role::Player => Some(Role::TribunalMod(ModTag::Mod3)),
                         _ => {
-                            Some(Role::TribunalMod(ModTag::Mod1))
+                            Some(Role::TribunalMod(ModTag::Mod3))
                         }
                     }
                 }
