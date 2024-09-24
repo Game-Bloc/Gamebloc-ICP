@@ -119,7 +119,7 @@ pub fn set_mod(identity: Principal) {
 pub fn add_mod_to_tribunal(identity: Principal) -> bool {
     PROFILE_STORE.with(|profile_store| {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
-        if validate_mod_tag_availability(ModTag::Mod1) {
+        if !validate_mod_tag_availability(ModTag::Mod1) {
             profile.role = match profile.role {
                 None => {
                     Some(Role::TribunalMod(ModTag::Mod1))
@@ -134,7 +134,7 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
                 }
             };
         }
-       else if  validate_mod_tag_availability(ModTag::Mod2) {
+       else if  !validate_mod_tag_availability(ModTag::Mod2) {
            profile.role = match profile.role {
                None => {
                    Some(Role::TribunalMod(ModTag::Mod2))
@@ -149,7 +149,7 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
                }
            };
         }
-       else if validate_mod_tag_availability(ModTag::Mod3) {
+       else if !validate_mod_tag_availability(ModTag::Mod3) {
            profile.role = match profile.role {
                None => {
                    Some(Role::TribunalMod(ModTag::Mod3))
