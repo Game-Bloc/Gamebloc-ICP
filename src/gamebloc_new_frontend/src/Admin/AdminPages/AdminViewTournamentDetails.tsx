@@ -90,7 +90,12 @@ const AdminViewTournamentDetails = () => {
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
-  const tribunal = Object.keys(isMod[0].TribunalMod)[0]
+  const condition = isMod[0].TribunalMod
+  const tribunal =
+    condition === undefined || null
+      ? Object.keys(isMod[0])[0]
+      : Object.keys(isMod[0].TribunalMod)[0]
+
   console.log("tribunal type", tribunal === "Mod1")
   const solo_mode =
     tribunal === "Mod1"
@@ -459,67 +464,67 @@ const AdminViewTournamentDetails = () => {
                                 </p>
                               </div>
                             </div>
-
-                            <div className="flex h-full items-end">
-                              <div className="flex justify-between  gap-4 items-center ">
-                                <button
-                                  onClick={() => setEndModal(true)}
-                                  className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
-                                >
-                                  {isEnding ? (
-                                    <div className="flex items-center  gap-2">
-                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
-                                        Wait
-                                      </p>
-                                      <ClipLoader
-                                        color={color}
-                                        loading={isEnding}
-                                        cssOverride={override}
-                                        size={10}
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                      />
-                                    </div>
-                                  ) : (
-                                    <>
-                                      <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
-                                      <p className="ml-[.4rem] text-white text-[.8rem]">
-                                        {" "}
-                                        End Tournament
-                                      </p>
-                                    </>
-                                  )}
-                                </button>
-                                <button
-                                  onClick={() => setOpenModal(true)}
-                                  className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
-                                >
-                                  {updating ? (
-                                    <div className="flex items-center  gap-2">
-                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
-                                        Wait
-                                      </p>
-                                      <ClipLoader
-                                        color={color}
-                                        loading={updating}
-                                        cssOverride={override}
-                                        size={10}
-                                        aria-label="Loading Spinner"
-                                        data-testid="loader"
-                                      />
-                                    </div>
-                                  ) : (
-                                    <>
-                                      {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
-                                      <p className="ml-[.4rem] text-white text-[.8rem]">
-                                        {" "}
-                                        Archive Tournament
-                                      </p>
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                              {/* <div className="flex justify-between  gap-4 items-center ">
+                            {Object.keys(isMod[0])[0] === "Mod" && (
+                              <div className="flex h-full items-end">
+                                <div className="flex justify-between  gap-4 items-center ">
+                                  <button
+                                    onClick={() => setEndModal(true)}
+                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                  >
+                                    {isEnding ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={isEnding}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                        <p className="ml-[.4rem] text-white text-[.8rem]">
+                                          {" "}
+                                          End Tournament
+                                        </p>
+                                      </>
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={() => setOpenModal(true)}
+                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                  >
+                                    {updating ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={updating}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <>
+                                        {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
+                                        <p className="ml-[.4rem] text-white text-[.8rem]">
+                                          {" "}
+                                          Archive Tournament
+                                        </p>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                                {/* <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
                                 <p className="ml-[.4rem]  text-white text-[.8rem]">
@@ -535,7 +540,8 @@ const AdminViewTournamentDetails = () => {
                                 </p>
                               </button>
                             </div> */}
-                            </div>
+                              </div>
+                            )}
                           </div>
                         </div>
 
