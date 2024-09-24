@@ -304,7 +304,7 @@ pub(crate) fn validate_mod_tag_availability(try_mod_tag: ModTag) -> bool {
         Role::Player => { false }
         Role::Mod => { false }
         Role::TribunalMod(mod_tag) => {
-            mod_tag == try_mod_tag
+           true
         }
     }))
 }

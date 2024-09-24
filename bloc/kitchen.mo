@@ -1300,6 +1300,14 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                 subaccount = null
             };
 
+            var multiplier = 1;
+
+            if (Text.toUppercase(tournamentAccount.game_type) == "SQUAD"){
+                multiplier := 4;
+            } else if (Text.toUppercase(tournamentAccount.game_type) == "DUO"){
+                multiplier := 2;
+            };
+
             if (tournamentAccount.tournament_type == #Crowdfunded) {
 
                 var entry = tournamentAccount.entry_fee;
@@ -1325,7 +1333,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                                 memo = null;
                                 created_at_time = ?Nat64.fromIntWrap(Time.now());
                                 // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * 10_000_000_000) / (icp_price); //In USD
+                                amount = (entry * multiplier * 10_000_000_000) / (icp_price); //In USD
                             });
 
                         } catch (err) {
@@ -1353,7 +1361,10 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                 })
             };
 
-            await RustBloc.create_tournament(tournamentAccount);
+            var result = await RustBloc.create_tournament(tournamentAccount);
+            // TODO: Notify the users, fix date, 
+            let notification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, "", 0, "");
+            result;
 
             // return result
         } catch err {
