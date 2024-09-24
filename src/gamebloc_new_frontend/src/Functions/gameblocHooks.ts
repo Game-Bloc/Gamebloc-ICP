@@ -1036,13 +1036,14 @@ export const useGameblocHooks = () => {
     id: string,
     principal_id: Principal,
     no_of_winners: number,
+    winner: [],
     success: string,
     error: string,
     route,
   ) => {
     try {
       setIsEnding(true)
-      await whoamiActor2.test_end_tournament(id, principal_id, no_of_winners)
+      await whoamiActor2.end_tournament(id, principal_id, no_of_winners, winner)
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")

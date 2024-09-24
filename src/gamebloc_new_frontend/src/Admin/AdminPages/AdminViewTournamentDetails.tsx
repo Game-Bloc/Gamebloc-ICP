@@ -27,6 +27,7 @@ import SquadListView from "../AdminComps/SquadListView"
 import SquadResult from "../AdminComps/SquadResult"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
 import Modal from "../../components/Modals/Modal"
+import WinnersBoard from "../../components/Result/WinnersBoard"
 
 interface DataType {
   position: React.Key
@@ -74,6 +75,7 @@ const AdminViewTournamentDetails = () => {
   const [search, setSearch] = useState<string>("")
   const [players, setPlayers] = useState<any[]>([])
   const { updateAllSquads } = useUpdateAllSquad()
+  const isMod = useAppSelector((state) => state.userProfile.role)
   const squad_data = useAppSelector((state) => state.squad)
   const { noData, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
@@ -88,14 +90,32 @@ const AdminViewTournamentDetails = () => {
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
     .map((list: any) => list)
-  const _point = tourData[0].points.length === 0
-  const _squad_point = tourData[0].squad_points.length === 0
+  const tribunal = Object.keys(isMod[0].TribunalMod)[0]
+  console.log("tribunal type", tribunal === "Mod1")
+  const solo_mode =
+    tribunal === "Mod1"
+      ? "points_vector_mod_1"
+      : tribunal === "Mod2"
+      ? "points_vector_mod_2"
+      : tribunal === "Mod_3"
+      ? "points_vector_mod_3"
+      : "points"
+  const squad_mode =
+    tribunal === "Mod1"
+      ? "squad_vector_mod_1"
+      : tribunal === "Mod2"
+      ? "squad_vector_mod_2"
+      : tribunal === "Mod_3"
+      ? "squad_vector_mod_3"
+      : "squad_points"
+
+  const _point = tourData[0]?.[solo_mode].length === 0
+  const _squad_point = tourData[0]?.[squad_mode].length === 0
   const no_of_winners = tourData[0].no_of_winners
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
     .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
-  console.log("data", tourData[0])
 
   useEffect(() => {
     if (tournament.length > 0 || null || undefined) {
@@ -239,6 +259,7 @@ const AdminViewTournamentDetails = () => {
       id,
       _principal,
       no_of_winners,
+      [],
       "Tournament Ended successfully",
       "Error, try again",
       "",
@@ -517,6 +538,8 @@ const AdminViewTournamentDetails = () => {
                             </div>
                           </div>
                         </div>
+
+                        <WinnersBoard />
                         <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
                           <div className="flex mr-8 justify-between items-center">
                             {/* <div className="flex items-center">
@@ -669,7 +692,10 @@ const AdminViewTournamentDetails = () => {
                                 />
                               ) : (
                                 // <TournamentGridView players={players} />
-                                <Results tourData={tourData} />
+                                <Results
+                                  tourData={tourData}
+                                  solo_mode={solo_mode}
+                                />
                               )}
                             </>
                           ) : (
@@ -683,7 +709,11 @@ const AdminViewTournamentDetails = () => {
                                   game_type={game_type}
                                 />
                               ) : (
-                                <SquadResult tourData={tourData} />
+                                <SquadResult
+                                  tourData={tourData}
+                                  solo_mode={solo_mode}
+                                  squad_mode={squad_mode}
+                                />
                               )}
                             </>
                           )}
