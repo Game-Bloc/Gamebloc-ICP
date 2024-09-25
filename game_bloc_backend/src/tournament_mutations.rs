@@ -834,8 +834,12 @@ pub fn update_tournament_past_leaderboard() {
                 update_attendance(x.into());
             }
             for y in tournament.1.winers.iter() {
-                // losers.
+                let index = losers.iter().position(|x| x == y).unwrap();
+                losers.remove(index);
                 update_winners(y.into());
+            }
+            for z in losers.iter() {
+                update_losers(z.into());
             }
         });
     });
@@ -859,6 +863,21 @@ pub fn update_attendance(id: String) {
             }
             Some(attendance) => {
                 profile.attendance = Some(attendance + 1);
+            }
+        }
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+pub fn update_losers(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        match profile.losses {
+            None => {
+                profile.losses = Some(1);
+            }
+            Some(attendance) => {
+                profile.losses = Some(attendance + 1);
             }
         }
         profile_store.borrow_mut().insert(id, profile);
