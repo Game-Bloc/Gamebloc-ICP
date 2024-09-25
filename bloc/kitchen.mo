@@ -184,7 +184,7 @@ public shared ({ caller }) func payUsers(pays : [Bloctypes.Pay]) : async () {
 };
 
 // Check 2
-public shared ({ caller }) func payUsers1(id : Text) : async () {
+public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
     // Tournamnet Id
     var mod = await is_mod(caller);
     var tournament = await get_tournament(id);
@@ -220,19 +220,21 @@ public shared ({ caller }) func payUsers1(id : Text) : async () {
 
                         // ? var account = tournament.winners.
                         // var _account = pay.account;
-                        var block = await ICPLedger.send_dfx({
-                            // might have ton use transfer_From()
-                            to = winner.user_account;
-                            fee = { e8s = 10_000 }; //0.0001 ICP
-                            memo = 0;
-                            from_subaccount = null;
-                            created_at_time = ?{
-                                timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
+                        var block = await ICPLedger.icrc2_transfer_from({
+                            to = {
+                                owner = Principal.fromText(winner.user_account);
+                                subaccount = null
                             };
-                            amount = {
-                                e8s = Nat64.fromNat(winner.amount) * 100_000_000
-                            }
-                        })
+                            fee = null;
+                            spender_subaccount = null;
+                            from = {
+                                owner = gbc_admin;
+                                subaccount = null
+                            };
+                            memo = null;
+                            created_at_time = null;
+                            amount = (winner.amount * 10_000_000_000)/icp_price;
+                        });
                     }
                 }
             }
