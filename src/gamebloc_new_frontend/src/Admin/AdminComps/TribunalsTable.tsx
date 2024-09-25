@@ -28,9 +28,9 @@ const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
   const merge = () => {
     if (tourData[0].game_type === "Single") {
       console.log("solo")
-      //  merge_solo_tribunal(id, "Merged", "Error Merging", "" )
+      merge_solo_tribunal(id, "Merged", "Error Merging", "")
     } else {
-      //    merge_squad_tribunal(id,"Merged", "Error Merging", "" )
+      merge_squad_tribunal(id, "Merged", "Error Merging", "")
       console.log("squad")
     }
   }
