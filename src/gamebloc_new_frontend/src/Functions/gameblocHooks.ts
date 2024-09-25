@@ -1077,7 +1077,7 @@ export const useGameblocHooks = () => {
     id: string,
     principal_id: Principal,
     no_of_winners: number,
-    winner: [],
+    winner: any[],
     success: string,
     error: string,
     route,

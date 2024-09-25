@@ -102,7 +102,7 @@ const AdminViewTournamentDetails = () => {
       ? Object.keys(isMod[0])[0]
       : Object.keys(isMod[0].TribunalMod)[0]
 
-  console.log("tribunal type", tribunal === "Mod1")
+  // console.log("tribunal type", tribunal === "Mod1")
   const solo_mode =
     tribunal === "Mod1"
       ? "points_vector_mod_1"
@@ -150,7 +150,7 @@ const AdminViewTournamentDetails = () => {
     const game_type = data
       .filter((tour: any) => tour.id_hash === id)
       .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
-    console.log("single", game_type[0])
+    // console.log("single", game_type[0])
 
     if (game_type[0] === true) {
       const structuredSquads = tournament.in_game_names.flatMap(
@@ -226,7 +226,7 @@ const AdminViewTournamentDetails = () => {
   ]
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log("selectedRowKeys changed: ", newSelectedRowKeys)
+    // console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedRowKeys(newSelectedRowKeys)
   }
 
@@ -266,10 +266,10 @@ const AdminViewTournamentDetails = () => {
     )
   }
 
-  console.log(
-    "test",
-    Object.keys(tourData[0].tournament_type)[0].toUpperCase() === "CROWDFUNDED",
-  )
+  // console.log(
+  //   "test",
+  //   Object.keys(tourData[0].tournament_type)[0].toUpperCase() === "CROWDFUNDED",
+  // )
 
   const squadCount2 = () => {
     let totalCount = 0
@@ -298,7 +298,7 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: amount,
+          amount: +amount,
           user_account: "",
         },
       ])
@@ -335,12 +335,12 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: amount1,
+          amount: +amount1,
           user_account: "",
         },
         {
           position: "2",
-          amount: amount2,
+          amount: +amount2,
           user_account: "",
         },
       ])
@@ -395,17 +395,17 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: amount1,
+          amount: +amount1,
           user_account: "",
         },
         {
           position: "2",
-          amount: amount2,
+          amount: +amount2,
           user_account: "",
         },
         {
           position: "3",
-          amount: amount3,
+          amount: +amount3,
           user_account: "",
         },
       ])
@@ -414,16 +414,16 @@ const AdminViewTournamentDetails = () => {
 
   useEffect(() => {
     _winners()
-    console.log(winners)
-  }, [])
+  }, [_point])
 
   const end = () => {
     _winners()
+    console.log("winnner struct", winners)
     end_tournament(
       id,
       _principal,
       no_of_winners,
-      [],
+      winners,
       "Tournament Ended successfully",
       "Error, try again",
       "",
