@@ -40,10 +40,13 @@ const Admin = () => {
   useEffect(() => {
     getProfile()
     console.log("is admin:", Object.keys(isMod[0])[0])
-    if (Object.keys(isMod[0])[0].toUpperCase() !== "MOD") {
+    if (Object.keys(isMod[0])[0].toUpperCase() === "PLAYER") {
       navigate("/admin-login")
     }
-    if (Object.keys(isMod[0])[0].toUpperCase() === "MOD") {
+    if (
+      Object.keys(isMod[0])[0].toUpperCase() === "MOD" ||
+      Object.keys(isMod[0])[0].toUpperCase() === "TRIBUNALMOD"
+    ) {
       if (tournament.length > 0 || null || undefined) {
         updateTournament()
       } else {

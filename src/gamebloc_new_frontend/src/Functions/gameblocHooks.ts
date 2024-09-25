@@ -264,6 +264,7 @@ export const useGameblocHooks = () => {
     starting_date: string,
     tournament_type: any,
     entry_prize: number,
+    _entry_fee: any,
     no_of_winners: number,
     no_of_participants: bigint,
     game_type: string,
@@ -290,7 +291,7 @@ export const useGameblocHooks = () => {
     try {
       setUpdating(true)
       const creator_id: [string] = [owner_id]
-
+      const entry_fee: [bigint] = [_entry_fee]
       const tournamentData = {
         id_hash,
         creator,
@@ -307,6 +308,7 @@ export const useGameblocHooks = () => {
         user,
         winers,
         entry_prize,
+        entry_fee,
         total_prize,
         no_of_winners,
         no_of_participants,
@@ -327,16 +329,17 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
+      // console.log("value", BigInt(Math.round(icp_price * 100)))
+      // console.log("entry_fee", entry_fee)
+      // console.log("total prize", total_prize)
       const create = await whoamiActor.create_tournament(
         tournamentData,
-        BigInt(Math.round(icp_price)),
+        BigInt(Math.round(icp_price * 100)),
       )
       if (create) {
         setDone(true)
-        console.log("passed through")
         popUp(successMsg, route)
         setUpdating(false)
-        console.log("Ended")
       }
     } catch (err) {
       errorPopUp(errorMsg)
@@ -352,7 +355,6 @@ export const useGameblocHooks = () => {
     id: string,
     userId: string,
     playerIgn: string,
-    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -364,7 +366,7 @@ export const useGameblocHooks = () => {
         name,
         id,
         ign,
-        BigInt(icp_price * 100000000),
+        BigInt(Math.round(icp_price * 100)),
       )
       setIsLoading(false)
       setDone(true)
@@ -505,7 +507,6 @@ export const useGameblocHooks = () => {
     squad_id: string,
     id: string,
     igns: [string, string, string][],
-    icp_price: number,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -517,7 +518,7 @@ export const useGameblocHooks = () => {
         id,
         igns,
         [],
-        BigInt(icp_price),
+        BigInt(Math.round(icp_price * 100)),
       )
       setIsLoading(false)
       setDone(true)
@@ -603,12 +604,30 @@ export const useGameblocHooks = () => {
       owner: _principal,
       subaccount: [],
     }
+    function getApproxNanoTimestamp(): number {
+      // Get the current time in milliseconds from the UNIX epoch
+      const nowMs = Date.now()
+
+      // Convert to nanoseconds
+      const nowNs = nowMs * 1e6
+
+      // Get sub-millisecond precision using performance.now()
+      const performanceMs = performance.now()
+
+      // Convert performance time to nanoseconds and combine
+      const subMillisecondNs = (performanceMs % 1) * 1e6
+
+      // Combine both parts to get the nanosecond timestamp
+      return nowNs + subMillisecondNs
+    }
+    const timestamp_nanos = getApproxNanoTimestamp()
+    const created_at_time = BigInt(timestamp_nanos)
     const approveArgs: any = {
       fee: [],
       memo: [],
       from_subaccount: [],
-      created_at_time: [],
-      amount: BigInt(Math.round(token * 100000000)),
+      created_at_time: [created_at_time],
+      amount: BigInt(Math.round(token * 100000000 + 10000)),
       expected_allowance: [],
       expires_at: [],
       spender: _account,
@@ -847,10 +866,8 @@ export const useGameblocHooks = () => {
       const history: any = await indexActor.get_account_transactions(args)
       console.log("Transaction History:", history.Ok.transactions)
 
-      // Clear the current transactions from the store
       dispatch(clearTransaction())
 
-      // Iterate through the transactions
       for (const data of history.Ok.transactions) {
         const operation = data.transaction.operation
 
@@ -859,28 +876,23 @@ export const useGameblocHooks = () => {
         let from = ""
         let to = ""
 
-        // Check if it's a Transfer operation
         if (operation.Transfer) {
           action = operation.Transfer.from === accountId ? "sent" : "received"
           amount = Number(operation.Transfer.amount.e8s) / 100000000 // Convert e8s to ICP
           from = operation.Transfer.from
           to = operation.Transfer.to
-        }
-        // Check if it's an Approve operation
-        else if (operation.Approve) {
+        } else if (operation.Approve) {
           action = "approve"
           amount = Number(operation.Approve.allowance.e8s) / 100000000 // Convert e8s to ICP
           from = operation.Approve.from
           to = operation.Approve.spender
         }
 
-        // Handle the creation timestamp safely
         const timestampNanos =
           data.transaction.created_at_time?.[0]?.timestamp_nanos || BigInt(0)
         const timestampMillis = Number(timestampNanos / BigInt(1000000))
         const date = new Date(timestampMillis)
 
-        // Date formatting options
         const options: any = {
           weekday: "short",
           year: "numeric",
@@ -893,17 +905,15 @@ export const useGameblocHooks = () => {
           .toLocaleString("en-US", options)
           .replace(",", " at")
 
-        // Construct the transaction object
         const transaction = {
           id: Number(data.id),
-          action: action, // can be 'sent', 'received', or 'approve'
+          action: action,
           amount: amount,
           from: from,
           to: to,
           date: formattedDate,
         }
 
-        // Dispatch each transaction to the Redux store
         dispatch(addTransactions(transaction))
         console.log("Dispatched transaction:", transaction)
       }
@@ -1026,13 +1036,14 @@ export const useGameblocHooks = () => {
     id: string,
     principal_id: Principal,
     no_of_winners: number,
+    winner: [],
     success: string,
     error: string,
     route,
   ) => {
     try {
       setIsEnding(true)
-      await whoamiActor2.test_end_tournament(id, principal_id, no_of_winners)
+      await whoamiActor2.end_tournament(id, principal_id, no_of_winners, winner)
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")

@@ -4,13 +4,14 @@ import FallbackLoading from "../../components/Modals/FallBackLoader"
 import { ConfigProvider, Table, theme } from "antd"
 type prop = {
   tourData: any
+  squad_mode: any
 }
-const Result_1 = ({ tourData }: prop) => {
+const Result_1 = ({ tourData, squad_mode }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
   const result = tourData.flatMap((state) =>
-    state.squad_points.flatMap((innerArray) =>
+    state?.[squad_mode].flatMap((innerArray) =>
       innerArray.map(([squad_name, id, pointsObject]) => ({
         id,
         name: squad_name,

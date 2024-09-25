@@ -91,9 +91,9 @@ const defaultOptions = {
   },
   loginNFID: {
     windowOpenerFeatures:
-                `left=${window.screen.width / 2 - 525 / 2}, ` +
-                `top=${window.screen.height / 2 - 705 / 2},` +
-                `toolbar=0,location=0,menubar=0,width=525,height=705`,
+      `left=${window.screen.width / 2 - 525 / 2}, ` +
+      `top=${window.screen.height / 2 - 705 / 2},` +
+      `toolbar=0,location=0,menubar=0,width=525,height=705`,
     identityProvider:
       process.env.DFX_NETWORK === "ic"
         ? "https://nfid.one" + AUTH_PATH
@@ -216,7 +216,6 @@ export const useAuthClient = (options = defaultOptions) => {
       setWs(_ws)
     } catch (err) {
       console.log("Error on auth:", err)
-      navigate("/dashboard")
     }
   }
 

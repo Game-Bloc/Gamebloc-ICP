@@ -57,6 +57,7 @@ const PaymentModal = ({
     done,
     isLoading,
     payICPfee,
+    approveFee,
     joinTournamentSqaud,
     joinTournament,
   } = useGameblocHooks()
@@ -69,7 +70,7 @@ const PaymentModal = ({
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const _principal = Principal.fromText(principal)
   const tourType =
-    Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID"
+    Object.keys(data.tournament_type)[0].toUpperCase() === "PREPAID"
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
@@ -102,40 +103,22 @@ const PaymentModal = ({
 
   const payFee = () => {
     if (data.game_type === "Duo") {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8) * 2,
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
+      approveFee(
+        +icp.toFixed(8) * 2,
         "Payment Approved",
         "Something went wrong",
         "",
       )
     } else if (data.game_type === "Squad") {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8) * 4,
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
+      approveFee(
+        +icp.toFixed(8) * 4,
         "Payment Approved",
         "Something went wrong",
         "",
       )
     } else {
-      payICPfee(
-        "09ea6271433060d798e7fd7f0aa1e71c28e849e8c2ba89b638124b66824ef361",
-        +icp?.toFixed(8),
-        date,
-        _principal,
-        createdAt,
-        notification_id,
-        username,
+      approveFee(
+        +icp.toFixed(8),
         "Payment Approved",
         "Something went wrong",
         "",
@@ -151,7 +134,6 @@ const PaymentModal = ({
     squad_id: any,
     id: any,
     playerIGNs: any,
-    icp_price: any,
     success: string,
     error: string,
     route: string,
@@ -159,15 +141,7 @@ const PaymentModal = ({
     // console.log("squad_id", squad_id)
     // console.log("id", id)
     // console.log("playerIGNs", playerIGNs)
-    joinTournamentSqaud(
-      squad_id,
-      id,
-      playerIGNs,
-      icp_price,
-      success,
-      error,
-      route,
-    )
+    joinTournamentSqaud(squad_id, id, playerIGNs, success, error, route)
   }
 
   const join_tour_solo = (
@@ -175,21 +149,11 @@ const PaymentModal = ({
     id: any,
     userId: any,
     playerIgn: any,
-    icp_price: any,
     success: string,
     error: string,
     route: string,
   ) => {
-    joinTournament(
-      owner,
-      id,
-      userId,
-      playerIgn,
-      icp_price,
-      success,
-      error,
-      route,
-    )
+    joinTournament(owner, id, userId, playerIgn, success, error, route)
   }
 
   return (
@@ -243,29 +207,43 @@ const PaymentModal = ({
                         className="step mt-4 ml-4 md:ml-0"
                         items={[
                           {
-                            title: "Pay",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Pay
+                              </p>
+                            ),
                             status: paid === true ? "finish" : "process",
                             icon:
                               paid === true ? (
-                                <DollarOutlined className="w-4 h-4" />
+                                <DollarOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
                               ) : (
-                                <LoadingOutlined className="w-4 h-4" />
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
                               ),
                           },
                           {
-                            title: "Join",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Join
+                              </p>
+                            ),
                             status: done === true ? "finish" : "process",
                             icon:
                               done === true ? (
-                                <UsergroupAddOutlined className="w-4 h-4" />
+                                <UsergroupAddOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
                               ) : (
-                                <LoadingOutlined className="w-4 h-4" />
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
                               ),
                           },
                           {
-                            title: "Success",
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Success
+                              </p>
+                            ),
                             status: done && paid === true ? "finish" : "wait",
-                            icon: <CheckCircleOutlined className="w-4 h-4" />,
+                            icon: (
+                              <CheckCircleOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
+                            ),
                           },
                         ]}
                       />

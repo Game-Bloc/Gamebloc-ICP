@@ -150,7 +150,7 @@ const Players = ({ data }: Props) => {
             ) : (
               <button
                 onClick={
-                  isAuthenticated
+                  principal !== ""
                     ? () => {
                         setOpenPaymentModal(true)
                       }

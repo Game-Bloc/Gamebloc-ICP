@@ -5,13 +5,14 @@ import { ConfigProvider, Table, theme } from "antd"
 
 type prop = {
   tourData: any
+  solo_mode: any
 }
-const Result_2 = ({ tourData }: prop) => {
+const Result_2 = ({ tourData, solo_mode }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
   const result = tourData.flatMap((state) =>
-    state.points.flatMap((innerArray) =>
+    state?.[solo_mode].flatMap((innerArray) =>
       innerArray.map(([name, id, pointsObject]) => ({
         id,
         name: name,

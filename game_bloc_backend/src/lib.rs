@@ -1,8 +1,8 @@
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BTreeSet};
 
-use candid::types::CandidType;
 use candid::{decode_one, Deserialize, Principal};
+use candid::types::CandidType;
 use canister_tools::{
     localkey::refcell::{with, with_mut},
     MemoryId,
@@ -15,7 +15,7 @@ use ic_cdk_macros::*;
 use serde::Serialize;
 
 use model::*;
-use model::{AppMessage};
+use model::AppMessage;
 use serialization_memory_ids::*;
 
 mod model;
@@ -100,7 +100,7 @@ pub fn set_mod(identity: Principal) {
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         profile.role = match profile.role {
             None => {
-               Some(Role::Mod)
+                Some(Role::Mod)
             }
             Some(role) => {
                 match role {
@@ -133,43 +133,40 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
                     }
                 }
             };
-        }
-       else if  !validate_mod_tag_availability(ModTag::Mod2) {
-           profile.role = match profile.role {
-               None => {
-                   Some(Role::TribunalMod(ModTag::Mod2))
-               }
-               Some(role) => {
-                   match role {
-                       Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
-                       _ => {
-                           Some(Role::TribunalMod(ModTag::Mod1))
-                       }
-                   }
-               }
-           };
-        }
-       else if !validate_mod_tag_availability(ModTag::Mod3) {
-           profile.role = match profile.role {
-               None => {
-                   Some(Role::TribunalMod(ModTag::Mod3))
-               }
-               Some(role) => {
-                   match role {
-                       Role::Player => Some(Role::TribunalMod(ModTag::Mod1)),
-                       _ => {
-                           Some(Role::TribunalMod(ModTag::Mod1))
-                       }
-                   }
-               }
-           };
-        }
-        else{
+        } else if !validate_mod_tag_availability(ModTag::Mod2) {
+            profile.role = match profile.role {
+                None => {
+                    Some(Role::TribunalMod(ModTag::Mod2))
+                }
+                Some(role) => {
+                    match role {
+                        Role::Player => Some(Role::TribunalMod(ModTag::Mod2)),
+                        _ => {
+                            Some(Role::TribunalMod(ModTag::Mod2))
+                        }
+                    }
+                }
+            };
+        } else if !validate_mod_tag_availability(ModTag::Mod3) {
+            profile.role = match profile.role {
+                None => {
+                    Some(Role::TribunalMod(ModTag::Mod3))
+                }
+                Some(role) => {
+                    match role {
+                        Role::Player => Some(Role::TribunalMod(ModTag::Mod3)),
+                        _ => {
+                            Some(Role::TribunalMod(ModTag::Mod3))
+                        }
+                    }
+                }
+            };
+        } else {
             println!("tribunal mod slots is full");
-            return false
+            return false;
         }
         profile_store.borrow_mut().insert(identity.to_text(), profile);
-        return true
+        return true;
     })
 }
 
@@ -181,7 +178,7 @@ pub fn is_mod(identity: Principal) -> bool {
             Role::Player => return false,
             Role::Mod => return true,
             Role::TribunalMod(mod_tag) => {
-                return true
+                return true;
             }
         }
     })
@@ -205,7 +202,7 @@ pub fn get_mods() -> Vec<UserProfile> {
                 }
             }
         });
-       all_users
+        all_users
     })
 }
 
@@ -256,7 +253,7 @@ pub fn get_leaderboard() -> Vec<Contestant> {
         };
         let mut leaderboard: Vec<Contestant> = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            let user:UserProfile = (*user.1).clone().try_into().unwrap();
+            let user: UserProfile = (*user.1).clone().try_into().unwrap();
             match user.points {
                 None => {}
                 Some(point) => {
@@ -265,7 +262,7 @@ pub fn get_leaderboard() -> Vec<Contestant> {
                     contestant.losses = user.losses.unwrap();
                     contestant.wins = user.wins;
                     for x in point.iter() {
-                        let points:(String,String,Point) = (*x).clone().try_into().unwrap();
+                        let points: (String, String, Point) = (*x).clone().try_into().unwrap();
                         point_gathered = point_gathered + (points.2 as Point).total_points;
                     }
                     contestant.point = point_gathered;
@@ -286,7 +283,7 @@ pub fn assign_points(identity: Principal, user_id_and_point: (String, String, Po
         let mut profile = profile_store.borrow().get(&identity.to_text()).cloned().unwrap();
         match profile.points {
             None => {
-                profile.points = Some( vec![user_id_and_point]);
+                profile.points = Some(vec![user_id_and_point]);
             }
             Some(points) => {
                 let mut updated_points = points;
@@ -304,11 +301,34 @@ pub(crate) fn validate_mod_tag_availability(try_mod_tag: ModTag) -> bool {
         Role::Player => { false }
         Role::Mod => { false }
         Role::TribunalMod(mod_tag) => {
-            mod_tag == try_mod_tag
+            match mod_tag {
+                ModTag::Mod1 => {
+                    match try_mod_tag {
+                        ModTag::Mod1 => {
+                            true
+                        }
+                        ModTag::Mod2 => { false }
+                        ModTag::Mod3 => { false }
+                    }
+                }
+                ModTag::Mod2 => {
+                    match try_mod_tag {
+                        ModTag::Mod1 => { false }
+                        ModTag::Mod2 => { true }
+                        ModTag::Mod3 => { false }
+                    }
+                }
+                ModTag::Mod3 => {
+                    match try_mod_tag {
+                        ModTag::Mod1 => { false }
+                        ModTag::Mod2 => { false }
+                        ModTag::Mod3 => { true }
+                    }
+                }
+            }
         }
     }))
 }
-
 
 
 #[init]

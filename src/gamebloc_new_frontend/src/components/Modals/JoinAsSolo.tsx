@@ -35,7 +35,6 @@ const JoinAsSolo = ({ modal, owner, id, userId }: Props) => {
         id,
         userId,
         playerIgn,
-        icp_price,
         "You have successfully joined this tournament",
         "Something went wrong try again",
         "/dashboard",

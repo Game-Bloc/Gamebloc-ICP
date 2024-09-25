@@ -324,6 +324,7 @@ const CreateTournament = () => {
       startingDate,
       variantType,
       +entryPrice,
+      +entryPrice,
       noOfWinners,
       BigInt(noOfUsers),
       gameType,
