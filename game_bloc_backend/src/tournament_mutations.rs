@@ -4,7 +4,7 @@ use crate::*;
 ///Tournament crud
 
 #[update]
-pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -> () {
+pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -> bool {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         let mut list: Vec<(String,String,Point)> = vec![];
@@ -87,11 +87,11 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
         tournament.squad_points = Some(list);
         tournament_store.borrow_mut().insert(id, tournament.clone());
         true
-    });
+    })
 }
 
 #[update]
-pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) -> () {
+pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) -> bool {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         let mut list: Vec<(String,String,Point)> = vec![];
@@ -174,7 +174,7 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
         tournament.squad_points = Some(list);
         tournament_store.borrow_mut().insert(id, tournament.clone());
         true
-    });
+    })
 }
 
 #[query]
