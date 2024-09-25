@@ -3,7 +3,7 @@ import AdminHeader from "../AdminComps/AdminHeader"
 import AdminSidebar from "../AdminComps/AdminSidebar"
 import { PiPowerBold } from "react-icons/pi"
 import { GiMoneyStack } from "react-icons/gi"
-import { ConfigProvider, Select, theme } from "antd"
+import { ConfigProvider, Select, TabsProps, theme } from "antd"
 import { FiSearch } from "react-icons/fi"
 import { IoGrid } from "react-icons/io5"
 import TournamentGridView from "../AdminComps/TournamentGridView"
@@ -29,6 +29,8 @@ import FallbackLoading from "../../components/Modals/FallBackLoader"
 import Modal from "../../components/Modals/Modal"
 import WinnersBoard from "../../components/Result/WinnersBoard"
 import TableLogic from "../AdminComps/TableLogic"
+import TribunalsTable from "../AdminComps/TribunalsTable"
+import TribunalBar from "../AdminComps/TribunalBar"
 
 interface DataType {
   position: React.Key
@@ -219,6 +221,7 @@ const AdminViewTournamentDetails = () => {
     { title: "Kill Points", dataIndex: "kill_points", key: "kill_points" },
     { title: "Total Points", dataIndex: "total_points", key: "total_points" },
   ]
+
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log("selectedRowKeys changed: ", newSelectedRowKeys)
     setSelectedRowKeys(newSelectedRowKeys)
@@ -447,9 +450,13 @@ const AdminViewTournamentDetails = () => {
                               <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
                                 <img
                                   src={
-                                    game_type[0] && _point
+                                    Object.keys(
+                                      list.status,
+                                    )[0].toUpperCase() === "ACCEPTINGPLAYERS"
                                       ? `ongoing-status.png`
-                                      : !game_type[0] && _squad_point
+                                      : Object.keys(
+                                          list.status,
+                                        )[0].toUpperCase() === "GAMEINPROGRESS"
                                       ? `ongoing-status.png`
                                       : `ended.png`
                                   }
@@ -457,9 +464,12 @@ const AdminViewTournamentDetails = () => {
                                   alt=""
                                 />
                                 <p className="text-[#BCBCBC] text-[.8rem]">
-                                  {game_type[0] && _point
+                                  {Object.keys(list.status)[0].toUpperCase() ===
+                                  "ACCEPTINGPLAYERS"
                                     ? `Ongoing`
-                                    : !game_type[0] && _squad_point
+                                    : Object.keys(
+                                        list.status,
+                                      )[0].toUpperCase() === "GAMEINPROGRESS"
                                     ? `Ongoing`
                                     : `Completed`}
                                 </p>
@@ -547,25 +557,46 @@ const AdminViewTournamentDetails = () => {
                         </div>
 
                         <WinnersBoard />
-                        <TableLogic
-                          _point={_point}
-                          players={players}
-                          setSquadPoints={setSquadPoints}
-                          _squad_point={_squad_point}
-                          game_type={game_type}
-                          saveChanges={saveChanges}
-                          isLoading={isLoading}
-                          isAssigningPoints={isAssigningPoints}
-                          setPlayerPoints={setPlayerPoints}
-                          dataSearch={dataSearch}
-                          playerPoints={playerPoints}
-                          solo_mode={solo_mode}
-                          squad_mode={squad_mode}
-                          tourData={tourData}
-                          rowSelection={rowSelection}
-                          columns={columns}
-                        />
-                        {/*  */}
+
+                        {Object.keys(isMod[0])[0] === "Mod" ? (
+                          <TribunalBar
+                            _point={_point}
+                            players={players}
+                            setSquadPoints={setSquadPoints}
+                            _squad_point={_squad_point}
+                            game_type={game_type}
+                            saveChanges={saveChanges}
+                            isLoading={isLoading}
+                            isAssigningPoints={isAssigningPoints}
+                            setPlayerPoints={setPlayerPoints}
+                            dataSearch={dataSearch}
+                            playerPoints={playerPoints}
+                            solo_mode={solo_mode}
+                            squad_mode={squad_mode}
+                            tourData={tourData}
+                            rowSelection={rowSelection}
+                            columns={columns}
+                          />
+                        ) : (
+                          <TableLogic
+                            _point={_point}
+                            players={players}
+                            setSquadPoints={setSquadPoints}
+                            _squad_point={_squad_point}
+                            game_type={game_type}
+                            saveChanges={saveChanges}
+                            isLoading={isLoading}
+                            isAssigningPoints={isAssigningPoints}
+                            setPlayerPoints={setPlayerPoints}
+                            dataSearch={dataSearch}
+                            playerPoints={playerPoints}
+                            solo_mode={solo_mode}
+                            squad_mode={squad_mode}
+                            tourData={tourData}
+                            rowSelection={rowSelection}
+                            columns={columns}
+                          />
+                        )}
                       </div>
                     ))}
                 </div>

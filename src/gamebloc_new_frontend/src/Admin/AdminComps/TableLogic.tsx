@@ -4,6 +4,7 @@ import TournamentListView from "./TournamentListView"
 import SquadListView from "./SquadListView"
 import SquadResult from "./SquadResult"
 import Results from "./Results"
+import { useAppSelector } from "../../redux/hooks"
 
 interface Prop {
   _point: any
