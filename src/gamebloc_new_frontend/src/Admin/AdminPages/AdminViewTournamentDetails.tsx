@@ -89,6 +89,9 @@ const AdminViewTournamentDetails = () => {
     [],
   )
   const [squadPoints, setSquadPoints] = useState<[string, string, Points][]>([])
+  const [winners, setWinners] = useState<{ position; amount; user_account }[]>(
+    [],
+  )
 
   const tourData = data
     .filter((tour: any) => tour.id_hash === id)
@@ -263,7 +266,159 @@ const AdminViewTournamentDetails = () => {
     )
   }
 
+  console.log(
+    "test",
+    Object.keys(tourData[0].tournament_type)[0].toUpperCase() === "CROWDFUNDED",
+  )
+
+  const squadCount2 = () => {
+    let totalCount = 0
+    tourData?.squad?.forEach(
+      (player: any) => (totalCount += player?.members?.length),
+    )
+    return totalCount
+  }
+
+  const _winners = () => {
+    if (no_of_winners === 1) {
+      const amount =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(tourData[0].entry_prize * tourData[0]?.users?.length).toFixed(
+              2,
+            )}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData[0].entry_prize * squadCount2()).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2()).toFixed(2)}`
+          : `${tourData[0].total_prize.toFixed(2)}`
+
+      setWinners([
+        {
+          position: "1",
+          amount: amount,
+          user_account: "",
+        },
+      ])
+    } else if (no_of_winners === 2) {
+      const amount1 =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(
+              tourData[0].entry_prize *
+              tourData[0]?.users?.length *
+              0.6
+            ).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.6).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.6).toFixed(2)}`
+          : `${(tourData[0].total_prize * 0.6).toFixed(2)}`
+      const amount2 =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(tourData.entry_prize * tourData?.users?.length * 0.4).toFixed(
+              2,
+            )}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData.entry_prize * squadCount2() * 0.4).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.4).toFixed(2)}`
+          : `${(tourData[0].total_prize * 0.4).toFixed(2)}`
+
+      setWinners([
+        {
+          position: "1",
+          amount: amount1,
+          user_account: "",
+        },
+        {
+          position: "2",
+          amount: amount2,
+          user_account: "",
+        },
+      ])
+    } else {
+      const amount1 =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(
+              tourData[0].entry_prize *
+              tourData[0]?.users?.length *
+              0.5
+            ).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.5).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.5).toFixed(2)}`
+          : `${(tourData[0].total_prize * 0.5).toFixed(2)}`
+      const amount2 =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(
+              tourData[0].entry_prize *
+              tourData[0]?.users?.length *
+              0.3
+            ).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.3).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.3).toFixed(2)}`
+          : `${(tourData[0].total_prize * 0.3).toFixed(2)}`
+
+      const amount3 =
+        Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
+          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          ? `${(
+              tourData[0].entry_prize *
+              tourData[0]?.users?.length *
+              0.2
+            ).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.2).toFixed(2)}`
+          : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
+              "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.2).toFixed(2)}`
+          : `${(tourData[0].total_prize * 0.2).toFixed(2)}`
+
+      setWinners([
+        {
+          position: "1",
+          amount: amount1,
+          user_account: "",
+        },
+        {
+          position: "2",
+          amount: amount2,
+          user_account: "",
+        },
+        {
+          position: "3",
+          amount: amount3,
+          user_account: "",
+        },
+      ])
+    }
+  }
+
+  useEffect(() => {
+    _winners()
+    console.log(winners)
+  }, [])
+
   const end = () => {
+    _winners()
     end_tournament(
       id,
       _principal,

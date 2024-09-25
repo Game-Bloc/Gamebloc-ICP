@@ -1088,8 +1088,27 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")
-    } catch (error) {
-      console.log("error ending tournament", error)
+    } catch (err) {
+      console.log("error ending tournament", err)
+      errorPopUp(error)
+      setIsEnding(false)
+    }
+  }
+  const end_blitzkrieg_tournament = async (
+    id: string,
+    principal_id: Principal,
+    success: string,
+    error: string,
+    route,
+  ) => {
+    try {
+      setIsEnding(true)
+      await whoamiActor2.end_blitzkrieg_tournament(id, principal_id)
+      setIsEnding(false)
+      popUp(success, route)
+      console.log("Tournament Ended")
+    } catch (err) {
+      console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)
       setIsEnding(false)
     }
@@ -1258,5 +1277,6 @@ export const useGameblocHooks = () => {
     approveFee,
     merge_solo_tribunal,
     merge_squad_tribunal,
+    end_blitzkrieg_tournament,
   }
 }

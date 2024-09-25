@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import Results from "./Results"
 import SquadResult from "./SquadResult"
 import ClipLoader from "react-spinners/ClipLoader"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { useParams } from "react-router-dom"
 
 interface Props {
   tourData: any
@@ -17,29 +19,39 @@ const override = {
 }
 
 const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
-  const isEnding = false
   const updating = false
+  const { id } = useParams()
+  const { merge_solo_tribunal, merge_squad_tribunal, isLoading } =
+    useGameblocHooks()
   const [color, setColor] = useState("#ffffff")
+
+  const merge = () => {
+    if (tourData[0].game_type === "Single") {
+      console.log("solo")
+      //  merge_solo_tribunal(id, "Merged", "Error Merging", "" )
+    } else {
+      //    merge_squad_tribunal(id,"Merged", "Error Merging", "" )
+      console.log("squad")
+    }
+  }
 
   return (
     <div className="mt-4">
       {_point ? (
-        <div> </div>
-      ) : (
         <div className="flex justify-end w-full  mt-4">
           <div className="flex justify-between  gap-4 items-center ">
             <button
-              //   onClick={() => setEndModal(true)}
+              onClick={() => merge()}
               className="bg-[#303B9C]  flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
             >
-              {isEnding ? (
+              {isLoading ? (
                 <div className="flex items-center  gap-2">
                   <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
                     Wait
                   </p>
                   <ClipLoader
                     color={color}
-                    loading={isEnding}
+                    loading={isLoading}
                     cssOverride={override}
                     size={10}
                     aria-label="Loading Spinner"
@@ -83,6 +95,8 @@ const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
             </button>
           </div>
         </div>
+      ) : (
+        <div> </div>
       )}
       <div className="mt-4">
         <p className="text-[1.2rem]  font-semibold text-white">
