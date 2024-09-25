@@ -1015,12 +1015,16 @@ export const useGameblocHooks = () => {
     try {
       setIsLoading(true)
       console.log("id", id)
-      await whoamiActor2.cleanse_all_solo_type_tournament_branching_tribunal_points(
-        id,
-      )
+      const merge =
+        await whoamiActor2.cleanse_all_solo_type_tournament_branching_tribunal_points(
+          id,
+        )
+
+      console.log("merge response", merge)
       popUp(success, route)
       setIsLoading(false)
-      window.location.reload()
+
+      // window.location.reload()
     } catch (err) {
       errorPopUp(error)
       console.log("Error Merging Solo Tribunal results", err)

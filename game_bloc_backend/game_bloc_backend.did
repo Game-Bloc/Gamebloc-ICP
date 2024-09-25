@@ -123,8 +123,10 @@ service : () -> {
   assign_squad_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
-  cleanse_all_solo_type_tournament_branching_tribunal_points : (text) -> ();
-  cleanse_all_squad_type_tournament_branching_tribunal_points : (text) -> ();
+  cleanse_all_solo_type_tournament_branching_tribunal_points : (text) -> (bool);
+  cleanse_all_squad_type_tournament_branching_tribunal_points : (text) -> (
+      bool,
+    );
   close_squad : (text, vec text, principal) -> ();
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
