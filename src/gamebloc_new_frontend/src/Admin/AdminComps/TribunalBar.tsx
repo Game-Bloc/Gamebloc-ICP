@@ -51,6 +51,7 @@ const TribunalBar = ({
           setState={setState}
           tourData={tourData}
           game_type={game_type}
+          _point={_point}
         />
       ),
     },

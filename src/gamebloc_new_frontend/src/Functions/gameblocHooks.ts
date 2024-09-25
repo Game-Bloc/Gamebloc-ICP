@@ -1006,6 +1006,47 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const merge_solo_tribunal = async (
+    id: string,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+
+      await whoamiActor2.cleanse_all_solo_type_tournament_branching_tribunal_points(
+        id,
+      )
+      popUp(success, route)
+      setIsLoading(false)
+    } catch (err) {
+      errorPopUp(error)
+      console.log("Error Merging Solo Tribunal results", err)
+      setIsLoading(false)
+    }
+  }
+  const merge_squad_tribunal = async (
+    id: string,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+
+      await whoamiActor2.cleanse_all_squad_type_tournament_branching_tribunal_points(
+        id,
+      )
+      popUp(success, route)
+      setIsLoading(false)
+    } catch (err) {
+      errorPopUp(error)
+      console.log("Error Merging Squad Tribunal results", err)
+      setIsLoading(false)
+    }
+  }
+
   const archive_tournament = async (
     id: string,
     success: string,
@@ -1215,5 +1256,7 @@ export const useGameblocHooks = () => {
     get_leaderboard,
     payICPfee,
     approveFee,
+    merge_solo_tribunal,
+    merge_squad_tribunal,
   }
 }
