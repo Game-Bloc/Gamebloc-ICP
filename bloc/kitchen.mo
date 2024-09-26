@@ -1280,7 +1280,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    let gbc_admin : Principal = Principal.fromText("cwlyh-haig5-jjrwu-mltmx-zhiia-fheml-hzely-u23rr-dn5qr-jnztf-eae"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("f7fh6-taomf-eww4k-dvwbw-byv7g-s4uy7-yzlvr-nxjbm-rnwla-efxrc-rae"); //Deon here
 
 //
 // * Tournaments Features

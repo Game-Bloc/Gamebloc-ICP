@@ -57,7 +57,7 @@ const WinnersBoard: React.FC = () => {
     position: index + 1,
   }))
 
-  console.log("tour-", tourData)
+  // console.log("tour-", tourData)
 
   return (
     <>
