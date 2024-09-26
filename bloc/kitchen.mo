@@ -128,13 +128,6 @@ system func postupgrade() {
 // Ledger Canister
 //
 
-public func updateVolume(_amount : Nat64) : () {
-    volume += _amount
-};
-
-public shared func getVolume() : async Nat64 {
-    volume
-};
 
 // TODO: Test functions
 
