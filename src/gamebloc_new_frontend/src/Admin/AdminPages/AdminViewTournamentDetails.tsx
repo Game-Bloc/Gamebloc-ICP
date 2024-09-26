@@ -273,7 +273,7 @@ const AdminViewTournamentDetails = () => {
 
   const squadCount2 = () => {
     let totalCount = 0
-    tourData?.squad?.forEach(
+    tourData[0]?.squad?.forEach(
       (player: any) => (totalCount += player?.members?.length),
     )
     return totalCount
@@ -294,7 +294,16 @@ const AdminViewTournamentDetails = () => {
               "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
           ? `${(tourData[0].entry_prize * squadCount2()).toFixed(2)}`
           : `${tourData[0].total_prize.toFixed(2)}`
-
+      // console.log("Amount", +amount)
+      // console.log(
+      //   "tour_type",
+      //   Object.keys(tourData[0].tournament_type)[0].toUpperCase(),
+      // )
+      // console.log("game_type", tourData[0].game_type.toUpperCase())
+      // console.log(
+      //   "duo amount",
+      //   (tourData[0].entry_prize * squadCount2()).toFixed(2),
+      // )
       setWinners([
         {
           position: "1",
