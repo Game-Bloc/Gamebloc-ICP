@@ -128,13 +128,6 @@ system func postupgrade() {
 // Ledger Canister
 //
 
-public func updateVolume(_amount : Nat64) : () {
-    volume += _amount
-};
-
-public shared func getVolume() : async Nat64 {
-    volume
-};
 
 // TODO: Test functions
 
@@ -571,7 +564,7 @@ func usernameChecker(username : Text) : Bool {
 //     });
 // };
 
-public shared ({ caller }) func updateBalance(_amount : Nat64, deposit : Bool) : async Bool {
+public shared ({ caller }) func updateBalance(_amount : Nat, deposit : Bool) : async Bool {
     var _balance = BalanceHashMap.get(caller);
     if (deposit) {
         switch (_balance) {
@@ -605,7 +598,7 @@ public shared ({ caller }) func updateBalance(_amount : Nat64, deposit : Bool) :
 
 };
 
-public shared ({ caller }) func checkLastBalance() : async Nat64 {
+public shared ({ caller }) func checkLastBalance() : async Nat {
     var _balance = BalanceHashMap.get(caller);
     switch (_balance) {
         case null {
@@ -618,13 +611,20 @@ public shared ({ caller }) func checkLastBalance() : async Nat64 {
     // return _balance.balance;
 };
 
-func checkUserLastBalance(caller : Principal) : Nat64 {
+func checkUserLastBalance(caller : Principal) : async Nat {
     var _balance = BalanceHashMap.get(caller);
+    var icp_balance = await ICPLedger.icrc1_balance_of({
+        owner = caller; subaccount = null
+    });
+    
     switch (_balance) {
         case null {
             return 0
         };
         case (?(_balance)) {
+            if (_balance.balance == icp_balance){
+                
+            };
             return _balance.balance
         }
     }
@@ -1273,7 +1273,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    let gbc_admin : Principal = Principal.fromText("cwlyh-haig5-jjrwu-mltmx-zhiia-fheml-hzely-u23rr-dn5qr-jnztf-eae"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("f7fh6-taomf-eww4k-dvwbw-byv7g-s4uy7-yzlvr-nxjbm-rnwla-efxrc-rae"); //Deon here
 
 //
 // * Tournaments Features
@@ -1303,6 +1303,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
             };
 
             var multiplier = 1;
+            var _amount = 0;
 
             if (Text.toUppercase(tournamentAccount.game_type) == "SQUAD"){
                 multiplier := 4;
@@ -1337,6 +1338,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                                 // * since the price is in hundreds to bypass the datatype restrictions
                                 amount = (entry * multiplier * 10_000_000_000) / (icp_price); //In USD
                             });
+                            _amount := (entry * multiplier * 10_000_000_000) / (icp_price);
 
                         } catch (err) {
                             throw Error.reject("There is an issue wih the transfer")
@@ -1360,12 +1362,21 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                     created_at_time = ?Nat64.fromIntWrap(Time.now());
                     // * since the price is in hundreds to bypass the datatype restrictions
                     amount = ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
-                })
+                });
+                _amount := ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
             };
 
             var result = await RustBloc.create_tournament(tournamentAccount);
-            // TODO: Notify the users, fix date, 
-            let notification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, "", 0, "");
+            // TODO: Notify the users, fix date, notify deposit and withdrawals
+            // ? Is approval notifications really necessary though
+            let withdrawalNotification = await notify("ICP Withdrawal Request Processed", "Dear " # tournamentAccount.creator # ",\n 
+                Your request to withdraw "# Nat.toText(_amount) # " ICP from your Gamebloc account has been successfully processed. The funds should now be available in the destination wallet.\n
+                If you encounter any issues or have any questions, please contact our support team.\n
+                Thank you for using Gamebloc, and we look forward to seeing you in future tournaments!\n
+                Best regards,\n
+                Gamebloc Team", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
+            // let depositNotification = await notify("Successful ICP Deposit to Your Gamebloc Account");
+            let tournamentNotification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
             result;
 
             // return result
@@ -2144,5 +2155,27 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     public shared query ({ caller }) func ws_get_messages(args : IcWebSocketCdk.CanisterWsGetMessagesArguments) : async IcWebSocketCdk.CanisterWsGetMessagesResult {
         ws.ws_get_messages(caller, args)
     };
+
+    // TODO: Calculate the total vol
+    // public query func getAccountTransactions(accountId: Text) : async [Transaction] {
+    //     // Fetches the list of transactions for the given account.
+    //     // You would typically store these in a canister.
+    // }
+
+    // Call this method to check the balance.
+    // public query func checkBalance(accountId: Text): async Nat {
+    //     // Use the ICP ledger to query the account balance.
+    //     return Ledger.get_balance(accountId);
+    // }
+
+    // public shared func recordTransaction(accountId: Text, amount: Nat, txType: Text) : async () {
+    //     let transaction = {
+    //         accountId = accountId;
+    //         amount = amount;
+    //         txType = txType;
+    //         timestamp = Time.now();
+    //     };
+    //     transactionHistory := transactionHistory # [transaction];  // Append to history
+    // }
 
 }

@@ -45,7 +45,7 @@ module {
 
     public type UserBalance = {
         user : Principal;
-        balance : Nat64;
+        balance : Nat;
     };
 
     public type Pay = {

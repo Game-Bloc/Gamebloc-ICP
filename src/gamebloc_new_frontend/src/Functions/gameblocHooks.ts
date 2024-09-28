@@ -1006,6 +1006,53 @@ export const useGameblocHooks = () => {
     }
   }
 
+  const merge_solo_tribunal = async (
+    id: string,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+      console.log("id", id)
+      const merge =
+        await whoamiActor2.cleanse_all_solo_type_tournament_branching_tribunal_points(
+          id,
+        )
+
+      console.log("merge response", merge)
+      popUp(success, route)
+      setIsLoading(false)
+
+      // window.location.reload()
+    } catch (err) {
+      errorPopUp(error)
+      console.log("Error Merging Solo Tribunal results", err)
+      setIsLoading(false)
+    }
+  }
+  const merge_squad_tribunal = async (
+    id: string,
+    success: string,
+    error: string,
+    route: string,
+  ) => {
+    try {
+      setIsLoading(true)
+
+      await whoamiActor2.cleanse_all_squad_type_tournament_branching_tribunal_points(
+        id,
+      )
+      popUp(success, route)
+      setIsLoading(false)
+      window.location.reload()
+    } catch (err) {
+      errorPopUp(error)
+      console.log("Error Merging Squad Tribunal results", err)
+      setIsLoading(false)
+    }
+  }
+
   const archive_tournament = async (
     id: string,
     success: string,
@@ -1036,7 +1083,7 @@ export const useGameblocHooks = () => {
     id: string,
     principal_id: Principal,
     no_of_winners: number,
-    winner: [],
+    winner: any[],
     success: string,
     error: string,
     route,
@@ -1047,8 +1094,27 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")
-    } catch (error) {
-      console.log("error ending tournament", error)
+    } catch (err) {
+      console.log("error ending tournament", err)
+      errorPopUp(error)
+      setIsEnding(false)
+    }
+  }
+  const end_blitzkrieg_tournament = async (
+    id: string,
+    principal_id: Principal,
+    success: string,
+    error: string,
+    route,
+  ) => {
+    try {
+      setIsEnding(true)
+      await whoamiActor2.end_blitzkrieg_tournament(id, principal_id)
+      setIsEnding(false)
+      popUp(success, route)
+      console.log("Tournament Ended")
+    } catch (err) {
+      console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)
       setIsEnding(false)
     }
@@ -1215,5 +1281,8 @@ export const useGameblocHooks = () => {
     get_leaderboard,
     payICPfee,
     approveFee,
+    merge_solo_tribunal,
+    merge_squad_tribunal,
+    end_blitzkrieg_tournament,
   }
 }

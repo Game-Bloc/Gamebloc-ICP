@@ -35,7 +35,7 @@ const Results = ({ tourData, solo_mode }: prop) => {
     position: index + 1,
   }))
 
-  console.log("Result with Position", resultWithPosition)
+  // console.log("Result with Position", resultWithPosition)
 
   const columns = [
     {
