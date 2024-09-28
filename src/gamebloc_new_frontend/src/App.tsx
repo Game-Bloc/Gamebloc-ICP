@@ -22,6 +22,7 @@ import PaymentModal from "./components/Modals/PaymentModal"
 import Leaderboard from "./pages/Leaderboard"
 import Series from "./pages/Series"
 import Blitzkrieg from "./pages/Blitzkrieg"
+import AdminHub from "./Admin/AdminPages/AdminHub"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -63,6 +64,7 @@ const App = () => {
               path="/admin-tournament-view/:id"
               element={<AdminViewTournamentDetails />}
             />
+            <Route path="/admin-hub" element={<AdminHub />} />
           </Route>
         </Routes>
       </React.Suspense>
