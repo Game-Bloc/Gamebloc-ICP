@@ -183,7 +183,7 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                 false
             }
             false => {
-                tournament.squad_points = Some(list);
+                tournament.points = Some(list);
                 tournament_store.borrow_mut().insert(id, tournament.clone());
                 true
             }

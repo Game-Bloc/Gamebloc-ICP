@@ -9,7 +9,7 @@ MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
 
-dfx identity use deon
+dfx identity use default
 
 export OWNER=$(dfx identity get-principal)
 
@@ -176,3 +176,5 @@ dfx deploy
 #       "package": "vetkd_system_api"
 #     },
 
+
+dfx ledger transfer --amount 100 --memo 12345 507886590723e396a441491f71b52101307ac59358c6dfde377b5381f75cab6a2024-09-27 14:27:35.254817 UTC: [Canister b77ix-eeaaa-aaaaa-qaada-cai] [ic-icrc1-index] Indexed: 0 waiting : 2
