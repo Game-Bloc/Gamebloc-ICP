@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
 import hooks from "../../../Functions/hooks"
+import { errorPopUp } from "../../../components/utils/ErrorModal"
 
 const override = {
   display: "block",
@@ -10,11 +11,14 @@ const override = {
 }
 
 const HubFunctions = () => {
-  const _principal = Principal.fromText("")
   const [color, setColor] = useState("hsl(0, 0%, 100%)")
   const { isLoading, updating, setAdmin, setTribunal } = hooks()
-  const [adminPricipal, setAdminPrincipal] = useState<string>("")
-  const [tribunalPricipal, setTribunalPrincipal] = useState<string>("")
+  const [adminPrincipal, setAdminPrincipal] = useState<string>("")
+  const [tribunalPrincipal, setTribunalPrincipal] = useState<string>("")
+
+  const validatePrincipalId = (text): boolean => {
+    return text.length === 63
+  }
 
   const adminchange = (e: any) => {
     e.preventDefault()
@@ -28,6 +32,23 @@ const HubFunctions = () => {
     setTribunalPrincipal(value)
   }
 
+  const adminFunction = () => {
+    if (validatePrincipalId(adminPrincipal)) {
+      setAdmin(Principal.fromText(adminPrincipal))
+      setAdminPrincipal("")
+    } else {
+      errorPopUp("Invalid principal")
+    }
+  }
+  const tribunalFunction = () => {
+    if (validatePrincipalId(tribunalPrincipal)) {
+      setTribunal(Principal.fromText(tribunalPrincipal))
+      setTribunalPrincipal("")
+    } else {
+      errorPopUp("Invalid principal")
+    }
+  }
+  // tywik-3xspz-jnltx-y5cx3-mv7mx-uwbnh-o7xuj-7h7gj-nz6qu-wjcwp-yqe
   return (
     <div className="bg-primary-first flex flex-col ">
       <p className="text-[0.8rem]  mb-[1rem] font-semibold sm:text-base  text-primary-second">
@@ -44,11 +65,11 @@ const HubFunctions = () => {
               placeholder="Principal"
               type="text"
               onChange={adminchange}
-              value={adminPricipal}
+              value={adminPrincipal}
             />
           </div>
           <button
-            onClick={() => setAdmin(Principal.fromText(adminPricipal))}
+            onClick={() => adminFunction()}
             className="bg-[#303B9C]  flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
           >
             {updating ? (
@@ -82,12 +103,12 @@ const HubFunctions = () => {
               placeholder="Principal"
               type="text"
               onChange={tribunalchange}
-              value={tribunalPricipal}
+              value={tribunalPrincipal}
             />
           </div>
           <button
-            onClick={() => setAdmin(Principal.fromText(tribunalPricipal))}
-            className="bg-[#303B9C]  flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+            onClick={() => tribunalFunction()}
+            className="bg-[#303B9C]  flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer "
           >
             {isLoading ? (
               <div className="flex items-center  gap-2">
