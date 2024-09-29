@@ -120,6 +120,10 @@ const Players = ({ data }: Props) => {
           <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
             <p className="font-semibold">Ended</p>
           </button>
+        ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
+          <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
+            <p className="font-semibold">In progress</p>
+          </button>
         ) : (
           <>
             {(Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
@@ -143,10 +147,6 @@ const Players = ({ data }: Props) => {
                   <p className="font-semibold">Joined</p>
                 </button>
               )
-            ) : days == 0 && hours == 0 && minutes == 0 && seconds == 0 ? (
-              <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
-                <p className="font-semibold">In progress</p>
-              </button>
             ) : (
               <button
                 onClick={

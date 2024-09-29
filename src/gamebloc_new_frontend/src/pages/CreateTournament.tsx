@@ -672,7 +672,7 @@ const CreateTournament = () => {
                             }}
                           >
                             <DatePicker
-                              disabledDate={disabledDate}
+                              // disabledDate={disabledDate}
                               onChange={onDateChange}
                             />
                           </ConfigProvider>
