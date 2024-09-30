@@ -90,7 +90,7 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
             }
             false => {
                 tournament.squad_points = Some(list);
-                tournament_store.borrow_mut().insert(id, tournament.clone());
+                tournament_store.borrow_mut().insert(id, tournament);
                 true
             }
         }
@@ -184,7 +184,7 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
             }
             false => {
                 tournament.points = Some(list);
-                tournament_store.borrow_mut().insert(id, tournament.clone());
+                tournament_store.borrow_mut().insert(id, tournament);
                 true
             }
         }
@@ -477,7 +477,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             GameType::Single => {
                                 // winners.append(&mut winning_players);
                                 let mut count = 0;
-                                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
                                         let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.wins = profile.wins + 1;
@@ -522,7 +522,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             }
                             GameType::Duo => {
                                 let mut count = 0;
-                                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
                                         let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
@@ -575,7 +575,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             }
                             GameType::Squad => {
                                 let mut count = 0;
-                                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
                                         let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
@@ -679,20 +679,20 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u
             GameType::TeamvTeam => {}
             GameType::Single => {
                 // winners.append(&mut winning_players);
-                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
             GameType::Duo => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
             GameType::Squad => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
         }
