@@ -525,7 +525,10 @@ const AdminViewTournamentDetails = () => {
                                   </div>
                                   <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
                                     <p className="text-[.7rem] text-[#ABCCFF]">
-                                      {list.no_of_winners} Winners
+                                      {list.no_of_winners}{" "}
+                                      {list.no_of_winners > 1
+                                        ? "Winners"
+                                        : "Winner"}
                                     </p>
                                   </div>
                                 </div>
