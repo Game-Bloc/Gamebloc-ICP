@@ -14,20 +14,29 @@ const AdminChart = ({ tournament }: prop) => {
     tournament.forEach((tour: any) => {
       const startingDate = new Date(tour.starting_date)
       const month = startingDate.toLocaleString("default", { month: "short" }) // Get the month name (e.g., Jan, Feb, etc.)
-
+      // console.log("Month", month)
       // Initialize the count for this month if not already initialized
       if (!monthCounts[month]) {
         monthCounts[month] = {
           Crowdfunded: 0,
           Prepaid: 0,
+          Blitzkrieg: 0,
         }
       }
 
       // Check the tournament type and increment the respective count
-      if (tour.tournament_type.Crowdfunded === null) {
+      if (
+        Object.keys(tour.tournament_type)[0].toUpperCase() === "CROWDFUNDED"
+      ) {
         monthCounts[month].Crowdfunded++
-      } else if (tour.tournament_type.Prepaid == null) {
+      } else if (
+        Object.keys(tour.tournament_type)[0].toUpperCase() === "PREPAID"
+      ) {
         monthCounts[month].Prepaid++
+      } else if (
+        Object.keys(tour.tournament_type)[0].toUpperCase() === "BLITZKRIEG"
+      ) {
+        monthCounts[month].Blitzkrieg++
       }
     })
     const monthOrder = [
@@ -51,6 +60,7 @@ const AdminChart = ({ tournament }: prop) => {
         date: month,
         Crowdfunded: monthCounts[month]?.Crowdfunded || 0,
         Prepaid: monthCounts[month]?.Prepaid || 0,
+        Blitzkrieg: monthCounts[month]?.Blitzkrieg || 0,
       }
     })
 
@@ -58,6 +68,7 @@ const AdminChart = ({ tournament }: prop) => {
   }
 
   const monthlyCounts = countTournamentsByMonth(tournament)
+  console.log("chart", monthlyCounts)
 
   const [value, setValue] = useState<EventProps>(null)
   return (
@@ -65,8 +76,8 @@ const AdminChart = ({ tournament }: prop) => {
       className="mt-4 h-72"
       data={monthlyCounts}
       index="date"
-      categories={["Crowdfunded", "Prepaid"]}
-      colors={["red", "blue"]}
+      categories={["Crowdfunded", "Prepaid", "Blitzkrieg"]}
+      colors={["red", "blue", "green"]}
       yAxisWidth={30}
       onValueChange={(v) => setValue(v)}
       connectNulls={true}
