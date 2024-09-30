@@ -24,8 +24,49 @@ const Result_2 = ({ tourData, solo_mode }: prop) => {
     ),
   )
 
+
+  const transformTournamentData = (tournamentDataArray) => {
+    if (!Array.isArray(tournamentDataArray) || tournamentDataArray.length === 0) {
+      console.log("tournamentDataArray is not a valid array or is empty")
+      return []
+    }
+    const tournamentData = tournamentDataArray[0]
+    // console.log("tournamentData:", tournamentData)
+
+    const { in_game_names = [], no_of_participants = 0 } = tournamentData
+    // console.log("in_game_names:", in_game_names)
+
+    if (!Array.isArray(in_game_names) || in_game_names.length === 0) {
+      console.log("in_game_names is not a valid array or is empty")
+      return []
+    }
+
+    const players = in_game_names.flatMap((lobby, lobbyIndex) =>
+      lobby.map(([name, id, ign], index) => {
+        // console.log("id, ign:", id, ign)
+        let point_payload = result.find((element) => element.id === id);
+        return {
+          position: lobbyIndex * no_of_participants + index + 1,
+          name: name,
+          ign: ign,
+          userId: id,
+          principal: id.substring(0, 3) + "......" + id.substring(60, 64),
+          position_points: point_payload.positionPoints,
+          kill_points: point_payload.kill_points,
+          total_points: point_payload.total_points,
+        }
+      }),
+    )
+
+    // console.log("players:", players)
+    return players
+  }
+
+  const result2 = transformTournamentData(tourData);
+  console.log("sorted result view:", result2)
+
   // Sort the result array by killPoints in descending order
-  const sortedResult = result.sort((a, b) => b.totalPoints - a.totalPoints)
+  const sortedResult = result2.sort((a, b) => b.totalPoints - a.totalPoints)
 
   // Add a position field based on the sorted array index
   const resultWithPosition = sortedResult.map((item, index) => ({

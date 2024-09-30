@@ -42,7 +42,7 @@ export const useGameblocHooks = () => {
     indexActor,
     principal,
   } = useAuth()
-  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("by6od-j4aaa-aaaaa-qaadq-cai")
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
