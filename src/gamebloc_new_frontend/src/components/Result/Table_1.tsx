@@ -11,29 +11,71 @@ const Table_1 = ({ tourData }: prop) => {
   const { isLoading, multiSelect_user_profile } = useGameblocHooks()
 
   // Flatten and map the dataSource to the result array
-  const result = tourData.flatMap((state) =>
-    state.points.flatMap((innerArray) =>
-      innerArray.map(([name, id, pointsObject]) => ({
+  const result = tourData[0]?.points.flatMap((point, pointIndex) =>
+    point.map(([name, id, pointsObject], index) => {
+      return {
         id,
         name: name,
         principal: id.substring(0, 3) + "......" + id.substring(60, 64),
-        killPoints: pointsObject.kill_points,
-        totalPoints: pointsObject.total_points,
-        positionPoints: pointsObject.position_points,
-      })),
-    ),
+        killPoints:
+          pointsObject?.kill_points == undefined
+            ? 0
+            : pointsObject?.kill_points,
+        totalPoints:
+          pointsObject?.total_points == undefined
+            ? 0
+            : pointsObject?.total_points,
+        positionPoints:
+          pointsObject?.position_points == undefined
+            ? 0
+            : pointsObject?.position_points,
+      }
+    }),
   )
 
+  const transformTournamentData = (tournamentDataArray) => {
+    if (
+      !Array.isArray(tournamentDataArray) ||
+      tournamentDataArray.length === 0
+    ) {
+      console.log("tournamentDataArray is not a valid array or is empty")
+      return []
+    }
+    const tournamentData = tournamentDataArray[0]
+    const { in_game_names = [], no_of_participants = 0 } = tournamentData
+    if (!Array.isArray(in_game_names) || in_game_names.length === 0) {
+      console.log("in_game_names is not a valid array or is empty")
+      return []
+    }
+
+    const players = in_game_names.flatMap((lobby, lobbyIndex) =>
+      lobby.map(([name, id, ign], index) => {
+        let point_payload = result.find((element) => element.id === id)
+        return {
+          position: lobbyIndex * no_of_participants + index + 1,
+          name: name,
+          ign: ign,
+          userId: id,
+          principal: id.substring(0, 3) + "......" + id.substring(60, 64),
+          positionPoints: point_payload?.positionPoints,
+          killPoints: point_payload?.killPoints,
+          totalPoints: point_payload?.totalPoints,
+        }
+      }),
+    )
+    return players
+  }
+
+  const result2 = transformTournamentData(tourData)
+
   // Sort the result array by killPoints in descending order
-  const sortedResult = result.sort((a, b) => b.totalPoints - a.totalPoints)
+  const sortedResult = result2.sort((a, b) => b.totalPoints - a.totalPoints)
 
   // Add a position field based on the sorted array index
   const resultWithPosition = sortedResult.map((item, index) => ({
     ...item,
     position: index + 1,
   }))
-
-  console.log("Result with Position", resultWithPosition)
 
   const columns = [
     {
@@ -42,6 +84,7 @@ const Table_1 = ({ tourData }: prop) => {
       key: "position",
     },
     { title: "Username", dataIndex: "name", key: "name" },
+    { title: "IGN", dataIndex: "ign", key: "ign" },
     { title: "Principal", dataIndex: "principal", key: "principal" },
     {
       title: "Position Points",

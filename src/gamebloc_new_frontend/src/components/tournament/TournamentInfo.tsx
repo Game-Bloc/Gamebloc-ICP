@@ -521,8 +521,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-[#2E3438]"
-                            : "text-[.85rem] ml-3 text-primary-second "
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]"
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second "
                         }
                       >
                         Registration
@@ -531,14 +531,14 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-[#2E3438]"
-                          : "text-[.85rem]  text-primary-second "
+                          ? "text-[.7rem] md:text-[.85rem]   text-[#2E3438]"
+                          : "text-[.7rem] md:text-[.85rem]   text-primary-second "
                       }
                     >
                       Ongoing
                     </p>
                   </div>
-                  <div className="flex justify-between mt-4 items-center w-full">
+                  <div className="flex md:justify-between mt-4 items-center w-full">
                     <div className="flex items-center">
                       <img
                         src={
@@ -558,8 +558,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-[#2E3438]  "
-                            : "text-[.85rem] ml-3 text-primary-second"
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]  "
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second"
                         }
                       >
                         Registration closes
@@ -568,14 +568,14 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-[#2E3438]"
-                          : "text-[.85rem]  text-primary-second "
+                          ? "text-[.7rem] md:text-[.85rem] ml-4   text-[#2E3438]"
+                          : "text-[.7rem] md:text-[.85rem]  ml-4  text-primary-second "
                       }
                     >
                       {formatDate(data.starting_date)}
                     </p>
                   </div>
-                  <div className="flex justify-between mt-4 items-center w-full">
+                  <div className="flex md:justify-between  mt-4 items-center w-full">
                     <div className="flex items-center">
                       <img
                         src={
@@ -595,8 +595,8 @@ const TournamentInfo = ({ data }: Props) => {
                           hours == 0 &&
                           minutes == 0 &&
                           seconds == 0
-                            ? "text-[.85rem] ml-3 text-primary-second "
-                            : "text-[.85rem] ml-3 text-[#2E3438]"
+                            ? "text-[.7rem] md:text-[.85rem]  ml-3 text-primary-second "
+                            : "text-[.7rem] md:text-[.85rem]  ml-3 text-[#2E3438]"
                         }
                       >
                         Tournament begins
@@ -605,8 +605,8 @@ const TournamentInfo = ({ data }: Props) => {
                     <p
                       className={
                         days == 0 && hours == 0 && minutes == 0 && seconds == 0
-                          ? "text-[.85rem]  text-primary-second "
-                          : "text-[.85rem]  text-[#2E3438]"
+                          ? "text-[.7rem] md:text-[.85rem] ml-4  text-primary-second "
+                          : "text-[.7rem] md:text-[.85rem] ml-4  text-[#2E3438]"
                       }
                     >
                       {formatDate(data.starting_date)}
