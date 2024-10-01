@@ -1112,7 +1112,7 @@ export const useGameblocHooks = () => {
       await whoamiActor2.end_blitzkrieg_tournament(id, principal_id)
       setIsEnding(false)
       popUp(success, route)
-      console.log("Tournament Ended")
+      console.log("Blitzkrieg Tournament Ended")
     } catch (err) {
       console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)
