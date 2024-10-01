@@ -1024,7 +1024,7 @@ export const useGameblocHooks = () => {
       popUp(success, route)
       setIsLoading(false)
 
-      // window.location.reload()
+      window.location.reload()
     } catch (err) {
       errorPopUp(error)
       console.log("Error Merging Solo Tribunal results", err)
