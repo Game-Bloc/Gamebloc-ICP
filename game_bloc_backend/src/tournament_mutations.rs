@@ -100,14 +100,23 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
 #[update]
 pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) -> bool {
     TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        let mut tournament = tournament_store.borrow().get(&id.clone()).cloned().unwrap();
         let mut list: Vec<(String,String,Point)> = vec![];
         match tournament.clone().points_vector_mod_1 {
             None => {
                 match tournament.clone().points_vector_mod_2 {
                     None => {
                         match tournament.clone().points_vector_mod_3 {
-                            None => {}
+                            None => {
+                                match list.clone().is_empty() {
+                                    true => {
+                                    }
+                                    false => {
+                                        tournament.points = Some(list.clone());
+                                        tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                    }
+                                }
+                            }
                             Some(points_vector_mod_3) => {
                                 points_vector_mod_3.iter().for_each(|g|{
                                     let point = Point{
@@ -116,14 +125,31 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                         kill_points:  g.2.kill_points,
                                     };
                                     list.push(((g.0).parse().unwrap(), (g.1).parse().unwrap(), point))
-                                })
+                                });
+                                match list.clone().is_empty() {
+                                    true => {
+                                    }
+                                    false => {
+                                        tournament.points = Some(list.clone());
+                                        tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                    }
+                                }
                             }
                         }
                     }
                     Some(points_vector_mod_2) => {
                         points_vector_mod_2.iter().for_each(|f|{
                             match tournament.clone().points_vector_mod_3 {
-                                None => {}
+                                None => {
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
+                                }
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
@@ -132,7 +158,15 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                             kill_points: (f.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((f.0).parse().unwrap(), (f.1).parse().unwrap(), point))
-                                    })
+                                    });
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
                                 }
                             }
                         })
@@ -144,7 +178,16 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                     match tournament.clone().points_vector_mod_2 {
                         None => {
                             match tournament.clone().points_vector_mod_3 {
-                                None => {}
+                                None => {
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
+                                }
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
@@ -153,14 +196,32 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                             kill_points: (e.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                    })
+                                    });
+
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
                                 }
                             }
                         }
                         Some(points_vector_mod_2) => {
                             points_vector_mod_2.iter().for_each(|f|{
                                 match tournament.clone().points_vector_mod_3 {
-                                    None => {}
+                                    None => {
+                                        match list.clone().is_empty() {
+                                            true => {
+                                            }
+                                            false => {
+                                                tournament.points = Some(list.clone());
+                                                tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                            }
+                                        }
+                                    }
                                     Some(points_vector_mod_3) => {
                                         points_vector_mod_3.iter().for_each(|g|{
                                             let point = Point{
@@ -168,8 +229,16 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                                 total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
                                                 kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
                                             };
-                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                        })
+                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point));
+                                        });
+                                        match list.clone().is_empty() {
+                                            true => {
+                                            }
+                                            false => {
+                                                tournament.points = Some(list.clone());
+                                                tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                            }
+                                        }
                                     }
                                 }
                             })
@@ -178,13 +247,13 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                 })
             }
         }
-        match list.is_empty() {
+        match list.clone().is_empty() {
             true => {
                 false
             }
             false => {
-                tournament.points = Some(list);
-                tournament_store.borrow_mut().insert(id, tournament);
+                // tournament.points = Some(list);
+                // tournament_store.borrow_mut().insert(id, tournament);
                 true
             }
         }
