@@ -315,10 +315,12 @@ pub fn start_tournament(id: String) {
     });
 }
 
+
+
 #[update]
-pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
+pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
+                      -> bool
 {
-    let mut tournament_winners = Vec::new();
     match get_self(principal).role {
         None => {
             println!("you're not admin");
@@ -356,20 +358,30 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
+                                        profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push( tournament.clone().points.unwrap().first().unwrap().0.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some( winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.points.clone().unwrap().iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
-                                        let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.losses = match profile.losses {
                                             None => {
                                                 Some(1)
@@ -386,7 +398,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
+                                        profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
                                     });
                                 });
                             }
@@ -394,7 +406,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                 let mut count = 0;
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
                                             None => {
                                                 Some(1)
@@ -412,20 +424,30 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad.clone());
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad.clone());
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.0.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some(winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.losses = match squad.losses {
                                             None => {
                                                 Some(1)
@@ -442,7 +464,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad);
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad);
                                     });
                                 });
                             }
@@ -450,7 +472,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                 let mut count = 0;
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
                                             None => {
                                                 Some(1)
@@ -468,20 +490,29 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad.clone());
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad.clone());
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.0.clone())
+                                    tournament.winers.push((*id_mapping.1.clone()).to_owned());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some(mut winners) => {
+                                            winners.push(tournament_winner);
+                                            tournament.winners = Some(winners);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.losses = match squad.losses {
                                             None => {
                                                 Some(1)
@@ -498,7 +529,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad);
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad);
                                     });
                                 });
                             }
@@ -516,6 +547,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
         }
     }
 }
+
 
 #[update]
 pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, winner: Vec<Winner>)
