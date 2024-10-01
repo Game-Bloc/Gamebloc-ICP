@@ -249,11 +249,13 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
         }
         match list.clone().is_empty() {
             true => {
+                tournament.points = tournament.points_vector_mod_1.clone();
+                tournament_store.borrow_mut().insert(id, tournament.clone());
                 false
             }
             false => {
-                // tournament.points = Some(list);
-                // tournament_store.borrow_mut().insert(id, tournament);
+                tournament.points = tournament.points_vector_mod_1.clone();
+                tournament_store.borrow_mut().insert(id, tournament.clone());
                 true
             }
         }
