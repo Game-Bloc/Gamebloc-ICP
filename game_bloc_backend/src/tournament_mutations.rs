@@ -348,7 +348,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                                 let mut count = 0;
                                 tournament.points.clone().unwrap().iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
-                                        let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.wins = profile.wins + 1;
                                         profile.attendance = match profile.attendance {
                                             None => {
