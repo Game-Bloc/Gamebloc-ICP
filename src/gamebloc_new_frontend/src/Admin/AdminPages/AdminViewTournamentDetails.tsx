@@ -741,7 +741,8 @@ const AdminViewTournamentDetails = () => {
                           </div>
                         </div>
 
-                        <WinnersBoard />
+                        {Object.keys(list.tournament_type)[0].toUpperCase() !==
+                          "BLITZKRIEG" && <WinnersBoard />}
 
                         {Object.keys(isMod[0])[0] === "Mod" ? (
                           <TribunalBar

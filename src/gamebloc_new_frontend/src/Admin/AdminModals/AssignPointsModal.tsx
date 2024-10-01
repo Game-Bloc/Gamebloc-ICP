@@ -34,7 +34,7 @@ const AssignPointsModal = ({ modal, player, onSave, game_type }: Prop) => {
   const _principal = player.userId
   const __principal = player.id
   const calculateTotalPoints = () => {
-    return kills * 5 + positionPoints - pointsDeduction
+    return kills + positionPoints - pointsDeduction
   }
   console.log("player", player)
   console.log(
@@ -50,7 +50,7 @@ const AssignPointsModal = ({ modal, player, onSave, game_type }: Prop) => {
     const totalPoints = calculateTotalPoints()
 
     const points: Points = {
-      kill_points: kills * 5,
+      kill_points: kills,
       position_points: positionPoints,
       total_points: totalPoints,
     }
