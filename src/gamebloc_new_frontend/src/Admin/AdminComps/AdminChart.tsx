@@ -68,7 +68,7 @@ const AdminChart = ({ tournament }: prop) => {
   }
 
   const monthlyCounts = countTournamentsByMonth(tournament)
-  console.log("chart", monthlyCounts)
+  // console.log("chart", monthlyCounts)
 
   const [value, setValue] = useState<EventProps>(null)
   return (

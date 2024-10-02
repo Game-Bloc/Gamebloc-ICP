@@ -262,8 +262,9 @@ const TournamentInfo = ({ data }: Props) => {
               "BLITZKRIEG" ? (
                 <div className="mt-8">
                   <h1 className="text-[1rem]  font-bold bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
-                    Prize : ${data.total_prize / data.no_of_participants} per
-                    kill
+                    Prize : $
+                    {(data.total_prize / data.no_of_participants).toFixed(2)}{" "}
+                    per kill
                   </h1>
                 </div>
               ) : (
