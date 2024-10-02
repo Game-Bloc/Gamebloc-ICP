@@ -6,6 +6,7 @@ import Carousel from "../components/dashboardComps/Carousel/Carousell"
 import Recommended from "../components/dashboardComps/Recommended/Recommended"
 import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
 import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
+import GameblocTutorialVideos from "../components/dashboardComps/Tournament/GameblocTutorialVideos"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { ConfigProvider, FloatButton, theme, Tooltip } from "antd"
 import { VscFeedback } from "react-icons/vsc"
@@ -91,9 +92,10 @@ const Dashboard = () => {
               <h2 className="text-base text-white sm:text-lg my-4">
                 Featured and Hot
               </h2>
-              <Carousel />
+              {/* <Carousel /> */}
               {/* <Recommended /> */}
               <FreeRegistration />
+              <GameblocTutorialVideos loading={isLoadingProfile} />
               <GameblocTournaments loading={isLoadingProfile} />
             </div>
           </div>
