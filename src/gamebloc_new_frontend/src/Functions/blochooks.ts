@@ -59,6 +59,17 @@ export const useFetchAllTournaments = () => {
               ]),
             )
           }
+          const winners = (value: any) => {
+            return value.map((winnerArray) =>
+              winnerArray.map((wins) => [
+                {
+                  amount: Number(wins.amount),
+                  position: wins.position,
+                  user_account: wins.user_account,
+                },
+              ]),
+            )
+          }
 
           // console.log("convertedPoints", convertedPoints)
           const tournamentData = {
@@ -81,7 +92,8 @@ export const useFetchAllTournaments = () => {
             tournament_rules: data.tournament_rules,
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
-            winners: data.winers.map((winner: any) => winner),
+            winers: data.winers.map((winner: any) => winner),
+            winners: winners(data.winners),
             squad_points: squad_function(data.squad_points),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
@@ -132,6 +144,7 @@ export const useUpdateTournament = () => {
       const update: any = await whoamiActor.get_all_tournament()
       if (update && update.length !== 0) {
         console.log("update function working")
+        // console.log("update", update)
         const tourArray: any[] = []
         for (const data of update) {
           const point_function = (value: any) => {
@@ -161,6 +174,18 @@ export const useUpdateTournament = () => {
               ]),
             )
           }
+
+          const winners = (value: any) => {
+            return value.map((winnerArray) =>
+              winnerArray.map((wins) => [
+                {
+                  amount: Number(wins.amount),
+                  position: wins.position,
+                  user_account: wins.user_account,
+                },
+              ]),
+            )
+          }
           // console.log("convertedPoints update", convertedPoints)
           const tournamentData = {
             creator: data.creator,
@@ -182,7 +207,8 @@ export const useUpdateTournament = () => {
             tournament_rules: data.tournament_rules,
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
-            winners: data.winers.map((winner: any) => winner),
+            winers: data.winers.map((winner: any) => winner),
+            winners: winners(data.winners),
             squad_points: squad_function(data.squad_points),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
@@ -280,7 +306,8 @@ export const useGetTournamentMessages = () => {
             tournament_rules: data.tournament_rules,
             tournament_type: data.tournament_type,
             users: data.user.map((user: any) => user),
-            winners: data.winers.map((winner: any) => winner),
+            winers: data.winers.map((winner: any) => winner),
+            winners: data.winners,
             squad_points: squad_function(data.squad_points),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),

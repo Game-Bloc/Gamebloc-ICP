@@ -5,12 +5,13 @@ import { MdDashboard } from "react-icons/md"
 import { MdVideogameAsset } from "react-icons/md"
 import { FaAngleDown } from "react-icons/fa"
 import { useAppSelector } from "../../redux/hooks"
-import Copy from "../../components/utils/Copy"
+import { MdHub } from "react-icons/md"
 
 const AdminSidebar = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState<boolean>(true)
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
+  const isMod = useAppSelector((state) => state.userProfile.role)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
 
@@ -20,6 +21,11 @@ const AdminSidebar = () => {
       name: "Tournament",
       link: "/admin-tournament-view",
       icon: MdVideogameAsset,
+    },
+    {
+      name: "Admin Hub",
+      link: "/admin-hub",
+      icon: MdHub,
     },
   ]
 
@@ -48,7 +54,9 @@ const AdminSidebar = () => {
           !open && "opacity-0 translate-x-10 overflow-hidden "
         } `}
       >
-        Administrator
+        {Object.keys(isMod[0])[0] !== "Mod"
+          ? "Tribunal Moderator"
+          : "Administrator"}
       </p>
 
       <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border px-[1rem] rounded-md">

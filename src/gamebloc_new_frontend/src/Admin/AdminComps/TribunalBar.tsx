@@ -45,18 +45,6 @@ const TribunalBar = ({
   const items: TabsProps["items"] = [
     {
       key: "1",
-      label: `Tribunal Results`,
-      children: (
-        <TribunalsTable
-          setState={setState}
-          tourData={tourData}
-          game_type={game_type}
-          _point={_point}
-        />
-      ),
-    },
-    {
-      key: "2",
       label: `Admin Result`,
       children: (
         <TableLogic
@@ -76,6 +64,18 @@ const TribunalBar = ({
           tourData={tourData}
           rowSelection={rowSelection}
           columns={columns}
+        />
+      ),
+    },
+    {
+      key: "2",
+      label: `Tribunal Results`,
+      children: (
+        <TribunalsTable
+          setState={setState}
+          tourData={tourData}
+          game_type={game_type}
+          _point={_point}
         />
       ),
     },

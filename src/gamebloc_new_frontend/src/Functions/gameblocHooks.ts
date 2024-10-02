@@ -165,7 +165,7 @@ export const useGameblocHooks = () => {
       const user: any = await whoamiActor.getSelf()
       if (user.username != "") {
         setIsAccount(true)
-        console.log("user..:", user)
+        // console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -1024,7 +1024,7 @@ export const useGameblocHooks = () => {
       popUp(success, route)
       setIsLoading(false)
 
-      // window.location.reload()
+      window.location.reload()
     } catch (err) {
       errorPopUp(error)
       console.log("Error Merging Solo Tribunal results", err)
@@ -1112,7 +1112,7 @@ export const useGameblocHooks = () => {
       await whoamiActor2.end_blitzkrieg_tournament(id, principal_id)
       setIsEnding(false)
       popUp(success, route)
-      console.log("Tournament Ended")
+      console.log("Blitzkrieg Tournament Ended")
     } catch (err) {
       console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)

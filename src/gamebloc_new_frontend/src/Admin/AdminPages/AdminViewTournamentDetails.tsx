@@ -63,6 +63,7 @@ const AdminViewTournamentDetails = () => {
     updating,
     isEnding,
     end_tournament,
+    end_blitzkrieg_tournament,
     archive_tournament,
   } = useGameblocHooks()
   const { updateTournament } = useUpdateTournament()
@@ -307,7 +308,7 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: +amount,
+          amount: Math.round(+amount),
           user_account: "",
         },
       ])
@@ -330,26 +331,31 @@ const AdminViewTournamentDetails = () => {
       const amount2 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
           "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
-          ? `${(tourData.entry_prize * tourData?.users?.length * 0.4).toFixed(
-              2,
-            )}`
+          ? `${(
+              tourData[0].entry_prize *
+              tourData[0]?.users?.length *
+              0.4
+            ).toFixed(2)}`
           : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
               "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "DUO"
-          ? `${(tourData.entry_prize * squadCount2() * 0.4).toFixed(2)}`
+          ? `${(tourData[0].entry_prize * squadCount2() * 0.4).toFixed(2)}`
           : Object.keys(tourData[0].tournament_type)[0].toUpperCase() ==
               "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SQUAD"
           ? `${(tourData[0].entry_prize * squadCount2() * 0.4).toFixed(2)}`
           : `${(tourData[0].total_prize * 0.4).toFixed(2)}`
-
+      // console.log(
+      //   "amount",
+      //   amount2,
+      // )
       setWinners([
         {
           position: "1",
-          amount: +amount1,
+          amount: Math.round(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: +amount2,
+          amount: Math.round(+amount2),
           user_account: "",
         },
       ])
@@ -404,17 +410,17 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: +amount1,
+          amount: Math.round(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: +amount2,
+          amount: Math.round(+amount2),
           user_account: "",
         },
         {
           position: "3",
-          amount: +amount3,
+          amount: Math.round(+amount3),
           user_account: "",
         },
       ])
@@ -428,15 +434,27 @@ const AdminViewTournamentDetails = () => {
   const end = () => {
     _winners()
     console.log("winnner struct", winners)
-    end_tournament(
-      id,
-      _principal,
-      no_of_winners,
-      winners,
-      "Tournament Ended successfully",
-      "Error, try again",
-      "",
-    )
+    if (
+      Object.keys(tourData[0].tournament_type)[0].toUpperCase() == "BLITZKRIEG"
+    ) {
+      end_blitzkrieg_tournament(
+        id,
+        _principal,
+        "Blitzkrieg Tournament Ended",
+        "Error, try again",
+        "",
+      )
+    } else {
+      end_tournament(
+        id,
+        _principal,
+        no_of_winners,
+        winners,
+        "Tournament Ended successfully",
+        "Error, try again",
+        "",
+      )
+    }
   }
 
   const saveChanges = () => {
@@ -525,7 +543,10 @@ const AdminViewTournamentDetails = () => {
                                   </div>
                                   <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
                                     <p className="text-[.7rem] text-[#ABCCFF]">
-                                      {list.no_of_winners} Winners
+                                      {list.no_of_winners}{" "}
+                                      {list.no_of_winners > 1
+                                        ? "Winners"
+                                        : "Winner"}
                                     </p>
                                   </div>
                                 </div>
@@ -720,7 +741,8 @@ const AdminViewTournamentDetails = () => {
                           </div>
                         </div>
 
-                        <WinnersBoard />
+                        {Object.keys(list.tournament_type)[0].toUpperCase() !==
+                          "BLITZKRIEG" && <WinnersBoard />}
 
                         {Object.keys(isMod[0])[0] === "Mod" ? (
                           <TribunalBar

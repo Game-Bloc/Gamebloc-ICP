@@ -84,23 +84,39 @@ pub fn cleanse_all_squad_type_tournament_branching_tribunal_points(id: String) -
                 })
             }
         }
-        tournament.squad_points = Some(list);
-        tournament_store.borrow_mut().insert(id, tournament.clone());
-        true
+        match list.is_empty() {
+            true => {
+                false
+            }
+            false => {
+                tournament.squad_points = Some(list);
+                tournament_store.borrow_mut().insert(id, tournament);
+                true
+            }
+        }
     })
 }
 
 #[update]
 pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) -> bool {
     TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        let mut tournament = tournament_store.borrow().get(&id.clone()).cloned().unwrap();
         let mut list: Vec<(String,String,Point)> = vec![];
         match tournament.clone().points_vector_mod_1 {
             None => {
                 match tournament.clone().points_vector_mod_2 {
                     None => {
                         match tournament.clone().points_vector_mod_3 {
-                            None => {}
+                            None => {
+                                match list.clone().is_empty() {
+                                    true => {
+                                    }
+                                    false => {
+                                        tournament.points = Some(list.clone());
+                                        tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                    }
+                                }
+                            }
                             Some(points_vector_mod_3) => {
                                 points_vector_mod_3.iter().for_each(|g|{
                                     let point = Point{
@@ -109,14 +125,31 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                         kill_points:  g.2.kill_points,
                                     };
                                     list.push(((g.0).parse().unwrap(), (g.1).parse().unwrap(), point))
-                                })
+                                });
+                                match list.clone().is_empty() {
+                                    true => {
+                                    }
+                                    false => {
+                                        tournament.points = Some(list.clone());
+                                        tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                    }
+                                }
                             }
                         }
                     }
                     Some(points_vector_mod_2) => {
                         points_vector_mod_2.iter().for_each(|f|{
                             match tournament.clone().points_vector_mod_3 {
-                                None => {}
+                                None => {
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
+                                }
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
@@ -125,7 +158,15 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                             kill_points: (f.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((f.0).parse().unwrap(), (f.1).parse().unwrap(), point))
-                                    })
+                                    });
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
                                 }
                             }
                         })
@@ -137,7 +178,16 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                     match tournament.clone().points_vector_mod_2 {
                         None => {
                             match tournament.clone().points_vector_mod_3 {
-                                None => {}
+                                None => {
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
+                                }
                                 Some(points_vector_mod_3) => {
                                     points_vector_mod_3.iter().for_each(|g|{
                                         let point = Point{
@@ -146,14 +196,32 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                             kill_points: (e.2.kill_points + g.2.kill_points)/2,
                                         };
                                         list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                    })
+                                    });
+
+                                    match list.clone().is_empty() {
+                                        true => {
+                                        }
+                                        false => {
+                                            tournament.points = Some(list.clone());
+                                            tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                        }
+                                    }
                                 }
                             }
                         }
                         Some(points_vector_mod_2) => {
                             points_vector_mod_2.iter().for_each(|f|{
                                 match tournament.clone().points_vector_mod_3 {
-                                    None => {}
+                                    None => {
+                                        match list.clone().is_empty() {
+                                            true => {
+                                            }
+                                            false => {
+                                                tournament.points = Some(list.clone());
+                                                tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                            }
+                                        }
+                                    }
                                     Some(points_vector_mod_3) => {
                                         points_vector_mod_3.iter().for_each(|g|{
                                             let point = Point{
@@ -161,8 +229,16 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                                                 total_points:  (e.2.total_points + f.2.total_points + g.2.total_points)/3,
                                                 kill_points: (e.2.kill_points + f.2.kill_points + g.2.kill_points)/3,
                                             };
-                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point))
-                                        })
+                                            list.push(((e.0).parse().unwrap(), (e.1).parse().unwrap(), point));
+                                        });
+                                        match list.clone().is_empty() {
+                                            true => {
+                                            }
+                                            false => {
+                                                tournament.points = Some(list.clone());
+                                                tournament_store.borrow_mut().insert(id.clone(), tournament.clone());
+                                            }
+                                        }
                                     }
                                 }
                             })
@@ -171,9 +247,18 @@ pub fn cleanse_all_solo_type_tournament_branching_tribunal_points(id: String) ->
                 })
             }
         }
-        tournament.squad_points = Some(list);
-        tournament_store.borrow_mut().insert(id, tournament.clone());
-        true
+        match list.clone().is_empty() {
+            true => {
+                tournament.points = tournament.points_vector_mod_1.clone();
+                tournament_store.borrow_mut().insert(id, tournament.clone());
+                false
+            }
+            false => {
+                tournament.points = tournament.points_vector_mod_1.clone();
+                tournament_store.borrow_mut().insert(id, tournament.clone());
+                true
+            }
+        }
     })
 }
 
@@ -230,10 +315,12 @@ pub fn start_tournament(id: String) {
     });
 }
 
+
+
 #[update]
-pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
+pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
+                      -> bool
 {
-    let mut tournament_winners = Vec::new();
     match get_self(principal).role {
         None => {
             println!("you're not admin");
@@ -261,7 +348,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                 let mut count = 0;
                                 tournament.points.clone().unwrap().iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
-                                        let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.wins = profile.wins + 1;
                                         profile.attendance = match profile.attendance {
                                             None => {
@@ -271,20 +358,30 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
+                                        profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push( tournament.clone().points.unwrap().first().unwrap().0.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some( winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.points.clone().unwrap().iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
-                                        let mut profile = profile_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.losses = match profile.losses {
                                             None => {
                                                 Some(1)
@@ -301,7 +398,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        profile_store.borrow_mut().insert(id_mapping.0.clone(), profile);
+                                        profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
                                     });
                                 });
                             }
@@ -309,7 +406,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                 let mut count = 0;
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
                                             None => {
                                                 Some(1)
@@ -327,20 +424,30 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad.clone());
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad.clone());
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.0.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some(winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.losses = match squad.losses {
                                             None => {
                                                 Some(1)
@@ -357,7 +464,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad);
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad);
                                     });
                                 });
                             }
@@ -365,7 +472,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                 let mut count = 0;
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
                                             None => {
                                                 Some(1)
@@ -383,20 +490,29 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad.clone());
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad.clone());
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
                                         amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
-                                        user_account: id_mapping.0.clone(),
+                                        user_account: id_mapping.1.clone(),
                                     };
-                                    tournament_winners.push(tournament_winner);
+                                    // tournament_winners.push(tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.0.clone())
+                                    tournament.winers.push((*id_mapping.1.clone()).to_owned());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![tournament_winner]);
+                                        }
+                                        Some(mut winners) => {
+                                            winners.push(tournament_winner);
+                                            tournament.winners = Some(winners);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap().iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
-                                        let mut squad = squad_store.borrow().get(id_mapping.0.clone().as_str()).cloned().unwrap();
+                                        let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.losses = match squad.losses {
                                             None => {
                                                 Some(1)
@@ -413,7 +529,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.0.clone(), squad);
+                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad);
                                     });
                                 });
                             }
@@ -432,12 +548,12 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool
     }
 }
 
+
 #[update]
 pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, winner: Vec<Winner>)
                       -> bool
 {
     let old_tournament_winners = winner;
-    let mut tournament_winners = Vec::new();
     match get_self(principal).role {
         None => {
             println!("you're not admin");
@@ -463,7 +579,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             GameType::Single => {
                                 // winners.append(&mut winning_players);
                                 let mut count = 0;
-                                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.clone().points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
                                         let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         profile.wins = profile.wins + 1;
@@ -479,9 +595,18 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                                     });
                                     let mut old_tournament_winner = old_tournament_winners[count].clone();
                                     old_tournament_winner.user_account = id_mapping.1.clone();
-                                    tournament_winners.push(old_tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.1.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![old_tournament_winner]);
+                                        }
+                                        Some( winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(old_tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                                     PROFILE_STORE.with(|profile_store| {
@@ -508,7 +633,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             }
                             GameType::Duo => {
                                 let mut count = 0;
-                                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.clone().squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
                                         let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
@@ -532,9 +657,18 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                                     });
                                     let mut old_tournament_winner = old_tournament_winners[count].clone();
                                     old_tournament_winner.user_account = id_mapping.1.clone();
-                                    tournament_winners.push(old_tournament_winner);
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.1.clone())
+                                    tournament.winers.push(id_mapping.1.clone());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![old_tournament_winner]);
+                                        }
+                                        Some(winners) => {
+                                            let mut winner_list = winners.clone();
+                                            winner_list.push(old_tournament_winner);
+                                            tournament.winners = Some(winner_list);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
@@ -561,7 +695,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             }
                             GameType::Squad => {
                                 let mut count = 0;
-                                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                tournament.clone().squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
                                         let mut squad = squad_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
                                         squad.wins = match squad.wins {
@@ -581,13 +715,21 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                                                 Some(attendance + 1)
                                             }
                                         };
-                                        squad_store.borrow_mut().insert(id_mapping.1.clone(), squad.clone());
+                                        squad_store.borrow_mut().insert((*id_mapping.1.clone()).to_owned(), squad.clone());
                                     });
                                     let mut old_tournament_winner = old_tournament_winners[count].clone();
-                                    old_tournament_winner.user_account = id_mapping.1.clone();
-                                    tournament_winners.push(old_tournament_winner);
+                                    old_tournament_winner.user_account = (*id_mapping.1.clone()).to_owned();
                                     count = count + 1;
-                                    tournament.winers.push(id_mapping.1.clone())
+                                    tournament.winers.push((*id_mapping.1.clone()).to_owned());
+                                    match tournament.winners.clone() {
+                                        None => {
+                                            tournament.winners = Some(vec![old_tournament_winner]);
+                                        }
+                                        Some(mut winners) => {
+                                            winners.push(old_tournament_winner);
+                                            tournament.winners = Some(winners);
+                                        }
+                                    }
                                 });
                                 tournament.squad_points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
                                     SQUAD_STORE.with(|squad_store| {
@@ -626,6 +768,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
         }
     }
 }
+
 
 
 #[update]
@@ -665,20 +808,20 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u
             GameType::TeamvTeam => {}
             GameType::Single => {
                 // winners.append(&mut winning_players);
-                tournament.points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
             GameType::Duo => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
             GameType::Squad => {
                 // winners.append(&mut winning_squad);
-                tournament.squad_points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
-                    tournament.winers.push(id_mapping.0.clone())
+                tournament.squad_points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                    tournament.winers.push(id_mapping.1.clone())
                 });
             }
         }
