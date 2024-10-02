@@ -162,6 +162,7 @@ service : () -> {
   lobbies_exterminator : (text) -> ();
   lobbies_extraditor : (text, text, record { text; text }) -> ();
   open_squad : (text, vec text, principal) -> ();
+  postpone_tournament : (text, text) -> ();
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
@@ -173,6 +174,7 @@ service : () -> {
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
   update_tournament_details : (text, text) -> ();
+  update_tournament_past_leaderboard : () -> ();
   update_tournament_pool_price : (text, nat) -> ();
   update_tournament_type_to_blitzkrieg : (text) -> ();
 }
