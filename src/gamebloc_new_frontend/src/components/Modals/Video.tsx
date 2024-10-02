@@ -37,14 +37,10 @@ const SoonModal = ({ modal }: Props) => {
                       />
                     </div>
                     <h1 className="font-valorant mt-4 text-primary-second text-[1.1rem] text-semibold">
-                      🎉 Coming Soon 🚀🚀🚀
+                      🎉 More Videos Coming Soon 🚀🚀🚀
                     </h1>
                     <p className="text-[.7rem] lg:text-[.82rem] text-center text-primary-second/80 my-[.2rem]">
-                      🔥🔥🔥 Stay tuned for more updates! In the meantime, sit
-                      back and relax. We'll also be sharing exclusive sneak
-                      peeks and behind-the-scenes content on our social media
-                      channels, so be sure to follow us on Social Media
-                      Platforms.🌟🌟🌟
+                      🔥🔥🔥 Stay tuned for more videos about Gamebloc! While that works, plese check out our YouTube channel for more videos and shorts. You can appreciate us by subscribing to our channel, like our posts and share ❤️ our videos to Gamers like yourself🌟🌟🌟
                     </p>
                   </div>
                 </div>
