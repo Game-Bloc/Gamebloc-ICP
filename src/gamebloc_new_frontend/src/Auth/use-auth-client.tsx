@@ -158,6 +158,11 @@ export const useAuthClient = (options = defaultOptions) => {
       console.log("Principal", principal)
       setAuthClient(client)
 
+      console.log("canisterId", canisterId )
+      console.log("canisterId2", canisterId2 )
+      console.log("ledgerId", ledgerId )
+      console.log("indexId", indexId )
+
       const actor = createActor(canisterId, {
         agentOptions: {
           identity,

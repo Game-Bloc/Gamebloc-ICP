@@ -9,7 +9,7 @@ MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
 
-dfx identity use dafault
+dfx identity use default
 
 export OWNER=$(dfx identity get-principal)
 

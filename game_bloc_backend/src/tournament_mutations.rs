@@ -812,3 +812,76 @@ pub fn update_tournament_type_to_blitzkrieg(id: String) {
         tournament_store.borrow_mut().insert(id, tournament);
     });
 }
+
+
+pub fn get_all_user() -> Vec<UserProfile> {
+    PROFILE_STORE.with(|profile_store| {
+        let mut all_users = Vec::new();
+        profile_store.borrow().iter().for_each(|user| {
+            all_users.push((*user.1).clone().try_into().unwrap())
+        });
+        all_users
+    })
+}
+
+#[update]
+pub fn update_tournament_past_leaderboard() {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut losers:Vec<String> = vec![];
+        tournament_store.borrow().iter().for_each(|tournament| {
+            losers = tournament.1.clone().user;
+            for x in tournament.1.user.iter() {
+                update_attendance(x.into());
+            }
+            for y in tournament.1.winers.iter() {
+                let index = losers.iter().position(|x| x == y).unwrap();
+                losers.remove(index);
+                update_winners(y.into());
+            }
+            for z in losers.iter() {
+                update_losers(z.into());
+            }
+        });
+    });
+}
+
+
+pub fn update_winners(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        profile.wins = profile.wins + 1;
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+pub fn update_attendance(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        match profile.attendance {
+            None => {
+                profile.attendance = Some(1);
+            }
+            Some(attendance) => {
+                profile.attendance = Some(attendance + 1);
+            }
+        }
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+pub fn update_losers(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        match profile.losses {
+            None => {
+                profile.losses = Some(1);
+            }
+            Some(attendance) => {
+                profile.losses = Some(attendance + 1);
+            }
+        }
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+
