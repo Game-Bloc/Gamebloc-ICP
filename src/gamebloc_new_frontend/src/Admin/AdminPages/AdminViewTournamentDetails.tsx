@@ -311,7 +311,7 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount),
+          amount: Math.floor(+amount),
           user_account: "",
         },
       ])
@@ -353,12 +353,12 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount1),
+          amount: Math.floor(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: Math.round(+amount2),
+          amount: Math.floor(+amount2),
           user_account: "",
         },
       ])
@@ -413,17 +413,17 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount1),
+          amount: Math.floor(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: Math.round(+amount2),
+          amount: Math.floor(+amount2),
           user_account: "",
         },
         {
           position: "3",
-          amount: Math.round(+amount3),
+          amount: Math.floor(+amount3),
           user_account: "",
         },
       ])
