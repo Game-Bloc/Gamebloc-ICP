@@ -1094,6 +1094,7 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")
+      window.location.reload()
     } catch (err) {
       console.log("error ending tournament", err)
       errorPopUp(error)
@@ -1113,6 +1114,7 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Blitzkrieg Tournament Ended")
+      window.location.reload()
     } catch (err) {
       console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)
