@@ -1,6 +1,7 @@
 import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
+import DateTime "mo:datetime/DateTime";
 // import AccountIdentifier "mo:account-identifier";
 // import Account "mo:account";
 
@@ -225,7 +226,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                                 subaccount = null
                             };
                             memo = null;
-                            created_at_time = null;
+                            created_at_time = ?Nat64.fromIntWrap(Time.now());
                             amount = (winner.amount * 10_000_000_000)/icp_price;
                         });
                     }
