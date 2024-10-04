@@ -1,6 +1,7 @@
 import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
+import DateTime "mo:datetime/DateTime";
 // import AccountIdentifier "mo:account-identifier";
 // import Account "mo:account";
 
@@ -225,7 +226,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                                 subaccount = null
                             };
                             memo = null;
-                            created_at_time = null;
+                            created_at_time = ?Nat64.fromIntWrap(Time.now());
                             amount = (winner.amount * 10_000_000_000)/icp_price;
                         });
                     }
@@ -1273,7 +1274,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    let gbc_admin : Principal = Principal.fromText("xpvi3-zhz7q-eqzys-expgv-3wylp-vok2f-6svsj-ffeao-5ordm-f6byx-tqe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); //Deon here
 
 //
 // * Tournaments Features

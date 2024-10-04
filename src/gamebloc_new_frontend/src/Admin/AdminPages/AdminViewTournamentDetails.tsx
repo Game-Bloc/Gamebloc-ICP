@@ -31,6 +31,8 @@ import WinnersBoard from "../../components/Result/WinnersBoard"
 import TableLogic from "../AdminComps/TableLogic"
 import TribunalsTable from "../AdminComps/TribunalsTable"
 import TribunalBar from "../AdminComps/TribunalBar"
+import hooks from "../../Functions/hooks"
+import PaymentModal3 from "../AdminModals/PaymentModal3"
 
 interface DataType {
   position: React.Key
@@ -66,6 +68,7 @@ const AdminViewTournamentDetails = () => {
     end_blitzkrieg_tournament,
     archive_tournament,
   } = useGameblocHooks()
+  const { sending, done, disburseFunds } = hooks()
   const { updateTournament } = useUpdateTournament()
   const { fetchAllTournaments, loading } = useFetchAllTournaments()
   const tournament = useAppSelector((state) => state.tournamentData)
@@ -84,6 +87,7 @@ const AdminViewTournamentDetails = () => {
   const { noData, getAllSquads } = useGetAllSquad()
   const [selectedRow, setSelectedRow] = useState<DataType | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const [endModal, setEndModal] = useState<boolean>(false)
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const [playerPoints, setPlayerPoints] = useState<[string, string, Points][]>(
@@ -267,10 +271,9 @@ const AdminViewTournamentDetails = () => {
     )
   }
 
-  // console.log(
-  //   "test",
-  //   Object.keys(tourData[0].tournament_type)[0].toUpperCase() === "CROWDFUNDED",
-  // )
+  const handleModal = () => {
+    setOpenPaymentModal(false)
+  }
 
   const squadCount2 = () => {
     let totalCount = 0
@@ -308,7 +311,7 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount),
+          amount: Math.floor(+amount),
           user_account: "",
         },
       ])
@@ -350,12 +353,12 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount1),
+          amount: Math.floor(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: Math.round(+amount2),
+          amount: Math.floor(+amount2),
           user_account: "",
         },
       ])
@@ -410,17 +413,17 @@ const AdminViewTournamentDetails = () => {
       setWinners([
         {
           position: "1",
-          amount: Math.round(+amount1),
+          amount: Math.floor(+amount1),
           user_account: "",
         },
         {
           position: "2",
-          amount: Math.round(+amount2),
+          amount: Math.floor(+amount2),
           user_account: "",
         },
         {
           position: "3",
-          amount: Math.round(+amount3),
+          amount: Math.floor(+amount3),
           user_account: "",
         },
       ])
@@ -660,21 +663,22 @@ const AdminViewTournamentDetails = () => {
                                 </p>
                               </div>
                             </div>
-                            {Object.keys(isMod[0])[0] === "Mod" && (
-                              <div className="flex h-full items-end">
-                                <div className="flex justify-between  gap-4 items-center ">
+                            {Object.keys(isMod[0])[0] === "Mod" &&
+                              (Object.keys(list.status)[0].toUpperCase() ===
+                              "GAMECOMPLETED" ? (
+                                <div className="flex h-full items-end">
                                   <button
-                                    onClick={() => setEndModal(true)}
-                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                    onClick={() => setOpenPaymentModal(true)}
+                                    className="bg-[#039855] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
                                   >
-                                    {isEnding ? (
+                                    {sending ? (
                                       <div className="flex items-center  gap-2">
                                         <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
                                           Wait
                                         </p>
                                         <ClipLoader
                                           color={color}
-                                          loading={isEnding}
+                                          loading={sending}
                                           cssOverride={override}
                                           size={10}
                                           aria-label="Loading Spinner"
@@ -683,44 +687,75 @@ const AdminViewTournamentDetails = () => {
                                       </div>
                                     ) : (
                                       <>
-                                        <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
                                         <p className="ml-[.4rem] text-white text-[.8rem]">
                                           {" "}
-                                          End Tournament
-                                        </p>
-                                      </>
-                                    )}
-                                  </button>
-                                  <button
-                                    onClick={() => setOpenModal(true)}
-                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
-                                  >
-                                    {updating ? (
-                                      <div className="flex items-center  gap-2">
-                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
-                                          Wait
-                                        </p>
-                                        <ClipLoader
-                                          color={color}
-                                          loading={updating}
-                                          cssOverride={override}
-                                          size={10}
-                                          aria-label="Loading Spinner"
-                                          data-testid="loader"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <>
-                                        {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
-                                        <p className="ml-[.4rem] text-white text-[.8rem]">
-                                          {" "}
-                                          Archive Tournament
+                                          Pay Winners
                                         </p>
                                       </>
                                     )}
                                   </button>
                                 </div>
-                                {/* <div className="flex justify-between  gap-4 items-center ">
+                              ) : (
+                                <div className="flex h-full items-end">
+                                  <div className="flex justify-between  gap-4 items-center ">
+                                    <button
+                                      onClick={() => setEndModal(true)}
+                                      className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                    >
+                                      {isEnding ? (
+                                        <div className="flex items-center  gap-2">
+                                          <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                            Wait
+                                          </p>
+                                          <ClipLoader
+                                            color={color}
+                                            loading={isEnding}
+                                            cssOverride={override}
+                                            size={10}
+                                            aria-label="Loading Spinner"
+                                            data-testid="loader"
+                                          />
+                                        </div>
+                                      ) : (
+                                        <>
+                                          <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                          <p className="ml-[.4rem] text-white text-[.8rem]">
+                                            {" "}
+                                            End Tournament
+                                          </p>
+                                        </>
+                                      )}
+                                    </button>
+                                    <button
+                                      onClick={() => setOpenModal(true)}
+                                      className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                    >
+                                      {updating ? (
+                                        <div className="flex items-center  gap-2">
+                                          <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                            Wait
+                                          </p>
+                                          <ClipLoader
+                                            color={color}
+                                            loading={updating}
+                                            cssOverride={override}
+                                            size={10}
+                                            aria-label="Loading Spinner"
+                                            data-testid="loader"
+                                          />
+                                        </div>
+                                      ) : (
+                                        <>
+                                          {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
+                                          <p className="ml-[.4rem] text-white text-[.8rem]">
+                                            {" "}
+                                            Archive Tournament
+                                          </p>
+                                        </>
+                                      )}
+                                    </button>
+                                  </div>
+                                  {/* <div className="flex justify-between  gap-4 items-center ">
                               <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
                                 <GiMoneyStack className="text-white text-[1.5rem]" />
                                 <p className="ml-[.4rem]  text-white text-[.8rem]">
@@ -736,8 +771,8 @@ const AdminViewTournamentDetails = () => {
                                 </p>
                               </button>
                             </div> */}
-                              </div>
-                            )}
+                                </div>
+                              ))}
                           </div>
                         </div>
 
@@ -803,6 +838,9 @@ const AdminViewTournamentDetails = () => {
             _function={end}
             message="Are you sure you want to end this tournament?"
           />
+        )}
+        {openPaymentModal && (
+          <PaymentModal3 data={tourData[0]} id={id} modal={handleModal} />
         )}
       </div>
     )

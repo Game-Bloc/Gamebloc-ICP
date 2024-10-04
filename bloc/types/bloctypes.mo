@@ -28,7 +28,7 @@ module {
     };
 
     public type Winner = {
-        user_account : Text;
+        user_account : Text; // Principal instead of wallet address
         position : Text;
         amount : Nat;
     };

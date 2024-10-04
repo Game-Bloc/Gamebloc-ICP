@@ -44,8 +44,10 @@ export const hooks = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const MySwal = withReactContent(Swal)
+  const [done, setDone] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [sending, setIsSending] = useState<boolean>(false)
 
   const popUp = (successMsg: string, route: any) => {
     MySwal.fire({
@@ -101,11 +103,37 @@ export const hooks = () => {
     }
   }
 
+  const disburseFunds = async (
+    id: string,
+    icp_price: bigint,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setIsSending(true)
+      console.log("backend icp", icp_price)
+      const disburse = await whoamiActor.disbursePayment(id, icp_price)
+      console.log("Funds disbursed")
+      setIsSending(false)
+      setDone(true)
+      popUp(successMsg, route)
+      console.log("sent")
+    } catch (err) {
+      setIsSending(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    }
+  }
+
   return {
+    done,
     updating,
     isLoading,
+    sending,
     setAdmin,
     setTribunal,
+    disburseFunds,
   }
 }
 

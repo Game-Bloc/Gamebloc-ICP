@@ -42,7 +42,7 @@ export const useGameblocHooks = () => {
     indexActor,
     principal,
   } = useAuth()
-  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
@@ -1094,6 +1094,7 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Tournament Ended")
+      window.location.reload()
     } catch (err) {
       console.log("error ending tournament", err)
       errorPopUp(error)
@@ -1113,6 +1114,7 @@ export const useGameblocHooks = () => {
       setIsEnding(false)
       popUp(success, route)
       console.log("Blitzkrieg Tournament Ended")
+      window.location.reload()
     } catch (err) {
       console.log("error ending blitzkrieg tournament", err)
       errorPopUp(error)
