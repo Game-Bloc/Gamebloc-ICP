@@ -52,6 +52,7 @@ pub_struct!(UserProfile {
      account_id : String,
      canister_id: String,
      squad_badge: String,
+     refferal_id: Option<String>,
 });
 
 pub_struct!(
