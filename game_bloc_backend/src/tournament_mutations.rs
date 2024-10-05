@@ -362,7 +362,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
-                                        amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
+                                        amount: ((id_mapping.2.clone().total_points as f64 * (tournament.total_prize as f64 / tournament.no_of_participants as f64) as f64) * 10_000_000_000.00) as u128,
                                         user_account: id_mapping.1.clone(),
                                     };
                                     // tournament_winners.push(tournament_winner);
@@ -428,7 +428,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
-                                        amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
+                                        amount: ((id_mapping.2.clone().total_points as f64 * (tournament.total_prize as f64 / tournament.no_of_participants as f64) as f64) * 10_000_000_000.00) as u128,
                                         user_account: id_mapping.1.clone(),
                                     };
                                     // tournament_winners.push(tournament_winner);
@@ -494,7 +494,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                                     });
                                     let tournament_winner = Winner{
                                         position: "".to_string(),
-                                        amount: tournament.total_prize /tournament.no_of_participants * id_mapping.2.clone().kill_points,
+                                        amount: ((id_mapping.2.clone().total_points as f64 * (tournament.total_prize as f64 / tournament.no_of_participants as f64) as f64) * 10_000_000_000.00) as u128,
                                         user_account: id_mapping.1.clone(),
                                     };
                                     // tournament_winners.push(tournament_winner);

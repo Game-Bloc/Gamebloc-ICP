@@ -73,6 +73,24 @@ pub fn count_all_users() -> u128 {
 }
 
 #[query]
+pub fn count_all_referral( person_referral_id: String ) -> u128 {
+    PROFILE_STORE.with(|profile_store| {
+        let mut users_vec: Vec<UserProfile> = Vec::new();
+        profile_store.borrow().iter().for_each(|user| {
+            match user.1.referral_id.clone() {
+                None => {}
+                Some(referral_id) => {
+                    if (referral_id == person_referral_id){
+                        users_vec.push((*user.1).clone().try_into().unwrap())
+                    }
+                }
+            }
+        });
+        users_vec.len()
+    }) as u128
+}
+
+#[query]
 pub fn get_profile(name: String) -> UserProfile {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
