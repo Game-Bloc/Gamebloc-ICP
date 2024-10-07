@@ -141,15 +141,15 @@ module.exports = {
       Buffer: [require.resolve("buffer/"), "Buffer"],
       process: require.resolve("process/browser"),
     }),
-    new CopyPlugin({
-      patterns: [
-        {
-          from: `src/${frontendDirectory}/src/.ic-assets.json*`,
-          to: ".ic-assets.json5",
-          noErrorOnMissing: true,
-        },
-      ],
-    }),
+    // new CopyPlugin({
+    //   patterns: [
+    //     {
+    //       from: `src/${frontendDirectory}/src/.ic-assets.json*`,
+    //       to: ".ic-assets.json5",
+    //       noErrorOnMissing: true,
+    //     },
+    //   ],
+    // }),
   ],
   // proxy /api to port 4943 during development.
   // if you edit dfx.json to define a project-specific local network, change the port to match.
