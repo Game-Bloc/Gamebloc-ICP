@@ -89,7 +89,8 @@ module {
         status : Status;
         tournaments_created : Nat8;
         username : Text;
-        wins : Nat8
+        wins : Nat8;
+        referral_id : ?Text
     };
 
     public type Point = {
