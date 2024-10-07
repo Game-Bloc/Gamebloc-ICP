@@ -1,7 +1,7 @@
 import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
-import DateTime "mo:datetime/DateTime";
+// import DateTime "mo:datetime/DateTime";
 // import AccountIdentifier "mo:account-identifier";
 // import Account "mo:account";
 
@@ -509,9 +509,9 @@ public func getPrincipal() : async Principal {
 
 /// Profile
 
-func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
+func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
     // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-    ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
+    ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
 };
 
 // public func update_users() : async () {
@@ -533,7 +533,7 @@ func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : 
 //     PAY_STORE.toArray();
 // };
 
-public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : async Result.Result<Text, Text> {
+public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
     // call the balnce function to get and set the balance of newly registered users
     let balance = 10;
     let checkUsername = usernameChecker(username);
@@ -541,7 +541,7 @@ public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, userna
     if (checkUsername == false) {
         #err("This username exist! Please enter another")
     } else {
-        createOneProfile(id_hash, age, username, ?0, ?0, caller, points, role);
+        createOneProfile(id_hash, age, username, ?0, ?0, referral_id, caller, points, role);
         #ok("You have successfully created an account")
     }
 };
@@ -662,7 +662,7 @@ public shared ({ caller }) func createUser(user : Principal) : async Principal {
     await getOwner()
 };
 
-func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, attendance : ?Nat8, losses : ?Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : Bloctypes.UserProfile {
+func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, attendance : ?Nat8, referral_id : ?Text, losses : ?Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : Bloctypes.UserProfile {
     {
         id_hash;
         age;
@@ -679,7 +679,8 @@ func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, attendanc
         account_id;
         canister_id;
         squad_badge;
-        points
+        points;
+        referral_id
     }
 };
 
@@ -1095,13 +1096,13 @@ public shared ({ caller }) func checkPassword(_password : Text) : async Bool {
     return true
 };
 
-func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : async Bloctypes.Result {
-    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, ?0, ?0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
+func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
+    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, ?0, referral_id, ?0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
     await RustBloc.create_profile(profile, caller)
 };
 
-public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : async Bloctypes.Result {
-    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, ?0, ?0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
+public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
+    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, ?0, referral_id, ?0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
     try {
         await create_usertrack(caller);
         await create_notification_panel(caller, username, time);
@@ -1274,7 +1275,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); //Deon here
+    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); //Admin here
 
 //
 // * Tournaments Features

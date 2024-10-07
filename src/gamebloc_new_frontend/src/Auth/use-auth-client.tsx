@@ -167,24 +167,28 @@ export const useAuthClient = (options = defaultOptions) => {
           identity,
         },
       })
+      console.log("kitchen backend", canisterId)
 
       const actor2 = createActor2(canisterId2, {
         agentOptions: {
           identity,
         },
       })
+      console.log("Gbc backend", canisterId2)
 
       const actor3 = createLedgerActor(ledgerId, {
         agentOptions: {
           identity,
         },
       })
+      console.log("ledger backend", ledgerId)
 
       const actor4 = createIndexActor(indexId, {
         agentOptions: {
           identity,
         },
       })
+      console.log("index backend", indexId)
       console.log("Actor", actor2)
       setWhoamiActor(actor)
       setWhoamiActor2(actor2)
