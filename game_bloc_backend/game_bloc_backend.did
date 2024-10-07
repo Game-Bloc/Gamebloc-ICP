@@ -98,6 +98,7 @@ type UserProfile = record {
   account_id : text;
   id_hash : text;
   status : Status;
+  referral_id : opt text;
   username : text;
   date : text;
   role : opt Role;
@@ -128,6 +129,7 @@ service : () -> {
       bool,
     );
   close_squad : (text, vec text, principal) -> ();
+  count_all_referral : (text) -> (nat) query;
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
   count_all_users : () -> (nat) query;
