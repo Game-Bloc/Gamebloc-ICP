@@ -75,6 +75,10 @@ const defaultOptions = {
    *  @type {import("@dfinity/auth-client").AuthClientCreateOptions}
    */
   createOptions: {
+    derivationOrigin:
+      process.env.DFX_NETWORK === "ic"
+        ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+        : "http://localhost:8080",
     idleOptions: {
       // Set to true if you do not want idle functionality
       disableIdle: true,
