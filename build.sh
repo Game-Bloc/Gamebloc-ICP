@@ -7,9 +7,9 @@ dfx identity new minter
 dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
+x
 
-
-dfx identity use default
+dfx identity use deon
 
 export OWNER=$(dfx identity get-principal)
 
@@ -147,3 +147,11 @@ dfx deploy
 #       "package": "vetkd_system_api"
 #     },
 
+<<<<<<< HEAD
+=======
+
+# dfx deploy --network=ic         canister update-settings kitchen --add-controller ltmcx-2y32p-k3cxj-oe7mh-zplyh-mg7j2-w5756-qajf5-l6y47-be56z-nqe --network=ic2024-10-03 21:07:49.875732 UTC: [Canister bd3sg-teaaa-aaaaa-qaaba-cai] 20[ic-icrc1-index] Indexed: 0 waiting : 22
+# 4-10-03 21:07:49.875732 UTC: [Canister be2us-64aaa-aaaaa-qaabq-cai]
+
+# MOPS_VERSION=1.0.0 sh -ci "$(curl -fsSL cli.mops.one/install.sh | sh)"
+>>>>>>> 43cf0732a3c49ed3524b7649090118326c5b5fee
