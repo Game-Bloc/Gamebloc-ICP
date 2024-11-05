@@ -107,6 +107,7 @@ export const useGameblocHooks = () => {
         squad_badge,
         [],
         role,
+        []
       )
       if (user) {
         popUp(successMsg, route)

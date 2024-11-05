@@ -155,11 +155,11 @@ export const useAuthClient = (options = defaultOptions) => {
 
       const identity = client.getIdentity()
       setIdentity(identity)
-      // console.log("identity", identity)
+      console.log("identity", identity)
       const principal = identity.getPrincipal()
 
       setPrincipal(principal)
-      // console.log("Principal", principal)
+      console.log("Principal", principal)
       setAuthClient(client)
 
       const actor = createActor(canisterId, {
