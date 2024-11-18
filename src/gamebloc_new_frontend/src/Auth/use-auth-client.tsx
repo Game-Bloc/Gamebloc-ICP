@@ -75,6 +75,10 @@ const defaultOptions = {
    *  @type {import("@dfinity/auth-client").AuthClientCreateOptions}
    */
   createOptions: {
+    derivationOrigin:
+      process.env.DFX_NETWORK === "ic"
+        ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+        : "http://localhost:8080",
     idleOptions: {
       // Set to true if you do not want idle functionality
       disableIdle: true,
@@ -155,11 +159,11 @@ export const useAuthClient = (options = defaultOptions) => {
 
       const identity = client.getIdentity()
       setIdentity(identity)
-      // console.log("identity", identity)
+      console.log("identity", identity)
       const principal = identity.getPrincipal()
 
       setPrincipal(principal)
-      // console.log("Principal", principal)
+      console.log("Principal", principal)
       setAuthClient(client)
 
       const actor = createActor(canisterId, {

@@ -28,10 +28,10 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useAuth } from "../Auth/use-auth-client"
 import Editor from "../components/Texteditor/Editor"
 import PaymentModal2 from "../components/Modals/PaymentModal2"
-const loader = require("../../assets/category1.svg").default
-const loader1 = require("../../assets/category2.svg").default
-const loader2 = require("../../assets/category3.svg").default
-const loader3 = require("../../assets/category4.svg").default
+const loader = require("../../assets/category1.png").default
+const loader1 = require("../../assets/category2.png").default
+const loader2 = require("../../assets/category3.png").default
+const loader3 = require("../../assets/category4.png").default
 
 const CreateTournament = () => {
   const navigate = useNavigate()

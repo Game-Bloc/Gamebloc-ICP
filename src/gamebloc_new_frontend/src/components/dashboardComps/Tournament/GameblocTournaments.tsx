@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import SoonModal from "../../../components/Modals/SoonModal"
 import { DotChartOutlined } from "@ant-design/icons"
 import { Skeleton } from "antd"
-const img1 = require("../../../../assets/category1.svg").default
+const img1 = require("../../../../assets/category1.png").default
 
 interface props {
   loading: boolean

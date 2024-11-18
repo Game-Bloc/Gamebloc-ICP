@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
 import "./hero.css"
 import { Blurhash } from "react-blurhash"
-const layer1: any = require("../../../assets/layer1.svg").default
-const layer2: any = require("../../../assets/layer2.svg").default
-const layer3: any = require("../../../assets/layer3.svg").default
+const layer1: any = require("../../../assets/layer1.png").default
+const layer2: any = require("../../../assets/layer2.png").default
+const layer3: any = require("../../../assets/layer3.png").default
 
 interface Props {
   setModal: any

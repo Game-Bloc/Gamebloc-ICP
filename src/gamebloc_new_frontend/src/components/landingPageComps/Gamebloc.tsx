@@ -18,7 +18,7 @@ const Gamebloc = ({ setModal }: Props) => {
           <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
         </button>
       </div>
-      <img src={`home1.svg`} alt="" className="m-0 md:w-[50%]" />
+      <img src={`home1.png`} alt="" className="m-0 md:w-[50%]" />
       <div className="flex flex-col 2xl:w-[50%] justify-end">
         <p
           className="text-primary-second text-[1.1rem] sm:text-[2rem] flex w-full justify-center md:justify-end  lg:text-[3rem] 

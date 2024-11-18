@@ -4,10 +4,10 @@ import Sidebar from "../components/dashboardComps/Sidebar"
 import { Link, useNavigate } from "react-router-dom"
 import { IoIosArrowRoundBack } from "react-icons/io"
 import CategoryCard from "../components/category/CategoryCard"
-const loader = require("../../assets/category1.svg").default
-const loader1 = require("../../assets/category2.svg").default
-const loader2 = require("../../assets/category3.svg").default
-const loader3 = require("../../assets/category4.svg").default
+const loader = require("../../assets/category1.png").default
+const loader1 = require("../../assets/category2.png").default
+const loader2 = require("../../assets/category3.png").default
+const loader3 = require("../../assets/category4.png").default
 
 const Category = () => {
   const navigate = useNavigate()

@@ -3,7 +3,7 @@ import { CodImgs } from "../../../data/Index"
 import { useNavigate } from "react-router-dom"
 import { Skeleton } from "antd"
 import { DotChartOutlined } from "@ant-design/icons"
-const cardImg = require("../../../../assets/category1.svg").default
+const cardImg = require("../../../../assets/img5.png").default
 interface Props {
   data: any
   index: any

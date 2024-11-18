@@ -16,7 +16,7 @@ import { convertToMilliseconds, inProgress } from "../components/utils/utills"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { useAuth } from "../Auth/use-auth-client"
 import { useCountdown } from "../components/utils/CountDown"
-const gameImage = require("../../assets/category1.svg").default
+const gameImage = require("../../assets/category1.png").default
 
 const TournamentDetail = () => {
   const { id } = useParams()
@@ -179,15 +179,15 @@ const TournamentDetail = () => {
                               <img
                                 src={
                                   //   id == "1"
-                                  //     ? `category1.svg`
+                                  //     ? `category1.png`
                                   //     : id == "2"
-                                  //     ? `category2.svg`
+                                  //     ? `category2.png`
                                   //     : id == "3"
-                                  //     ? `category3.svg`
+                                  //     ? `category3.png`
                                   //     : id == "4"
-                                  //     ? `category4.svg`
+                                  //     ? `category4.png`
                                   //                                           :
-                                  // `category1.svg`
+                                  // `category1.png`
                                   gameImage
                                 }
                                 alt=""
