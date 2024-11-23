@@ -75,10 +75,6 @@ const defaultOptions = {
    *  @type {import("@dfinity/auth-client").AuthClientCreateOptions}
    */
   createOptions: {
-    derivationOrigin:
-      process.env.DFX_NETWORK === "ic"
-        ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
-        : "http://localhost:8080",
     idleOptions: {
       // Set to true if you do not want idle functionality
       disableIdle: true,
@@ -135,6 +131,10 @@ export const useAuthClient = (options = defaultOptions) => {
   const login = () => {
     authClient.login({
       ...options.loginOptions,
+      derivationOrigin:
+        process.env.DFX_NETWORK === "ic"
+          ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+          : "http://localhost:8080",
       onSuccess: () => {
         updateClient(authClient)
         navigate("/dashboard")
@@ -145,6 +145,10 @@ export const useAuthClient = (options = defaultOptions) => {
   const loginNFID = () => {
     authClient.login({
       ...options.loginNFID,
+      derivationOrigin:
+        process.env.DFX_NETWORK === "ic"
+          ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+          : "http://localhost:8080",
       onSuccess: () => {
         updateClient(authClient)
         navigate("/dashboard")
@@ -171,29 +175,29 @@ export const useAuthClient = (options = defaultOptions) => {
           identity,
         },
       })
-      console.log("kitchen backend", canisterId)
+      // console.log("kitchen backend", canisterId)
 
       const actor2 = createActor2(canisterId2, {
         agentOptions: {
           identity,
         },
       })
-      console.log("Gbc backend", canisterId2)
+      // console.log("Gbc backend", canisterId2)
 
       const actor3 = createLedgerActor(ledgerId, {
         agentOptions: {
           identity,
         },
       })
-      console.log("ledger backend", ledgerId)
+      // console.log("ledger backend", ledgerId)
 
       const actor4 = createIndexActor(indexId, {
         agentOptions: {
           identity,
         },
       })
-      console.log("index backend", indexId)
-      console.log("Actor", actor2)
+      // console.log("index backend", indexId)
+      // console.log("Actor", actor2)
       setWhoamiActor(actor)
       setWhoamiActor2(actor2)
       setLedgerAcor(actor3)
@@ -219,7 +223,7 @@ export const useAuthClient = (options = defaultOptions) => {
         )
       }
 
-      console.log("web socket status", _ws)
+      // console.log("web socket status", _ws)
 
       setWs(_ws)
     } catch (err) {
