@@ -73,7 +73,7 @@ const Hero = ({ setModal }: Props) => {
   return (
     <div className=" fixed top-0 left-0 w-full h-[72px] flex  backdrop-blur-sm z-50  py-8 px-4 sm:p-8 justify-between items-center">
       <img src={`logo.png`} alt="" className="w-[5rem] md:w-32 m-0 " />
-      <div className="hidden md:flex  justify-between items-center gap-4">
+      <div className="hidden md:flex  justify-between items-center gap-16">
         <Link
           activeClass="active"
           to="about"
