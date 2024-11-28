@@ -6,7 +6,11 @@ import "swiper/css/pagination"
 import "./feature.css"
 import { Element } from "react-scroll"
 
-const FeatureList = () => {
+interface Props {
+  setModal: any
+}
+
+const FeatureList = ({ setModal }: Props) => {
   const [centerIndex, setCenterIndex] = useState<number>(0)
   const swiperRef = useRef<any | null>(null)
 
@@ -47,14 +51,12 @@ const FeatureList = () => {
   ]
 
   useEffect(() => {
-    // Set the initial centerIndex after Swiper initializes
     if (swiperRef.current) {
       setCenterIndex(swiperRef.current.realIndex)
     }
   }, [])
 
   const handleSlideChange = (swiper: any) => {
-    // Update center index on each slide change
     setCenterIndex(swiper.realIndex)
   }
 
@@ -68,13 +70,24 @@ const FeatureList = () => {
             className={index === centerIndex ? "center-icon" : ""}
           />
           {index === centerIndex && (
-            <div className="mt-4 text-center">
+            <div className=" flex flex-col mt-6 text-center justify-center items-center">
               <p className="text-primary-second text-[1rem] lg:text-[1.2rem] font-semibold">
                 {list.title}
               </p>
               <p className="mt-[8px] text-primary-second text-[0.69rem] md:text-[0.7rem]">
                 {list.descript}
               </p>
+              <button
+                onClick={() => setModal(true)}
+                className="pt-1 pb-[.25rem]  px-[.6rem] w-[6rem]  sm:w-[10rem] lg:w-[15rem] sm:px-6 text-[.6rem] sm:text-base text-black justify-between mt-[2rem]  hover:bg-primary-second/70  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+              >
+                <p className="text-[0.65rem] sm:text-[.85rem]">Get Started</p>
+                <img
+                  src={`details.png`}
+                  alt=""
+                  className="m-0 w-[.75rem] sm:w-6"
+                />
+              </button>
             </div>
           )}
         </div>
@@ -84,10 +97,10 @@ const FeatureList = () => {
 
   return (
     <Element name="features" id="features">
-      <div className="my-[5rem] w-full">
-        <div style={{ marginBottom: "5rem" }}>
+      <div className=" my-[2rem] lg:my-[5rem]  w-full">
+        <div className="mb-8 lg:mb-[5rem]">
           <p className="text-primary-second text-[1.1rem] sm:text-[2rem] flex w-full justify-center 2xl:text-[3rem] font-valorant mt-4">
-            GameBloc Active Feature List
+            Features
           </p>
         </div>
         <Swiper
@@ -95,10 +108,10 @@ const FeatureList = () => {
           autoplay={{ delay: 3000 }}
           onSlideChange={handleSlideChange}
           modules={[Autoplay, Pagination]}
-          slidesPerView={3}
+          slidesPerView={1}
           spaceBetween={20}
           loop={true}
-          centeredSlides={true} // Ensures slides are centered
+          centeredSlides={true}
           breakpoints={{
             640: { slidesPerView: 2, spaceBetween: 20 },
             768: { slidesPerView: 3, spaceBetween: 40 },

@@ -34,20 +34,20 @@ const Hero = ({ setModal }: Props) => {
       const featuresSection = document.getElementById("features")
       const socialSection = document.getElementById("social")
 
-      if (
-        aboutSection &&
-        scrollY >= aboutSection.offsetTop &&
-        scrollY < featuresSection.offsetTop
-      ) {
-        setActiveLink("about")
-      } else if (
-        featuresSection &&
-        scrollY >= featuresSection.offsetTop &&
-        scrollY < socialSection.offsetTop
-      ) {
-        setActiveLink("features")
-      } else if (socialSection && scrollY >= socialSection.offsetTop) {
-        setActiveLink("social")
+      if (aboutSection && featuresSection && socialSection) {
+        if (
+          scrollY >= aboutSection.offsetTop &&
+          scrollY < featuresSection.offsetTop
+        ) {
+          setActiveLink("about")
+        } else if (
+          scrollY >= featuresSection.offsetTop &&
+          scrollY < socialSection.offsetTop
+        ) {
+          setActiveLink("features")
+        } else if (scrollY >= socialSection.offsetTop) {
+          setActiveLink("social")
+        }
       }
     }
 

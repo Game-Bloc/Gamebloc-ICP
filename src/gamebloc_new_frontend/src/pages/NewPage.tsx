@@ -9,6 +9,7 @@ import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import FeatureList from "../components/onePager/Features/FeatureList"
+import Secure from "../components/onePager/Secure"
 
 const NewPage = () => {
   const navigate = useNavigate()
@@ -55,7 +56,8 @@ const NewPage = () => {
         <Header setModal={setOpenModal} />
         <Hero setModal={setOpenModal} />
         <Gamebloc setModal={setOpenModal} />
-        <FeatureList />
+        <FeatureList setModal={setOpenModal} />
+        <Secure />
         {openModal && <LoginModal modal={handleModal} />}
       </div>
     )
