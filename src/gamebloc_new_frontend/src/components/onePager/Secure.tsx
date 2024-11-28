@@ -184,7 +184,7 @@ const Secure = () => {
 
       {modal.visible && (
         <motion.div
-          className="absolute z-10 p-4 bg-[#08010E] text-primary-second  border border-gray-300 rounded-md shadow-lg max-w-[20rem]"
+          className=" hidden lg:flex flex-col  absolute z-10 p-4 bg-[#08010E] text-primary-second  border border-gray-300 rounded-md shadow-lg max-w-[20rem]"
           style={{
             top: modal.position.top,
             left: modal.position.left,
@@ -196,8 +196,8 @@ const Secure = () => {
           initial="initial"
           animate="animate"
         >
-          <h3 className="text-[.8rem] font-bold">{modal.heading}</h3>
-          <p className="text-[.6rem] mt-3">{modal.text}</p>
+          <h3 className="text-[.8rem] font-bold ">{modal.heading}</h3>
+          <p className="text-[.6rem] mt-3 ">{modal.text}</p>
         </motion.div>
       )}
     </div>

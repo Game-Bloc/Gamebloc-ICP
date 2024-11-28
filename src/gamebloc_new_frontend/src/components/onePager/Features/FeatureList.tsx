@@ -97,7 +97,7 @@ const FeatureList = ({ setModal }: Props) => {
 
   return (
     <Element name="features" id="features">
-      <div className=" my-[2rem] lg:my-[5rem]  w-full">
+      <div className="relative my-[2rem] lg:my-[5rem]  w-full">
         <div className="mb-8 lg:mb-[5rem]">
           <p className="text-primary-second text-[1.1rem] sm:text-[2rem] flex w-full justify-center 2xl:text-[3rem] font-valorant mt-4">
             Features
@@ -120,6 +120,11 @@ const FeatureList = ({ setModal }: Props) => {
         >
           {renderIcons()}
         </Swiper>
+        <img
+          src={`page_1.png`}
+          alt=""
+          className="absolute left-0 top-[-6rem]"
+        />
       </div>
     </Element>
   )

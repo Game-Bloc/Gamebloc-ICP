@@ -10,6 +10,7 @@ import { useAppSelector } from "../redux/hooks"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import FeatureList from "../components/onePager/Features/FeatureList"
 import Secure from "../components/onePager/Secure"
+import Blitzkrieg from "../components/onePager/Blitzkrieg"
 
 const NewPage = () => {
   const navigate = useNavigate()
@@ -58,6 +59,7 @@ const NewPage = () => {
         <Gamebloc setModal={setOpenModal} />
         <FeatureList setModal={setOpenModal} />
         <Secure />
+        <Blitzkrieg />
         {openModal && <LoginModal modal={handleModal} />}
       </div>
     )
