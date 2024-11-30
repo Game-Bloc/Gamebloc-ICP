@@ -2,7 +2,6 @@ import * as React from "react"
 import Dashboard from "./pages/Dashboard"
 import { Routes, Route } from "react-router-dom"
 import CreateTournament from "./pages/CreateTournament"
-import LandingPage from "./pages/LandingPage"
 import Admin from "./Admin/AdminPages/Admin"
 import { useAuth } from "./Auth/use-auth-client"
 import ProtectedRoutes from "./ProtectedRoutes"
@@ -31,11 +30,9 @@ const App = () => {
     <div>
       <React.Suspense fallback={<FallBackLoader />}>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<NewPage />} />
           <Route element={<ProtectedRoutes userAuthState={isAuthenticated} />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/new" element={<NewPage />} />
-
             <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
             <Route path="/prepaid-tournament" element={<Prepaid />} />

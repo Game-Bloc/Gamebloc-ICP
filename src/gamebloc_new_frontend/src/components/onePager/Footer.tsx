@@ -4,7 +4,7 @@ import { Element } from "react-scroll"
 const Footer = () => {
   return (
     <Element name="social" id="social">
-      <div className="w-full ">
+      <div className="w-full lg:mt-8 ">
         {/* <div className="flex bg-primary-second flex-col lg:flex-row  justify-between items-center  lg:mt-4 sm:py-[3rem] p-[1.5rem]  sm:p-[3rem]">
           <div className="flex flex-col lg:-mt-[2.5rem] ">
             <p className="text-base m-0">Subscribe to our E-mail newsletter</p>

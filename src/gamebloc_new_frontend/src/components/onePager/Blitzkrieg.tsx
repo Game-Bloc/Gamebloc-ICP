@@ -47,7 +47,7 @@ const Blitzkrieg = () => {
               <div className=" h-[2.4rem] md:h-[3rem] w-2 bg-[#EB0000]  lg:ml-3" />
             </div>
           </div>
-          <div className="flex items-start mt-3">
+          <div className="z-10 flex items-start mt-3">
             <a
               href="https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io/dashboard"
               className="pt-[.7rem] pb-[.7rem]  px-[.6rem] w-[10rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-between mt-[0.3rem] flex bg-[#F6B8FC] rounded-md items-center cursor-pointer sm:py-[.4rem]"

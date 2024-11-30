@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import Header from "../components/landingPageComps/LandHeader"
 import Hero from "../components/onePager/Hero"
 import Gamebloc from "../components/onePager/Gamebloc"
 import LoginModal from "../components/Modals/LoginModal"
@@ -13,6 +12,7 @@ import Secure from "../components/onePager/Secure"
 import Blitzkrieg from "../components/onePager/Blitzkrieg"
 import Slider from "../components/onePager/Slider/Slider"
 import Footer from "../components/onePager/Footer"
+import Header from "../components/onePager/LandHeader"
 
 const NewPage = () => {
   const navigate = useNavigate()

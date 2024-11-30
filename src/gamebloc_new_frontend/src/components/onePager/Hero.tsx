@@ -30,7 +30,7 @@ const Hero = ({ setModal }: Props) => {
           </p>
           <button
             onClick={() => setModal(true)}
-            className="pt-1 pb-[.25rem]  px-[.6rem] w-[6rem]  sm:w-[10rem] lg:w-[15rem] sm:px-6 text-[.6rem] sm:text-base text-black justify-between mt-[0.8rem] sm:mt-[1.5rem] hover:bg-primary-second/70  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
+            className="z-10 pt-1 pb-[.25rem]  px-[.6rem] w-[6rem]  sm:w-[10rem] lg:w-[15rem] sm:px-6 text-[.6rem] sm:text-base text-black justify-between mt-[0.8rem] sm:mt-[1.5rem] hover:bg-primary-second/70  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3"
           >
             <p className="text-[0.65rem] sm:text-[.85rem]">Get Started</p>
             <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
@@ -41,9 +41,9 @@ const Hero = ({ setModal }: Props) => {
         <img
           src={`hero_3.png`}
           alt=""
-          className="absolute left-0 right-0  mt-[-3rem] lg:mt-[-9rem]"
+          className="absolute left-0 right-0  mt-[-3rem] lg:mt-[-9rem] -z-10"
         />
-        <img src={`hero_4.png`} alt="" className="mt-[4rem] z-20" />
+        <img src={`hero_4.png`} alt="" className="mt-[4rem] " />
         <img
           src={`hero_6.png`}
           alt=""
