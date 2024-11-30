@@ -5,11 +5,21 @@ const Blitzkrieg = () => {
     <div className=" mt-[5rem] h-[50vh]">
       <div className="flex relative flex-col-reverse lg:flex-row justify-between mt-8 lg:mx-[6rem]">
         <img
+          src={`page_2.png`}
+          alt=""
+          className="absolute w-[30%] top-[-11rem]  left-[-9rem]"
+        />
+        <img
+          src={`hero_2.png`}
+          alt=""
+          className="absolute w-[65%] top-[-11rem] right-[-12rem]"
+        />
+        <img
           src={`sherder.png`}
           alt="ghost"
-          className=" md:relative mt-5  md:w-[50vw] h-[50vh] lg:ml-[-2rem]  md:opacity-100"
+          className=" md:relative mt-5  md:w-[50vw] lg:ml-[-2rem]  md:opacity-100"
         />
-        <div className=" mx-4 lg:mx-0 flex items-start flex-col md:mr-8 mt-2 md:mt-6 bg-primary-bg_color/10 md:bg-[transparent]">
+        <div className=" mx-4 lg:mx-0 flex items-start lg:items-end flex-col md:mr-8 mt-2 md:mt-6 bg-primary-bg_color/10 md:bg-[transparent]">
           <p className=" text-[#EB0000] font-valorant font-black text-[1.1rem] sm:text-[2rem]  2xl:text-[3rem]  my-4">
             BLITZKRIEG
           </p>
@@ -23,7 +33,7 @@ const Blitzkrieg = () => {
               ₦ 500,000 Prize pool
             </p>
           </div>
-          <div className="flex flex-col items-start">
+          <div className="flex flex-col items-start lg:items-end">
             <div className="flex flex-row-reverse lg:flex-row  items-center mt-3">
               <p className="text-white ml-3 text-[.8rem]">$1 entry fee</p>
               <div className="h-[2.4rem] md:h-[3rem] w-2 bg-[#EB0000]  lg:ml-3 " />

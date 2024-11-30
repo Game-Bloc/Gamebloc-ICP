@@ -11,6 +11,8 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import FeatureList from "../components/onePager/Features/FeatureList"
 import Secure from "../components/onePager/Secure"
 import Blitzkrieg from "../components/onePager/Blitzkrieg"
+import Slider from "../components/onePager/Slider/Slider"
+import Footer from "../components/onePager/Footer"
 
 const NewPage = () => {
   const navigate = useNavigate()
@@ -60,6 +62,8 @@ const NewPage = () => {
         <FeatureList setModal={setOpenModal} />
         <Secure />
         <Blitzkrieg />
+        <Slider />
+        <Footer />
         {openModal && <LoginModal modal={handleModal} />}
       </div>
     )

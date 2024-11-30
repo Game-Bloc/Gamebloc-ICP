@@ -118,7 +118,7 @@ const Secure = () => {
           SECURED TRANSACTIONS
         </p>
 
-        <div className="flex justify-center items-center mt-8 relative">
+        <div className="flex justify-center items-center mt-8 md:mt-[7.5rem] lg:mt-8 relative">
           <motion.div
             variants={svgVariants}
             initial="initial"
@@ -184,7 +184,7 @@ const Secure = () => {
 
       {modal.visible && (
         <motion.div
-          className=" hidden lg:flex flex-col  absolute z-10 p-4 bg-[#08010E] text-primary-second  border border-gray-300 rounded-md shadow-lg max-w-[20rem]"
+          className=" hidden md:flex flex-col  absolute z-10 p-4 bg-[#08010E] text-primary-second  border border-gray-300 rounded-md shadow-lg max-w-[20rem]"
           style={{
             top: modal.position.top,
             left: modal.position.left,
