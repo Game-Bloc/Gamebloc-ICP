@@ -78,6 +78,8 @@ var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.h
 var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
 var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
+
+
 // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
 
 // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
@@ -124,6 +126,49 @@ system func postupgrade() {
     messageEntries := [];
     NotificationEntries := []
 };
+
+
+// ! Migrations functions
+public shared ({ caller }) func get_all_profile() : async [(Principal, Bloctypes.UserProfile)] {
+    Iter.toArray(ProfileHashMap.entries())
+};
+
+public shared ({ caller }) func get_all_tournaments() : async [(Principal, Bloctypes.TournamentAccount)] {
+    Iter.toArray(TournamentHashMap.entries())
+};
+
+public shared ({ caller }) func get_all_pays() : async [(Nat, Bloctypes.Pay)] {
+    Iter.toArray(PayHashMap.entries())
+};
+
+public shared ({ caller }) func get_all_notifications() : async [(Principal, Bloctypes.Notifications)] {
+    Iter.toArray(NOTIFICATION_STORE.entries())
+};
+
+public shared ({ caller }) func get_all_balance() : async [(Principal, Bloctypes.UserBalance)] {
+    Iter.toArray(BalanceHashMap.entries())
+};
+
+public shared ({ caller }) func get_all_ids() : async [(Text, Text)] {
+    Iter.toArray(ID_STORE.entries())
+};
+
+public shared ({ caller }) func get_all_passwords() : async [(Principal, Bloctypes.Access)] {
+    Iter.toArray(PASSWORD_STORE.entries())
+};
+
+public shared ({ caller }) func get_all_feedbacks() : async [(Nat, Bloctypes.Feedback)] {
+    Iter.toArray(FEED_BACK_STORE.entries())
+};
+
+public shared ({ caller }) func get_all_squads() : async [(Text, Bloctypes.Squad)] {
+    Iter.toArray(SQUAD_STORE.entries())
+};
+
+public shared ({ caller }) func get_all_users() : async [(Principal, Bloctypes.UserTrack)] {
+    Iter.toArray(USER_TRACK_STORE.entries())
+};
+
 
 //
 // Ledger Canister
