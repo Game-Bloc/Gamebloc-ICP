@@ -12,7 +12,7 @@ const Blitzkrieg = () => {
         <img
           src={`hero_2.png`}
           alt=""
-          className="absolute w-[65%] top-[-11rem] right-[-12rem]"
+          className=" hidden lg:flex absolute w-[65%] top-[-11rem] right-[-12rem]"
         />
         <img
           src={`sherder.png`}
