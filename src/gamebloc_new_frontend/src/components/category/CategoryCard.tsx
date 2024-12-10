@@ -1,9 +1,8 @@
 import { DotChartOutlined } from "@ant-design/icons"
 import { Skeleton } from "antd"
 import React, { useEffect, useState } from "react"
-import { Blurhash } from "react-blurhash"
 import { Link } from "react-router-dom"
-// const loader = require("../../../assets/category1.png").default
+const loader = require("../../../assets/category1.png").default
 
 interface Props {
   category: any
@@ -14,7 +13,7 @@ const CategoryCard = ({ category }: Props) => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (category.img) {
       setImageLoaded(true)
     }
     img.src = category.img
@@ -44,7 +43,7 @@ const CategoryCard = ({ category }: Props) => {
           <>
             <img
               style={{ display: isImageLoaded ? "inline" : "none" }}
-              src={category.img}
+              src={`category1.png`}
               className="border hover:scale-105 m-0 border-white/15 border-solid rounded-[10px]  "
               alt=""
             />

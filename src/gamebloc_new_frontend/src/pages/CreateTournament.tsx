@@ -140,7 +140,7 @@ const CreateTournament = () => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (loader) {
       setImageLoaded(true)
     }
     img.src = loader
@@ -397,7 +397,7 @@ const CreateTournament = () => {
                           <img
                             src={
                               id == "1"
-                                ? loader
+                                ? `category1.png`
                                 : id == "2"
                                 ? loader1
                                 : id == "3"

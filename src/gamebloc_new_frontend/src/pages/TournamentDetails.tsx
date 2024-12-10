@@ -91,7 +91,7 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (gameImage) {
       setImageLoaded(true)
     }
     img.src = gameImage
@@ -187,8 +187,7 @@ const TournamentDetail = () => {
                                   //     : id == "4"
                                   //     ? `category4.png`
                                   //                                           :
-                                  // `category1.png`
-                                  gameImage
+                                  `category1.png`
                                 }
                                 alt=""
                                 className="rounded-[0.625rem]"
