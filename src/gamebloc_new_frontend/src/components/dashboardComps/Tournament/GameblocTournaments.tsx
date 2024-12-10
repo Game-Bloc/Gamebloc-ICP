@@ -18,7 +18,7 @@ const GameblocTournaments = ({ loading }: props) => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (img1) {
       setImageLoaded(true)
     }
     img.src = img1
