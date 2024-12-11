@@ -18,6 +18,9 @@ import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useFetchAllTournaments } from "../Functions/blochooks"
 import LoginModal2 from "../components/Modals/LoginModal2"
 import { Principal } from "@dfinity/principal"
+import Blitz from "../components/dashboardComps/Blitz"
+import Funded from "../components/dashboardComps/Funded"
+import Prepaid from "../components/dashboardComps/Prepaid"
 
 const Dashboard = () => {
   const { isAuthenticated } = useAuth()
@@ -92,8 +95,10 @@ const Dashboard = () => {
                 Featured and Hot
               </h2>
               <Carousel />
-              {/* <Recommended /> */}
               <FreeRegistration />
+              <Blitz />
+              <Funded />
+              <Prepaid />
               <GameblocTournaments loading={isLoadingProfile} />
             </div>
           </div>
