@@ -175,12 +175,12 @@ const CreateTournament = () => {
   }
 
   const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    const value = dateString
+    const value: any = dateString
     setInitialDate(value)
   }
 
   const onEndDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    const value = dateString
+    const value: any = dateString
     setEndDate(value)
   }
 
