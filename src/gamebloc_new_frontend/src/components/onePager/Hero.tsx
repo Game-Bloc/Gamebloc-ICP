@@ -6,17 +6,6 @@ interface Props {
 }
 
 const Hero = ({ setModal }: Props) => {
-  const dropVariants = {
-    initial: {scale: 1.5 },
-    animate: {
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 10,
-      },
-    },
-  }
 
   return (
     <div className="relative bg-transparent ">
@@ -33,9 +22,9 @@ const Hero = ({ setModal }: Props) => {
         />
         <motion.div
           className="flex flex-col justify-center items-center mx-4 lg:mx-0"
-          variants={dropVariants}
-          initial="initial"
-          whileInView="animate"
+          // variants={dropVariants}
+          initial= {{scale: 1.5 }}
+          whileInView={{scale:1, transition:{duration:2.5,delay:-1.5}}}
           viewport={{ once: true }}
         >
           <p className="text-white text-[0.7rem] lg:text-lg mb-[0.5rem] md:mb-[1rem] bg-transparent">
@@ -70,27 +59,27 @@ const Hero = ({ setModal }: Props) => {
         />
         <div className="flex gap-8  justify-center lg:justify-between  items-center w-full lg:w-1/2 mt-4 lg:mt-[4rem]  mx-4 lg:mx-0">
           <motion.img
-            initial={{ y: 60, opacity: 0 }}
+            initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.4 , delay:0.5}}
             viewport={{ once: true }}
             src={`logo.png`}
             alt=""
             className="w-[5rem] md:w-32 m-0 "
           />
           <motion.img
-            initial={{ y: 60, opacity: 0 }}
+            initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: 0.8 , delay:0.5}}
             viewport={{ once: true }}
             src={`sabertooth.png`}
             alt=""
             className="w-[5rem]   md:w-[10rem] m-0 "
           />
           <motion.img
-            initial={{ y: 60, opacity: 0 }}
+            initial={{ y: 100, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
-            transition={{ duration: 2 }}
+            transition={{ duration: 1.25,delay:0.5 }}
             viewport={{ once: true }}
             src={`dfinity.png`}
             alt=""

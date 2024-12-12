@@ -24,8 +24,8 @@ const Gamebloc = ({ setModal }: Props) => {
           <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
         </button>
       </div>
-      <motion.img initial={{x: -50, opacity:0}} whileInView={{x:0, opacity:1.5}} src={`home1.svg`} alt="" className="m-0 md:w-[50%]" />
-      <motion.div initial={{x: 50, opacity:0}} whileInView={{x:0, opacity:1.5}} className="flex relative flex-col 2xl:w-[50%] justify-end">
+      <motion.img initial={{x: -100, opacity:0}} whileInView={{x:0, opacity:3,transition:{duration:0.7,delay:0.3}}} src={`home1.svg`} alt="" className="m-0 md:w-[50%]" />
+      <motion.div initial={{x: 100, opacity:0}} whileInView={{x:0, opacity:3,transition:{duration:0.7,delay:0.3}}} className="flex relative flex-col 2xl:w-[50%] justify-end">
         <p
           className="text-primary-second text-[1.1rem] sm:text-[2rem] flex w-full justify-center md:justify-end  lg:text-[2rem] 
                h-fit  2xl:text-[3rem] font-valorant mt-4 mb-4 md:m-0  "
