@@ -1,7 +1,7 @@
 import { ActorSubclass } from "@dfinity/agent"
 import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
-import { _SERVICE } from "../../../../../.dfx/local/canisters/game_bloc_backend/service.did"
+// import { _SERVICE } from "../../../../../.dfx/local/canisters/game_bloc_backend/service.did"
 
 export interface AuthState {
   auth: false

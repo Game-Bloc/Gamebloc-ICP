@@ -96,7 +96,7 @@ const Footer = () => {
             <img
               src={`logo.png`}
               alt=""
-              className="w-[5rem] md:w-[10rem] m-0"
+              className="w-[3rem] md:w-[10rem] m-0"
             />
             <p className="text-[.6rem] mt-3 sm:mt-5 lg:mt-6 text-white">
               ©{new Date().getFullYear()}

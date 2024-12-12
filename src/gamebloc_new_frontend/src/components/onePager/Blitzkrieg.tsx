@@ -1,4 +1,5 @@
 import React from "react"
+import {motion} from "motion/react"
 
 const Blitzkrieg = () => {
   return (
@@ -14,7 +15,9 @@ const Blitzkrieg = () => {
           alt=""
           className=" hidden lg:flex absolute w-[65%] top-[-11rem] right-[-12rem]"
         />
-        <img
+        <motion.img
+        initial={{x: -200}}
+        whileInView={{x:0,transition:{duration:1, delay:0.3}}}
           src={`sherder.png`}
           alt="ghost"
           className=" md:relative mt-5  md:w-[50vw] lg:ml-[-2rem]  md:opacity-100"

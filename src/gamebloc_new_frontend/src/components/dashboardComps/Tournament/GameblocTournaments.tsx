@@ -18,7 +18,7 @@ const GameblocTournaments = ({ loading }: props) => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (img1) {
       setImageLoaded(true)
     }
     img.src = img1
@@ -58,7 +58,7 @@ const GameblocTournaments = ({ loading }: props) => {
                 </div>
               ) : (
                 <>
-                  <img src={"Gcard1.png"} />
+                  <img src={`Gcard1.png`} />
                   <div className="absolute -bottom-[2px] py-2  w-full rounded-bl-[0.625rem] rounded-br-[0.625rem] rounded bg-[#311A34] flex justify-center items-center">
                     <p className="text-white text-[0.7rem] sm:text-sm ">
                       Registration: Coming

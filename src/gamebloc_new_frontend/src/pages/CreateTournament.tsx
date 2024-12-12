@@ -140,7 +140,7 @@ const CreateTournament = () => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (loader) {
       setImageLoaded(true)
     }
     img.src = loader
@@ -175,12 +175,12 @@ const CreateTournament = () => {
   }
 
   const onDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    const value = dateString
+    const value: any = dateString
     setInitialDate(value)
   }
 
   const onEndDateChange: DatePickerProps["onChange"] = (date, dateString) => {
-    const value = dateString
+    const value: any = dateString
     setEndDate(value)
   }
 
@@ -397,7 +397,7 @@ const CreateTournament = () => {
                           <img
                             src={
                               id == "1"
-                                ? loader
+                                ? `category1.png`
                                 : id == "2"
                                 ? loader1
                                 : id == "3"

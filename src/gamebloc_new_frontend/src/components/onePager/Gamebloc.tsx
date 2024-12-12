@@ -1,5 +1,6 @@
 import React from "react"
 import { Element } from "react-scroll"
+import { motion } from "motion/react"
 
 interface Props {
   setModal: any
@@ -23,8 +24,8 @@ const Gamebloc = ({ setModal }: Props) => {
           <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
         </button>
       </div>
-      <img src={`home1.svg`} alt="" className="m-0 md:w-[50%]" />
-      <div className="flex relative flex-col 2xl:w-[50%] justify-end">
+      <motion.img initial={{x: -100, opacity:0}} whileInView={{x:0, opacity:3,transition:{duration:0.7,delay:0.3}}} src={`home1.svg`} alt="" className="m-0 md:w-[50%]" />
+      <motion.div initial={{x: 100, opacity:0}} whileInView={{x:0, opacity:3,transition:{duration:0.7,delay:0.3}}} className="flex relative flex-col 2xl:w-[50%] justify-end">
         <p
           className="text-primary-second text-[1.1rem] sm:text-[2rem] flex w-full justify-center md:justify-end  lg:text-[2rem] 
                h-fit  2xl:text-[3rem] font-valorant mt-4 mb-4 md:m-0  "
@@ -51,7 +52,7 @@ const Gamebloc = ({ setModal }: Props) => {
             <img src={`details.png`} alt="" className="m-0 w-[.75rem] sm:w-6" />
           </button>
         </div>
-      </div>
+      </motion.div>
     </Element>
   )
 }

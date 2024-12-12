@@ -15,7 +15,7 @@ const TournamentCard = ({ data, index }: Props) => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (cardImg) {
       setIsimageLoaded(true)
     }
     img.src = cardImg
@@ -47,7 +47,10 @@ const TournamentCard = ({ data, index }: Props) => {
           <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
             <img src={`mdi_crowd.png`} className="m-0 w-3 h-3" alt="" />
             <p className=" ml-[.5rem]  text-[0.6rem]  sm:text-[.6rem] text-white">
-              {Object.keys(data.tournament_type)[0].toUpperCase()}
+              {Object.keys(data.tournament_type)[0].toUpperCase() ===
+              "CROWDFUNDED"
+                ? "FUNDED"
+                : Object.keys(data.tournament_type)[0].toUpperCase()}
             </p>
           </div>
           {Object.keys(data.status)[0].toUpperCase() === "ARCHIVED" ? (
