@@ -9,7 +9,7 @@
   }
 }
 
-.swiper-slide {
+.mySwiper .swiper-slide {
   font-size: 18px;
   z-index: 0;
   background: linear-gradient(
