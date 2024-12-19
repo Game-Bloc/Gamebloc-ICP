@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import Carousel from "../components/dashboardComps/Carousel/Carousell"
+import Tutorials from "../components/dashboardComps/Tutorials/Tutorials"
 import Recommended from "../components/dashboardComps/Recommended/Recommended"
 import FreeRegistration from "../components/dashboardComps/FreeRegistration/FreeRegistration"
 import GameblocTournaments from "../components/dashboardComps/Tournament/GameblocTournaments"
@@ -99,6 +100,7 @@ const Dashboard = () => {
               <Blitz />
               <Funded />
               <Prepaid />
+              <Tutorials/>
               <GameblocTournaments loading={isLoadingProfile} />
             </div>
           </div>

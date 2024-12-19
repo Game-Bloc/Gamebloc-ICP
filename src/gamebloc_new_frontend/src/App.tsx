@@ -23,6 +23,7 @@ import Series from "./pages/Series"
 import Blitzkrieg from "./pages/Blitzkrieg"
 import AdminHub from "./Admin/AdminPages/AdminHub"
 import NewPage from "./pages/NewPage"
+import HowTo from "./pages/HowTo"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -33,6 +34,7 @@ const App = () => {
           <Route path="/" element={<NewPage />} />
           <Route element={<ProtectedRoutes userAuthState={isAuthenticated} />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/howto" element={<HowTo />} />
             <Route path="/game-category/:id" element={<CreateTournament />} />
             <Route path="/active-tournament" element={<ActiveTournament />} />
             <Route path="/prepaid-tournament" element={<Prepaid />} />
