@@ -43,8 +43,8 @@ thread_local! {
 
 //User struct crud functions
 #[query(name = "getSelf")]
-pub fn get_self(principal: Principal) -> UserProfile {
-    // let id = ic_cdk::api::caller();
+pub fn get_self() -> UserProfile {
+    let principal = ic_cdk::api::caller();
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow().get(&principal.to_text()).cloned().unwrap()
     })
