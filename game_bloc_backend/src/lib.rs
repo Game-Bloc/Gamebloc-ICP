@@ -51,6 +51,14 @@ pub fn get_self() -> UserProfile {
 }
 
 #[query]
+pub fn get_profile_by_principal(principal: Principal) -> UserProfile {
+    // let id = ic_cdk::api::caller();
+    PROFILE_STORE.with(|profile_store| {
+        profile_store.borrow().get(&principal.to_text()).cloned().unwrap()
+    })
+}
+
+#[query]
 pub fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();

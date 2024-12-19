@@ -13,7 +13,7 @@ pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAc
 
 #[update]
 pub fn assign_squad_points(tournament_id: String,  squad_id_and_points: Vec<(String, String, Point)>, principal: Principal) -> bool {
-    match get_self(principal).role {
+    match get_profile_by_principal(principal).role {
         None => {
             println!("you're not admin");
             false
@@ -79,7 +79,7 @@ pub fn assign_squad_points(tournament_id: String,  squad_id_and_points: Vec<(Str
 
 #[update]
 pub fn assign_solo_points(tournament_id: String,  user_id_and_points: Vec<(String, String, Point)>, principal: Principal,) -> bool {
-    match get_self(principal).role {
+    match get_profile_by_principal(principal).role {
         None => {
             println!("you're not admin");
             false

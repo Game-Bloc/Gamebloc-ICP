@@ -321,7 +321,7 @@ pub fn start_tournament(id: String) {
 pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                       -> bool
 {
-    match get_self(principal).role {
+    match get_profile_by_principal(principal).role {
         None => {
             println!("you're not admin");
             false
@@ -554,7 +554,7 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                       -> bool
 {
     let old_tournament_winners = winner;
-    match get_self(principal).role {
+    match get_profile_by_principal(principal).role {
         None => {
             println!("you're not admin");
             false
@@ -790,7 +790,7 @@ pub fn archive_tournament(id: String)
 pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u8)
                            -> bool
 {
-    // if get_self(principal).is_mod {
+    // if get_profile_by_principal(principal).is_mod {
     // let mut winners = Vec::new();
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
