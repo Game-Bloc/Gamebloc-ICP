@@ -25,13 +25,14 @@ type LobbyAccount = record {
 };
 type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
 type Member = record { name : text; principal_id : text };
+type ModTag = variant { Mod1; Mod2; Mod3 };
 type Point = record {
   kill_points : nat;
   total_points : nat;
   position_points : nat;
 };
 type Result = variant { Ok : nat8; Err : nat8 };
-type Role = variant { Mod; Player };
+type Role = variant { Mod; Player; TribunalMod : ModTag };
 type Squad = record {
   tag : text;
   id_hash : text;
@@ -53,6 +54,7 @@ type TournamentAccount = record {
   status : TournamentStatus;
   title : text;
   creator : text;
+  entry_fee : opt nat;
   messages : opt vec Chat;
   creator_id : opt text;
   game : text;
@@ -62,6 +64,7 @@ type TournamentAccount = record {
   total_prize : nat;
   end_date : text;
   tournament_rules : text;
+  ended : opt bool;
   squad_in_game_names : opt vec vec record { text; text; text };
   squad : vec Squad;
   lobbies : opt vec LobbyAccount;
@@ -76,6 +79,7 @@ type TournamentAccount = record {
   squad_vector_mod_1 : opt vec record { text; text; Point };
   squad_vector_mod_2 : opt vec record { text; text; Point };
   squad_vector_mod_3 : opt vec record { text; text; Point };
+  winners : opt vec Winner;
   tournament_type : TournamentType;
   entry_prize : nat8;
   points : opt vec record { text; text; Point };
@@ -88,12 +92,13 @@ type TournamentStatus = variant {
   Archived;
   GameCompleted;
 };
-type TournamentType = variant { Prepaid; Crowdfunded };
+type TournamentType = variant { Prepaid; Crowdfunded; Blitzkrieg };
 type UserProfile = record {
   age : nat8;
   account_id : text;
   id_hash : text;
   status : Status;
+  referral_id : opt text;
   username : text;
   date : text;
   role : opt Role;
@@ -107,16 +112,24 @@ type UserProfile = record {
   tournaments_created : nat8;
   points : opt vec record { text; text; Point };
 };
+type Winner = record { user_account : text; position : text; amount : nat };
 service : () -> {
+  add_mod_to_tribunal : (principal) -> (bool);
   add_to_squad : (Member, principal, text) -> ();
-  assign_points : (text, record { text; text; Point }) -> ();
+  archive_tournament : (text) -> ();
+  assign_points : (principal, record { text; text; Point }) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
   assign_squad_points : (text, vec record { text; text; Point }, principal) -> (
       bool,
     );
+  cleanse_all_solo_type_tournament_branching_tribunal_points : (text) -> (bool);
+  cleanse_all_squad_type_tournament_branching_tribunal_points : (text) -> (
+      bool,
+    );
   close_squad : (text, vec text, principal) -> ();
+  count_all_referral : (text) -> (nat) query;
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
   count_all_users : () -> (nat) query;
@@ -125,15 +138,18 @@ service : () -> {
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
-  end_tournament : (text, principal, nat8) -> (bool);
-  getSelf : (principal) -> (UserProfile) query;
+  end_blitzkrieg_tournament : (text, principal) -> (bool);
+  end_tournament : (text, principal, nat8, vec Winner) -> (bool);
+  getSelf : () -> (UserProfile) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
   get_all_user : () -> (vec UserProfile) query;
   get_leaderboard : () -> (vec Contestant) query;
   get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
+  get_mods : () -> (vec UserProfile) query;
   get_profile : (text) -> (UserProfile) query;
+  get_profile_by_principal : (principal) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
   is_mod : (principal) -> (bool) query;
@@ -149,6 +165,7 @@ service : () -> {
   lobbies_exterminator : (text) -> ();
   lobbies_extraditor : (text, text, record { text; text }) -> ();
   open_squad : (text, vec text, principal) -> ();
+  postpone_tournament : (text, text) -> ();
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
   start_tournament : (text) -> ();
@@ -160,4 +177,7 @@ service : () -> {
   two_lobbies_merge : (text, text, record { text; text }) -> ();
   update_squad_details : (text) -> ();
   update_tournament_details : (text, text) -> ();
+  update_tournament_past_leaderboard : () -> ();
+  update_tournament_pool_price : (text, nat) -> ();
+  update_tournament_type_to_blitzkrieg : (text) -> ();
 }
