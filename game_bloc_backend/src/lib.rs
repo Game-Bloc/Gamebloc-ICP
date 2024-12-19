@@ -100,8 +100,8 @@ pub fn get_profile(name: String) -> UserProfile {
 }
 
 #[update]
-pub fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> {
-    // let principal_id = ic_cdk::api::caller();
+pub fn create_profile(profile: UserProfile) -> Result<u8, u8> {
+    let principal = ic_cdk::api::caller();
     ID_STORE.with(|id_store| {
         id_store.borrow_mut().insert(profile.username.clone(), principal.to_text());
     });
