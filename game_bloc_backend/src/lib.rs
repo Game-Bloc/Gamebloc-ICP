@@ -223,7 +223,7 @@ pub fn get_mods() -> Vec<UserProfile> {
         all_users
     })
 }
-
+dfx
 #[update]
 pub fn send_message_tournament(id: String, message: Chat) {
     TOURNAMENT_STORE.with(|tournament_store| {
