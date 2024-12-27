@@ -74,8 +74,11 @@ pub_struct!(
     //deprecated
      entry_prize: u8,
      entry_fee: Option<u128>,
+     nominal_entry_fee: Option<u128>,
+     entry_fee_bump: Option<u128>,
      total_prize: u128,
      no_of_winners: u8,
+     tournament_variation: Option<Variation>,
      no_of_participants: u128,
      game_type: String,
      end_date: String,
@@ -96,6 +99,12 @@ pub_struct!(
 
 });
 
+#[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
+pub enum Variation {
+    #[default]
+    Capped,
+    Infinite,
+}
 pub_struct!(
     Winner{
         position : String,

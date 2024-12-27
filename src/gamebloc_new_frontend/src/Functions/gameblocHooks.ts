@@ -247,7 +247,7 @@ export const useGameblocHooks = () => {
 
   const getProfile2 = async () => {
     try {
-      const profile = await whoamiActor2.getSelf(principal)
+      const profile = await whoamiActor2.getSelf()
       // console.log("Profile - actor2:", profile)
     } catch (err) {
       console.log(err)
@@ -1003,7 +1003,7 @@ export const useGameblocHooks = () => {
   const multiSelect_user_profile = async (principal: Principal) => {
     try {
       setIsLoading(true)
-      const user = await whoamiActor2.getSelf(principal)
+      const user = await whoamiActor2.getSelf()
       console.log("user", user)
       setIsLoading(false)
     } catch (err) {
