@@ -579,7 +579,57 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                         };
                         match GameType::from_str(tournament.game_type.clone().as_str()) {
                             GameType::TeamvTeam => {
+                                tournament.clone().points.clone().unwrap()[..(number_of_winners as usize)].iter().for_each(|id_mapping|{
+                                PROFILE_STORE.with(|profile_store| {
+                                    let mut profile = profile_store.borrow().get(tournament.clone().points.clone().unwrap()[0].1.clone().as_str()).cloned().unwrap();
 
+                                    profile.wins = profile.wins + 1;
+                                    profile.attendance = match profile.attendance {
+                                        None => {
+                                            Some(1)
+                                        }
+                                        Some(attendance) => {
+                                            Some(attendance + 1)
+                                        }
+                                    };
+                                    profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
+                                });
+                                let mut old_tournament_winner = old_tournament_winners[0].clone();
+                                old_tournament_winner.user_account = id_mapping.1.clone();
+                                tournament.winers.push(id_mapping.1.clone());
+                                match tournament.winners.clone() {
+                                    None => {
+                                        tournament.winners = Some(vec![old_tournament_winner]);
+                                    }
+                                    Some( winners) => {
+                                        let mut winner_list = winners.clone();
+                                        winner_list.push(old_tournament_winner);
+                                        tournament.winners = Some(winner_list);
+                                    }
+                                }
+                                });
+                                tournament.points.clone().unwrap()[(number_of_winners as usize)..].iter().for_each(|id_mapping|{
+                                    PROFILE_STORE.with(|profile_store| {
+                                        let mut profile = profile_store.borrow().get(id_mapping.1.clone().as_str()).cloned().unwrap();
+                                        profile.losses = match profile.losses {
+                                            None => {
+                                                Some(1)
+                                            }
+                                            Some(losses) => {
+                                                Some(losses + 1)
+                                            }
+                                        } ;
+                                        profile.attendance = match profile.attendance {
+                                            None => {
+                                                Some(1)
+                                            }
+                                            Some(attendance) => {
+                                                Some(attendance + 1)
+                                            }
+                                        };
+                                        profile_store.borrow_mut().insert(id_mapping.1.clone(), profile);
+                                    });
+                                });
                             }
                             GameType::Single => {
                                 // winners.append(&mut winning_players);
