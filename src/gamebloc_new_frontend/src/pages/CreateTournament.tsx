@@ -473,12 +473,18 @@ const CreateTournament = () => {
                         </p>
                         <ConfigProvider
                           theme={{
-                            algorithm: theme.darkAlgorithm,
+                            algorithm: theme.defaultAlgorithm,
                             token: {
                               colorPrimaryActive: "#F6B8FC",
                               colorPrimary: "#F6B8FC",
                               colorPrimaryHover: "#F6B8FC",
                               colorText: "#fff",
+                              colorBorder: "#595959",
+                              colorBgContainer: "#01070E",
+                              colorBgElevated: "#01070E",
+                              controlOutline: "transparent",
+                              colorTextBase: "#ffffff",
+                              controlItemBgActive: "#f6b8fc86",
                             },
                           }}
                         >

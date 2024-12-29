@@ -100,7 +100,7 @@ const TransactionHistory = () => {
       dataIndex: "date",
       key: "date",
       render: (text, record) => (
-        <p className="whitespace-nowraptext-[.7rem] text-nowrap">
+        <p className="whitespace-nowrap text-[.7rem] text-nowrap">
           {record.date}
         </p>
       ),

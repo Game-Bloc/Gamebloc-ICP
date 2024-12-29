@@ -140,7 +140,7 @@ service : () -> {
   create_tournament : (TournamentAccount) -> (Result);
   end_blitzkrieg_tournament : (text, principal) -> (bool);
   end_tournament : (text, principal, nat8, vec Winner) -> (bool);
-  getSelf : (principal) -> (UserProfile) query;
+  getSelf : () -> (UserProfile) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
@@ -149,6 +149,7 @@ service : () -> {
   get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
   get_mods : () -> (vec UserProfile) query;
   get_profile : (text) -> (UserProfile) query;
+  get_profile_by_principal : (principal) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
   is_mod : (principal) -> (bool) query;
