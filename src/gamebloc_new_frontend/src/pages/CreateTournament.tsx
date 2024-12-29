@@ -514,9 +514,9 @@ const CreateTournament = () => {
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                           Number of Participant
                         </p>
-                        <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#141414] border-solid border hover:border-primary-second rounded-lg flex">
+                        <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#01070E] border-solid border hover:border-primary-second rounded-lg flex">
                           <input
-                            className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
+                            className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E] py-[.1rem]"
                             placeholder="Participants"
                             type="text"
                             onChange={onUserChange}
@@ -551,9 +551,9 @@ const CreateTournament = () => {
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                           Tournament Title
                         </p>
-                        <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#141414] hover:border-primary-second border-solid border rounded-lg flex">
+                        <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#01070E] hover:border-primary-second border-solid border rounded-lg flex">
                           <input
-                            className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                            className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
                             placeholder="Tournament Title"
                             type="text"
                             onChange={onTitleChange}
@@ -569,12 +569,18 @@ const CreateTournament = () => {
                           </p>
                           <ConfigProvider
                             theme={{
-                              algorithm: theme.darkAlgorithm,
+                              algorithm: theme.defaultAlgorithm,
                               token: {
                                 colorPrimaryActive: "#F6B8FC",
                                 colorPrimary: "#F6B8FC",
                                 colorPrimaryHover: "#F6B8FC",
                                 colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
                             }}
                           >
@@ -606,12 +612,18 @@ const CreateTournament = () => {
                           </p>
                           <ConfigProvider
                             theme={{
-                              algorithm: theme.darkAlgorithm,
+                              algorithm: theme.defaultAlgorithm,
                               token: {
                                 colorPrimaryActive: "#F6B8FC",
                                 colorPrimary: "#F6B8FC",
                                 colorPrimaryHover: "#F6B8FC",
                                 colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
                             }}
                           >
@@ -646,12 +658,18 @@ const CreateTournament = () => {
                           </p>
                           <ConfigProvider
                             theme={{
-                              algorithm: theme.darkAlgorithm,
+                              algorithm: theme.defaultAlgorithm,
                               token: {
                                 colorPrimaryActive: "#F6B8FC",
                                 colorPrimary: "#F6B8FC",
                                 colorPrimaryHover: "#F6B8FC",
                                 colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
                             }}
                           >
@@ -668,12 +686,18 @@ const CreateTournament = () => {
                           </p>
                           <ConfigProvider
                             theme={{
-                              algorithm: theme.darkAlgorithm,
+                              algorithm: theme.defaultAlgorithm,
                               token: {
                                 colorPrimaryActive: "#F6B8FC",
                                 colorPrimary: "#F6B8FC",
                                 colorPrimaryHover: "#F6B8FC",
                                 colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
                             }}
                           >
@@ -690,12 +714,18 @@ const CreateTournament = () => {
                         </p>
                         <ConfigProvider
                           theme={{
-                            algorithm: theme.darkAlgorithm,
+                            algorithm: theme.defaultAlgorithm,
                             token: {
                               colorPrimaryActive: "#F6B8FC",
                               colorPrimary: "#F6B8FC",
                               colorPrimaryHover: "#F6B8FC",
                               colorText: "#fff",
+                              colorBorder: "#595959",
+                              colorBgContainer: "#01070E",
+                              colorBgElevated: "#01070E",
+                              controlOutline: "transparent",
+                              colorTextBase: "#ffffff",
+                              controlItemBgActive: "#f6b8fc86",
                             },
                           }}
                         >
@@ -724,9 +754,9 @@ const CreateTournament = () => {
                             </p>
                           </div>
                         </div>
-                        <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#141414] hover:border-primary-second border-solid border rounded-lg flex">
+                        <div className=" my-4 items-center pr-8 h-[2.7rem] pl-2 border-[#595959] bg-[#01070E] hover:border-primary-second border-solid border rounded-lg flex">
                           <input
-                            className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                            className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
                             placeholder={
                               tourType === "Prepaid"
                                 ? " Pool Price in $"
@@ -759,9 +789,9 @@ const CreateTournament = () => {
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             Entry Price
                           </p>
-                          <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#141414] border-solid border rounded-lg flex">
+                          <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#01070E] border-solid border rounded-lg flex">
                             <input
-                              className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414]"
+                              className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
                               placeholder="Entry Price in $"
                               type="text"
                               onChange={onEntryChange}
