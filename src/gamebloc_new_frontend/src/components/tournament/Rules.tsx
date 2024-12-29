@@ -113,9 +113,16 @@ const Rules = ({ data }: Props) => {
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
                 </button>
-              ) : (
+              ) : principal !== "" ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#63aa88] rounded-md items-center sm:py-2">
                   <p className="font-semibold">Joined</p>
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleLoginModal()}
+                  className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center sm:py-2"
+                >
+                  <p className="font-semibold">Login to Join</p>
                 </button>
               )
             ) : (

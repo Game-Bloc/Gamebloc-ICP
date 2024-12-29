@@ -86,11 +86,20 @@ const Chat = ({ data }: Props) => {
         ref={scrollContainerRef}
         className="flex  flex-col h-[27rem] max-h-[50rem] overflow-x-hidden overflow-y-scroll"
       >
-        {data.users.some((index: any) => index.includes(username)) ||
-        data.squad.some((players: any) =>
-          players.members.some((gamer: any) => gamer.name.includes(username)),
-        ) ||
-        Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
+        {!isAuthenticated ? (
+          <div className="w-full flex justify-center items-center mt-[3rem]">
+            <div className="flex flex-col mb-4 ">
+              <img src={`empty.svg`} alt="" />
+              <p className="text-white text-[.8rem] mt-8 text-center">
+                Login to view chats.
+              </p>
+            </div>
+          </div>
+        ) : data.users.some((index: any) => index.includes(username)) ||
+          data.squad.some((players: any) =>
+            players.members.some((gamer: any) => gamer.name.includes(username)),
+          ) ||
+          Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
           data.messages.map((message: any, index: any) => (
             <ChatCard1 key={index} tourData={data} message={message} />
           ))
@@ -108,11 +117,13 @@ const Chat = ({ data }: Props) => {
         {/* <ChatCard2 /> */}
       </div>
 
-      {data.users.some((index: any) => index.includes(username)) ||
-      data.squad.some((players: any) =>
-        players.members.some((gamer: any) => gamer.name.includes(username)),
-      ) ||
-      Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
+      {!isAuthenticated ? (
+        <></>
+      ) : data.users.some((index: any) => index.includes(username)) ||
+        data.squad.some((players: any) =>
+          players.members.some((gamer: any) => gamer.name.includes(username)),
+        ) ||
+        Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
         <div className="w-full mt-2 flex justify-center items-center">
           <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
             <textarea
