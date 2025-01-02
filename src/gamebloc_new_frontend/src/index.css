@@ -80,7 +80,9 @@ body.no-scroll {
 }
 
 /* ANT TABLE CONFIG */
-
+.ant-table-thead > tr > th {
+  border-bottom: 1px solid #595959 !important; /* Custom color and thickness */
+}
 /* profile Transaction */
 :where(.css-dev-only-do-not-override-h3olvm).ant-table-wrapper
   .ant-table-thead
@@ -112,10 +114,6 @@ body.no-scroll {
   > td {
   border-bottom: none !important;
 }
-
-/* .ant-table-thead > tr > th {
-  border-bottom: 1px solid #595959 !important; /* Custom color and thickness */
-/* } */
 
 /* :where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-vertical
   > .ant-steps-item
