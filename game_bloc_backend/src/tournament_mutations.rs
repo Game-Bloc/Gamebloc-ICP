@@ -291,6 +291,7 @@ pub fn count_all_tournament() -> u128 {
     }) as u128
 }
 
+//nominal entry fee and entry fee must be the same
 #[update]
 pub fn create_tournament(tournament: TournamentAccount) -> Result<u8, u8> {
     let id_hash = tournament.clone().id_hash;
@@ -342,7 +343,9 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal)
                             }
                         };
                         match GameType::from_str(tournament.game_type.clone().as_str()) {
-                            GameType::TeamvTeam => {}
+                            GameType::TeamvTeam => {
+
+                            }
                             GameType::Single => {
                                 // winners.append(&mut winning_players);
                                 let mut count = 0;
@@ -575,7 +578,9 @@ pub fn end_tournament(id: String, principal: Principal, number_of_winners:u8, wi
                             }
                         };
                         match GameType::from_str(tournament.game_type.clone().as_str()) {
-                            GameType::TeamvTeam => {}
+                            GameType::TeamvTeam => {
+
+                            }
                             GameType::Single => {
                                 // winners.append(&mut winning_players);
                                 let mut count = 0;
@@ -805,7 +810,9 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u
         // let mut winning_squad = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
         // let mut winning_players = Vec::from(vec![..tournament.squad_points.clone().unwrap()[..3]]);
         match GameType::from_str(tournament.game_type.clone().as_str()) {
-            GameType::TeamvTeam => {}
+            GameType::TeamvTeam => {
+
+            }
             GameType::Single => {
                 // winners.append(&mut winning_players);
                 tournament.points.clone().unwrap()[0..(number_of_winners as usize)].iter().for_each(|id_mapping|{
@@ -842,25 +849,97 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u
 pub fn join_tournament(name: String, id: String, ign: (String,String, String)) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        match GameType::from_str(tournament.game_type.clone().as_str()) {
-            GameType::Single => {
-                match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
-                    Ordering::Greater => {
-                        tournament.user.push(name);
-                        match tournament.clone().in_game_names {
-                            None => {
-                                tournament.in_game_names = Some(vec![ign.clone()]);
-                            }
-                            Some(mut previous_igns) => {
-                                previous_igns.push(ign);
-                                tournament.in_game_names = Some(previous_igns);
+        if tournament.user.clone().len() != 0 && tournament.user.clone().len()%10 == 0{
+            match tournament.to_owned().tournament_variation {
+                None => {
+                    match GameType::from_str(tournament.game_type.clone().as_str()) {
+                        GameType::Single => {
+                            match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                                Ordering::Greater => {
+                                    tournament.user.push(name);
+                                    match tournament.clone().in_game_names {
+                                        None => {
+                                            tournament.in_game_names = Some(vec![ign.clone()]);
+                                        }
+                                        Some(mut previous_igns) => {
+                                            previous_igns.push(ign);
+                                            tournament.in_game_names = Some(previous_igns);
+                                        }
+                                    }
+                                },
+                                _ => {}
                             }
                         }
-                    },
-                    _ => {}
+                        _ => {}
+                    }
+                }
+                Some(variation) => {
+                    match variation {
+                        Variation::Capped => {
+                            match GameType::from_str(tournament.game_type.clone().as_str()) {
+                                GameType::Single => {
+                                    match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                                        Ordering::Greater => {
+                                            tournament.user.push(name);
+                                            match tournament.clone().in_game_names {
+                                                None => {
+                                                    tournament.in_game_names = Some(vec![ign.clone()]);
+                                                }
+                                                Some(mut previous_igns) => {
+                                                    previous_igns.push(ign);
+                                                    tournament.in_game_names = Some(previous_igns);
+                                                }
+                                            }
+                                        },
+                                        _ => {}
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        Variation::Infinite => {
+                            tournament.entry_fee = Some(tournament.entry_fee.unwrap() + tournament.entry_fee_bump.unwrap());
+                            match GameType::from_str(tournament.game_type.clone().as_str()) {
+                                GameType::Single => {
+                                    tournament.user.push(name);
+                                    match tournament.clone().in_game_names {
+                                        None => {
+                                            tournament.in_game_names = Some(vec![ign.clone()]);
+                                        }
+                                        Some(mut previous_igns) => {
+                                            previous_igns.push(ign);
+                                            tournament.in_game_names = Some(previous_igns);
+                                        }
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                    }
                 }
             }
-            _ => {}
+        }
+        else{
+            match GameType::from_str(tournament.game_type.clone().as_str()) {
+                GameType::Single => {
+                    match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                        Ordering::Greater => {
+                            tournament.user.push(name);
+                            match tournament.clone().in_game_names {
+                                None => {
+                                    tournament.in_game_names = Some(vec![ign.clone()]);
+                                }
+                                Some(mut previous_igns) => {
+                                    previous_igns.push(ign);
+                                    tournament.in_game_names = Some(previous_igns);
+                                }
+                            }
+                        },
+                        _ => {}
+                    }
+                }
+                _ => {}
+            }
         }
         tournament_store.borrow_mut().insert(id, tournament);
     });
@@ -870,46 +949,182 @@ pub fn join_tournament(name: String, id: String, ign: (String,String, String)) {
 pub fn  join_tournament_with_squad(squad_id: String, id: String, ign: Vec<(String, String, String)>, new_member_ign: Option<Vec<(String, String, String)>>) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
-            Ordering::Greater => {
-                SQUAD_STORE.with(|squad_store| {
-                    let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
-                    if new_member_ign.is_some() {
-                        let count = new_member_ign.clone().unwrap().len();
-                        if count > 0 {
-                            PROFILE_STORE.with(|profile_store| {
-                                loop {
-                                    if count == 0 {
-                                        break;
+
+        if tournament.squad.clone().len() != 0 && tournament.squad.clone().len()%10 == 0{
+            match tournament.to_owned().tournament_variation {
+                None => {
+                    match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                        Ordering::Greater => {
+                            SQUAD_STORE.with(|squad_store| {
+                                let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+                                if new_member_ign.is_some() {
+                                    let count = new_member_ign.clone().unwrap().len();
+                                    if count > 0 {
+                                        PROFILE_STORE.with(|profile_store| {
+                                            loop {
+                                                if count == 0 {
+                                                    break;
+                                                }
+                                                let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
+                                                let missing: Member = Member {
+                                                    name: user.clone().username,
+                                                    principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
+                                                };
+                                                squad.members.push(missing);
+                                                user.squad_badge = squad.id_hash.clone();
+                                                profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
+                                            }
+                                            squad_store.borrow_mut().insert(squad_id, squad.clone());
+                                        });
                                     }
-                                    let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
-                                    let missing: Member = Member {
-                                        name: user.clone().username,
-                                        principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
-                                    };
-                                    squad.members.push(missing);
-                                    user.squad_badge = squad.id_hash.clone();
-                                    profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
+                                    let mut mutable_new_member_ign = new_member_ign.unwrap();
+                                    ign.clone().append(&mut mutable_new_member_ign);
                                 }
-                                squad_store.borrow_mut().insert(squad_id, squad.clone());
+                                tournament.squad.push(squad);
                             });
+                            match tournament.clone().squad_in_game_names {
+                                None => {
+                                    tournament.squad_in_game_names = Some(vec![ign]);
+                                }
+                                Some(mut previous_igns) => {
+                                    previous_igns.push(ign);
+                                    tournament.squad_in_game_names = Some(previous_igns);
+                                }
+                            }
                         }
-                        let mut mutable_new_member_ign = new_member_ign.unwrap();
-                        ign.clone().append(&mut mutable_new_member_ign);
+                        _ => {}
                     }
-                    tournament.squad.push(squad);
-                });
-                match tournament.clone().squad_in_game_names {
-                    None => {
-                        tournament.squad_in_game_names = Some(vec![ign]);
-                    }
-                    Some(mut previous_igns) => {
-                        previous_igns.push(ign);
-                        tournament.squad_in_game_names = Some(previous_igns);
+                }
+                Some(variation) => {
+                    match variation {
+                        Variation::Capped => {
+                            match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                                Ordering::Greater => {
+                                    SQUAD_STORE.with(|squad_store| {
+                                        let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+                                        if new_member_ign.is_some() {
+                                            let count = new_member_ign.clone().unwrap().len();
+                                            if count > 0 {
+                                                PROFILE_STORE.with(|profile_store| {
+                                                    loop {
+                                                        if count == 0 {
+                                                            break;
+                                                        }
+                                                        let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
+                                                        let missing: Member = Member {
+                                                            name: user.clone().username,
+                                                            principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
+                                                        };
+                                                        squad.members.push(missing);
+                                                        user.squad_badge = squad.id_hash.clone();
+                                                        profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
+                                                    }
+                                                    squad_store.borrow_mut().insert(squad_id, squad.clone());
+                                                });
+                                            }
+                                            let mut mutable_new_member_ign = new_member_ign.unwrap();
+                                            ign.clone().append(&mut mutable_new_member_ign);
+                                        }
+                                        tournament.squad.push(squad);
+                                    });
+                                    match tournament.clone().squad_in_game_names {
+                                        None => {
+                                            tournament.squad_in_game_names = Some(vec![ign]);
+                                        }
+                                        Some(mut previous_igns) => {
+                                            previous_igns.push(ign);
+                                            tournament.squad_in_game_names = Some(previous_igns);
+                                        }
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        Variation::Infinite => {
+                            tournament.entry_fee = Some(tournament.entry_fee.unwrap() + tournament.entry_fee_bump.unwrap());
+                            SQUAD_STORE.with(|squad_store| {
+                                let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+                                if new_member_ign.is_some() {
+                                    let count = new_member_ign.clone().unwrap().len();
+                                    if count > 0 {
+                                        PROFILE_STORE.with(|profile_store| {
+                                            loop {
+                                                if count == 0 {
+                                                    break;
+                                                }
+                                                let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
+                                                let missing: Member = Member {
+                                                    name: user.clone().username,
+                                                    principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
+                                                };
+                                                squad.members.push(missing);
+                                                user.squad_badge = squad.id_hash.clone();
+                                                profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
+                                            }
+                                            squad_store.borrow_mut().insert(squad_id, squad.clone());
+                                        });
+                                    }
+                                    let mut mutable_new_member_ign = new_member_ign.unwrap();
+                                    ign.clone().append(&mut mutable_new_member_ign);
+                                }
+                                tournament.squad.push(squad);
+                            });
+                            match tournament.clone().squad_in_game_names {
+                                None => {
+                                    tournament.squad_in_game_names = Some(vec![ign]);
+                                }
+                                Some(mut previous_igns) => {
+                                    previous_igns.push(ign);
+                                    tournament.squad_in_game_names = Some(previous_igns);
+                                }
+                            }
+                        }
                     }
                 }
             }
-            _ => {}
+        }
+        else {
+            match tournament.clone().no_of_participants.cmp(&(tournament.clone().user.len() as u128)) {
+                Ordering::Greater => {
+                    SQUAD_STORE.with(|squad_store| {
+                        let mut squad = squad_store.borrow().get(&squad_id).cloned().unwrap();
+                        if new_member_ign.is_some() {
+                            let count = new_member_ign.clone().unwrap().len();
+                            if count > 0 {
+                                PROFILE_STORE.with(|profile_store| {
+                                    loop {
+                                        if count == 0 {
+                                            break;
+                                        }
+                                        let mut user = profile_store.borrow().get(&new_member_ign.clone().unwrap()[count - 1].0).cloned().unwrap();
+                                        let missing: Member = Member {
+                                            name: user.clone().username,
+                                            principal_id: new_member_ign.clone().unwrap()[count - 1].0.to_owned(),
+                                        };
+                                        squad.members.push(missing);
+                                        user.squad_badge = squad.id_hash.clone();
+                                        profile_store.borrow_mut().insert(new_member_ign.clone().unwrap()[count - 1].0.to_owned(), user);
+                                    }
+                                    squad_store.borrow_mut().insert(squad_id, squad.clone());
+                                });
+                            }
+                            let mut mutable_new_member_ign = new_member_ign.unwrap();
+                            ign.clone().append(&mut mutable_new_member_ign);
+                        }
+                        tournament.squad.push(squad);
+                    });
+                    match tournament.clone().squad_in_game_names {
+                        None => {
+                            tournament.squad_in_game_names = Some(vec![ign]);
+                        }
+                        Some(mut previous_igns) => {
+                            previous_igns.push(ign);
+                            tournament.squad_in_game_names = Some(previous_igns);
+                        }
+                    }
+                }
+                _ => {}
+            }
         }
         tournament_store.borrow_mut().insert(id, tournament.clone());
     });
