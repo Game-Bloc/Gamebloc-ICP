@@ -179,7 +179,19 @@ const CompletedTournamentTable = () => {
         <div className="flex items-center">
           <ConfigProvider
             theme={{
-              algorithm: theme.darkAlgorithm,
+              algorithm: theme.defaultAlgorithm,
+              token: {
+                colorPrimaryActive: "#F6B8FC",
+                colorPrimary: "#F6B8FC",
+                colorPrimaryHover: "#F6B8FC",
+                colorText: "#fff",
+                colorBorder: "#595959",
+                colorBgContainer: "#01070E",
+                colorBgElevated: "#01070E",
+                controlOutline: "transparent",
+                colorTextBase: "#ffffff",
+                controlItemBgActive: "#f6b8fc86",
+              },
             }}
           >
             <Select
@@ -203,7 +215,19 @@ const CompletedTournamentTable = () => {
           </ConfigProvider>
           <ConfigProvider
             theme={{
-              algorithm: theme.darkAlgorithm,
+              algorithm: theme.defaultAlgorithm,
+              token: {
+                colorPrimaryActive: "#F6B8FC",
+                colorPrimary: "#F6B8FC",
+                colorPrimaryHover: "#F6B8FC",
+                colorText: "#fff",
+                colorBorder: "#595959",
+                colorBgContainer: "#01070E",
+                colorBgElevated: "#01070E",
+                controlOutline: "transparent",
+                colorTextBase: "#ffffff",
+                controlItemBgActive: "#f6b8fc86",
+              },
             }}
           >
             <Select
@@ -230,11 +254,11 @@ const CompletedTournamentTable = () => {
             />
           </ConfigProvider>
 
-          <div className=" flex items-center bg-[#141414] rounded-[6px]  border-solid border-[1px] border-[#4f4f4f] hover:border-primary-second ">
+          <div className=" flex items-center bg-[#01070E] rounded-[6px]  border-solid border-[1px] border-[#4f4f4f] hover:border-primary-second ">
             <FiSearch className="text-[#4f4f4f] ml-2" />
             <input
               onChange={onSearchChange}
-              className="bg-[#141414] ml-2 h-[2rem] rounded-[6px] placeholder:text-[#4f4f4f] placeholder:text-[.85rem] text-[.85rem]  focus:outline-none border-none focus:border-[transparent]  focus:ring-[transparent]"
+              className="bg-[#01070E] ml-2 h-[2rem] rounded-[6px] placeholder:text-[#4f4f4f] placeholder:text-[.85rem] text-[.85rem]  focus:outline-none border-none focus:border-[transparent]  focus:ring-[transparent]"
               placeholder="search"
             />
           </div>
@@ -260,7 +284,14 @@ const CompletedTournamentTable = () => {
       </div>
       <ConfigProvider
         theme={{
-          algorithm: theme.darkAlgorithm,
+          algorithm: theme.defaultAlgorithm,
+          token: {
+            colorBgContainer: "#030C15",
+            colorBorder: "#595959",
+            colorSplit: "#595959",
+            controlItemBgActive: "#f6b8fc86",
+            colorText: "#fff",
+          },
         }}
       >
         <Table

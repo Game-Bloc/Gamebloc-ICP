@@ -132,11 +132,12 @@ const TournamentListView = ({
     <div className="mt-4">
       <ConfigProvider
         theme={{
-          algorithm: theme.darkAlgorithm,
+          algorithm: theme.defaultAlgorithm,
           token: {
-            colorPrimaryActive: "#F6B8FC",
-            colorPrimary: "#F6B8FC",
-            colorPrimaryHover: "#F6B8FC",
+            colorBgContainer: "#030C15",
+            colorBorder: "#595959",
+            colorSplit: "#595959",
+            controlItemBgActive: "#f6b8fc86",
             colorText: "#fff",
           },
         }}
