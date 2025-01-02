@@ -111,7 +111,13 @@ const TransactionHistory = () => {
     <div>
       <ConfigProvider
         theme={{
-          algorithm: theme.darkAlgorithm,
+          algorithm: theme.defaultAlgorithm,
+          token: {
+            colorBgContainer: "#030C15",
+            colorBorder: "#595959",
+            colorSplit: "#595959",
+            controlItemBgActive: "#f6b8fc86",
+          },
         }}
       >
         <Table
