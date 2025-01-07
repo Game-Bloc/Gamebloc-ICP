@@ -895,11 +895,18 @@ pub fn test_end_tournament(id: String, principal: Principal, number_of_winners:u
     // }
 }
 
+//todo:unimplemented
+#[query]
+pub fn is_user_a_participant(bounty_id: String) -> bool {
+    // self.bounties.contains_key(&bounty_id)
+    false
+}
+
 #[update]
 pub fn join_tournament(name: String, id: String, ign: (String,String, String)) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        if tournament.user.clone().len() != 0 && tournament.user.clone().len()%10 == 0{
+        if tournament.user.clone().len() != 0 && tournament.user.clone().len()%20 == 0{
             match tournament.to_owned().tournament_variation {
                 None => {
                     match GameType::from_str(tournament.game_type.clone().as_str()) {
@@ -1286,8 +1293,49 @@ pub fn update_losers(id: String) {
             None => {
                 profile.losses = Some(1);
             }
+            Some(losses) => {
+                profile.losses = Some(losses + 1);
+            }
+        }
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+#[update]
+pub fn update_provious_wins(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        profile.wins = profile.wins + 1;
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+#[update]
+pub fn update_previous_attendance(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        match profile.attendance {
+            None => {
+                profile.attendance = Some(1);
+            }
             Some(attendance) => {
-                profile.losses = Some(attendance + 1);
+                profile.attendance = Some(attendance + 1);
+            }
+        }
+        profile_store.borrow_mut().insert(id, profile);
+    })
+}
+
+#[update]
+pub fn update_previous_losers(id: String) {
+    PROFILE_STORE.with(|profile_store| {
+        let mut profile = profile_store.borrow().get(&id).cloned().unwrap();
+        match profile.losses {
+            None => {
+                profile.losses = Some(1);
+            }
+            Some(losses) => {
+                profile.losses = Some(losses + 1);
             }
         }
         profile_store.borrow_mut().insert(id, profile);

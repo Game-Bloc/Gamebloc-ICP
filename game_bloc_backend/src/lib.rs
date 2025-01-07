@@ -26,7 +26,7 @@ mod tournament_mutations;
 mod squad_mutations;
 mod tournament_lobbies_management;
 mod candid_types_impl;
-
+mod wager_mutations;
 
 type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;

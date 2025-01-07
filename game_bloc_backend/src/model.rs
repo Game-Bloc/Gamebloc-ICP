@@ -73,6 +73,8 @@ pub_struct!(
      winers: Vec<String>,
     //deprecated
      entry_prize: u8,
+
+     wagers:Option<Vec<Wager>>,
      entry_fee: Option<u128>,
      nominal_entry_fee: Option<u128>,
      entry_fee_bump: Option<u128>,
@@ -173,6 +175,14 @@ pub_struct!(
     Member {
     name: String,
     principal_id: String,
+});
+
+pub_struct!(
+    Wager {
+    price: String,
+    staker_principal_id: String,
+    staker_account_id: String,
+    player_principal_id: String,
 });
 
 pub_struct!(
