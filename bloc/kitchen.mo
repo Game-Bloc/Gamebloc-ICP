@@ -1508,11 +1508,11 @@ public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : N
 //     }
 // };
 
-public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
-    // assert(caller == userCanisterId);
-    let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);
-    result
-};
+// public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
+//     // assert(caller == userCanisterId);
+//     let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);
+//     result
+// };
 
 public shared ({ caller }) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
     // assert(caller == userCanisterId);
