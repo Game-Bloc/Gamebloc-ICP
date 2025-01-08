@@ -60,6 +60,7 @@ type TournamentAccount = record {
   game : text;
   user : vec text;
   in_game_names : opt vec record { text; text; text };
+  tournament_variation : opt Variation;
   winers : vec text;
   total_prize : nat;
   end_date : text;
@@ -70,6 +71,8 @@ type TournamentAccount = record {
   lobbies : opt vec LobbyAccount;
   game_type : text;
   starting_date : text;
+  entry_fee_bump : opt nat;
+  nominal_entry_fee : opt nat;
   no_of_participants : nat;
   tournament_lobby_type : opt TournamentLobbyType;
   points_vector_mod_1 : opt vec record { text; text; Point };
@@ -112,6 +115,7 @@ type UserProfile = record {
   tournaments_created : nat8;
   points : opt vec record { text; text; Point };
 };
+type Variation = variant { Infinite; Capped };
 type Winner = record { user_account : text; position : text; amount : nat };
 service : () -> {
   add_mod_to_tribunal : (principal) -> (bool);
