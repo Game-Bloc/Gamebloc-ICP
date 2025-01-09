@@ -188,7 +188,6 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     var ended = tournament.ended;
 
     // * Check if tournamnet has ended
-
     switch (ended) {
         case (null) {};
         case (?(ended)) {
