@@ -178,14 +178,19 @@ const WelcomeModal = ({ modal }: Props) => {
                     >
                       <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
                         {isLoading ? (
-                          <ClipLoader
-                            color={color}
-                            loading={isLoading}
-                            cssOverride={override}
-                            size={10}
-                            aria-label="Loading Spinner"
-                            data-testid="loader"
-                          />
+                          <div className="flex items-center  gap-2">
+                            <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                              Wait
+                            </p>
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={10}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          </div>
                         ) : (
                           "Create Account"
                         )}

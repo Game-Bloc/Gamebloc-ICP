@@ -2,8 +2,8 @@
 // Please use `import service "ic:canister_id"` instead to call canisters on the IC if possible.
 
 module {
-  public type Account = { owner : Principal; subaccount : ?Subaccount };
-  public type Subaccount = [Nat8];
+  public type Account = { owner : Principal; subaccount : ?Subaccount }; //AccountIdentifier
+  public type Subaccount = [Nat8]; // Blob
   public type AccountBalanceArgs = { account : Text };
   public type Allowance = { allowance : Nat; expires_at : ?Nat64 };
   public type AllowanceArgs = { account : Account; spender : Account };

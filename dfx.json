@@ -9,6 +9,7 @@
     "kitchen": {
       "main": "bloc/kitchen.mo",
       "type": "motoko",
+      "optimize": "cycles",
       "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index"]
     },
 

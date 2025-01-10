@@ -20,8 +20,10 @@ const Tutorials = () => {
 
   return (
     <div className="w-full flex flex-col gap-8 my-7 bg-[#040D17] rounded-[1.5rem] py-4 px-3">
-      <div className="flex justify-between items-center">
-        <h2 className="text-white text-lg">Know your way around Gamebloc</h2>
+      <h2 className="font-valorant text-center mb-4 text-sm sm:text-lg md:text-xl text-white">
+        TUTORIALS
+      </h2>
+      <div className="flex justify-end items-center">
         <div className="flex gap-3">
           <div
             onClick={handlePrevious}

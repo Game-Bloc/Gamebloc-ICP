@@ -3,7 +3,7 @@ import { CodImgs } from "../../../data/Index"
 import { useNavigate } from "react-router-dom"
 import { Skeleton } from "antd"
 import { DotChartOutlined } from "@ant-design/icons"
-const cardImg = require("../../../../assets/cyber.svg").default
+const cardImg = require("../../../../assets/cod2.jpg").default
 interface Props {
   data: any
   index: any
@@ -15,7 +15,7 @@ const RecommendedCard = ({ data, index }: Props) => {
 
   useEffect(() => {
     const img = new Image()
-    img.onload = () => {
+    if (cardImg) {
       setIsimageLoaded(true)
     }
     img.src = cardImg
@@ -34,7 +34,11 @@ const RecommendedCard = ({ data, index }: Props) => {
         </div>
       ) : (
         <div className="relative">
-          <img src={cardImg} alt="" className="rounded-[12px] m-0  w-full" />
+          <img
+            src={`cod2.jpg`}
+            alt=""
+            className="rounded-[12px] m-0  w-full max-h-52"
+          />
           {Object.keys(data.status)[0].toUpperCase() === "ARCHIVED" ? (
             <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center bg-[#FEE4E2] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
               <p className="   text-[0.6rem] font-bold  sm:text-[.6rem] text-[#D92D20] ">
