@@ -192,6 +192,9 @@ module {
         lobbies : ?[LobbyAccount];
         winners : ?[Winner];
         ended : ?Bool;
+        tournament_variation : ?Variation;
+        entry_fee_bump : ?Nat;
+        nominal_entry_fee : ?Nat
         // paid : Bool;
     };
 
@@ -245,6 +248,8 @@ module {
 
     public type Status = { #Online; #Offline };
 
+    public type Variation = { #Capped; #Infinite };
+
     public type Member = {
         name : Text;
         principal_id : Text
@@ -255,6 +260,15 @@ module {
         point : Nat;
         wins : Nat8;
         losses : Nat8
-    }
+    };
+
+    public type DailyClaim = {
+        user : Principal;
+        streakTime : Nat; //  Type Time
+        streakCount : Nat;
+        highestStreak : Nat;
+        pointBalance : Nat;
+    };
+
 
 }

@@ -135,6 +135,7 @@ export const useAuthClient = (options = defaultOptions) => {
         process.env.DFX_NETWORK === "ic"
           ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
           : "http://localhost:8080",
+      maxTimeToLive: BigInt(744) * BigInt(3_600_000_000_000),
       onSuccess: () => {
         updateClient(authClient)
         navigate("/dashboard")
@@ -149,6 +150,7 @@ export const useAuthClient = (options = defaultOptions) => {
         process.env.DFX_NETWORK === "ic"
           ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
           : "http://localhost:8080",
+      maxTimeToLive: BigInt(744) * BigInt(3_600_000_000_000),
       onSuccess: () => {
         updateClient(authClient)
         navigate("/dashboard")
@@ -163,11 +165,11 @@ export const useAuthClient = (options = defaultOptions) => {
 
       const identity = client.getIdentity()
       setIdentity(identity)
-      console.log("identity", identity)
+      // console.log("identity", identity)
       const principal = identity.getPrincipal()
 
       setPrincipal(principal)
-      console.log("Principal", principal)
+      // console.log("Principal", principal)
       setAuthClient(client)
 
       const actor = createActor(canisterId, {

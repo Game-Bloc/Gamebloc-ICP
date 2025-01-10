@@ -60,7 +60,11 @@ const AllNoti = () => {
               />
 
               <div className="flex justify-between items-center w-full">
-                <p className="ml-4 text-white/50 font-bold">{noti.title}</p>
+                <p className="ml-4 text-white/50 font-bold">
+                  {noti?.title.length > 25
+                    ? noti?.title.substring(0, 25) + "....."
+                    : noti?.title}
+                </p>
                 <p
                   onClick={() => {
                     mark_as_read(principal, noti.id)

@@ -44,9 +44,9 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  // const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai")
   // ! Production params
-  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+  //const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
@@ -157,7 +157,7 @@ export const useGameblocHooks = () => {
 
   const getPlayers = async () => {
     try {
-      const player = await whoamiActor.count_all_users()
+      const player = await whoamiActor2.count_all_users()
       console.log(player)
       sessionStorage.setItem("players", Number(player).toString())
     } catch (err) {
@@ -168,10 +168,11 @@ export const useGameblocHooks = () => {
   const getProfile = async () => {
     try {
       setIsLoadingProfile(true)
-      const user: any = await whoamiActor.getSelf()
+      const user: any = await whoamiActor2.getSelf()
+      console.log("user..:", user)
       if (user.username != "") {
         setIsAccount(true)
-        // console.log("user..:", user)
+        console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -210,7 +211,7 @@ export const useGameblocHooks = () => {
   const updateProfile = async () => {
     try {
       setUpdatingProfile(true)
-      const user: any = await whoamiActor.getSelf()
+      const user: any = await whoamiActor2.getSelf()
       console.log("Profile", user)
       const profileData: UserProfileState = {
         age: user.age,
