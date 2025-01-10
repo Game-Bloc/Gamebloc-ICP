@@ -6,7 +6,7 @@ OWNER := $(shell dfx identity get-principal)
 TOKEN_NAME := ICP
 
 GAME_BLOC_WASM := target/wasm32-unknown-unknown/release/game_bloc_backend.wasm
-CANDID_FILE := src/game_bloc_backend.did
+CANDID_FILE := game_bloc_backend/game_bloc_backend.did
 
 # Targets
 

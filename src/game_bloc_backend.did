@@ -68,6 +68,7 @@ type TournamentAccount = record {
   ended : opt bool;
   squad_in_game_names : opt vec vec record { text; text; text };
   squad : vec Squad;
+  no_of_participants_at_bump : opt nat;
   lobbies : opt vec LobbyAccount;
   game_type : text;
   starting_date : text;
