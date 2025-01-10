@@ -260,6 +260,15 @@ module {
         point : Nat;
         wins : Nat8;
         losses : Nat8
-    }
+    };
+
+    public type DailyClaim = {
+        user : Principal;
+        streakTime : Nat; //  Type Time
+        streakCount : Nat;
+        highestStreak : Nat;
+        pointBalance : Nat;
+    };
+
 
 }
