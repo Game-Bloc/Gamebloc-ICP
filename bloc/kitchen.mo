@@ -59,18 +59,21 @@ private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
 private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
 private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
 private stable var feedback_id : Nat = 0;
+private stable var day : Nat = 86400;
 private stable var volume : Nat64 = 0;
 private stable var SupportedGames : [Text] = [];
 private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
 private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
 private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
 private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
+private stable var DailyRewardEntries : [(Principal, Bloctypes.DailyClaim)] = [];
 
 var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
 var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
 var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
+var DailyRewardHashMap : HashMap.HashMap<Principal, Bloctypes.DailyClaim> = HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
 
 var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
 var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
@@ -91,6 +94,7 @@ system func preupgrade() {
     SquadEntries := Iter.toArray(SQUAD_STORE.entries());
     FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
     NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
+    DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
 
     messageEntries := Iter.toArray(MessageHashMap.entries());
     BalanceEntries := Iter.toArray(BalanceHashMap.entries());
@@ -1114,7 +1118,80 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 
 //
 // User activities
-//
+// * epoch value of 24 hours should be 86400
+
+public shared ({ caller }) func activateDailyClaims() : async () {
+    DailyRewardHashMap.put(caller, {
+        user = caller;
+        streakTime = Int.abs(Time.now()); 
+        streakCount = 1;
+        highestStreak = 1;
+        pointBalance = 1;
+    })
+};
+
+public shared ({ caller }) func claimToday() : async () {
+    var today = DailyRewardHashMap.get(caller);
+    switch(today) {
+        case(null){};
+        case(?today){
+            if ((today.streakTime + day) >= Int.abs(Time.now())) {
+                if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
+                    await resetClaims(caller);
+                };
+                var claimed = {
+                    user = today.user;
+                    streakTime = Int.abs(Time.now()); 
+                    streakCount = today.streakCount + 1;
+                    highestStreak = today.highestStreak;
+                    pointBalance = today.pointBalance + today.streakCount + 1;
+                }
+            }
+        }
+    }
+};
+
+func resetClaims(caller : Principal) : async () {
+    var today = DailyRewardHashMap.get(caller);
+    switch(today) {
+        case(null){};
+        case(?today){
+                var claimed = {
+                    user = today.user;
+                    streakTime = Int.abs(Time.now()); 
+                    streakCount = 1;
+                    highestStreak = today.highestStreak;
+                    pointBalance = today.pointBalance;
+            }
+        }
+    }
+};
+
+public shared ({ caller }) func getMyPoints() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.pointBalance;
+        }
+    } 
+};
+
+
+public shared ({ caller }) func getMyStreakCount() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.streakCount;
+        }
+    } 
+};
+
 
 func create_usertrack(caller : Principal) : async () {
     USER_TRACK_STORE.put(
