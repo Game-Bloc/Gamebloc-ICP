@@ -291,6 +291,9 @@ export const useGameblocHooks = () => {
     tournament_lobby_type: any,
     winners: [],
     ended: [],
+    tournament_variation: any,
+    _nominal_entry_fee: any,
+    _entry_fee_bump: any,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -299,6 +302,8 @@ export const useGameblocHooks = () => {
       setUpdating(true)
       const creator_id: [string] = [owner_id]
       const entry_fee: [bigint] = [_entry_fee]
+      const nominal_entry_fee: [bigint] = [_nominal_entry_fee]
+      const entry_fee_bump: [bigint] = [_entry_fee_bump]
       const tournamentData = {
         id_hash,
         creator,
@@ -316,8 +321,11 @@ export const useGameblocHooks = () => {
         winers,
         entry_prize,
         entry_fee,
+        nominal_entry_fee,
+        entry_fee_bump,
         total_prize,
         no_of_winners,
+        tournament_variation,
         no_of_participants,
         game_type,
         end_date,
