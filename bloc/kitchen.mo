@@ -1167,8 +1167,6 @@ func resetClaims(caller : Principal) : async () {
     }
 };
 
-
-
 public shared ({ caller }) func getMyPoints() : async Nat {
     var activity = DailyRewardHashMap.get(caller);
     switch(activity){
@@ -1180,7 +1178,6 @@ public shared ({ caller }) func getMyPoints() : async Nat {
         }
     } 
 };
-
 
 public shared ({ caller }) func getMyStreakCount() : async Nat {
     var activity = DailyRewardHashMap.get(caller);
