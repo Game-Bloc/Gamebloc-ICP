@@ -44,7 +44,7 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  const _principal = Principal.fromText("a4tbr-q4aaa-aaaaa-qaafq-cai")
+  const _principal = Principal.fromText("asrmz-lmaaa-aaaaa-qaaeq-cai")
   // ! Production params
   //const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
@@ -294,6 +294,7 @@ export const useGameblocHooks = () => {
     tournament_variation: any,
     _nominal_entry_fee: any,
     _entry_fee_bump: any,
+    _no_of_participants_at_bump: any,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -301,9 +302,11 @@ export const useGameblocHooks = () => {
     try {
       setUpdating(true)
       const creator_id: [string] = [owner_id]
+      const tour_variation: [any] = [tournament_variation]
       const entry_fee: [bigint] = [_entry_fee]
       const nominal_entry_fee: [bigint] = [_nominal_entry_fee]
       const entry_fee_bump: [bigint] = [_entry_fee_bump]
+      const no_of_participants_at_bump: [bigint] = [_no_of_participants_at_bump]
       const tournamentData = {
         id_hash,
         creator,
@@ -323,9 +326,10 @@ export const useGameblocHooks = () => {
         entry_fee,
         nominal_entry_fee,
         entry_fee_bump,
+        no_of_participants_at_bump,
         total_prize,
         no_of_winners,
-        tournament_variation,
+        tournament_variation: tour_variation,
         no_of_participants,
         game_type,
         end_date,
