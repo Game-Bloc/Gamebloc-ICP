@@ -1,14 +1,12 @@
 use std::borrow::Cow;
 
-use candid::{Decode, Deserialize, CandidType, Encode};
+use candid::{CandidType, Decode, Deserialize, Encode};
 // use candid::types::CandidType;
 // use candid::CandidType as CandidType;
 // use candid::types::Compound;
 // use candid::types::Serializer;
 use candid::encode_one;
-use ic_stable_structures::{
-    Storable, storable::Bound,
-};
+use ic_stable_structures::{storable::Bound, Storable};
 use serde::Serialize;
 
 use crate::*;
@@ -25,14 +23,10 @@ macro_rules! pub_struct {
 
 const MAX_VALUE_SIZE: u32 = 100;
 
-pub_struct!(
-    AppMessage {
-     text: String,
-     timestamp: u64,
-    }
-);
-
-
+pub_struct!(AppMessage {
+    text: String,
+    timestamp: u64,
+});
 
 pub_struct!(UserProfile {
      id_hash: String,
@@ -78,6 +72,7 @@ pub_struct!(
      entry_fee: Option<u128>,
      nominal_entry_fee: Option<u128>,
      entry_fee_bump: Option<u128>,
+     no_of_participants_at_bump: Option<u128>,
      total_prize: u128,
      no_of_winners: u8,
      tournament_variation: Option<Variation>,
@@ -101,19 +96,19 @@ pub_struct!(
 
 });
 
-#[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
 pub enum Variation {
     #[default]
     Capped,
     Infinite,
 }
-pub_struct!(
-    Winner{
-        position : String,
-        amount : u128,
-        user_account : String, // This is usually updated
-    }
-);
+pub_struct!(Winner {
+    position: String,
+    amount: u128,
+    user_account: String, // This is usually updated
+});
 
 // impl CandidType for i128 {
 //     fn _ty() -> Type {
@@ -149,11 +144,10 @@ pub_struct!(
     }
 );
 
-pub_struct!(
-    Point {
-     position_points: u128,
-     kill_points: u128,
-     total_points: u128,
+pub_struct!(Point {
+    position_points: u128,
+    kill_points: u128,
+    total_points: u128,
 });
 
 pub_struct!(
@@ -171,8 +165,7 @@ pub_struct!(
     points: Option<Vec<(String,String,Point)>>,
 });
 
-pub_struct!(
-    Member {
+pub_struct!(Member {
     name: String,
     principal_id: String,
 });
@@ -185,8 +178,8 @@ pub_struct!(
     player_principal_id: String,
 });
 
-pub_struct!(
-    Chat {
+
+pub_struct!(Chat {
     name: String,
     id: String,
     time: String,
@@ -212,10 +205,10 @@ pub enum Role {
     #[default]
     Player,
     Mod,
-    TribunalMod(ModTag)
+    TribunalMod(ModTag),
 }
 
-#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize,PartialEq)]
+#[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize, PartialEq)]
 pub enum ModTag {
     #[default]
     Mod1,
@@ -274,7 +267,7 @@ pub enum TournamentType {
     #[default]
     Crowdfunded,
     Prepaid,
-    Blitzkrieg
+    Blitzkrieg,
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentLobbyType {
@@ -283,7 +276,9 @@ pub enum TournamentLobbyType {
     MultiLobby,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize)]
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
 pub enum SquadType {
     #[default]
     Open,

@@ -194,7 +194,8 @@ module {
         ended : ?Bool;
         tournament_variation : ?Variation;
         entry_fee_bump : ?Nat;
-        nominal_entry_fee : ?Nat
+        nominal_entry_fee : ?Nat;
+        no_of_participants_at_bump: ?Nat;
         // paid : Bool;
     };
 
