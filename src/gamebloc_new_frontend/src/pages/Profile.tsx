@@ -119,7 +119,7 @@ const Profile = () => {
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
                   </h1>
-                  <div className="flex flex-col  md:flex-row justify-around items-center ">
+                  <div className="flex flex-col  lg:flex-row justify-around items-center ">
                     <div className=" flex flex-col w-full sm:w-fit justify-center  md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
                       <div className="flex">
                         <div className="mr-4 lg:mr-[3rem]">

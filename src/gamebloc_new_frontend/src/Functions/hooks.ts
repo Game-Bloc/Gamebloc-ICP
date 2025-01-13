@@ -22,6 +22,8 @@ export const hooks = () => {
   const [done, setDone] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [activateloading, setActivateloading] = useState<boolean>(false)
+  const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
 
   const popUp = (successMsg: string, route: any) => {
@@ -103,25 +105,41 @@ export const hooks = () => {
 
   // Daily Streak Functions
 
-  const activateDailyClaims = async () => {
+  const activateDailyClaims = async (
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
     try {
-      setIsLoading(true)
+      setActivateloading(true)
       const claim = await whoamiActor.activateDailyClaims()
-      setIsLoading(false)
+      const points = await whoamiActor.getMyPoints()
+      const streak = await whoamiActor.getMyStreakCount()
+      setActivateloading(false)
+      popUp(successMsg, route)
     } catch (err) {
-      setIsLoading(false)
+      setActivateloading(false)
       console.log(err)
+      errorPopUp(errorMsg)
     }
   }
 
-  const claimToday = async () => {
+  const claimToday = async (
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
     try {
-      setUpdating(true)
+      setClaimloading(true)
       const claim = await whoamiActor.claimToday()
-      setUpdating(false)
+      const points = await whoamiActor.getMyPoints()
+      const streak = await whoamiActor.getMyStreakCount()
+      setClaimloading(false)
+      popUp(successMsg, route)
     } catch (err) {
-      setUpdating(false)
+      setClaimloading(false)
       console.log(err)
+      errorPopUp(errorMsg)
     }
   }
 
@@ -157,6 +175,8 @@ export const hooks = () => {
     done,
     updating,
     isLoading,
+    activateloading,
+    claimloading,
     sending,
     setAdmin,
     setTribunal,

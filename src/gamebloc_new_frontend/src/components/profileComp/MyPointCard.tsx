@@ -1,7 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useAppSelector } from "../../redux/hooks"
 import { Hexagon, TiledHexagons } from "tiled-hexagons"
+import hooks from "../../Functions/hooks"
 
 const override = {
   display: "block",
@@ -10,10 +11,22 @@ const override = {
 }
 
 const MyPointCard = () => {
+  const {
+    activateDailyClaims,
+    claimToday,
+    activateloading,
+    claimloading,
+    getMyPoints,
+    getMyStreakCount,
+  } = hooks()
   const [color, setColor] = useState("#ffffff")
   const point = useAppSelector((state) => state.dailyStreak.point)
   const streak = useAppSelector((state) => state.dailyStreak.streak)
-  console.log("sssssss", point)
+  const condition = streak === 0 ? activateloading : claimloading
+  useEffect(() => {
+    getMyPoints()
+    getMyStreakCount()
+  }, [])
   return (
     <div className="flex flex-col w-full sm:w-fit justify-center items-center    mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
       <div className="flex flex-col">
@@ -22,7 +35,7 @@ const MyPointCard = () => {
         </h2>
         <div className="flex justify-center items-center">
           <Hexagon
-            text={point}
+            text={`${point}`}
             textStyle={{ fill: "#000000", fontSize: "50px", fontWeight: "700" }}
             sideLength={80}
             borderRadius={12}
@@ -39,26 +52,40 @@ const MyPointCard = () => {
           </div>
         </div>
         <div className=" flex justify-center items-center w-full">
-          <button className="justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:#f6b8fcc1 rounded-[12px] items-center cursor-pointer py-3">
-            <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
-              {/* {isLoading ? (
-              <div className="flex items-center  gap-2">
-                <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
-                  Wait
-                </p>
-                <ClipLoader
-                  color={color}
-                  loading={isLoading}
-                  cssOverride={override}
-                  size={10}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
-              </div>
-            ) : ( */}
-              Claim
-              {/* )} */}
-            </p>
+          <button
+            onClick={
+              streak === 0
+                ? () => {
+                    activateDailyClaims(
+                      "Today's Point Claimed",
+                      "Error claiming daily point",
+                      "",
+                    )
+                  }
+                : () => claimToday("Claimed", "Error claiming daily point", "")
+            }
+            className="justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:#f6b8fcc1 rounded-[12px] items-center cursor-pointer py-3"
+            disabled={streak === 0 ? true : false}
+          >
+            <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
+              {condition ? (
+                <div className="flex items-center  gap-2">
+                  <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                    Wait
+                  </p>
+                  <ClipLoader
+                    color={color}
+                    loading={streak === 0 ? activateloading : claimloading}
+                    cssOverride={override}
+                    size={10}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
+              ) : (
+                "Claim"
+              )}
+            </div>
           </button>
         </div>
       </div>
