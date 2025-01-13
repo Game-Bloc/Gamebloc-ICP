@@ -44,7 +44,7 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  const _principal = Principal.fromText("asrmz-lmaaa-aaaaa-qaaeq-cai")
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   // ! Production params
   //const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
