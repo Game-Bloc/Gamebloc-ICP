@@ -22,6 +22,7 @@ import { Principal } from "@dfinity/principal"
 import Blitz from "../components/dashboardComps/Blitz"
 import Funded from "../components/dashboardComps/Funded"
 import Prepaid from "../components/dashboardComps/Prepaid"
+import hooks from "../Functions/hooks"
 
 const Dashboard = () => {
   const { isAuthenticated } = useAuth()
@@ -35,6 +36,7 @@ const Dashboard = () => {
     getChatmessage,
     getICPrice,
   } = useGameblocHooks()
+  const { getMyPoints, getMyStreakCount } = hooks()
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
@@ -66,6 +68,8 @@ const Dashboard = () => {
       const principal = Principal.fromText(principalText)
       getMyNotifications(principal)
       getNotificationId(principal)
+      getMyPoints()
+      getMyStreakCount()
     }
   }, [isAuthenticated, userSession])
 
@@ -100,7 +104,7 @@ const Dashboard = () => {
               <Blitz />
               <Funded />
               <Prepaid />
-              <Tutorials/>
+              <Tutorials />
               <GameblocTournaments loading={isLoadingProfile} />
             </div>
           </div>

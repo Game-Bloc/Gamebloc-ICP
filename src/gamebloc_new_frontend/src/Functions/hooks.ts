@@ -3,35 +3,10 @@ import { useAuth } from "../Auth/use-auth-client"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
-import {
-  UserProfileState,
-  updateUserProfile,
-} from "../redux/slice/userProfileSlice"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import {
-  IcpBalanceState,
-  updateBalance,
-  updateICP,
-  updateId,
-} from "../redux/slice/icpBalanceSlice"
-import {
-  chatState,
-  clearChat,
-  pushToChat,
-  updateChat,
-} from "../redux/slice/chatSlice"
-import {
-  addTransactions,
-  clearTransaction,
-} from "../redux/slice/transactionSlice"
-import axios from "axios"
 import { Principal } from "@dfinity/principal"
-import { allNotification } from "../redux/slice/notificationSlice"
-import {
-  clearBoard,
-  LeaderboardState,
-  updateLeaderboard,
-} from "../redux/slice/leaderboardSlice"
+import { updatePoint, updateStreak } from "../redux/slice/dailyStreak"
+
 export const hooks = () => {
   const {
     isAuthenticated,
@@ -126,6 +101,58 @@ export const hooks = () => {
     }
   }
 
+  // Daily Streak Functions
+
+  const activateDailyClaims = async () => {
+    try {
+      setIsLoading(true)
+      const claim = await whoamiActor.activateDailyClaims()
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+    }
+  }
+
+  const claimToday = async () => {
+    try {
+      setUpdating(true)
+      const claim = await whoamiActor.claimToday()
+      setUpdating(false)
+    } catch (err) {
+      setUpdating(false)
+      console.log(err)
+    }
+  }
+
+  const getMyPoints = async () => {
+    try {
+      setIsLoading(true)
+      const points = await whoamiActor.getMyPoints()
+      const _points = Number(points)
+      dispatch(updatePoint({ point: _points }))
+      // console.log("my point:", _points)
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+    }
+  }
+
+  const getMyStreakCount = async () => {
+    try {
+      setUpdating(true)
+      const points = await whoamiActor.getMyStreakCount()
+      const _points = Number(points)
+      dispatch(updateStreak({ streak: _points }))
+      // console.log("my streak:", _points)
+      setUpdating(false)
+    } catch (err) {
+      setUpdating(false)
+      console.log(err)
+    }
+  }
+
   return {
     done,
     updating,
@@ -134,6 +161,10 @@ export const hooks = () => {
     setAdmin,
     setTribunal,
     disburseFunds,
+    activateDailyClaims,
+    claimToday,
+    getMyPoints,
+    getMyStreakCount,
   }
 }
 
