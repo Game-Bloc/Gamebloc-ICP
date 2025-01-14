@@ -1132,7 +1132,7 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 // User activities
 // * epoch value of 24 hours should be 86400
 
-public shared ({ caller }) func activateDailyClaims() : async () {
+private func activateDailyClaims(caller : Principal) : () {
     DailyRewardHashMap.put(caller, {
         user = caller;
         streakTime = Int.abs(Time.now()); 
@@ -1145,19 +1145,24 @@ public shared ({ caller }) func activateDailyClaims() : async () {
 public shared ({ caller }) func claimToday() : async () {
     var today = DailyRewardHashMap.get(caller);
     switch(today) {
-        case(null){};
+        case(null){
+            activateDailyClaims(caller);
+        };
         case(?today){
             if ((today.streakTime + day) >= Int.abs(Time.now())) {
                 if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
                     await resetClaims(caller);
                 };
+                var point = today.streakCount + 1;
+                await update_point(caller, point);
                 var claimed = {
                     user = today.user;
                     streakTime = Int.abs(Time.now()); 
                     streakCount = today.streakCount + 1;
                     highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance + today.streakCount + 1;
+                    pointBalance = today.pointBalance + point;
                 }
+
             }
         }
     }
@@ -1231,7 +1236,7 @@ func create_usertrack(caller : Principal) : async () {
     )
 };
 
-public func update_tournaments_created(caller : Principal) : async () {
+private func update_tournaments_created(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1250,7 +1255,7 @@ public func update_tournaments_created(caller : Principal) : async () {
     }
 };
 
-public func update_tournaments_joined(caller : Principal) : async () {
+private func update_tournaments_joined(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1269,7 +1274,7 @@ public func update_tournaments_joined(caller : Principal) : async () {
     }
 };
 
-public func update_tournaments_won(caller : Principal) : async () {
+private func update_tournaments_won(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1288,7 +1293,7 @@ public func update_tournaments_won(caller : Principal) : async () {
     }
 };
 
-public func update_messages_sent(caller : Principal) : async () {
+private func update_messages_sent(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1307,11 +1312,41 @@ public func update_messages_sent(caller : Principal) : async () {
     }
 };
 
+private func update_point(caller : Principal, point : Nat) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {};
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                tournaments_joined = tracker.tournaments_joined;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = tracker.total_point + point;
+            };
+            var updated = USER_TRACK_STORE.replace(caller, update)
+        }
+    }
+};
+
+public query func get_user_point(caller : Principal) : async Nat {
+    var tracker = USER_TRACK_STORE.get(caller);
+    var point = 0;
+    for ((i, j) in USER_TRACK_STORE.entries()) {
+        if (i == caller) {
+            point := j.total_point;
+        }
+    };
+    return point
+};
+
 //
 // Feedbacks
 //
 
-public func update_feedbacks_sent(caller : Principal) : async () {
+private func update_feedbacks_sent(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
