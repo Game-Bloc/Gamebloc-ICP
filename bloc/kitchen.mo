@@ -1191,6 +1191,18 @@ public shared ({ caller }) func getMyPoints() : async Nat {
     } 
 };
 
+public shared ({ caller }) func getStreakTime() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.streakTime; // In epoch time
+        }
+    } 
+};
+
 public shared ({ caller }) func getMyStreakCount() : async Nat {
     var activity = DailyRewardHashMap.get(caller);
     switch(activity){
