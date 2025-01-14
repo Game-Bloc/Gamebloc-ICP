@@ -204,6 +204,18 @@ module {
         #MultiLobby;
     };
 
+    public type LockedAsset = {
+        icpBalance : Nat;
+        user : Principal;
+        assets : [Lockable];
+    };
+
+    public type Lockable = {
+        amount : Nat;
+        timestamp : Nat;
+        user : Principal;
+    };
+
 
     // public type Winner = {
     //     position : Text;

@@ -113,10 +113,9 @@ export const hooks = () => {
     try {
       setActivateloading(true)
       const claim = await whoamiActor.activateDailyClaims()
-      const points = await whoamiActor.getMyPoints()
-      const streak = await whoamiActor.getMyStreakCount()
       setActivateloading(false)
       popUp(successMsg, route)
+      window.location.reload()
     } catch (err) {
       setActivateloading(false)
       console.log(err)
@@ -132,10 +131,9 @@ export const hooks = () => {
     try {
       setClaimloading(true)
       const claim = await whoamiActor.claimToday()
-      const points = await whoamiActor.getMyPoints()
-      const streak = await whoamiActor.getMyStreakCount()
       setClaimloading(false)
       popUp(successMsg, route)
+      window.location.reload()
     } catch (err) {
       setClaimloading(false)
       console.log(err)

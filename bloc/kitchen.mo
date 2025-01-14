@@ -2241,6 +2241,10 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     //     // You would typically store these in a canister.
     // }
 
+    private shared ({ caller }) func lockThisICP(amount : Nat) : async () {
+        var locked = 
+    };
+
     // Call this method to check the balance.
     // public query func checkBalance(accountId: Text): async Nat {
     //     // Use the ICP ledger to query the account balance.

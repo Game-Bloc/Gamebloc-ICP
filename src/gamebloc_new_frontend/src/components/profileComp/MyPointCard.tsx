@@ -26,7 +26,7 @@ const MyPointCard = () => {
   useEffect(() => {
     getMyPoints()
     getMyStreakCount()
-  }, [])
+  }, [streak, point])
   return (
     <div className="flex flex-col w-full sm:w-fit justify-center items-center    mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
       <div className="flex flex-col">
@@ -64,13 +64,17 @@ const MyPointCard = () => {
                   }
                 : () => claimToday("Claimed", "Error claiming daily point", "")
             }
-            className="justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:#f6b8fcc1 rounded-[12px] items-center cursor-pointer py-3"
-            disabled={streak === 0 ? true : false}
+            className={`justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base ${
+              streak === 100
+                ? "bg-[#6E6E6E] cursor-not-allowed text-[#fff]/40"
+                : "bg-primary-second hover:bg-primary-light"
+            } text-black mt-[0.8rem] sm:mt-[1.5rem] flex rounded-[12px] items-center py-3`}
+            disabled={streak === 100}
           >
             <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
               {condition ? (
-                <div className="flex items-center  gap-2">
-                  <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                <div className="flex items-center gap-2">
+                  <p className="text-[0.65rem] mr-2 font-bold sm:text-[.85rem]">
                     Wait
                   </p>
                   <ClipLoader
