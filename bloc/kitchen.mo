@@ -1132,14 +1132,16 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 // User activities
 // * epoch value of 24 hours should be 86400
 
-private func activateDailyClaims(caller : Principal) : () {
+private func activateDailyClaims(caller : Principal) : async () {
+
     DailyRewardHashMap.put(caller, {
         user = caller;
         streakTime = Int.abs(Time.now()); 
         streakCount = 1;
         highestStreak = 1;
         pointBalance = 1;
-    })
+    });
+    await update_point(caller, 1);
 };
 
 public shared ({ caller }) func claimToday() : async () {
@@ -1147,8 +1149,7 @@ public shared ({ caller }) func claimToday() : async () {
     switch(today) {
         case(null){
             await create_usertrack(caller);
-            activateDailyClaims(caller);
-            
+            await activateDailyClaims(caller); 
         };
         case(?today){
             if ((today.streakTime + day) >= Int.abs(Time.now())) {
