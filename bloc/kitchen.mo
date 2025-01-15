@@ -1146,7 +1146,9 @@ public shared ({ caller }) func claimToday() : async () {
     var today = DailyRewardHashMap.get(caller);
     switch(today) {
         case(null){
+            await create_usertrack(caller);
             activateDailyClaims(caller);
+            
         };
         case(?today){
             if ((today.streakTime + day) >= Int.abs(Time.now())) {
@@ -2349,7 +2351,6 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
             }
         }
     }
-
     // Call this method to check the balance.
     // public query func checkBalance(accountId: Text): async Nat {
     //     // Use the ICP ledger to query the account balance.
