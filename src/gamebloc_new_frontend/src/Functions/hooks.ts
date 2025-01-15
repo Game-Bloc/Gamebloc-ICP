@@ -105,24 +105,6 @@ export const hooks = () => {
 
   // Daily Streak Functions
 
-  const activateDailyClaims = async (
-    successMsg: string,
-    errorMsg: string,
-    route: string,
-  ) => {
-    try {
-      setActivateloading(true)
-      const claim = await whoamiActor.activateDailyClaims()
-      setActivateloading(false)
-      popUp(successMsg, route)
-      window.location.reload()
-    } catch (err) {
-      setActivateloading(false)
-      console.log(err)
-      errorPopUp(errorMsg)
-    }
-  }
-
   const claimToday = async (
     successMsg: string,
     errorMsg: string,
@@ -141,13 +123,13 @@ export const hooks = () => {
     }
   }
 
-  const getMyPoints = async () => {
+  const getMyPoints = async (principal: Principal) => {
     try {
       setIsLoading(true)
-      const points = await whoamiActor.getMyPoints()
+      const points = await whoamiActor.get_user_point(principal)
       const _points = Number(points)
       dispatch(updatePoint({ point: _points }))
-      // console.log("my point:", _points)
+      console.log("my point:", _points)
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
@@ -161,10 +143,18 @@ export const hooks = () => {
       const points = await whoamiActor.getMyStreakCount()
       const _points = Number(points)
       dispatch(updateStreak({ streak: _points }))
-      // console.log("my streak:", _points)
       setUpdating(false)
     } catch (err) {
       setUpdating(false)
+      console.log(err)
+    }
+  }
+
+  const getStreakTime = async () => {
+    try {
+      const time = await whoamiActor.getStreakTime()
+      console.log("streakTime:", time)
+    } catch (err) {
       console.log(err)
     }
   }
@@ -173,16 +163,15 @@ export const hooks = () => {
     done,
     updating,
     isLoading,
-    activateloading,
     claimloading,
     sending,
     setAdmin,
     setTribunal,
     disburseFunds,
-    activateDailyClaims,
     claimToday,
     getMyPoints,
     getMyStreakCount,
+    getStreakTime,
   }
 }
 

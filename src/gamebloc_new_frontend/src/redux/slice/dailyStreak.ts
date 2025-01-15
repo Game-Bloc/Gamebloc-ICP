@@ -8,9 +8,14 @@ export interface UserStreakState {
   streak: number
 }
 
+export interface UserStreakTimeState {
+  time: number
+}
+
 const initialState = {
   point: 0,
   streak: 0,
+  time: 0,
 }
 
 export const dailyStreakSlice = createSlice({
@@ -29,8 +34,15 @@ export const dailyStreakSlice = createSlice({
     ) => {
       state.streak = payload.streak
     },
+    updateTime: (
+      state: UserStreakTimeState,
+      { payload }: PayloadAction<UserStreakTimeState>,
+    ) => {
+      state.time = payload.time
+    },
   },
 })
 
-export const { updatePoint, updateStreak } = dailyStreakSlice.actions
+export const { updatePoint, updateStreak, updateTime } =
+  dailyStreakSlice.actions
 export default dailyStreakSlice.reducer

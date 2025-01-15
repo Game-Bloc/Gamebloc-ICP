@@ -68,7 +68,7 @@ const Dashboard = () => {
       const principal = Principal.fromText(principalText)
       getMyNotifications(principal)
       getNotificationId(principal)
-      getMyPoints()
+      getMyPoints(principal)
       getMyStreakCount()
     }
   }, [isAuthenticated, userSession])
