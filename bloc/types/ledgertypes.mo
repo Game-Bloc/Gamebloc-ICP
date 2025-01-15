@@ -159,9 +159,13 @@ module {
   };
 
   public type StandardRecord = { url : Text; name : Text };
+  
   public type Symbol = { symbol : Text };
+
   public type TimeStamp = { timestamp_nanos : Nat64 };
+
   public type Tokens = { e8s : Nat64 };
+
   public type TransferArg = {
     to : Account;
     fee : ?Nat;
@@ -170,6 +174,7 @@ module {
     created_at_time : ?Nat64;
     amount : Nat;
   };
+
   public type TransferArgs = {
     to : Blob;
     fee : Tokens;
@@ -178,6 +183,7 @@ module {
     created_at_time : ?TimeStamp;
     amount : Tokens;
   };
+
   public type TransferError = {
     #GenericError : { message : Text; error_code : Nat };
     #TemporarilyUnavailable;
@@ -188,6 +194,7 @@ module {
     #TooOld;
     #InsufficientFunds : { balance : Nat };
   };
+
   public type TransferError_1 = {
     #TxTooOld : { allowed_window_nanos : Nat64 };
     #BadFee : { expected_fee : Tokens };
@@ -195,7 +202,9 @@ module {
     #TxCreatedInFuture;
     #InsufficientFunds : { balance : Tokens };
   };
+
   public type TransferFee = { transfer_fee : Tokens };
+
   public type TransferFromArgs = {
     to : Account;
     fee : ?Nat;
@@ -205,6 +214,7 @@ module {
     created_at_time : ?Nat64;
     amount : Nat;
   };
+
   public type TransferFromError = {
     #GenericError : { message : Text; error_code : Nat };
     #TemporarilyUnavailable;
@@ -216,11 +226,13 @@ module {
     #TooOld;
     #InsufficientFunds : { balance : Nat };
   };
+
   public type UpgradeArgs = {
     maximum_number_of_accounts : ?Nat64;
     icrc1_minting_account : ?Account;
     feature_flags : ?FeatureFlags;
   };
+
   public type Self = LedgerCanisterPayload -> async actor {
     account_balance : shared query BinaryAccountBalanceArgs -> async Tokens;
     account_balance_dfx : shared query AccountBalanceArgs -> async Tokens;
@@ -248,4 +260,5 @@ module {
     transfer : shared TransferArgs -> async Result_5;
     transfer_fee : shared query {} -> async TransferFee;
   }
+
 }

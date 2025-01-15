@@ -68,6 +68,7 @@ module {
         read : Bool;
     };
 
+
     public type Notifications = {
         notifications : [Notification];
         user : Principal;
@@ -282,6 +283,8 @@ module {
         highestStreak : Nat;
         pointBalance : Nat;
     };
+
+
 
 
 }
