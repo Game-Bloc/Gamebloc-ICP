@@ -22,14 +22,47 @@ const MyPointCard = () => {
   const [color, setColor] = useState("#ffffff")
   const point = useAppSelector((state) => state.dailyStreak.point)
   const streak = useAppSelector((state) => state.dailyStreak.streak)
+  const time = useAppSelector((state) => state.dailyStreak.time)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
+  const [countdown, setCountdown] = useState("00:00:00")
 
   useEffect(() => {
     getMyPoints(_principal)
     getMyStreakCount()
     getStreakTime()
   }, [streak, point])
+
+  const calculateCountdown = (timestampNs: number): string => {
+    const currentTime = Date.now()
+    const timestampMs = timestampNs / 1e6
+    const targetTime = timestampMs + 24 * 60 * 60 * 1000
+
+    const remainingTimeMs = targetTime - currentTime
+
+    if (remainingTimeMs <= 0) {
+      return "00:00:00"
+    }
+
+    const hours = Math.floor(remainingTimeMs / (1000 * 60 * 60))
+    const minutes = Math.floor(
+      (remainingTimeMs % (1000 * 60 * 60)) / (1000 * 60),
+    )
+    const seconds = Math.floor((remainingTimeMs % (1000 * 60)) / 1000)
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0",
+    )}:${String(seconds).padStart(2, "0")}`
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdown(calculateCountdown(time))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [time])
 
   return (
     <div className="flex flex-col w-full sm:w-fit justify-center items-center    mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
@@ -51,7 +84,7 @@ const MyPointCard = () => {
               {streak}-Day check-in 🔥
             </p>
             <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
-              Next claim in 13h 36m
+              Next claim in {countdown}
             </p>
           </div>
         </div>
@@ -61,11 +94,11 @@ const MyPointCard = () => {
               claimToday("Claimed", "Error claiming daily point", "")
             }
             className={`justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base ${
-              streak === 100
+              countdown !== "00:00:00"
                 ? "bg-[#6E6E6E] cursor-not-allowed text-[#fff]/40"
                 : "bg-primary-second hover:bg-primary-light"
             } text-black mt-[0.8rem] sm:mt-[1.5rem] flex rounded-[12px] items-center py-3`}
-            disabled={streak === 100}
+            disabled={countdown !== "00:00:00"}
           >
             <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
               {claimloading ? (

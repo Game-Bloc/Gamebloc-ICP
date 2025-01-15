@@ -5,7 +5,11 @@ import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
 import { Principal } from "@dfinity/principal"
-import { updatePoint, updateStreak } from "../redux/slice/dailyStreak"
+import {
+  updatePoint,
+  updateStreak,
+  updateTime,
+} from "../redux/slice/dailyStreak"
 
 export const hooks = () => {
   const {
@@ -129,7 +133,7 @@ export const hooks = () => {
       const points = await whoamiActor.get_user_point(principal)
       const _points = Number(points)
       dispatch(updatePoint({ point: _points }))
-      console.log("my point:", _points)
+      // console.log("my point:", _points)
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
@@ -153,7 +157,9 @@ export const hooks = () => {
   const getStreakTime = async () => {
     try {
       const time = await whoamiActor.getStreakTime()
-      console.log("streakTime:", time)
+      const _time = Number(time)
+      dispatch(updateTime({ time: _time }))
+      // console.log("streakTime:", _time)
     } catch (err) {
       console.log(err)
     }
