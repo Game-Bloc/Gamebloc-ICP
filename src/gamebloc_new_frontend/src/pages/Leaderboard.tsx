@@ -78,6 +78,7 @@ const Leaderboard = () => {
                         columns={columns}
                         rowClassName={() => "rowClassName1"}
                         dataSource={board}
+                        scroll={{ x: true }}
                         rowKey={"position"}
                       />
                     </ConfigProvider>
