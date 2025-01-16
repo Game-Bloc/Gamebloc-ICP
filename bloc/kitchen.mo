@@ -1230,6 +1230,7 @@ func create_usertrack(caller : Principal) : async () {
         {
             user = caller;
             tournaments_created = 0;
+            wager_participated = 0;
             tournaments_joined = 0;
             tournaments_won = 0;
             messages_sent = 0;
@@ -1246,12 +1247,33 @@ private func update_tournaments_created(caller : Principal) : async () {
         case (?tracker) {
             var update = {
                 user = tracker.user;
-                tournaments_created = tracker.tournaments_created + 1;
+                tournaments_created = tracker.tournaments_created + 10;
+                wager_participated = tracker.wager_participated;
                 tournaments_joined = tracker.tournaments_joined;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+            };
+            var updated = USER_TRACK_STORE.replace(caller, update)
+        }
+    }
+};
+
+public func update_wagers_participated(caller : Principal) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {};
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                wager_participated = tracker.wager_participated + 10;
+                tournaments_joined = tracker.tournaments_joined;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1266,11 +1288,12 @@ private func update_tournaments_joined(caller : Principal) : async () {
             var update = {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined + 1;
+                tournaments_joined = tracker.tournaments_joined + 2;
+                wager_participated = tracker.wager_participated;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1286,10 +1309,11 @@ private func update_tournaments_won(caller : Principal) : async () {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
                 tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won + 1;
+                wager_participated = tracker.wager_participated;
+                tournaments_won = tracker.tournaments_won + 2;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1305,10 +1329,43 @@ private func update_messages_sent(caller : Principal) : async () {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
                 tournaments_joined = tracker.tournaments_joined;
+                wager_participated = tracker.wager_participated;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent + 1;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+            };
+            var updated = USER_TRACK_STORE.replace(caller, update)
+        }
+    }
+};
+
+public query func get_point_track(caller : Principal) : async Nat {
+    var tracker = USER_TRACK_STORE.get(caller);
+    var temporary_point = 0;
+    switch(tracker) {
+        case(null){};
+        case(?tracker){
+            temporary_point := tracker.total_point;
+        }
+    };
+    return temporary_point;
+};
+
+public func reset_point_tracker(caller : Principal) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {};
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                tournaments_joined = tracker.tournaments_joined;
+                wager_participated = tracker.wager_participated;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = 0
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1334,6 +1391,7 @@ private func update_point(caller : Principal, point : Nat) : async () {
     }
 };
 
+
 public query func get_user_point(caller : Principal) : async Nat {
     var tracker = USER_TRACK_STORE.get(caller);
     var point = 0;
@@ -1344,6 +1402,7 @@ public query func get_user_point(caller : Principal) : async Nat {
     };
     return point
 };
+
 
 //
 // Feedbacks
@@ -1358,10 +1417,11 @@ private func update_feedbacks_sent(caller : Principal) : async () {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
                 tournaments_joined = tracker.tournaments_joined;
+                wager_participated = tracker.wager_participated;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent + 1;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent
+                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }

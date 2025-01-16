@@ -9,12 +9,15 @@ module {
     public type UserTrack = {
         user : Principal;
         tournaments_created : Nat;
+        wager_participated  : Nat;
         tournaments_joined : Nat;
         tournaments_won : Nat;
         messages_sent : Nat;
         feedbacks_sent : Nat;
         total_point : Nat
     };
+
+    // Multipliers
 
     public type ModTag = {
         #Mod1; #Mod2; #Mod3
