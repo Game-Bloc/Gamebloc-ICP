@@ -3,35 +3,14 @@ import { useAuth } from "../Auth/use-auth-client"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
 import { useNavigate } from "react-router-dom"
-import {
-  UserProfileState,
-  updateUserProfile,
-} from "../redux/slice/userProfileSlice"
 import { useAppDispatch, useAppSelector } from "../redux/hooks"
-import {
-  IcpBalanceState,
-  updateBalance,
-  updateICP,
-  updateId,
-} from "../redux/slice/icpBalanceSlice"
-import {
-  chatState,
-  clearChat,
-  pushToChat,
-  updateChat,
-} from "../redux/slice/chatSlice"
-import {
-  addTransactions,
-  clearTransaction,
-} from "../redux/slice/transactionSlice"
-import axios from "axios"
 import { Principal } from "@dfinity/principal"
-import { allNotification } from "../redux/slice/notificationSlice"
 import {
-  clearBoard,
-  LeaderboardState,
-  updateLeaderboard,
-} from "../redux/slice/leaderboardSlice"
+  updatePoint,
+  updateStreak,
+  updateTime,
+} from "../redux/slice/dailyStreak"
+
 export const hooks = () => {
   const {
     isAuthenticated,
@@ -47,6 +26,8 @@ export const hooks = () => {
   const [done, setDone] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [activateloading, setActivateloading] = useState<boolean>(false)
+  const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
 
   const popUp = (successMsg: string, route: any) => {
@@ -126,14 +107,77 @@ export const hooks = () => {
     }
   }
 
+  // Daily Streak Functions
+
+  const claimToday = async (
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setClaimloading(true)
+      const claim = await whoamiActor.claimToday()
+      setClaimloading(false)
+      popUp(successMsg, route)
+      window.location.reload()
+    } catch (err) {
+      setClaimloading(false)
+      console.log(err)
+      errorPopUp(errorMsg)
+    }
+  }
+
+  const getMyPoints = async (principal: Principal) => {
+    try {
+      setIsLoading(true)
+      const points = await whoamiActor.get_user_point(principal)
+      const _points = Number(points)
+      dispatch(updatePoint({ point: _points }))
+      // console.log("my point:", _points)
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log(err)
+    }
+  }
+
+  const getMyStreakCount = async () => {
+    try {
+      setUpdating(true)
+      const points = await whoamiActor.getMyStreakCount()
+      const _points = Number(points)
+      dispatch(updateStreak({ streak: _points }))
+      setUpdating(false)
+    } catch (err) {
+      setUpdating(false)
+      console.log(err)
+    }
+  }
+
+  const getStreakTime = async () => {
+    try {
+      const time = await whoamiActor.getStreakTime()
+      const _time = Number(time)
+      dispatch(updateTime({ time: _time }))
+      // console.log("streakTime:", _time)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return {
     done,
     updating,
     isLoading,
+    claimloading,
     sending,
     setAdmin,
     setTribunal,
     disburseFunds,
+    claimToday,
+    getMyPoints,
+    getMyStreakCount,
+    getStreakTime,
   }
 }
 

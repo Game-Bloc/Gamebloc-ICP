@@ -47,7 +47,7 @@ import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
 
-shared ({ caller }) actor class Kitchen() {
+shared ({ caller }) actor class Kitchen() = this {
 
 private stable var userCanisterId : Principal = caller;
 
@@ -59,18 +59,25 @@ private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
 private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
 private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
 private stable var feedback_id : Nat = 0;
+private stable var day : Nat = 86_400;
+private stable var e8s : Nat = 10_000_000_000;
 private stable var volume : Nat64 = 0;
 private stable var SupportedGames : [Text] = [];
 private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
 private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
 private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
 private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
+private stable var DailyRewardEntries : [(Principal, Bloctypes.DailyClaim)] = [];
+private stable var LockedAssetsEntries : [(Principal, Bloctypes.LockedAsset)] = [];
+
 
 var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
 var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
 var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
 var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
 var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
+var DailyRewardHashMap : HashMap.HashMap<Principal, Bloctypes.DailyClaim> = HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
+var LockedAssetsHashMap : HashMap.HashMap<Principal, Bloctypes.LockedAsset> = HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
 
 var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
 var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
@@ -91,6 +98,7 @@ system func preupgrade() {
     SquadEntries := Iter.toArray(SQUAD_STORE.entries());
     FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
     NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
+    DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
 
     messageEntries := Iter.toArray(MessageHashMap.entries());
     BalanceEntries := Iter.toArray(BalanceHashMap.entries());
@@ -177,6 +185,14 @@ public shared ({ caller }) func payUsers(pays : [Bloctypes.Pay]) : async () {
     }
 };
 
+public func checkThis() : async Principal {
+    Principal.fromActor(this);
+};
+
+public func checkThisText() : async Text {
+    Principal.toText(Principal.fromActor(this));
+};
+
 // Check 2
 public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
     // Tournamnet Id
@@ -188,7 +204,6 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     var ended = tournament.ended;
 
     // * Check if tournamnet has ended
-
     switch (ended) {
         case (null) {};
         case (?(ended)) {
@@ -1115,7 +1130,99 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 
 //
 // User activities
-//
+// * epoch value of 24 hours should be 86400
+
+private func activateDailyClaims(caller : Principal) : async () {
+
+    DailyRewardHashMap.put(caller, {
+        user = caller;
+        streakTime = Int.abs(Time.now()); 
+        streakCount = 1;
+        highestStreak = 1;
+        pointBalance = 1;
+    });
+    await update_point(caller, 1);
+};
+
+public shared ({ caller }) func claimToday() : async () {
+    var today = DailyRewardHashMap.get(caller);
+    switch(today) {
+        case(null){
+            await create_usertrack(caller);
+            await activateDailyClaims(caller); 
+        };
+        case(?today){
+            if ((today.streakTime + day) >= Int.abs(Time.now())) {
+                if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
+                    await resetClaims(caller);
+                };
+                var point = today.streakCount + 1;
+                await update_point(caller, point);
+                var claimed = {
+                    user = today.user;
+                    streakTime = Int.abs(Time.now()); 
+                    streakCount = today.streakCount + 1;
+                    highestStreak = today.highestStreak;
+                    pointBalance = today.pointBalance + point;
+                }
+
+            }
+        }
+    }
+};
+
+func resetClaims(caller : Principal) : async () {
+    var today = DailyRewardHashMap.get(caller);
+    switch(today) {
+        case(null){};
+        case(?today){
+                var claimed = {
+                    user = today.user;
+                    streakTime = Int.abs(Time.now()); 
+                    streakCount = 1;
+                    highestStreak = today.highestStreak;
+                    pointBalance = today.pointBalance;
+            }
+        }
+    }
+};
+
+public shared ({ caller }) func getMyPoints() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.pointBalance;
+        }
+    } 
+};
+
+public shared ({ caller }) func getStreakTime() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.streakTime; // In epoch time
+        }
+    } 
+};
+
+public shared ({ caller }) func getMyStreakCount() : async Nat {
+    var activity = DailyRewardHashMap.get(caller);
+    switch(activity){
+        case (null) {
+            return 0;
+        };
+        case(?activity){
+            return activity.streakCount;
+        }
+    } 
+};
+
 
 func create_usertrack(caller : Principal) : async () {
     USER_TRACK_STORE.put(
@@ -1133,7 +1240,7 @@ func create_usertrack(caller : Principal) : async () {
     )
 };
 
-public func update_tournaments_created(caller : Principal) : async () {
+private func update_tournaments_created(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1173,7 +1280,7 @@ public func update_wagers_participated(caller : Principal) : async () {
     }
 };
 
-public func update_tournaments_joined(caller : Principal) : async () {
+private func update_tournaments_joined(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1193,7 +1300,7 @@ public func update_tournaments_joined(caller : Principal) : async () {
     }
 };
 
-public func update_tournaments_won(caller : Principal) : async () {
+private func update_tournaments_won(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1213,7 +1320,7 @@ public func update_tournaments_won(caller : Principal) : async () {
     }
 };
 
-public func update_messages_sent(caller : Principal) : async () {
+private func update_messages_sent(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1265,24 +1372,19 @@ public func reset_point_tracker(caller : Principal) : async () {
     }
 };
 
-public func burn_point_tracker(caller : Principal, amount : Nat) : async () {
+private func update_point(caller : Principal, point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
         case (?tracker) {
-            assert(amount < tracker.total_point);
-            if (amount > tracker.total_point){ // To avoid operator getting trapped for inferred type
-                throw Error.reject("Your point balance is too low, please engage more with the platform to farm more points.");
-            };
             var update = {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
                 tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point - amount;
+                total_point = tracker.total_point + point;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1290,11 +1392,23 @@ public func burn_point_tracker(caller : Principal, amount : Nat) : async () {
 };
 
 
+public query func get_user_point(caller : Principal) : async Nat {
+    var tracker = USER_TRACK_STORE.get(caller);
+    var point = 0;
+    for ((i, j) in USER_TRACK_STORE.entries()) {
+        if (i == caller) {
+            point := j.total_point;
+        }
+    };
+    return point
+};
+
+
 //
 // Feedbacks
 //
 
-public func update_feedbacks_sent(caller : Principal) : async () {
+private func update_feedbacks_sent(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1358,9 +1472,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    // let gbc_admin : Principal = Principal.fromText("of33u-bfnbm-yaq43-zdlki-qgnr3-ojfvu-dzzoj-hpe2u-ppuur-sqnhq-2qe"); // * Demo here
+     let gbc_admin : Principal = Principal.fromText("khtoe-aqiz3-wienb-44aei-er3dv-6f7mu-4r2rc-6tzwa-74qbw-5wvgf-hqe"); // * Demo here
 
-    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
+    //let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
 
 //
 // * Tournaments Features
@@ -1591,11 +1705,11 @@ public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : N
 //     }
 // };
 
-public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
-    // assert(caller == userCanisterId);
-    let result : Bloctypes.UserProfile = await RustBloc.getSelf(caller);
-    result
-};
+// public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
+//     // assert(caller == userCanisterId);
+//     let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);
+//     result
+// };
 
 public shared ({ caller }) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
     // assert(caller == userCanisterId);
@@ -2249,6 +2363,55 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     //     // You would typically store these in a canister.
     // }
 
+    public shared ({ caller }) func activateLock() : async () {
+        var lockable : Bloctypes.Lockable = {
+            amount = 0;
+            timestamp = Int.abs(Time.now());
+            user = caller;
+        };
+        LockedAssetsHashMap.put(caller, {
+            icpBalance = 0;
+            user = caller;
+            assets = [lockable];
+        });
+    };
+
+    type Result_22 = {
+        #Ok : Any;
+        #Err : Any
+    };
+
+    public shared ({ caller }) func lockICP(_amount : Nat, icp_price : Nat) : async () {
+        var vault = LockedAssetsHashMap.get(caller);
+        switch(vault) {
+            case null {
+            }; case (?(vault)) {
+                var transfer = await ICPLedger.icrc2_transfer_from({
+                    to = {
+                        owner = Principal.fromActor(this);
+                        subaccount = null
+                    };
+                    fee = null;
+                    spender_subaccount = null;
+                    from = {
+                        owner = caller;
+                        subaccount = null
+                    };
+                    memo = null;
+                    created_at_time = ?Nat64.fromIntWrap(Time.now());
+                    amount = (_amount * e8s)/icp_price;
+                });
+                // if(Result.isOk(transfer)){
+                //     var lockedAsset = {
+                //         amount = 0;
+                //         timestamp = Int.abs(Time.now());
+                //         user = caller;
+                //     };
+
+                // };
+            }
+        }
+    }
     // Call this method to check the balance.
     // public query func checkBalance(accountId: Text): async Nat {
     //     // Use the ICP ledger to query the account balance.

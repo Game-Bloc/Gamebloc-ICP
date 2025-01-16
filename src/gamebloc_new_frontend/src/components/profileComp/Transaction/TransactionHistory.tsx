@@ -100,7 +100,7 @@ const TransactionHistory = () => {
       dataIndex: "date",
       key: "date",
       render: (text, record) => (
-        <p className="whitespace-nowraptext-[.7rem] text-nowrap">
+        <p className="whitespace-nowrap text-[.7rem] text-nowrap">
           {record.date}
         </p>
       ),
@@ -111,7 +111,13 @@ const TransactionHistory = () => {
     <div>
       <ConfigProvider
         theme={{
-          algorithm: theme.darkAlgorithm,
+          algorithm: theme.defaultAlgorithm,
+          token: {
+            colorBgContainer: "#030C15",
+            colorBorder: "#595959",
+            colorSplit: "#595959",
+            controlItemBgActive: "#f6b8fc86",
+          },
         }}
       >
         <Table

@@ -86,11 +86,20 @@ const Chat = ({ data }: Props) => {
         ref={scrollContainerRef}
         className="flex  flex-col h-[27rem] max-h-[50rem] overflow-x-hidden overflow-y-scroll"
       >
-        {data.users.some((index: any) => index.includes(username)) ||
-        data.squad.some((players: any) =>
-          players.members.some((gamer: any) => gamer.name.includes(username)),
-        ) ||
-        Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
+        {!isAuthenticated ? (
+          <div className="w-full flex justify-center items-center mt-[3rem]">
+            <div className="flex flex-col mb-4 ">
+              <img src={`empty.svg`} alt="" />
+              <p className="text-white text-[.8rem] mt-8 text-center">
+                Login to view chats.
+              </p>
+            </div>
+          </div>
+        ) : data.users.some((index: any) => index.includes(username)) ||
+          data.squad.some((players: any) =>
+            players.members.some((gamer: any) => gamer.name.includes(username)),
+          ) ||
+          Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
           data.messages.map((message: any, index: any) => (
             <ChatCard1 key={index} tourData={data} message={message} />
           ))
@@ -108,19 +117,38 @@ const Chat = ({ data }: Props) => {
         {/* <ChatCard2 /> */}
       </div>
 
-      {data.users.some((index: any) => index.includes(username)) ||
-      data.squad.some((players: any) =>
-        players.members.some((gamer: any) => gamer.name.includes(username)),
-      ) ||
-      Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
+      {!isAuthenticated ? (
+        <></>
+      ) : data.users.some((index: any) => index.includes(username)) ||
+        data.squad.some((players: any) =>
+          players.members.some((gamer: any) => gamer.name.includes(username)),
+        ) ||
+        Object.keys(isMod[0])[0].toUpperCase() === "MOD" ? (
         <div className="w-full mt-2 flex justify-center items-center">
-          <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-full flex">
+          <div className=" w-full justify-center items-center  bg-[#fff]/10 rounded-[12px] flex">
             <textarea
-              className="r border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
+              className=" border-none w-full text-gray/80 focus:outline-none placeholder:text-[0.7rem] focus:ring-0 placeholder:text-gray/80  appearance-none text-[0.7rem] bg-[transparent]"
               placeholder="Leave a comment"
               rows={1}
               value={message}
               onChange={onMessageChange}
+              onInput={(e) => {
+                const textarea = e.target as HTMLTextAreaElement
+                textarea.style.height = "auto" // Reset height to calculate the new height
+                textarea.style.height = `${textarea.scrollHeight}px` // Set to scrollHeight
+              }}
+              style={{ resize: "none", overflow: "hidden" }} // Prevent manual resizing
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  if (isAuthenticated && message.trim() !== "") {
+                    sendMessage()
+                    setMessage("")
+                  } else if (!isAuthenticated) {
+                    handleLoginModal()
+                  }
+                }
+              }}
             />
           </div>
           {message === "" ? (
