@@ -316,6 +316,11 @@ export const useGameblocHooks = () => {
         winers,
         entry_prize,
         entry_fee,
+        ///Deon i need this shit to compile for now
+        tournament_variation: null,
+        no_of_participants_at_bump: null,
+        entry_fee_bump: null,
+        nominal_entry_fee: null,
         total_prize,
         no_of_winners,
         no_of_participants,

@@ -21,7 +21,6 @@ mod model;
 
 mod serialization_memory_ids;
 
-mod candid_types_impl;
 mod squad_mutations;
 mod tournament_lobbies_management;
 mod candid_types_impl;

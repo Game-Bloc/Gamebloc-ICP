@@ -172,7 +172,7 @@ pub_struct!(Member {
 
 pub_struct!(
     Wager {
-    price: String,
+    amount: u128,
     staker_principal_id: String,
     staker_account_id: String,
     player_principal_id: String,
