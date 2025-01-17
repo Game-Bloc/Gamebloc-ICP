@@ -17,6 +17,7 @@ import TransactionHistory from "../components/profileComp/Transaction/Transactio
 import { useAuth } from "../Auth/use-auth-client"
 import { Principal } from "@dfinity/principal"
 import Stats from "../components/profileComp/stats/Stats"
+import MyPointCard from "../components/profileComp/MyPointCard"
 
 const items: TabsProps["items"] = [
   {
@@ -118,127 +119,137 @@ const Profile = () => {
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
                   </h1>
-                  <div className=" flex flex-col w-full sm:w-fit justify-center  md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
-                    <div className="flex">
-                      <div className="mr-4 lg:mr-[3rem]">
-                        <Avatar
-                          style={{
-                            backgroundColor: "#f6b8fc",
-                            color: "#01070E",
-                            fontSize:
-                              window.innerWidth >= 1200 ? "1.2rem" : ".8rem",
-                          }}
-                          size={window.innerWidth >= 1200 ? 80 : 50}
-                        >
-                          {initials}
-                        </Avatar>
-                      </div>
-                      <div className="flex  flex-col">
-                        <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
-                          {username}
-                        </h2>
-                        <div className="flex items-center  mt-2">
-                          {fetching ? (
-                            <div>
-                              <ClipLoader
-                                color={color}
-                                loading={fetching}
-                                cssOverride={override}
-                                size={10}
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                              />
-                            </div>
-                          ) : (
-                            <div className="flex flex-row gap-4">
-                              <div className="flex flex-row">
-                                <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
-                                  {balance}
-                                </p>
-                                <img
-                                  src={`Icp.svg`}
-                                  className="w-6 h-6 m-0"
-                                  alt=""
+                  <div className="flex flex-col  lg:flex-row justify-around items-center ">
+                    <div className=" flex flex-col w-full sm:w-fit justify-center  md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
+                      <div className="flex">
+                        <div className="mr-4 lg:mr-[3rem]">
+                          <Avatar
+                            style={{
+                              backgroundColor: "#f6b8fc",
+                              color: "#01070E",
+                              fontSize:
+                                window.innerWidth >= 1200 ? "1.2rem" : ".8rem",
+                            }}
+                            size={window.innerWidth >= 1200 ? 80 : 50}
+                          >
+                            {initials}
+                          </Avatar>
+                        </div>
+                        <div className="flex  flex-col">
+                          <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
+                            {username}
+                          </h2>
+                          <div className="flex items-center  mt-2">
+                            {fetching ? (
+                              <div>
+                                <ClipLoader
+                                  color={color}
+                                  loading={fetching}
+                                  cssOverride={override}
+                                  size={10}
+                                  aria-label="Loading Spinner"
+                                  data-testid="loader"
                                 />
                               </div>
-                              <div className="flex flex-row">
-                                <p className="text-[1rem] text-white mr-4">≈</p>
-                                <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
-                                  ${(balance * _icp2Usd).toFixed(2)}
-                                </p>
+                            ) : (
+                              <div className="flex flex-row gap-4">
+                                <div className="flex flex-row">
+                                  <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
+                                    {balance}
+                                  </p>
+                                  <img
+                                    src={`Icp.svg`}
+                                    className="w-6 h-6 m-0"
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="flex flex-row">
+                                  <p className="text-[1rem] text-white mr-4">
+                                    ≈
+                                  </p>
+                                  <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
+                                    ${(balance * _icp2Usd).toFixed(2)}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center">
-                          <img src={`calender.svg`} className="m-0" alt="" />
-                          <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
-                            Member since {date}
-                          </p>
-                        </div>
+                            )}
+                          </div>
+                          <div className="flex items-center">
+                            <img src={`calender.svg`} className="m-0" alt="" />
+                            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
+                              Member since {date}
+                            </p>
+                          </div>
 
-                        <button
-                          onClick={() => setTransferModal(!transferModal)}
-                          className="pt-1 pb-[.25rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
-                        >
-                          <p className="font-semibold mr-2">Send </p>
-                          <img src={`Icp.svg`} className="w-6 h-6 m-0" alt="" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
-
-                    <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
-                      <div className="flex flex-col justify-start">
-                        <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                          Principal I.D{" "}
-                        </p>
-                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-[12rem] md:w-[15rem] rounded-md">
-                          <Copy textToCopy={principalID} />
-                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
-                            {principal
-                              ? principal.substring(0, 7) +
-                                "......" +
-                                principal.substring(58, 64)
-                              : null}
-                          </h2>
-                        </div>
-                      </div>
-                      <div className="flex flex-col justify-start">
-                        <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                          Wallet Address{" "}
-                        </p>
-                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
-                          <Copy textToCopy={accountId} />
-                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
-                            {accountId
-                              ? accountId.substring(0, 7) +
-                                "......" +
-                                accountId.substring(58, 64)
-                              : null}
-                          </h2>
+                          <button
+                            onClick={() => setTransferModal(!transferModal)}
+                            className="pt-1 pb-[.25rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
+                          >
+                            <p className="font-semibold mr-2">Send </p>
+                            <img
+                              src={`Icp.svg`}
+                              className="w-6 h-6 m-0"
+                              alt=""
+                            />
+                          </button>
                         </div>
                       </div>
 
-                      {squadId !== "" && (
+                      <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
+
+                      <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
                         <div className="flex flex-col justify-start">
                           <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                            Squad I.D{" "}
+                            Principal I.D{" "}
                           </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
-                            <Copy textToCopy={squadId} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
-                              {squadId
-                                ? squadId.substring(0, 5) +
+                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-[12rem] md:w-[15rem] rounded-md">
+                            <Copy textToCopy={principalID} />
+                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
+                              {principal
+                                ? principal.substring(0, 7) +
                                   "......" +
-                                  squadId.substring(20, 26)
+                                  principal.substring(58, 64)
                                 : null}
                             </h2>
                           </div>
                         </div>
-                      )}
+                        <div className="flex flex-col justify-start">
+                          <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                            Wallet Address{" "}
+                          </p>
+                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
+                            <Copy textToCopy={accountId} />
+                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                              {accountId
+                                ? accountId.substring(0, 7) +
+                                  "......" +
+                                  accountId.substring(58, 64)
+                                : null}
+                            </h2>
+                          </div>
+                        </div>
+
+                        {squadId !== "" && (
+                          <div className="flex flex-col justify-start">
+                            <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                              Squad I.D{" "}
+                            </p>
+                            <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
+                              <Copy textToCopy={squadId} />
+                              <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                                {squadId
+                                  ? squadId.substring(0, 5) +
+                                    "......" +
+                                    squadId.substring(20, 26)
+                                  : null}
+                              </h2>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
+                    <MyPointCard />
                   </div>
 
                   <div className="mt-[3rem] ">

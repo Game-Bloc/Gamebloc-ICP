@@ -9,12 +9,15 @@ module {
     public type UserTrack = {
         user : Principal;
         tournaments_created : Nat;
+        wager_participated  : Nat;
         tournaments_joined : Nat;
         tournaments_won : Nat;
         messages_sent : Nat;
         feedbacks_sent : Nat;
         total_point : Nat
     };
+
+    // Multipliers
 
     public type ModTag = {
         #Mod1; #Mod2; #Mod3
@@ -67,6 +70,7 @@ module {
         date : Text;
         read : Bool;
     };
+
 
     public type Notifications = {
         notifications : [Notification];
@@ -199,9 +203,22 @@ module {
         // paid : Bool;
     };
 
+
     public type TournamentLobbyType = {
         #SingleLobby;
         #MultiLobby;
+    };
+
+    public type LockedAsset = {
+        icpBalance : Nat;
+        user : Principal;
+        assets : [Lockable];
+    };
+
+    public type Lockable = {
+        amount : Nat;
+        timestamp : Nat;
+        user : Principal;
     };
 
 
@@ -270,6 +287,8 @@ module {
         highestStreak : Nat;
         pointBalance : Nat;
     };
+
+
 
 
 }

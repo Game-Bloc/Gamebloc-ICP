@@ -1,5 +1,5 @@
 import React from "react"
-import {motion} from "motion/react"
+import { motion } from "motion/react"
 
 const Blitzkrieg = () => {
   return (
@@ -16,8 +16,8 @@ const Blitzkrieg = () => {
           className=" hidden lg:flex absolute w-[65%] top-[-11rem] right-[-12rem]"
         />
         <motion.img
-        initial={{x: -200}}
-        whileInView={{x:0,transition:{duration:1, delay:0.3}}}
+          initial={{ x: -200 }}
+          whileInView={{ x: 0, transition: { duration: 1, delay: 0.3 } }}
           src={`sherder.png`}
           alt="ghost"
           className=" md:relative mt-5  md:w-[50vw] lg:ml-[-2rem]  md:opacity-100"
@@ -52,7 +52,7 @@ const Blitzkrieg = () => {
           </div>
           <div className="z-10 flex items-start mt-3">
             <a
-              href="https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io/dashboard"
+              href="https://gamebloc.app/dashboard"
               className="pt-[.7rem] pb-[.7rem]  px-[.6rem] w-[10rem] sm:px-4 text-[.7rem] sm:text-base text-black justify-between mt-[0.3rem] flex bg-[#F6B8FC] rounded-md items-center cursor-pointer sm:py-[.4rem]"
             >
               <p className="text-[.7rem]">Join Tournament</p>

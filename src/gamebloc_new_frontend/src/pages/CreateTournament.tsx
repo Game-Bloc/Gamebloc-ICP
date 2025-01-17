@@ -60,6 +60,11 @@ const CreateTournament = () => {
   const [active, setActive] = useState<string>("first")
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const [icpValue, setIcpValue] = useState<number>(null)
+  const [tourVariation, setTourVariation] = useState<string>("")
+  const [tournamentVariation, setTournamentVariation] = useState(null)
+  const [entry_fee_bump, setEntry_fee_bump] = useState<string>("")
+  const [no_of_participants_at_bump, setNo_of_participants_at_bump] =
+    useState<string>("")
   const [openModal, setOpenModal] = useState<boolean>(false)
   const { done, updating, createTournament, getICPBalance, getProfile } =
     useGameblocHooks()
@@ -94,6 +99,12 @@ const CreateTournament = () => {
       setStartingDate(value)
     }
 
+    if (tourVariation === "Capped") {
+      setTournamentVariation({ Capped: null })
+    } else {
+      setTournamentVariation({ Infinite: null })
+    }
+
     if (tournamentType === "Prepaid") {
       setTourType("Prepaid")
       setVariantType({ Prepaid: null })
@@ -107,6 +118,7 @@ const CreateTournament = () => {
     getTimeDate()
   }, [
     tournamentType,
+    tourVariation,
     initialDate,
     initialTime,
     startingDate,
@@ -208,6 +220,18 @@ const CreateTournament = () => {
     }
   }
 
+  const onEntryBumpChange = (e: any) => {
+    e.preventDefault()
+    const entryInput = e.target.value
+    setEntry_fee_bump(entryInput)
+  }
+
+  const onParticipantBumpChange = (e: any) => {
+    e.preventDefault()
+    const entryInput = e.target.value
+    setNo_of_participants_at_bump(entryInput)
+  }
+
   const handleContent = (rules: any) => {
     setTournamentRules(rules)
   }
@@ -232,6 +256,10 @@ const CreateTournament = () => {
 
   const handleTournamentTypeChange = (value: string) => {
     setTournamentType(value)
+  }
+
+  const handleTournamentVariationChange = (value: string) => {
+    setTourVariation(value)
   }
 
   const handleGameTYpe = (value: string) => {
@@ -277,11 +305,15 @@ const CreateTournament = () => {
     console.log("Game Type", gameType)
     console.log("Game Title", title)
     console.log("End Time", endDate)
+    console.log("tournament variation", tournamentVariation)
+    console.log("_nominal_entry_fee", +entryPrice)
+    console.log("_entry_fee_bump", +entry_fee_bump)
+    console.log("_no_of_participants_at_bump", +no_of_participants_at_bump)
   }
 
   const proceed_to_payment = () => {
     if (
-      noOfUsers === 0 ||
+      // noOfUsers === 0 ||
       noOfWinners === 0 ||
       tournamentRules.trim() === "" ||
       tournamentType.trim() === "" ||
@@ -344,6 +376,10 @@ const CreateTournament = () => {
       [],
       [],
       [],
+      tournamentVariation,
+      +entryPrice,
+      +entry_fee_bump,
+      +no_of_participants_at_bump,
       "Successful",
       "Try again something went wrong",
       "",
@@ -467,63 +503,123 @@ const CreateTournament = () => {
                         Game Details
                       </p>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-                      <div className="flex mt-4 mx-4 flex-col">
-                        <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                          Game Type
-                        </p>
-                        <ConfigProvider
-                          theme={{
-                            algorithm: theme.defaultAlgorithm,
-                            token: {
-                              colorPrimaryActive: "#F6B8FC",
-                              colorPrimary: "#F6B8FC",
-                              colorPrimaryHover: "#F6B8FC",
-                              colorText: "#fff",
-                              colorBorder: "#595959",
-                              colorBgContainer: "#01070E",
-                              colorBgElevated: "#01070E",
-                              controlOutline: "transparent",
-                              colorTextBase: "#ffffff",
-                              controlItemBgActive: "#f6b8fc86",
-                            },
-                          }}
-                        >
-                          <Select
-                            placeholder="Select game play mode"
-                            optionFilterProp="children"
-                            onChange={handleGameTYpe}
-                            filterOption={filterOption}
-                            options={[
-                              {
-                                value: "MP/BR Single",
-                                label: "MP/BR Single",
+
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
+                        <div className="flex mt-4 flex-col">
+                          <p className=" mb-4 text-sm sm:text-base font-normal text-white">
+                            Game Type
+                          </p>
+                          <ConfigProvider
+                            theme={{
+                              algorithm: theme.defaultAlgorithm,
+                              token: {
+                                colorPrimaryActive: "#F6B8FC",
+                                colorPrimary: "#F6B8FC",
+                                colorPrimaryHover: "#F6B8FC",
+                                colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
-                              {
-                                value: "BR Duo",
-                                label: "BR Duo",
+                            }}
+                          >
+                            <Select
+                              placeholder="Select game play mode"
+                              optionFilterProp="children"
+                              onChange={handleGameTYpe}
+                              filterOption={filterOption}
+                              options={[
+                                {
+                                  value: "MP/BR Single",
+                                  label: "MP/BR Single",
+                                },
+                                {
+                                  value: "BR Duo",
+                                  label: "BR Duo",
+                                },
+                                {
+                                  value: "BR Squad",
+                                  label: "BR Squad",
+                                },
+                              ]}
+                            />
+                          </ConfigProvider>
+                        </div>
+                        <div className="flex mt-4 flex-col">
+                          <p className=" mb-4 text-sm sm:text-base font-normal text-white">
+                            Select Tournament Variation
+                          </p>
+                          <ConfigProvider
+                            theme={{
+                              algorithm: theme.defaultAlgorithm,
+                              token: {
+                                colorPrimaryActive: "#F6B8FC",
+                                colorPrimary: "#F6B8FC",
+                                colorPrimaryHover: "#F6B8FC",
+                                colorText: "#fff",
+                                colorBorder: "#595959",
+                                colorBgContainer: "#01070E",
+                                colorBgElevated: "#01070E",
+                                controlOutline: "transparent",
+                                colorTextBase: "#ffffff",
+                                controlItemBgActive: "#f6b8fc86",
                               },
-                              {
-                                value: "BR Squad",
-                                label: "BR Squad",
-                              },
-                            ]}
-                          />
-                        </ConfigProvider>
+                            }}
+                          >
+                            <Select
+                              placeholder="Tournament Variation"
+                              optionFilterProp="children"
+                              onChange={handleTournamentVariationChange}
+                              filterOption={filterOption1}
+                              options={[
+                                {
+                                  value: "Capped",
+                                  label: "Capped",
+                                },
+                                {
+                                  value: "Infinite",
+                                  label: "Infinite",
+                                },
+                              ]}
+                            />
+                          </ConfigProvider>
+                        </div>
                       </div>
-                      <div className="flex-col  flex m-4 ">
+                      {tourVariation === "Capped" && (
+                        <div className="flex-col  flex m-4 ">
+                          <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                            Number of Participant
+                          </p>
+                          <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#01070E] border-solid border hover:border-primary-second rounded-lg flex">
+                            <input
+                              className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E] py-[.1rem]"
+                              placeholder="Participants"
+                              type="text"
+                              onChange={onUserChange}
+                              value={noOfUsers}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex-col flex m-4 ">
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                          Number of Participant
+                          Tournament Title
                         </p>
-                        <div className=" my-4 items-center pr-8 pl-2 h-[2.15rem] border-[#595959] bg-[#01070E] border-solid border hover:border-primary-second rounded-lg flex">
+                        <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#01070E] hover:border-primary-second border-solid border rounded-lg flex">
                           <input
-                            className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E] py-[.1rem]"
-                            placeholder="Participants"
+                            className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
+                            placeholder="Tournament Title"
                             type="text"
-                            onChange={onUserChange}
-                            value={noOfUsers}
+                            onChange={onTitleChange}
+                            value={title}
                           />
                         </div>
                       </div>
+
                       <div className="flex w-full justify-center mb-4 relative items-end  ">
                         <button
                           onClick={() => setActive("second")}
@@ -546,21 +642,6 @@ const CreateTournament = () => {
                         </p>
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-
-                      <div className="flex-col flex m-4 ">
-                        <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
-                          Tournament Title
-                        </p>
-                        <div className=" my-4 items-center pr-8 pl-2 h-[2.7rem]  border-[#595959] bg-[#01070E] hover:border-primary-second border-solid border rounded-lg flex">
-                          <input
-                            className="border-none w-full text-white p-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
-                            placeholder="Tournament Title"
-                            type="text"
-                            onChange={onTitleChange}
-                            value={title}
-                          />
-                        </div>
-                      </div>
 
                       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
                         <div className="flex mt-4 flex-col">
@@ -740,10 +821,10 @@ const CreateTournament = () => {
                         <div className="flex w-full justify-between items-center flex-row">
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             {tourType === "Prepaid"
-                              ? " Pool Price in $"
+                              ? " Pool price ($)"
                               : tourType === "Blitzkrieg"
-                              ? " Pool Price in $"
-                              : " Entry Price in $"}
+                              ? " Pool price ($)"
+                              : " Entry price ($)"}
                           </p>
                           <div className="flex mt-[.8rem] flex-row">
                             <p className="text-[1rem] text-white mr-4">≈</p>
@@ -759,10 +840,10 @@ const CreateTournament = () => {
                             className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
                             placeholder={
                               tourType === "Prepaid"
-                                ? " Pool Price in $"
+                                ? " Pool price ($)"
                                 : tourType === "Blitzkrieg"
-                                ? " Pool Price in $"
-                                : " Entry Price in $"
+                                ? " Pool price ($)"
+                                : " Entry price ($)"
                             }
                             type="text"
                             onChange={
@@ -792,7 +873,7 @@ const CreateTournament = () => {
                           <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#01070E] border-solid border rounded-lg flex">
                             <input
                               className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
-                              placeholder="Entry Price in $"
+                              placeholder="Entry price ($)"
                               type="text"
                               onChange={onEntryChange}
                               value={entryPrice}
@@ -800,6 +881,44 @@ const CreateTournament = () => {
                           </div>
                         </div>
                       )}
+
+                      {tourType != "Prepaid" && (
+                        <>
+                          {tourVariation === "Infinite" && (
+                            <div>
+                              <div className="flex-col flex m-4 ">
+                                <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                                  Entry Price Increment
+                                </p>
+                                <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#01070E] border-solid border rounded-lg flex">
+                                  <input
+                                    className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
+                                    placeholder="Entry price bump ($)"
+                                    type="text"
+                                    onChange={onEntryBumpChange}
+                                    value={entry_fee_bump}
+                                  />
+                                </div>
+                              </div>
+                              <div className="flex-col flex m-4 ">
+                                <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
+                                  No of particpant Increment
+                                </p>
+                                <div className=" my-4 items-center pr-8 h-[2.7rem] pl-[0.5rem] border-[#595959] bg-[#01070E] border-solid border rounded-lg flex">
+                                  <input
+                                    className="border-none w-full text-white focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#01070E]"
+                                    placeholder="Participant bump ($)"
+                                    type="text"
+                                    onChange={onParticipantBumpChange}
+                                    value={no_of_participants_at_bump}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
+
                       <div className="flex-col flex m-4 ">
                         <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                           Tournament Description and Rules

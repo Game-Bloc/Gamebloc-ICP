@@ -133,7 +133,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginOptions,
       derivationOrigin:
         process.env.DFX_NETWORK === "ic"
-          ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+          ? "https://gamebloc.app"
           : "http://localhost:8080",
       maxTimeToLive: BigInt(744) * BigInt(3_600_000_000_000),
       onSuccess: () => {
@@ -148,7 +148,7 @@ export const useAuthClient = (options = defaultOptions) => {
       ...options.loginNFID,
       derivationOrigin:
         process.env.DFX_NETWORK === "ic"
-          ? "https://cv4ma-4qaaa-aaaal-adntq-cai.icp0.io"
+          ? "https://gamebloc.app"
           : "http://localhost:8080",
       maxTimeToLive: BigInt(744) * BigInt(3_600_000_000_000),
       onSuccess: () => {
