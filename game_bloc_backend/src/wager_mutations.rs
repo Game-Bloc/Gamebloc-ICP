@@ -12,27 +12,30 @@ pub fn expected_wager_reward(tournament_id: String, staker_principal_id: String)
                 vec![]
             }
             Some(wagers) => {
-               let staker_wagers:Vec<Wager> =  wagers.iter().cloned().filter(|w| w.staker_principal_id == staker_principal_id).collect();
-               let first_player_staked_on: String = staker_wagers[0].player_principal_id.clone();
-               let player_wagered_on:Vec<Wager> = wagers.iter().cloned().filter(|w| w.player_principal_id == first_player_staked_on).collect();
-                let wagers_on_other_players:Vec<Wager> = wagers.iter().cloned().filter(|w| w.player_principal_id != first_player_staked_on).collect();
-                let mut total_amount_wagered_on_tournament = 0;
-                let mut total_amount_wagered_on_player_staked_on = 0;
-                let mut total_amount_wagered_against_player_staked_on = 0;
-                for j in wagers_on_other_players {
-                    total_amount_wagered_against_player_staked_on = total_amount_wagered_against_player_staked_on + j.amount;
-                }
-                for i in player_wagered_on {
-                    total_amount_wagered_on_player_staked_on = total_amount_wagered_on_player_staked_on + i.amount;
-                }
-                for x in wagers {
-                    total_amount_wagered_on_tournament = total_amount_wagered_on_tournament + x.amount;
-                }
-                let winings_cut = (staker_wagers[0].amount / total_amount_wagered_on_player_staked_on);
+               let staker_wagers:Vec<Wager> =  wagers.clone().iter().cloned().filter(|w| w.staker_principal_id == staker_principal_id).collect();
+                let mut expected_rewards =  vec![];
+                for x in staker_wagers {
+                    let first_player_staked_on: String = x.player_principal_id.clone();
+                    let player_wagered_on:Vec<Wager> = wagers.clone().iter().cloned().filter(|w| w.player_principal_id == first_player_staked_on).collect();
+                    let wagers_on_other_players:Vec<Wager> = wagers.clone().iter().cloned().filter(|w| w.player_principal_id != first_player_staked_on).collect();
+                    let mut total_amount_wagered_on_tournament = 0;
+                    let mut total_amount_wagered_on_player_staked_on = 0;
+                    let mut total_amount_wagered_against_player_staked_on = 0;
+                    for j in wagers_on_other_players {
+                        total_amount_wagered_against_player_staked_on = total_amount_wagered_against_player_staked_on + j.amount;
+                    }
+                    for i in player_wagered_on {
+                        total_amount_wagered_on_player_staked_on = total_amount_wagered_on_player_staked_on + i.amount;
+                    }
+                    for x in wagers.clone() {
+                        total_amount_wagered_on_tournament = total_amount_wagered_on_tournament + x.amount;
+                    }
+                    let winings_cut = (x.amount / total_amount_wagered_on_player_staked_on);
 
-                let player_expected_reward = total_amount_wagered_against_player_staked_on * winings_cut;
-
-               vec![player_expected_reward]
+                    let player_expected_reward = total_amount_wagered_against_player_staked_on * winings_cut;
+                    expected_rewards.push(player_expected_reward);
+                }
+                expected_rewards
             }
         }
     })
