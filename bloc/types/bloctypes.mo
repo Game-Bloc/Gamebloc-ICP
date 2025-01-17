@@ -203,6 +203,7 @@ module {
         // paid : Bool;
     };
 
+
     public type TournamentLobbyType = {
         #SingleLobby;
         #MultiLobby;

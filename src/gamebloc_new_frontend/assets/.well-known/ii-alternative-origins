@@ -1,3 +1,4 @@
 {
+  "Access-Control-Allow-Origin": "https://gamebloc.app",
   "alternativeOrigins": ["www.gamebloc.app", "gamebloc.app", "https://gamebloc.app"]
 }

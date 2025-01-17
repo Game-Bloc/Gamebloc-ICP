@@ -59,8 +59,8 @@ private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
 private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
 private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
 private stable var feedback_id : Nat = 0;
-private stable var day : Nat = 86_400;
-private stable var e8s : Nat = 10_000_000_000;
+private stable let day : Nat = 86_400;
+private stable let e8s : Nat = 10_000_000_000;
 private stable var volume : Nat64 = 0;
 private stable var SupportedGames : [Text] = [];
 private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
@@ -99,6 +99,7 @@ system func preupgrade() {
     FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
     NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
     DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
+    LockedAssetsEntries := Iter.toArray(LockedAssetsHashMap.entries());
 
     messageEntries := Iter.toArray(MessageHashMap.entries());
     BalanceEntries := Iter.toArray(BalanceHashMap.entries());
@@ -113,6 +114,8 @@ system func postupgrade() {
     MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
     BalanceHashMap := HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
     NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
+    DailyRewardHashMap := HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
+    LockedAssetsHashMap := HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
 
     ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
     SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -1380,6 +1383,7 @@ private func update_point(caller : Principal, point : Nat) : async () {
             var update = {
                 user = tracker.user;
                 tournaments_created = tracker.tournaments_created;
+                wager_participated = tracker.wager_participated;
                 tournaments_joined = tracker.tournaments_joined;
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
@@ -1472,9 +1476,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-     let gbc_admin : Principal = Principal.fromText("khtoe-aqiz3-wienb-44aei-er3dv-6f7mu-4r2rc-6tzwa-74qbw-5wvgf-hqe"); // * Demo here
+    //  let gbc_admin : Principal = Principal.fromText("khtoe-aqiz3-wienb-44aei-er3dv-6f7mu-4r2rc-6tzwa-74qbw-5wvgf-hqe"); // * Demo here
 
-    //let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
+    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
 
 //
 // * Tournaments Features
@@ -1707,7 +1711,7 @@ public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : N
 
 // public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
 //     // assert(caller == userCanisterId);
-//     let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);
+//     let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);y
 //     result
 // };
 
