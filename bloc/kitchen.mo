@@ -211,7 +211,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
         case (null) {};
         case (?(ended)) {
             if (ended == false) {
-                throw Error.reject("Warning! Tournamnet has to end before the payment can be initiated!")
+                throw Error.reject("Warning! Tournament has to end before the payment can be initiated!")
             }
         }
     };
@@ -245,7 +245,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                             };
                             memo = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (winner.amount * 10_000_000_000)/icp_price;
+                            amount = (winner.amount * e8s)/icp_price;
                         });
                     }
                 }
@@ -254,6 +254,20 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     } catch err {
         throw (err)
     }
+};
+
+public func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
+    await ICPLedger.icrc1_transfer({
+        to = {
+            owner = recipient;
+            subaccount = null
+        };
+        fee = null;
+        memo = null;
+        from_subaccount = null;
+        created_at_time = ?Nat64.fromIntWrap(Time.now());
+        amount = _amount * e8s;
+    }); 
 };
 
 // Using the caller
@@ -268,23 +282,6 @@ public shared ({ caller }) func getLedgerBalance() : async Result.Result<Nat, Te
         return #err(Error.message(err))
     }
 };
-
-// public func transferICPFrom(_from : AccountIdentifier, _to : AccountIdentifier, _amount : Nat) : async LedgerTypes.Result_2 {
-//     try {
-//         let transfer = await ICPLedger.icrc2_transfer_from({
-//             to = _to;
-//             fee = null;
-//             spender_subaccount = null;
-//             from = _from;
-//             memo = null;
-//             created_at_time = Nat64.fromIntWrap(Time.now());
-//             amount = _amount;
-//         });
-//         return #ok(transfer);
-//     } catch (err) {
-//         retrun #err(Error.nessage(err));
-//     }
-// };
 
 // using the canister
 public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
@@ -332,7 +329,7 @@ public func icp_balance_icrc1(account : Principal) : async Nat {
     })
 };
 
-//
+
 public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
     await ICPLedger.icrc1_balance_of({
         owner = caller;
@@ -340,10 +337,6 @@ public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
     })
 };
 
-// Takes in the account id as an argument
-// public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-//     await ICPIndex.icrc1_balance_of(account)
-// };
 
 // Transfers ICP from the caller to receipient
 public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
@@ -358,19 +351,6 @@ public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time 
         amount = amount
     })
 };
-
-// public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
-//     await ICPLedger.icrc2_transfer_from({
-//         to = _to;
-//         fee = null;
-//         spender_subaccount = null;
-//         from = _from;
-//         memo = null;
-//         created_at_time = null;
-//         amount = _amount;
-
-//     });
-// };
 
 /// Ledger Canister Ends
 
@@ -391,10 +371,6 @@ public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time 
 public func get_account_identifier_balance(aid : Text) : async Nat64 {
     await ICPIndex.get_account_identifier_balance(aid)
 };
-
-// public func get_account_identifier_transactions(args : IndexTypes.GetAccountIdentifierTransactionsArgs) : async IndexTypes.GetAccountIdentifierTransactionsResult {
-//     await ICPIndex.get_account_identifier_transactions(args);
-// };
 
 public func index_status() : async IndexTypes.Status {
     await ICPIndex.status()
@@ -490,66 +466,13 @@ public func getPrincipal() : async Principal {
     Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
 };
 
-// public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
-//     // let transfer = await transferICP(await getAccountIdentifier(caller), fee);
-//     switch(transfer) {
-//         case(#ok()){
-//             try {
-//                 return #ok(await RustBloc.join_tournament(name, id));
-//             } catch err {
-//                 throw (err);
-//             }
-//         }; case (_){
-//             return #err("An error occured! Kindly check your balance");
-//         }
-//     }
-// };
-
-// public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
-//     let payment : Nat = tournamentAccount.total_prize;
-//     let transfer = await transferICP(Principal.fromText"rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", payment);
-//     switch(transfer){
-//         case(#ok){
-//             try {
-//                 return #ok(await RustBloc.create_tournament(tournamentAccount));
-//             } catch err {
-//                 throw (err);
-//             }
-//         };
-//         case(_){
-//             return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
-//         }
-//     }
-
-// };
-
-/// Index Canister Ends
-
-/// Profile
 
 func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
     // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
     ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
 };
 
-// public func update_users() : async () {
 
-//     let result = await RustBloc.get_all_user();
-//     var users : [(Principal, Bloctypes.UserProfile)] = [];
-//     for (i in Iter.fromArray(result)){
-//         users := Array.append(users, [(i.principal_id, i)]);
-//     };
-//      := [] := users;
-
-// };
-
-// public func updatePays(payment : Bloctypes.PoH) : () {
-//     PAY_STORE.add(payment);
-// };
-
-// public func getPays() : async [Bloctypes.PoH] {
-//     PAY_STORE.toArray();
-// };
 
 public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
     // call the balnce function to get and set the balance of newly registered users
@@ -573,15 +496,6 @@ func usernameChecker(username : Text) : Bool {
     };
     unique
 };
-
-// public shared ({ caller }) func initBalance(me : Principal) : async () {
-//     var token = await icp_balance2(caller);
-
-//     BalanceHashMap.put(caller, {
-//         user = caller;
-//         balance = token.e8s;
-//     });
-// };
 
 public shared ({ caller }) func updateBalance(_amount : Nat, deposit : Bool) : async Bool {
     var _balance = BalanceHashMap.get(caller);
@@ -627,7 +541,6 @@ public shared ({ caller }) func checkLastBalance() : async Nat {
             return _balance.balance
         }
     }
-    // return _balance.balance;
 };
 
 func checkUserLastBalance(caller : Principal) : async Nat {
@@ -714,43 +627,6 @@ public query func getOwnerCanister() : async Principal {
     userCanisterId
 };
 
-// * For testing purposes
-
-public func testNat(entry : Nat, icp_price : Nat) : async Nat {
-    (entry * 10_000_000_000) / (icp_price)
-};
-
-public func testNat2(entry : Nat, icp_price : Nat) : async Nat {
-    (entry * 100) / (icp_price)
-};
-
-public func testNat3() : async Nat {
-    10_000_000_000
-};
-
-public func ApproveThisCanister1() : async LedgerTypes.Account {
-    return {
-        owner = userCanisterId;
-        subaccount = null
-    }
-};
-
-public func ApproveThisCanister2() : async LedgerTypes.Account {
-    return {
-        owner = caller;
-        subaccount = null
-    }
-};
-
-// public func ApproveThisCanister3() : async LedgerTypes.Account {
-//     return {
-//         owner = caller;
-//         subaccount = null;
-//     }
-// };
-
-// * End of Test
-
 public query ({ caller }) func getOwner() : async Principal {
     caller
 };
@@ -831,17 +707,6 @@ var messages : [Message] = [];
 public shared ({ caller }) func sendMessage2(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
     var sent : Bool = false;
     var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    // switch(messageID){
-    //     case (null) {
-    //         // Do absolutely nothing
-    //         // MessageHashMap.put(messageID, newMessage);
-    //     };
-    //     case (?messageID){
-    //         MessageHashMap.put(messageID, newMessage);
-    //         messageID := messageID + 1;
-    //     }
-    // };
-    // MessageHashMap.put(messageID, newMessage);
     MessageHashMap.put(messageID, newMessage);
     messageID := messageID + 1;
     await update_messages_sent(caller);
@@ -853,17 +718,6 @@ public shared ({ caller }) func sendMessage2(body : Text, time : Text, username 
 public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async () {
     var sent : Bool = false;
     var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    // switch(messageID){
-    //     case (null) {
-    //         // Do absolutely nothing
-    //         // MessageHashMap.put(messageID, newMessage);
-    //     };
-    //     case (?messageID){
-    //         MessageHashMap.put(messageID, newMessage);
-    //         messageID := messageID + 1;
-    //     }
-    // };
-    // MessageHashMap.put(messageID, newMessage);
     MessageHashMap.put(messageID, newMessage);
     messageID := messageID + 1;
     await update_messages_sent(caller);
