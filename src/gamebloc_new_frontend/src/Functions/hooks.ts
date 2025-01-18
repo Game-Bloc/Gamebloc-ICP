@@ -165,6 +165,15 @@ export const hooks = () => {
     }
   }
 
+  const whoami = async () => {
+    try {
+      const _whoami = await whoamiActor2.whoami()
+      console.log("whoami principal:", _whoami)
+    } catch (err) {
+      console.log("Whoami Error:", err)
+    }
+  }
+
   return {
     done,
     updating,
@@ -178,6 +187,7 @@ export const hooks = () => {
     getMyPoints,
     getMyStreakCount,
     getStreakTime,
+    whoami,
   }
 }
 
