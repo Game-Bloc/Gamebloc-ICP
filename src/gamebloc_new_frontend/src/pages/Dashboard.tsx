@@ -36,7 +36,7 @@ const Dashboard = () => {
     getChatmessage,
     getICPrice,
   } = useGameblocHooks()
-  const { getMyPoints, getMyStreakCount } = hooks()
+  const { getMyPoints, getMyStreakCount, whoami } = hooks()
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
@@ -51,8 +51,10 @@ const Dashboard = () => {
     if (isAuthenticated) {
       if (username === "") {
         getProfile()
+        whoami()
       } else {
         updateProfile()
+        whoami()
       }
       getChatmessage(20)
       if (userSession === "true") {

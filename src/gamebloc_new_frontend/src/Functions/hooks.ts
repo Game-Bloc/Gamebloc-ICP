@@ -168,7 +168,7 @@ export const hooks = () => {
   const whoami = async () => {
     try {
       const _whoami = await whoamiActor2.whoami()
-      console.log("whoami principal:", _whoami)
+      console.log("whoami principal:", _whoami.toText())
     } catch (err) {
       console.log("Whoami Error:", err)
     }
