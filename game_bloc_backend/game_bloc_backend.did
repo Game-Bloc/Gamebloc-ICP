@@ -185,5 +185,5 @@ service : () -> {
   update_tournament_past_leaderboard : () -> ();
   update_tournament_pool_price : (text, nat) -> ();
   update_tournament_type_to_blitzkrieg : (text) -> ();
-  whoami : () -> (UserProfile) query;
+  whoami : () -> (principal) query;
 }
