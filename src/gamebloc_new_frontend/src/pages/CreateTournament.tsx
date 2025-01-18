@@ -358,7 +358,7 @@ const CreateTournament = () => {
       +entryPrice,
       +entryPrice,
       noOfWinners,
-      BigInt(noOfUsers),
+      tourVariation === "infinite" ? BigInt(1000) : BigInt(noOfUsers),
       gameType,
       endDate,
       title,
