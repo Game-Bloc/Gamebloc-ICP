@@ -117,17 +117,17 @@ pub fn get_all_wagers(id: String ) -> Vec<Wager> {
 //     })
 // }
 
-// #[query]
-// pub fn does_wager_exist(id:String, account_id: String) -> bool {
-//     TOURNAMENT_STORE.with(|tournament_store| {
-//         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-//         match tournament.wagers.clone() {
-//             None => {
-//                 false
-//             }
-//             Some(wagers) => {
-//                 wagers.iter().find(|&w| w.staker_principal_id == account_id).is_some()
-//             }
-//         }
-//     })
-// }
+#[query]
+pub fn does_wager_exist(id:String, account_id: String) -> bool {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        match tournament.wagers.clone() {
+            None => {
+                false
+            }
+            Some(wagers) => {
+                wagers.iter().find(|&w| w.staker_principal_id == account_id).is_some()
+            }
+        }
+    })
+}

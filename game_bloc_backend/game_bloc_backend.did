@@ -74,7 +74,6 @@ type TournamentAccount = record {
   starting_date : text;
   entry_fee_bump : opt nat;
   nominal_entry_fee : opt nat;
-  wagers : opt vec Wager;
   no_of_participants : nat;
   tournament_lobby_type : opt TournamentLobbyType;
   points_vector_mod_1 : opt vec record { text; text; Point };
@@ -118,16 +117,9 @@ type UserProfile = record {
   points : opt vec record { text; text; Point };
 };
 type Variation = variant { Infinite; Capped };
-type Wager = record {
-  staker_account_id : text;
-  staker_principal_id : text;
-  price : text;
-  player_principal_id : text;
-};
 type Winner = record { user_account : text; position : text; amount : nat };
 service : () -> {
   add_mod_to_tribunal : (principal) -> (bool);
-  add_or_increase_tournament_wager : (text, Wager) -> ();
   add_to_squad : (Member, principal, text) -> ();
   archive_tournament : (text) -> ();
   assign_points : (principal, record { text; text; Point }) -> ();
@@ -151,7 +143,6 @@ service : () -> {
   create_profile : (UserProfile, principal) -> (Result);
   create_squad : (Squad, principal) -> (Result);
   create_tournament : (TournamentAccount) -> (Result);
-  does_wager_exist : (text, text) -> (bool) query;
   end_blitzkrieg_tournament : (text, principal) -> (bool);
   end_tournament : (text, principal, nat8, vec Winner) -> (bool);
   getSelf : () -> (UserProfile) query;
@@ -159,7 +150,6 @@ service : () -> {
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
   get_all_user : () -> (vec UserProfile) query;
-  get_all_wagers : (text) -> (vec Wager) query;
   get_leaderboard : () -> (vec Contestant) query;
   get_lobby_from_tournament : (text, nat8) -> (LobbyAccount) query;
   get_mods : () -> (vec UserProfile) query;
@@ -167,7 +157,6 @@ service : () -> {
   get_profile_by_principal : (principal) -> (UserProfile) query;
   get_squad : (text) -> (Squad) query;
   get_tournament : (text) -> (TournamentAccount) query;
-  get_wager : () -> () query;
   is_mod : (principal) -> (bool) query;
   join_squad : (Member, principal, text) -> ();
   join_tournament : (text, text, record { text; text; text }) -> ();
@@ -180,7 +169,6 @@ service : () -> {
   leave_or_remove_squad_member : (principal, text) -> ();
   lobbies_exterminator : (text) -> ();
   lobbies_extraditor : (text, text, record { text; text }) -> ();
-  mutate_ : () -> ();
   open_squad : (text, vec text, principal) -> ();
   postpone_tournament : (text, text) -> ();
   send_message_tournament : (text, Chat) -> ();
@@ -197,4 +185,5 @@ service : () -> {
   update_tournament_past_leaderboard : () -> ();
   update_tournament_pool_price : (text, nat) -> ();
   update_tournament_type_to_blitzkrieg : (text) -> ();
+  whoami : () -> (principal) query;
 }
