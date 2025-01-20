@@ -1337,17 +1337,19 @@ private func burn_user_point(caller : Principal, _point : Nat) : async () {
     switch (tracker) {
         case (null) {};
         case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point - _point;
+            if (tracker.total_point > _point) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point - _point;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
             };
-            var updated = USER_TRACK_STORE.replace(caller, update)
         }
     }
 };
