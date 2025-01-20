@@ -1157,6 +1157,30 @@ private func update_tournaments_joined(caller : Principal) : async () {
     }
 };
 
+public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
+    if (await is_mod(caller)){
+        var tracker = USER_TRACK_STORE.get(recipient);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + _point;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    } else {
+        throw Error.reject("You are not authorised to make this action! You imposter, you dissappoint me! tueh!")
+    }
+};
+
 private func update_tournaments_won(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
