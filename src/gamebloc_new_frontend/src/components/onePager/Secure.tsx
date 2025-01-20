@@ -71,15 +71,15 @@ const Secure = () => {
 
   useEffect(() => {
     const cornerPositions = [
-      { top: "10%", left: "7%" }, // Top-left
+      { top: "15%", left: "1%" }, // Top-left
       { top: "10%", left: "70%" }, // Top-right
-      { top: "80%", left: "7%" }, // Bottom-left
+      { top: "80%", left: "1%" }, // Bottom-left
       { top: "80%", left: "70%" }, // Bottom-right
     ]
     const cornerTexts = [
       {
         Heading: "Immutable Transactions on the Block Chain",
-        text: "Transactions on the BlockChain are immutable, meaning once they are recorded, they cannot be altered or deleted.",
+        text: "Transactions on the BlockChain are immutable, meaning once they are recorded, they cannot \nbe altered or deleted.",
       },
       {
         Heading: "Decentralized Security with ICP Tokens",
@@ -87,7 +87,7 @@ const Secure = () => {
       },
       {
         Heading: "Smart Contract Safeguards",
-        text: "Smart contracts play a pivotal role in securing transactions. By automating and self-executing contract terms, they eliminate the need for intermediaries, reducing the risk of fraud.",
+        text: "Smart contracts play a pivotal role in securing transactions. By automating and self-executing \ncontract terms, they eliminate the need for intermediaries, reducing the risk of fraud.",
       },
       {
         Heading: "Web 3 Wallets for Enhanced Privacy",
@@ -95,7 +95,6 @@ const Secure = () => {
       },
     ]
 
-    // Set the modal and trigger pulse every 4 seconds
     const intervalId = setInterval(() => {
       const currentCorner = (activeCorner + 1) % 4
       setActiveCorner(currentCorner)
@@ -118,7 +117,7 @@ const Secure = () => {
           SECURED TRANSACTIONS
         </p>
 
-        <div className="flex justify-center items-center mt-8 md:mt-[7.5rem] lg:mt-8 relative">
+        <div className="flex justify-center items-center mt-8 md:mt-[10rem] lg:mt-8 relative">
           <motion.div
             variants={svgVariants}
             initial="initial"
@@ -128,12 +127,13 @@ const Secure = () => {
             <img
               src={`gamemach.svg`}
               alt="Game Mach"
-              className="w-full h-auto lg:w-[35rem]"
+              className="w-[100%] h-auto max-w-[35rem]"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 313 190"
-              className="w-full h-auto absolute top-0 left-0"
+              className="w-[100%] h-auto absolute top-0 left-0"
+              style={{ transformOrigin: "center" }}
             >
               <motion.circle
                 cx="150.422"
@@ -154,50 +154,42 @@ const Secure = () => {
               />
             </svg>
 
-            <motion.div
-              variants={pulseVariants}
-              initial="initial"
-              animate={activeCorner === 0 ? "animate" : ""}
-              className="absolute top-0 left-0 w-[10px] h-[10px] bg-primary-second rounded-full"
-            />
-            <motion.div
-              variants={pulseVariants}
-              initial="initial"
-              animate={activeCorner === 1 ? "animate" : ""}
-              className="absolute top-0 right-0 w-[10px] h-[10px] bg-primary-second rounded-full"
-            />
-            <motion.div
-              variants={pulseVariants}
-              initial="initial"
-              animate={activeCorner === 2 ? "animate" : ""}
-              className="absolute bottom-[2.2rem] lg:bottom-[4.6rem] left-0 w-[10px] h-[10px] bg-primary-second rounded-full"
-            />
-            <motion.div
-              variants={pulseVariants}
-              initial="initial"
-              animate={activeCorner === 3 ? "animate" : ""}
-              className="absolute bottom-[2.2rem] lg:bottom-[4.6rem] right-0 w-[10px] h-[10px] bg-primary-second rounded-full"
-            />
+            {[
+              "top-0 left-0",
+              "top-0 right-0",
+              "bottom-[2rem] left-0",
+              "bottom-[2rem] right-0",
+            ].map((position, index) => (
+              <motion.div
+                key={index}
+                variants={pulseVariants}
+                initial="initial"
+                animate={activeCorner === index ? "animate" : ""}
+                className={`absolute ${position} w-[10px] h-[10px] bg-primary-second rounded-full`}
+              />
+            ))}
           </motion.div>
         </div>
       </div>
 
       {modal.visible && (
         <motion.div
-          className=" hidden md:flex flex-col  absolute z-10 p-4 bg-[#08010E] text-primary-second  border border-gray-300 rounded-md shadow-lg max-w-[20rem]"
+          className="hidden md:flex flex-col absolute z-10 p-4 bg-[#08010E] text-primary-second border border-gray-300 rounded-md shadow-lg max-w-[15rem]"
           style={{
             top: modal.position.top,
             left: modal.position.left,
             transform: "translate(-50%, -50%)",
-            marginTop: "10px",
-            marginLeft: "10px",
+            margin: "10px",
+            maxWidth: "90%",
           }}
           variants={modalVariants}
           initial="initial"
           animate="animate"
         >
-          <h3 className="text-[.8rem] font-bold ">{modal.heading}</h3>
-          <p className="text-[.6rem] mt-3 ">{modal.text}</p>
+          <h3 className="text-[.8rem] font-bold">{modal.heading}</h3>
+          <p className="text-[.6rem] mt-3" style={{ whiteSpace: "pre-wrap" }}>
+            {modal.text}
+          </p>
         </motion.div>
       )}
     </div>
