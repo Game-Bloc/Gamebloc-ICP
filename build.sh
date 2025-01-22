@@ -8,7 +8,7 @@ dfx identity use minter
 MINT_ACC=$(dfx ledger account-id)
 export MINT_ACC
 
-dfx identity use deon
+dfx identity use default
 
 export OWNER=$(dfx identity get-principal)
 
@@ -35,10 +35,15 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 # dfx canister --network local call icp_ledger icr1_transfer '
 #     (record {
 #       to=(record {
-#         owner=(principal "6cxww-biaaa-aaaal-adebq-cai")
+#         owner=(principal "b77ix-eeaaa-aaaaa-qaada-cai")
 #         });
 #         amount=500_000
 #     })'
+
+# dfx ledger transfer --amount 500_000 --memo 123 476653ac80a51b906bcc24f5ce59c1c6b4290d8dddc7ac6fae4a4b5070cf5abd
+
+dfx identity use DevJourney
+dfx canister call icp_ledger icrc1_transfer "(record { to = record { owner = principal \"b77ix-eeaaa-aaaaa-qaada-cai\";};  amount = 1_000_000;})"
 
 # --specified-id ryjl3-tyaaa-aaaaa-aaaaa-cai
 # dfx deploy --network local  icrc1_ledger --argument '
