@@ -174,12 +174,38 @@ export const hooks = () => {
     }
   }
 
+  const allocateUserPoint = async (
+    principal: Principal,
+    point: any,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setActivateloading(true)
+      const allocatePoint = await whoamiActor.allocatePoint(
+        principal,
+        BigInt(point),
+      )
+      setActivateloading(false)
+      popUp(successMsg, route)
+      console.log("Principal:", principal)
+      console.log("Point:", point)
+      console.log("Points allocated")
+    } catch (err) {
+      setActivateloading(false)
+      console.log("Error allocating Points :", err)
+      errorPopUp(errorMsg)
+    }
+  }
+
   return {
     done,
+    sending,
     updating,
     isLoading,
     claimloading,
-    sending,
+    activateloading,
     setAdmin,
     setTribunal,
     disburseFunds,
@@ -188,6 +214,7 @@ export const hooks = () => {
     getMyStreakCount,
     getStreakTime,
     whoami,
+    allocateUserPoint,
   }
 }
 

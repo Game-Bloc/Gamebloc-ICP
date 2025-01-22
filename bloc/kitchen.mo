@@ -1229,7 +1229,7 @@ public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Na
                     feedbacks_sent = tracker.feedbacks_sent;
                     total_point = tracker.total_point + _point;
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update)
+                var updated = USER_TRACK_STORE.replace(recipient, update)
             }
         }
     } else {

@@ -46,6 +46,15 @@ type Squad = record {
   requests : vec text;
   points : opt vec record { text; text; Point };
 };
+
+
+type Wager = record {
+      amount: nat;
+      staker_principal_id: text;
+      staker_account_id: text;
+      player_principal_id: text;
+};
+
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
 type TournamentAccount = record {
@@ -73,6 +82,7 @@ type TournamentAccount = record {
   game_type : text;
   starting_date : text;
   entry_fee_bump : opt nat;
+  wagers: opt Wager;
   nominal_entry_fee : opt nat;
   no_of_participants : nat;
   tournament_lobby_type : opt TournamentLobbyType;
