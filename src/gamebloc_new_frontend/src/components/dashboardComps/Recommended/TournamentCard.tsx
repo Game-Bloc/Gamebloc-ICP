@@ -40,7 +40,7 @@ const TournamentCard = ({ data, index }: Props) => {
           className=" h-fit relative  flex flex-col cursor-pointer rounded-xl "
         >
           <img
-            src={`xbox-pad.jpg`}
+            src={`cod.jpg`}
             alt=""
             className="rounded-[12px] m-0 h-[18rem] 2xl:h-[20rem]  w-full"
           />
@@ -95,9 +95,9 @@ const TournamentCard = ({ data, index }: Props) => {
               <p className=" w-full text-center mt-2 font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
                 {data.title}
               </p>
-              <p className=" w-full text-center font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
+              {/* <p className=" w-full text-center font-bold text-[.65rem] sm:text-[0.75rem] 2xl:text-[.95rem]  text-white">
                 {data.game}
-              </p>
+              </p> */}
             </div>
             {/* <img
           src={`right.svg`}

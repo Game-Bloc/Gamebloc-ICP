@@ -38,8 +38,8 @@ const GameblocTournaments = ({ loading }: props) => {
           </h2>
         </div>
         <div className=" lg:flex w-full lg:justify-center lg:items-center">
-          <div className="mt-8 gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 2xl:gap-[3rem]">
-            <div
+          <div className="mt-8 gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 2xl:gap-[3rem]">
+            {/* <div
               onClick={() => setModal(true)}
               className="relative flex cursor-pointer "
             >
@@ -66,7 +66,7 @@ const GameblocTournaments = ({ loading }: props) => {
                   </div>
                 </>
               )}
-            </div>
+            </div> */}
             <div
               onClick={() => setModal(true)}
               className="relative cursor-pointer "

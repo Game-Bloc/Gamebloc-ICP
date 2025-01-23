@@ -26,9 +26,11 @@ const TransferModal = ({ modal, _principal, notification_id }: Props) => {
   const [amountToSend, setAmountToSend] = useState<number>()
   const [date, setDate] = useState<number>()
   const [createdAt, setCreatedAt] = useState<string>("")
+  const [dollarValue, setDollarValue] = useState<number>(0)
   const { isLoading, sendICP, getICPBalance } = useGameblocHooks()
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   const onSendChange = (e: any) => {
     e.preventDefault()
@@ -44,6 +46,20 @@ const TransferModal = ({ modal, _principal, notification_id }: Props) => {
     const input = e.target.value
     setRecipient(input)
   }
+
+  useEffect(() => {
+    const calculateDollarValue = () => {
+      const icpValue = amountToSend
+      if (_icp2Usd > 0) {
+        const dollar = icpValue * _icp2Usd
+        setDollarValue(dollar)
+      } else {
+        setDollarValue(0)
+      }
+    }
+
+    calculateDollarValue()
+  }, [_icp2Usd, amountToSend])
 
   useEffect(() => {
     setCreatedAt(generateDate())
@@ -110,9 +126,14 @@ const TransferModal = ({ modal, _principal, notification_id }: Props) => {
                   </h1>
 
                   <div className="flex flex-col w-[100%] md:w-[80%] mt-4">
-                    <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                      Amount to send
-                    </p>
+                    <div className="flex justify-between items-center">
+                      <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                        Amount to send
+                      </p>
+                      <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                        {`${"$" + dollarValue}`}
+                      </p>
+                    </div>
                     <div className="flex flex-col items-center pb-[.6rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
                         className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"

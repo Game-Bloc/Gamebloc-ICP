@@ -9,12 +9,15 @@ module {
     public type UserTrack = {
         user : Principal;
         tournaments_created : Nat;
+        wager_participated  : Nat;
         tournaments_joined : Nat;
         tournaments_won : Nat;
         messages_sent : Nat;
         feedbacks_sent : Nat;
         total_point : Nat
     };
+
+    // Multipliers
 
     public type ModTag = {
         #Mod1; #Mod2; #Mod3
@@ -67,6 +70,7 @@ module {
         date : Text;
         read : Bool;
     };
+
 
     public type Notifications = {
         notifications : [Notification];
@@ -192,12 +196,28 @@ module {
         lobbies : ?[LobbyAccount];
         winners : ?[Winner];
         ended : ?Bool;
+        tournament_variation : ?Variation;
+        entry_fee_bump : ?Nat;
+        nominal_entry_fee : ?Nat;
+        no_of_participants_at_bump: ?Nat;
         // paid : Bool;
     };
 
     public type TournamentLobbyType = {
         #SingleLobby;
         #MultiLobby;
+    };
+
+    public type LockedAsset = {
+        icpBalance : Nat;
+        user : Principal;
+        assets : [Lockable];
+    };
+
+    public type Lockable = {
+        amount : Nat;
+        timestamp : Nat;
+        user : Principal;
     };
 
 
@@ -245,6 +265,8 @@ module {
 
     public type Status = { #Online; #Offline };
 
+    public type Variation = { #Capped; #Infinite };
+
     public type Member = {
         name : Text;
         principal_id : Text
@@ -255,6 +277,17 @@ module {
         point : Nat;
         wins : Nat8;
         losses : Nat8
-    }
+    };
+
+    public type DailyClaim = {
+        user : Principal;
+        streakTime : Nat; //  Type Time
+        streakCount : Nat;
+        highestStreak : Nat;
+        pointBalance : Nat;
+    };
+
+
+
 
 }

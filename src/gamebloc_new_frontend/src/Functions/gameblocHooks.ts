@@ -44,9 +44,9 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  // const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   // ! Production params
-  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+  //const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
@@ -157,7 +157,7 @@ export const useGameblocHooks = () => {
 
   const getPlayers = async () => {
     try {
-      const player = await whoamiActor.count_all_users()
+      const player = await whoamiActor2.count_all_users()
       console.log(player)
       sessionStorage.setItem("players", Number(player).toString())
     } catch (err) {
@@ -168,10 +168,11 @@ export const useGameblocHooks = () => {
   const getProfile = async () => {
     try {
       setIsLoadingProfile(true)
-      const user: any = await whoamiActor.getSelf()
+      const user: any = await whoamiActor2.getSelf()
+      console.log("user..:", user)
       if (user.username != "") {
         setIsAccount(true)
-        // console.log("user..:", user)
+        console.log("user..:", user)
         const profileData: UserProfileState = {
           age: user.age,
           canister_id: user.canister_id,
@@ -210,7 +211,7 @@ export const useGameblocHooks = () => {
   const updateProfile = async () => {
     try {
       setUpdatingProfile(true)
-      const user: any = await whoamiActor.getSelf()
+      const user: any = await whoamiActor2.getSelf()
       console.log("Profile", user)
       const profileData: UserProfileState = {
         age: user.age,
@@ -247,7 +248,7 @@ export const useGameblocHooks = () => {
 
   const getProfile2 = async () => {
     try {
-      const profile = await whoamiActor2.getSelf(principal)
+      const profile = await whoamiActor2.getSelf()
       // console.log("Profile - actor2:", profile)
     } catch (err) {
       console.log(err)
@@ -290,6 +291,10 @@ export const useGameblocHooks = () => {
     tournament_lobby_type: any,
     winners: [],
     ended: [],
+    tournament_variation: any,
+    _nominal_entry_fee: any,
+    _entry_fee_bump: any,
+    _no_of_participants_at_bump: any,
     successMsg: string,
     errorMsg: string,
     route: string,
@@ -297,7 +302,11 @@ export const useGameblocHooks = () => {
     try {
       setUpdating(true)
       const creator_id: [string] = [owner_id]
+      const tour_variation: [any] = [tournament_variation]
       const entry_fee: [bigint] = [_entry_fee]
+      const nominal_entry_fee: [bigint] = [_nominal_entry_fee]
+      const entry_fee_bump: [bigint] = [_entry_fee_bump]
+      const no_of_participants_at_bump: [bigint] = [_no_of_participants_at_bump]
       const tournamentData = {
         id_hash,
         creator,
@@ -315,8 +324,12 @@ export const useGameblocHooks = () => {
         winers,
         entry_prize,
         entry_fee,
+        nominal_entry_fee,
+        entry_fee_bump,
+        no_of_participants_at_bump,
         total_prize,
         no_of_winners,
+        tournament_variation: tour_variation,
         no_of_participants,
         game_type,
         end_date,
@@ -1003,7 +1016,7 @@ export const useGameblocHooks = () => {
   const multiSelect_user_profile = async (principal: Principal) => {
     try {
       setIsLoading(true)
-      const user = await whoamiActor2.getSelf(principal)
+      const user = await whoamiActor2.getSelf()
       console.log("user", user)
       setIsLoading(false)
     } catch (err) {

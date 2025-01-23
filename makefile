@@ -6,7 +6,9 @@ OWNER := $(shell dfx identity get-principal)
 TOKEN_NAME := ICP
 
 GAME_BLOC_WASM := target/wasm32-unknown-unknown/release/game_bloc_backend.wasm
-CANDID_FILE := src/game_bloc_backend.did
+
+CANDID_FILE := game_bloc_backend/game_bloc_backend.did
+
 
 # Targets
 
@@ -19,7 +21,10 @@ build:
 	@dfx identity remove minter
 	@dfx identity new minter
 	@dfx identity use minter
-	@export MINT_ACC=$(MINT_ACC) && export OWNER=$(OWNER) && export LEDGER_ACC=$(LEDGER_ACC) && export ARCHIVE_CONTROLLER=$(ARCHIVE_CONTROLLER) && \
+	@export MINT_ACC=$(MINT_ACC)
+	@dfx identity use default
+	@export OWNER=$(OWNER) && export LEDGER_ACC=$(LEDGER_ACC) && export ARCHIVE_CONTROLLER=$(ARCHIVE_CONTROLLER) && \
+
 	cargo build --release --target wasm32-unknown-unknown --package game_bloc_backend
 
 # Generate Candid file from the built WASM
@@ -49,7 +54,9 @@ deploy: candid
 	'record { ledger_id = (principal "mxzaz-hqaaa-aaaar-qaada-cai"); }'
 
 	@echo ">> Deploying cketh_ledger"
-	@dfx deploy --network local ss2fx-dyaaa-aaaar-qacoq-cai cketh_ledger --argument \
+
+	@dfx deploy --network local --specified-id ss2fx-dyaaa-aaaar-qacoq-cai cketh_ledger --argument \
+
 	'(variant { Init = record { token_name = "Local ckETH"; token_symbol = "LCKETH"; minting_account = record { owner = principal "$(OWNER)"; }; \
 	initial_balances = vec { record { record { owner = principal "$(OWNER)"; }; 100_000_000_000; } }; metadata = vec {}; transfer_fee = 10; \
 	archive_options = record { trigger_threshold = 2000; num_blocks_to_archive = 1000; controller_id = principal "$(OWNER)"; } }}})'

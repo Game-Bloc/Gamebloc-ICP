@@ -32,7 +32,11 @@ const ChatCard1 = ({ message, tourData }: Props) => {
                   {data.time}
                 </p>
               </div>
-              <p className="text-gray">{data.message}</p>
+              <div className="max-w-[27rem]">
+                <p className="flex flex-wrap break-words break-all whitespace-pre-wrap text-gray ">
+                  {data.message}
+                </p>
+              </div>
             </div>
             <div className="ml-2">
               <Avatar style={{ backgroundColor: "#fde3cf", color: "#f56a00" }}>
@@ -63,7 +67,11 @@ const ChatCard1 = ({ message, tourData }: Props) => {
                   {data.time}
                 </p>
               </div>
-              <p className="text-gray">{data.message}</p>
+              <div className="max-w-[27rem]">
+                <p className="flex flex-wrap text-gray break-words break-all whitespace-pre-wrap">
+                  {data.message}
+                </p>
+              </div>
             </div>
           </div>
         ),

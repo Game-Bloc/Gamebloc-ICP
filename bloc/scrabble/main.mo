@@ -1,6 +1,5 @@
 shared actor class Scrabble() {
     
-
     let LETTER_VALUES = {
         A = 1;
         B = 3;
@@ -30,5 +29,7 @@ shared actor class Scrabble() {
         Z = 10;
         HASH = 0;
     };
+
+    
 
 }

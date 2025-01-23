@@ -79,6 +79,42 @@ body.no-scroll {
   height: 2px;
 }
 
+/* ANT TABLE CONFIG */
+.ant-table-thead > tr > th {
+  border-bottom: 1px solid #595959 !important; /* Custom color and thickness */
+}
+/* profile Transaction */
+:where(.css-dev-only-do-not-override-h3olvm).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  background-color: #595959 !important;
+}
+:where(.css-dev-only-do-not-override-h3olvm).ant-table-wrapper
+  .ant-table-tbody
+  > tr
+  > td {
+  border-bottom: none !important;
+}
+
+/* leaderboard */
+:where(.css-dev-only-do-not-override-14q9o).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  background-color: #595959 !important;
+}
+:where(.css-dev-only-do-not-override-14q9o).ant-table-wrapper
+  .ant-table-tbody
+  > tr
+  > td {
+  border-bottom: none !important;
+}
+
 /* :where(.css-dev-only-do-not-override-1lmxa3x).ant-steps.ant-steps-vertical
   > .ant-steps-item
   > .ant-steps-item-container
