@@ -409,7 +409,6 @@ const TournamentDetail = () => {
             </div>
           </section>
         )}
-        {openWager && <WagerModal modal={handleModal} />}
       </div>
     )
   }
