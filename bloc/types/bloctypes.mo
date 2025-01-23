@@ -159,6 +159,13 @@ module {
         #Archived;
     };
 
+    public type Wager = {
+        amount : Nat;
+        staker_principal_id : Text;
+        staker_account_id : Text;
+        player_principal_id : Text;
+    };
+
     public type TournamentAccount = {
         id_hash : Text;
         creator : Text;
@@ -200,6 +207,7 @@ module {
         entry_fee_bump : ?Nat;
         nominal_entry_fee : ?Nat;
         no_of_participants_at_bump: ?Nat;
+        wagers : ?Wager;
         // paid : Bool;
     };
 
