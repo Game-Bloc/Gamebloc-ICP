@@ -54,7 +54,7 @@ const LoginModal = ({ modal }: Props) => {
                       className="m-0 w-[.8rem] sm:w-6"
                     />
                     <p className="text-[0.65rem] ml-4  font-bold sm:text-[.85rem]">
-                      Sign in as a Guest
+                      Explore Gamebloc as a Guest
                     </p>
                   </button>
                   {/* <button
