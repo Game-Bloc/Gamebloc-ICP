@@ -192,7 +192,7 @@ func checkThis() : async Principal {
     Principal.fromActor(this);
 };
 
-func checkThisText() : async Text {x
+func checkThisText() : async Text {
     Principal.toText(Principal.fromActor(this));
 };
 

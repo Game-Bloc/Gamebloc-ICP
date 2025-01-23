@@ -99,7 +99,7 @@
   "defaults": {
     "build": {
       "args": "",
-      "packtool": "mops sources"
+      "packtool": "npx ic-mops sources"
     }
   },
   "output_env_file": ".env",
