@@ -207,7 +207,7 @@ module {
         entry_fee_bump : ?Nat;
         nominal_entry_fee : ?Nat;
         no_of_participants_at_bump: ?Nat;
-        wagers : ?Wager;
+        wagers : ?[Wager];
         // paid : Bool;
     };
 

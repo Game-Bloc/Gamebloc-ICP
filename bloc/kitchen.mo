@@ -188,11 +188,11 @@ public shared ({ caller }) func payUsers(pays : [Bloctypes.Pay]) : async () {
     }
 };
 
-public func checkThis() : async Principal {
+func checkThis() : async Principal {
     Principal.fromActor(this);
 };
 
-public func checkThisText() : async Text {
+func checkThisText() : async Text {x
     Principal.toText(Principal.fromActor(this));
 };
 
@@ -241,7 +241,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                             memo = null;
                             from_subaccount = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (winner.amount * e8s)/icp_price;
+                            amount = (winner.amount * e8s * 100)/icp_price;
                         });
                     }
                 }
@@ -252,7 +252,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     }
 };
 
-public func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
+private func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
     await ICPLedger.icrc1_transfer({
         to = {
             owner = recipient;
@@ -266,7 +266,7 @@ public func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Resu
     }); 
 };
 
-public func share4(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
+private func share4(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
     await ICPLedger.icrc1_transfer({
         to = {
             owner = recipient;
@@ -284,7 +284,7 @@ func isAnonymous(p : Principal) : Bool {
     Blob.equal(Principal.toBlob(p), Blob.fromArray([0x04]))
 };
 
-public func share2(recipient : Principal, _amount : Nat) : async Nat64 {
+private func share2(recipient : Principal, _amount : Nat) : async Nat64 {
     await ICPLedger.send_dfx({
         to = await getAccountIdentifier(recipient);
         fee = { e8s = 10_000};
@@ -349,6 +349,12 @@ public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text
 public shared ({ caller }) func icp_balance() : async ICP {
     await ICPLedger.account_balance_dfx({
         account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+    })
+};
+
+public shared ({ caller }) func getKitchenBalance() : async ICP {
+    await ICPLedger.account_balance_dfx({
+        account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromActor(this), null))
     })
 };
 
