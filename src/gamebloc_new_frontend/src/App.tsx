@@ -24,6 +24,7 @@ import Blitzkrieg from "./pages/Blitzkrieg"
 import AdminHub from "./Admin/AdminPages/AdminHub"
 import NewPage from "./pages/NewPage"
 import HowTo from "./pages/HowTo"
+import Wager from "./pages/Wager"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -47,6 +48,11 @@ const App = () => {
               path="/active-tournament/:id/view_result"
               element={<ViewResult />}
             />
+            <Route
+              path="/active-tournament/:id/Wager_account"
+              element={<Wager />}
+            />
+
             <Route path="/game-category" element={<Category />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/supernova-series" element={<Series />} />

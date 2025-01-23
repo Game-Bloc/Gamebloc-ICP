@@ -376,6 +376,7 @@ const CreateTournament = () => {
       [],
       [],
       [],
+      [],
       tournamentVariation,
       +entryPrice,
       +entry_fee_bump,

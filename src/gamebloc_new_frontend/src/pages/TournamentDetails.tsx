@@ -16,6 +16,8 @@ import { convertToMilliseconds, inProgress } from "../components/utils/utills"
 import { useGameblocHooks } from "../Functions/gameblocHooks"
 import { useAuth } from "../Auth/use-auth-client"
 import { useCountdown } from "../components/utils/CountDown"
+import Wager from "../components/tournament/Wager/Wager"
+import WagerModal from "../components/Modals/WagerModal"
 const gameImage = require("../../assets/category1.png").default
 
 const TournamentDetail = () => {
@@ -30,6 +32,7 @@ const TournamentDetail = () => {
   const role = useAppSelector((state) => state.userProfile.role)
   const { updating, updateTournament } = useUpdateTournament()
   const { start_tournament } = useGameblocHooks()
+  const [openWager, setOpenWager] = useState<boolean>(true)
   // Safeguard for tournament data filtering
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
@@ -70,12 +73,23 @@ const TournamentDetail = () => {
     },
     {
       key: "4",
+      label: `Wager Info`,
+      children: currentTournament ? (
+        <Wager key={currentTournament.id_hash} data={currentTournament} />
+      ) : null,
+    },
+    {
+      key: "5",
       label: `Chat`,
       children: currentTournament ? (
         <Chat key={currentTournament.id_hash} data={currentTournament} />
       ) : null,
     },
   ]
+
+  const handleModal = () => {
+    setOpenWager(!openWager)
+  }
 
   const onChange = (key: string) => {
     console.log(key)
@@ -395,6 +409,7 @@ const TournamentDetail = () => {
             </div>
           </section>
         )}
+        {openWager && <WagerModal modal={handleModal} />}
       </div>
     )
   }

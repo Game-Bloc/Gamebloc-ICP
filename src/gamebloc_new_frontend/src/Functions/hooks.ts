@@ -58,6 +58,15 @@ export const hooks = () => {
 
   // ADMIN HUB FUNCTION
 
+  const kitchenBalance = async () => {
+    try {
+      const balance = await whoamiActor.getKitchenBalance()
+      console.log("Kitchen Balance: ", balance)
+    } catch (err) {
+      console.log("Kitchen Balance Error: ", err)
+    }
+  }
+
   const setAdmin = async (principal: Principal) => {
     try {
       setUpdating(true)
@@ -215,6 +224,7 @@ export const hooks = () => {
     getStreakTime,
     whoami,
     allocateUserPoint,
+    kitchenBalance,
   }
 }
 
