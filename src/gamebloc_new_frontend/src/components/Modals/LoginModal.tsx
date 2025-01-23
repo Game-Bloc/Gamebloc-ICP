@@ -57,7 +57,7 @@ const LoginModal = ({ modal }: Props) => {
                       Sign in as a Guest
                     </p>
                   </button>
-                  <button
+                  {/* <button
                     onClick={() => {
                       modal()
                       login()
@@ -72,7 +72,7 @@ const LoginModal = ({ modal }: Props) => {
                     <p className="text-[0.65rem] ml-4  font-bold sm:text-[.85rem]">
                       Sign in with Internet Identity
                     </p>
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => {
                       modal()
@@ -90,16 +90,16 @@ const LoginModal = ({ modal }: Props) => {
                     </p>
                   </button>
                   <div className="mt-8">
-                    <p className="text-[.7rem] lg:text-[.82rem] text-center text-primary-second/80  my-[.2rem]">
-                      Do not have an account ?{" "}
+                    <p className="text-[.7rem] lg:text-[.82rem] text-center text-white/80  my-[.2rem]">
+                      Click here to sign in with{" "}
                       <span
                         onClick={() => {
                           modal()
                           login()
                         }}
-                        className="text-white/80 hover:underline cursor-pointer lg:text-[.82rem] text-[.7rem]"
+                        className="text-primary-second/80 hover:underline cursor-pointer lg:text-[.82rem] text-[.7rem]"
                       >
-                        Sign Up
+                        Internet Identity
                       </span>
                     </p>
                   </div>
