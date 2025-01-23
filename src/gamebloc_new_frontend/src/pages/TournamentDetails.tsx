@@ -32,7 +32,7 @@ const TournamentDetail = () => {
   const role = useAppSelector((state) => state.userProfile.role)
   const { updating, updateTournament } = useUpdateTournament()
   const { start_tournament } = useGameblocHooks()
-  const [openWager, setOpenWager] = useState<boolean>(true)
+
   // Safeguard for tournament data filtering
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
@@ -86,10 +86,6 @@ const TournamentDetail = () => {
       ) : null,
     },
   ]
-
-  const handleModal = () => {
-    setOpenWager(!openWager)
-  }
 
   const onChange = (key: string) => {
     console.log(key)

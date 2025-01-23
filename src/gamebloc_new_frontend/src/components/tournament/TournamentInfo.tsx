@@ -40,7 +40,9 @@ const TournamentInfo = ({ data }: Props) => {
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const [openWager, setOpenWager] = useState<boolean>(true)
-
+  const option =
+    Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG" &&
+    data.creator == owner
   const override = {
     display: "block",
     margin: "0 auto",
@@ -741,8 +743,9 @@ const TournamentInfo = ({ data }: Props) => {
         )}
         {openWager && (
           <WagerModal
-            modal={handleWagerModal}
             data={data}
+            option={option}
+            modal={handleWagerModal}
             handleModal={handleWagerModal2}
           />
         )}

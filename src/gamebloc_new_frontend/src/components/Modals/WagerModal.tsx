@@ -5,10 +5,11 @@ import { useNavigate } from "react-router-dom"
 type Prop = {
   modal: any
   data: any
+  option: boolean
   handleModal: any
 }
 
-const WagerModal = ({ modal, data, handleModal }: Prop) => {
+const WagerModal = ({ modal, data, handleModal, option }: Prop) => {
   const navigate = useNavigate()
 
   return (
@@ -28,11 +29,15 @@ const WagerModal = ({ modal, data, handleModal }: Prop) => {
                     onClick={handleModal}
                     className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                   />
-                  <div className=" flex  flex-col w-full  sm:w-[28rem] p-4 h-[11rem]  ">
+                  <div
+                    className={` flex  flex-col w-full  sm:w-[28rem] p-4 ${
+                      option ? "h-[9rem]" : "h-[11rem]"
+                    }   `}
+                  >
                     <h4 className="font-medium text-[#08172E] text-white/90 text-base ">
                       {" "}
-                      Bet on your favourite Player or Participate in this
-                      tournament
+                      Bet on your favourite Player
+                      {option ? "" : "or Participate in this tournament"}
                     </h4>
                     <p className=" text-white/90 text-sm my-2"></p>
                     <div className=" flex mt-6 flex-row  ">
@@ -46,14 +51,18 @@ const WagerModal = ({ modal, data, handleModal }: Prop) => {
                       >
                         Wager
                       </button>
-                      <button
-                        className="py-2 px-8 ml-4 bg-primary-second text-[#000] w-full  text-xs sm:text-sm "
-                        onClick={() => {
-                          modal()
-                        }}
-                      >
-                        Join Tournament
-                      </button>
+                      {option ? (
+                        <></>
+                      ) : (
+                        <button
+                          className="py-2 px-8 ml-4 bg-primary-second text-[#000] w-full  text-xs sm:text-sm "
+                          onClick={() => {
+                            modal()
+                          }}
+                        >
+                          Join Tournament
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
