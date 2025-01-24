@@ -3,6 +3,8 @@ import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import { IoIosArrowRoundBack } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
+import InfoCard from "../components/wager/infoCard"
+import GamerCard from "../components/wager/GamerCard"
 
 const Wager = () => {
   const navigate = useNavigate()
@@ -26,11 +28,17 @@ const Wager = () => {
                   <IoIosArrowRoundBack className="text-primary-second" />
                   <p className="text-primary-second ml-2 text-[0.8rem]">Back</p>
                 </div>
-                <h1 className="text-white font-[600] text-[1.4rem] mt-4 p-4">
-                  Wager
+                <h1 className="text-white font-[600] text-[1.4rem] mt-4 py-4">
+                  Bet Info
                 </h1>
-                {/* <WinnersBoard />
-                <ResultTable /> */}
+                <InfoCard />
+                <h4 className="text-white font-[600] text-[0.9rem] mt-4 py-4">
+                  Choose your favourite player
+                </h4>
+                {/* Players/Squad Section */}
+                <div className="grid mt-6 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <GamerCard />
+                </div>
               </div>
             </div>
           </div>

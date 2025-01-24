@@ -49,7 +49,7 @@ const WagerModal = ({ modal, data, handleModal, option }: Prop) => {
                         }
                         className="py-2 px-8 bg-primary-second text-[#000] w-full  text-xs sm:text-sm "
                       >
-                        Wager
+                        Bet
                       </button>
                       {option ? (
                         <></>
