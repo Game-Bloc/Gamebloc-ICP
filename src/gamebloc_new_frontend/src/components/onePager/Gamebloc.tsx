@@ -54,7 +54,7 @@ const Gamebloc = ({ setModal }: Props) => {
           What are we all about?
         </p>
         <p className="text-primary-second text-[0.6rem] sm:text-[0.8rem] 2xl:text-base flex w-full justify-end  mb-[0.5rem] md:mb-[1rem] ">
-          Game_bloc seeks to be the first social platform for gamers that allows
+          Gamebloc seeks to be the first social platform for gamers that allows
           users to host and join tournaments where they can win prizes and
           entertain themselves with games that we will be supporting. Also
           provide a game launch platform that will enable game developers to
