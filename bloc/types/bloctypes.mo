@@ -208,6 +208,8 @@ module {
         nominal_entry_fee : ?Nat;
         no_of_participants_at_bump: ?Nat;
         wagers : ?[Wager];
+        user_details : ?[UserProfile];
+        accept_wager : ?Bool;
         // paid : Bool;
     };
 
