@@ -167,7 +167,7 @@ module {
     };
 
     public type TournamentAccount = {
-        accepts_wager : ?Bool;
+        accepts_wagers : ?Bool;
         id_hash : Text;
         creator : Text;
         creator_id : ?Text;
