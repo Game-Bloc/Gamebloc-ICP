@@ -2,13 +2,20 @@ import React from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import { IoIosArrowRoundBack } from "react-icons/io"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import InfoCard from "../components/wager/infoCard"
 import GamerCard from "../components/wager/GamerCard"
 import SquadViewCard from "../components/wager/SquadViewCard"
+import { useAppSelector } from "../redux/hooks"
 
 const Wager = () => {
+  const { id } = useParams()
   const navigate = useNavigate()
+  const tournamentData = useAppSelector((state) => state.tournamentData)
+
+  const tourData =
+    tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
+  const currentTournament = tourData.length > 0 ? tourData[0] : null
 
   return (
     <div className="">
@@ -32,7 +39,7 @@ const Wager = () => {
                 <h1 className="text-white font-[600] text-[1.4rem] mt-4 py-4">
                   Bet Info
                 </h1>
-                <InfoCard />
+                <InfoCard data={currentTournament} />
                 <h4 className="text-white font-[600] text-[0.9rem] mt-4 py-4">
                   Bet on your favourite player
                 </h4>
