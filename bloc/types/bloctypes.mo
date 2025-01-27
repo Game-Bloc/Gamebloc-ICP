@@ -167,6 +167,7 @@ module {
     };
 
     public type TournamentAccount = {
+        accepts_wager : ?Bool;
         id_hash : Text;
         creator : Text;
         creator_id : ?Text;
@@ -209,7 +210,7 @@ module {
         no_of_participants_at_bump: ?Nat;
         wagers : ?[Wager];
         user_details : ?[UserProfile];
-        accept_wager : ?Bool;
+        
         // paid : Bool;
     };
 
