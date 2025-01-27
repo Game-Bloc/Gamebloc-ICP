@@ -4,13 +4,7 @@ import { SiNintendogamecube } from "react-icons/si"
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6"
 import BetConfirmModal from "./BetConfirmModal"
 
-const GamerCard = () => {
-  const [openModal, setOpenModal] = useState<boolean>(false)
-
-  const handleModal = () => {
-    setOpenModal(false)
-  }
-
+const GamerCardII = () => {
   return (
     <div className="flex  flex-col p-4 border  border-solid border-[#9F9FA8] rounded-xl w-full">
       <div className="flex justify-between items-center">
@@ -64,15 +58,8 @@ const GamerCard = () => {
           </div>
         </div>
       </div>
-      <button
-        onClick={() => setOpenModal(true)}
-        className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  text-xs sm:text-sm rounded-full "
-      >
-        Place Bet
-      </button>
-      {openModal && <BetConfirmModal modal={handleModal} />}
     </div>
   )
 }
 
-export default GamerCard
+export default GamerCardII

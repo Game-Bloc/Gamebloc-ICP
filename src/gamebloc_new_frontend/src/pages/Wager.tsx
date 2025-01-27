@@ -5,6 +5,7 @@ import { IoIosArrowRoundBack } from "react-icons/io"
 import { useNavigate } from "react-router-dom"
 import InfoCard from "../components/wager/infoCard"
 import GamerCard from "../components/wager/GamerCard"
+import SquadViewCard from "../components/wager/SquadViewCard"
 
 const Wager = () => {
   const navigate = useNavigate()
@@ -37,7 +38,14 @@ const Wager = () => {
                 </h4>
                 {/* Players/Squad Section */}
                 <div className="grid mt-6 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                  <GamerCard />
+                  {/* <GamerCard /> */}
+                  <SquadViewCard />
+                  <SquadViewCard />
+                  <SquadViewCard />
+                  <SquadViewCard />
+                  <SquadViewCard />
+                  <SquadViewCard />
+                  <SquadViewCard />
                 </div>
               </div>
             </div>
