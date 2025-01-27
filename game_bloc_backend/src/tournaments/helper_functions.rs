@@ -1,5 +1,5 @@
-use crate::model::{GameType, Member, TournamentAccount};
-use crate::{PROFILE_STORE, SQUAD_STORE};
+use crate::model::{GameType, Member, TournamentAccount, UserProfile};
+use crate::{ID_STORE, PROFILE_STORE, SQUAD_STORE};
 use std::cmp::Ordering;
 
 pub fn append_squad_to_tournament(
@@ -70,6 +70,18 @@ pub fn append_squad_to_tournament(
     }
 }
 
+pub fn get_profile(name: String) -> UserProfile {
+    ID_STORE.with(|id_store| {
+        PROFILE_STORE.with(|profile_store| {
+            id_store
+                .borrow()
+                .get(&name)
+                .and_then(|id| profile_store.borrow().get(id).cloned())
+                .unwrap()
+        })
+    })
+}
+
 pub fn append_player_to_participants(
     name: String,
     ign: (String, String, String),
@@ -83,7 +95,7 @@ pub fn append_player_to_participants(
                 .cmp(&(tournament.clone().user.len() as u128))
             {
                 Ordering::Greater => {
-                    tournament.user.push(name);
+                    tournament.user.push(name.to_owned());
                     match tournament.clone().in_game_names {
                         None => {
                             tournament.in_game_names = Some(vec![ign.clone()]);
@@ -91,6 +103,16 @@ pub fn append_player_to_participants(
                         Some(mut previous_igns) => {
                             previous_igns.push(ign);
                             tournament.in_game_names = Some(previous_igns);
+                        }
+                    }
+                    let user_details = get_profile(name);
+                    match tournament.user_details.to_owned() {
+                        None => {
+                            tournament.user_details = Some(vec![user_details]);
+                        }
+                        Some( mut previous_user_details) => {
+                            previous_user_details.push(user_details);
+                            tournament.user_details = Some(previous_user_details);
                         }
                     }
                 }
