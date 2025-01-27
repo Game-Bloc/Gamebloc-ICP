@@ -1,19 +1,9 @@
 use std::cell::RefCell;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap};
 
-use candid::types::CandidType;
-use candid::{decode_one, Deserialize, Principal};
-use canister_tools::{
-    localkey::refcell::{with, with_mut},
-    MemoryId, Serializable,
-};
-use ic_cdk::api::time;
-use ic_cdk::{init, post_upgrade, pre_upgrade, print, query, storage, update};
-use ic_cdk_macros::*;
-use ic_cdk_macros::*;
-use serde::Serialize;
+use candid::{Principal};
+use ic_cdk::{init, post_upgrade, pre_upgrade, query, update};
 
-use model::AppMessage;
 use model::*;
 use serialization_memory_ids::*;
 
@@ -23,7 +13,6 @@ mod serialization_memory_ids;
 
 mod squad_mutations;
 mod tournament_lobbies_management;
-mod candid_types_impl;
 mod wager_mutations;
 mod tournaments;
 
@@ -76,7 +65,7 @@ pub fn get_all_user() -> Vec<UserProfile> {
         profile_store
             .borrow()
             .iter()
-            .for_each(|user| all_users.push((*user.1).clone().try_into().unwrap()));
+            .for_each(|user| all_users.push((*user.1).to_owned().try_into().unwrap()));
         all_users
     })
 }
@@ -88,7 +77,7 @@ pub fn count_all_users() -> u128 {
         profile_store
             .borrow()
             .iter()
-            .for_each(|user| users_vec.push((*user.1).clone().try_into().unwrap()));
+            .for_each(|user| users_vec.push((*user.1).to_owned().try_into().unwrap()));
         users_vec.len()
     }) as u128
 }
@@ -100,11 +89,11 @@ pub fn count_all_referral(person_referral_id: String) -> u128 {
         profile_store
             .borrow()
             .iter()
-            .for_each(|user| match user.1.referral_id.clone() {
+            .for_each(|user| match user.1.referral_id.to_owned() {
                 None => {}
                 Some(referral_id) => {
-                    if (referral_id == person_referral_id) {
-                        users_vec.push((*user.1).clone().try_into().unwrap())
+                    if referral_id == person_referral_id {
+                        users_vec.push((*user.1).to_owned().try_into().unwrap())
                     }
                 }
             });
@@ -131,7 +120,7 @@ pub fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, 
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal.to_text());
+            .insert(profile.username.to_owned(), principal.to_text());
     });
     PROFILE_STORE.with(|profile_store| {
         profile_store
@@ -209,7 +198,7 @@ pub fn add_mod_to_tribunal(identity: Principal) -> bool {
 #[query]
 pub fn is_mod(identity: Principal) -> bool {
     PROFILE_STORE.with(|profile_store| {
-        let mut profile = profile_store
+        let profile = profile_store
             .borrow()
             .get(&identity.to_text())
             .cloned()
@@ -217,7 +206,7 @@ pub fn is_mod(identity: Principal) -> bool {
         match profile.role.unwrap() {
             Role::Player => return false,
             Role::Mod => return true,
-            Role::TribunalMod(mod_tag) => {
+            Role::TribunalMod(_mod_tag) => {
                 return true;
             }
         }
@@ -231,13 +220,13 @@ pub fn get_mods() -> Vec<UserProfile> {
         profile_store
             .borrow()
             .iter()
-            .for_each(|user| match &user.clone().1.role {
+            .for_each(|user| match &user.to_owned().1.role {
                 None => {}
                 Some(role) => match role {
                     Role::Player => {}
                     Role::Mod => {}
-                    Role::TribunalMod(role_tag) => {
-                        all_users.push((user.clone().1).clone().try_into().unwrap())
+                    Role::TribunalMod(_role_tag) => {
+                        all_users.push((user.to_owned().1).to_owned().try_into().unwrap())
                     }
                 },
             });
@@ -249,12 +238,12 @@ pub fn get_mods() -> Vec<UserProfile> {
 pub fn send_message_tournament(id: String, message: Chat) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-        if tournament.messages.is_none() && !tournament.messages.clone().is_some() {
+        if tournament.messages.is_none() && !tournament.messages.to_owned().is_some() {
             let mut chats: Vec<Chat> = Vec::new();
-            chats.push(message.clone());
+            chats.push(message.to_owned());
             tournament.messages = Some(chats);
         } else {
-            let mut chats: Vec<Chat> = tournament.messages.clone().unwrap();
+            let mut chats: Vec<Chat> = tournament.messages.to_owned().unwrap();
             chats.push(message);
             tournament.messages = Some(chats);
         }
@@ -276,7 +265,7 @@ pub fn leave_or_remove_squad_member(principal: Principal, id: String) {
                 {
                     squad.members.remove(pos);
                 }
-                squad_store.borrow_mut().insert(id, squad.clone());
+                squad_store.borrow_mut().insert(id, squad.to_owned());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store
                         .borrow()
@@ -300,7 +289,7 @@ pub fn get_leaderboard() -> Vec<Contestant> {
         };
         let mut leaderboard: Vec<Contestant> = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            let user: UserProfile = (*user.1).clone().try_into().unwrap();
+            let user: UserProfile = (*user.1).to_owned().try_into().unwrap();
             match user.points {
                 None => {}
                 Some(point) => {
@@ -309,11 +298,11 @@ pub fn get_leaderboard() -> Vec<Contestant> {
                     contestant.losses = user.losses.unwrap();
                     contestant.wins = user.wins;
                     for x in point.iter() {
-                        let points: (String, String, Point) = (*x).clone().try_into().unwrap();
+                        let points: (String, String, Point) = (*x).to_owned().try_into().unwrap();
                         point_gathered = point_gathered + (points.2 as Point).total_points;
                     }
                     contestant.point = point_gathered;
-                    leaderboard.push(contestant.clone());
+                    leaderboard.push(contestant.to_owned());
                 }
             }
         });
@@ -350,7 +339,7 @@ pub fn assign_points(identity: Principal, user_id_and_point: (String, String, Po
 
 pub(crate) fn validate_mod_tag_availability(try_mod_tag: ModTag) -> bool {
     get_mods().iter().any(|x| {
-        x.clone().role.is_some_and(|y| match y {
+        x.to_owned().role.is_some_and(|y| match y {
             Role::Player => false,
             Role::Mod => false,
             Role::TribunalMod(mod_tag) => match mod_tag {

@@ -79,7 +79,7 @@ async fn vetkd_encrypted_key(request: VetKDEncryptedKeyRequest) -> VetKDEncrypte
     })
     .await;
     let ek = EncryptedKey::combine(
-        &vec![(0, MASTER_PK.clone(), eks)],
+        &vec![(0, MASTER_PK.to_owned(), eks)],
         1,
         &MASTER_PK,
         &tpk,

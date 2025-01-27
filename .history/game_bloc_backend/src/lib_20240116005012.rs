@@ -49,7 +49,7 @@ fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            all_users.push((*user.1).clone().try_into().unwrap())
+            all_users.push((*user.1).to_owned().try_into().unwrap())
         });
         all_users
     })
@@ -73,7 +73,7 @@ fn create_profile(profile: UserProfile, principal: Principal) -> Result<u8, u8> 
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal.to_text());
+            .insert(profile.username.to_owned(), principal.to_text());
     });
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal.to_text(), profile);
@@ -93,7 +93,7 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut all_tournament = Vec::new();
         tournament_store.borrow().iter().for_each(|tournament| {
-            all_tournament.push((*tournament.1).clone().try_into().unwrap())
+            all_tournament.push((*tournament.1).to_owned().try_into().unwrap())
         });
         all_tournament
     })
@@ -101,7 +101,7 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
 
 #[update]
 fn create_tournament(tournament: TournamentAccount) -> Result<u8, u8> {
-    let id_hash = tournament.clone().id_hash;
+    let id_hash = tournament.to_owned().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
         tournament_store.borrow_mut().insert(id_hash, tournament);
@@ -193,7 +193,7 @@ fn get_all_squad() -> Vec<Squad> {
     SQUAD_STORE.with(|squad_store| {
         let mut all_squads = Vec::new();
         squad_store.borrow().iter().for_each(|squad| {
-            all_squads.push((*squad.1).clone().try_into().unwrap())
+            all_squads.push((*squad.1).to_owned().try_into().unwrap())
         });
         all_squads
     })
@@ -201,13 +201,13 @@ fn get_all_squad() -> Vec<Squad> {
 
 #[update]
 fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
-    let id_hash = squad.clone().id_hash;
+    let id_hash = squad.to_owned().id_hash;
 
     SQUAD_STORE.with(|squad_store| {
-        squad_store.borrow_mut().insert(id_hash, squad.clone());
+        squad_store.borrow_mut().insert(id_hash, squad.to_owned());
         PROFILE_STORE.with(|profile_store| {
             let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
-            user.squad_badge = squad.id_hash.clone();
+            user.squad_badge = squad.id_hash.to_owned();
             profile_store.borrow_mut().insert(principal.to_text(), user);
         })
     });
@@ -220,10 +220,10 @@ fn add_to_squad(principal: Principal, id: String) {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {
             squad.members.push(principal.to_text());
-            squad_store.borrow_mut().insert(id, squad.clone());
+            squad_store.borrow_mut().insert(id, squad.to_owned());
             PROFILE_STORE.with(|profile_store| {
                 let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
-                user.squad_badge = squad.id_hash.clone();
+                user.squad_badge = squad.id_hash.to_owned();
                 profile_store.borrow_mut().insert(principal.to_text(), user);
             });
         } else {
@@ -275,10 +275,10 @@ fn join_squad(principal: Principal, id: String) {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         match squad.status {
             SquadType::Open => { squad.members.push(principal.to_text());
-                squad_store.borrow_mut().insert(id, squad.clone());
+                squad_store.borrow_mut().insert(id, squad.to_owned());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store.borrow().get(&principal.to_text()).cloned().unwrap();
-                    user.squad_badge = squad.id_hash.clone();
+                    user.squad_badge = squad.id_hash.to_owned();
                     profile_store.borrow_mut().insert(principal.to_text(), user);
                 }) },
             SquadType::Closed => println!("You can't join a closed squad"),
