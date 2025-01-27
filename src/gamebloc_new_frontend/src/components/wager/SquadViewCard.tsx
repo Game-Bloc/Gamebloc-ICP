@@ -25,7 +25,7 @@ const SquadViewCard = ({ data, list }: Prop) => {
       <div className="bg-[#1E1E21] flex justify-between items-center mt-4 px-4 py-2 w-full rounded-xl cursor-pointer">
         <div className="flex flex-col">
           <p className="ml-1  mt-3 text-[.85rem] lg:text-[1rem] text-[#A1A1AA] font-bold">
-            Fire Squad
+            {list.name}
           </p>
           <div className="flex gap-4 mt-3">
             <button

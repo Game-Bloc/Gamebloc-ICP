@@ -302,9 +302,11 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setUpdating(true)
+      const user_details = []
       const creator_id: [string] = [owner_id]
       const tour_variation: [any] = [tournament_variation]
       const entry_fee: [bigint] = [_entry_fee]
+      const accepts_wagers: [boolean] = [true]
       const nominal_entry_fee: [bigint] = [_nominal_entry_fee]
       const entry_fee_bump: [bigint] = [_entry_fee_bump]
       const no_of_participants_at_bump: [bigint] = [_no_of_participants_at_bump]
@@ -322,8 +324,10 @@ export const useGameblocHooks = () => {
         squad_in_game_names,
         messages,
         user,
+        user_details,
         winers,
         entry_prize,
+        accepts_wagers,
         wagers,
         entry_fee,
         nominal_entry_fee,
