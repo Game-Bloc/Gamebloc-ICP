@@ -52,7 +52,7 @@ pub fn expected_wager_reward(tournament_id: String, staker_principal_id: String)
                         total_amount_wagered_on_tournament =
                             total_amount_wagered_on_tournament + x.amount;
                     }
-                    let winings_cut = (x.amount / total_amount_wagered_on_player_staked_on);
+                    let winings_cut = x.amount / total_amount_wagered_on_player_staked_on;
 
                     let player_expected_reward =
                         total_amount_wagered_against_player_staked_on * winings_cut;

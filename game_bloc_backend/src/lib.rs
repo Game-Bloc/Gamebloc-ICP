@@ -87,7 +87,7 @@ pub fn count_all_referral(person_referral_id: String) -> u128 {
             .for_each(|user| match user.1.referral_id.to_owned() {
                 None => {}
                 Some(referral_id) => {
-                    if (referral_id == person_referral_id) {
+                    if referral_id == person_referral_id {
                         users_vec.push((*user.1).to_owned().try_into().unwrap())
                     }
                 }

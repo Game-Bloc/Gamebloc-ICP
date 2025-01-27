@@ -72,7 +72,7 @@ fn add_to_squad(member: Member, principal: Principal, id: String) {
 }
 
 #[update]
-fn close_squad(id: String, names: Vec<String>, principal: Principal) {
+fn close_squad(id: String, principal: Principal) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {
@@ -88,7 +88,7 @@ fn close_squad(id: String, names: Vec<String>, principal: Principal) {
 }
 
 #[update]
-fn open_squad(id: String, names: Vec<String>, principal: Principal) {
+fn open_squad(id: String, principal: Principal) {
     SQUAD_STORE.with(|squad_store| {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {

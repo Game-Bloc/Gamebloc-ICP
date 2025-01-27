@@ -1,6 +1,5 @@
 use crate::tournaments::helper_functions::*;
 use crate::*;
-use std::cmp::Ordering;
 
 ///Tournament crud
 

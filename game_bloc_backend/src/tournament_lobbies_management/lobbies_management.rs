@@ -1,12 +1,12 @@
 use crate::tournament_lobbies_management::helper_functions::*;
 use crate::*;
 
-///Lobby (or sub tournament) CRUD
+//Lobby (or sub tournament) CRUD
 
 #[query]
 pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
-        let mut tournament = tournament_store
+        let tournament = tournament_store
             .borrow()
             .get(&tournament_id)
             .cloned()
@@ -196,7 +196,6 @@ pub fn get_all_tournament_lobbies(tournament_id: String) -> Vec<LobbyAccount> {
 
 #[query]
 pub fn count_tournament_lobbies(tournament_id: String) -> u128 {
-    let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut all_lobbies: Vec<LobbyAccount> = Vec::new();
         let tournament = tournament_store
@@ -353,7 +352,7 @@ pub fn structure_tournament_into_squad_lobbies(squad_id: String, id: String) {
     });
 }
 
-///Tournament lobbies restructuring function
+//Tournament lobbies restructuring function
 #[update]
 pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> {
     TOURNAMENT_STORE.with(|tournament_store| {
@@ -367,7 +366,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
             _ => TournamentStatus::GameInProgress,
         };
 
-        let mut is_even: bool = tournament.to_owned().lobbies.unwrap().len() % 2 == 0;
+        let is_even = tournament.to_owned().lobbies.unwrap().len() % 2 == 0;
 
         if is_even {
             tournament.to_owned().lobbies.unwrap().iter().for_each(|e| {
@@ -490,7 +489,7 @@ pub fn lobbies_exterminator(tournament_id: String) {
             .get(&tournament_id)
             .cloned()
             .unwrap();
-        tournament.to_owned().lobbies = Some([].to_vec());
+        tournament.lobbies = Some([].to_vec());
         tournament_store
             .borrow_mut()
             .insert(tournament_id, tournament.to_owned());
@@ -515,8 +514,8 @@ pub fn three_lobbies_merge(tournament_id: String) {
         let mut participant_queue: Vec<String> = Vec::new();
         let mut squad_queue: Vec<Squad> = Vec::new();
 
-        /// Matching arms for
-        /// eliminating players
+        // Matching arms for
+        // eliminating players
         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
             GameType::TeamvTeam => {}
             GameType::Single => {
@@ -543,8 +542,8 @@ pub fn three_lobbies_merge(tournament_id: String) {
 
         lobbies_exterminator(tournament_id.to_owned());
 
-        /// Matching arms for
-        /// structuring the tournament into lobbies
+        // Matching arms for
+        // structuring the tournament into lobbies
         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
             GameType::Single => {
                 let mut count = participant_queue.len() / 100;
@@ -697,7 +696,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
 
 //merge two lobbies members
 #[update]
-pub fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, String)) {
+pub fn two_lobbies_merge(tournament_id: String,) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store
             .borrow()
@@ -717,15 +716,11 @@ pub fn two_lobbies_merge(name: String, tournament_id: String, ign: (String, Stri
 
         lobbies_exterminator(tournament_id.to_owned());
 
-        /// Matching arms for
-        /// structuring the tournament into lobbies
+        // Matching arms for
+        // structuring the tournament into lobbies
         squad_or_player_promoter(&mut tournament, participant_queue, squad_queue);
         tournament_store
             .borrow_mut()
             .insert(tournament_id, tournament.to_owned());
     });
 }
-
-//extradict lobbies members
-#[update]
-pub fn lobbies_extraditor(name: String, id: String, ign: (String, String)) {}
