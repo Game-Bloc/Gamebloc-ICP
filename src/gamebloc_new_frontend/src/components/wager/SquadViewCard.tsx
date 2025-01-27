@@ -2,10 +2,15 @@ import React, { useState } from "react"
 import { FaChevronDown } from "react-icons/fa"
 import { motion, AnimatePresence } from "framer-motion"
 import GamerCardII from "./GamerCardII"
+import BetConfirmModal from "./BetConfirmModal"
 
 const SquadViewCard = () => {
   const [showCard, setShowCard] = useState(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
+  const handleModal = () => {
+    setOpenModal(false)
+  }
   const handleToggle = () => {
     setShowCard(!showCard)
   }
@@ -24,7 +29,10 @@ const SquadViewCard = () => {
             >
               Squad info
             </button>
-            <button className="py-2 px-4  bg-primary-second text-black w-[10rem]  text-xs sm:text-sm rounded-xl ">
+            <button
+              onClick={() => setOpenModal(true)}
+              className="py-2 px-4  bg-primary-second text-black w-[10rem]  text-xs sm:text-sm rounded-xl "
+            >
               Place Bet
             </button>
           </div>
@@ -53,6 +61,7 @@ const SquadViewCard = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      {openModal && <BetConfirmModal modal={handleModal} />}
     </div>
   )
 }

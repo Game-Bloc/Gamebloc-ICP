@@ -34,10 +34,10 @@ const Wager = () => {
                 </h1>
                 <InfoCard />
                 <h4 className="text-white font-[600] text-[0.9rem] mt-4 py-4">
-                  Choose your favourite player
+                  Bet on your favourite player
                 </h4>
                 {/* Players/Squad Section */}
-                <div className="grid mt-6 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                <div className="grid mt-4 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                   {/* <GamerCard /> */}
                   <SquadViewCard />
                   <SquadViewCard />
