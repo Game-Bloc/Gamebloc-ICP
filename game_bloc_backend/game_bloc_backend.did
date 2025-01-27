@@ -3,7 +3,7 @@ type Contestant = record {
   name : text;
   wins : nat8;
   losses : nat8;
-  point : nat
+  point : nat;
 };
 type GameType = variant { Duo; Squad; TeamvTeam; Single };
 type LobbyAccount = record {
@@ -21,7 +21,7 @@ type LobbyAccount = record {
   no_of_participants : nat;
   no_of_winners : opt nat8;
   tournament_type : TournamentType;
-  lobby_rules : text
+  lobby_rules : text;
 };
 type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
 type Member = record { name : text; principal_id : text };
@@ -29,7 +29,7 @@ type ModTag = variant { Mod1; Mod2; Mod3 };
 type Point = record {
   kill_points : nat;
   total_points : nat;
-  position_points : nat
+  position_points : nat;
 };
 type Result = variant { Ok : nat8; Err : nat8 };
 type Role = variant { Mod; Player; TribunalMod : ModTag };
@@ -44,7 +44,7 @@ type Squad = record {
   attendance : opt nat8;
   captain : text;
   requests : vec text;
-  points : opt vec record { text; text; Point }
+  points : opt vec record { text; text; Point };
 };
 type SquadType = variant { Open; Closed };
 type Status = variant { Online; Offline };
@@ -90,14 +90,14 @@ type TournamentAccount = record {
   tournament_type : TournamentType;
   entry_prize : nat8;
   points : opt vec record { text; text; Point };
-  squad_points : opt vec record { text; text; Point }
+  squad_points : opt vec record { text; text; Point };
 };
 type TournamentLobbyType = variant { MultiLobby; SingleLobby };
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
   Archived;
-  GameCompleted
+  GameCompleted;
 };
 type TournamentType = variant { Prepaid; Crowdfunded; Blitzkrieg };
 type UserProfile = record {
@@ -117,14 +117,14 @@ type UserProfile = record {
   principal_id : text;
   squad_badge : text;
   tournaments_created : nat8;
-  points : opt vec record { text; text; Point }
+  points : opt vec record { text; text; Point };
 };
 type Variation = variant { Infinite; Capped };
 type Wager = record {
   staker_account_id : text;
   staker_principal_id : text;
   amount : nat;
-  player_principal_id : text
+  player_principal_id : text;
 };
 type Winner = record { user_account : text; position : text; amount : nat };
 service : () -> {
@@ -134,15 +134,15 @@ service : () -> {
   archive_tournament : (text) -> ();
   assign_points : (principal, record { text; text; Point }) -> ();
   assign_solo_points : (text, vec record { text; text; Point }, principal) -> (
-    bool
-  );
+      bool,
+    );
   assign_squad_points : (text, vec record { text; text; Point }, principal) -> (
-    bool
-  );
+      bool,
+    );
   cleanse_all_solo_type_tournament_branching_tribunal_points : (text) -> (bool);
   cleanse_all_squad_type_tournament_branching_tribunal_points : (text) -> (
-    bool
-  );
+      bool,
+    );
   close_squad : (text, vec text, principal) -> ();
   count_all_referral : (text) -> (nat) query;
   count_all_squad : () -> (nat) query;
@@ -175,11 +175,11 @@ service : () -> {
   join_squad : (Member, principal, text) -> ();
   join_tournament : (text, text, record { text; text; text }) -> ();
   join_tournament_with_squad : (
-    text,
-    text,
-    vec record { text; text; text },
-    opt vec record { text; text; text },
-  ) -> ();
+      text,
+      text,
+      vec record { text; text; text },
+      opt vec record { text; text; text },
+    ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
   lobbies_exterminator : (text) -> ();
   lobbies_extraditor : (text, text, record { text; text }) -> ();
@@ -199,5 +199,5 @@ service : () -> {
   update_tournament_past_leaderboard : () -> ();
   update_tournament_pool_price : (text, nat) -> ();
   update_tournament_type_to_blitzkrieg : (text) -> ();
-  whoami : () -> (principal) query
+  whoami : () -> (principal) query;
 }
