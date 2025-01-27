@@ -64,9 +64,11 @@ pub_struct!(
      squad_in_game_names:Option<Vec<(Vec<(String, String, String)>)>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
+     user_details: Option<Vec<UserProfile>>,
      winers: Vec<String>,
     //deprecated
      entry_prize: u8,
+     accepts_wagers: Option<bool>,
 
      wagers:Option<Vec<Wager>>,
      entry_fee: Option<u128>,
