@@ -4,7 +4,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import GamerCardII from "./GamerCardII"
 import BetConfirmModal from "./BetConfirmModal"
 
-const SquadViewCard = () => {
+interface Prop {
+  list: any
+  data: any
+}
+
+const SquadViewCard = ({ data, list }: Prop) => {
   const [showCard, setShowCard] = useState(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
 

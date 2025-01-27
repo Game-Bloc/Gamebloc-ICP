@@ -3,13 +3,20 @@ import { ConfigProvider, Progress } from "antd"
 import { SiNintendogamecube } from "react-icons/si"
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6"
 import BetConfirmModal from "./BetConfirmModal"
+interface Prop {
+  list: any
+  data: any
+}
 
-const GamerCard = () => {
+const GamerCard = ({ data, list }: Prop) => {
   const [openModal, setOpenModal] = useState<boolean>(false)
 
   const handleModal = () => {
     setOpenModal(false)
   }
+
+  console.log("data", data)
+  console.log("list", list)
 
   return (
     <div className="flex  flex-col p-4 border  border-solid border-[#9F9FA8] rounded-xl w-full">
@@ -20,7 +27,7 @@ const GamerCard = () => {
               <SiNintendogamecube className=" text-[#9F9FA8] w-6 h-6" />
             </div>
             <p className=" ml-4 text-[.7rem] text-[#9F9FA8] font-bold">
-              Deonorla
+              {list}
             </p>
           </div>
           <div className="flex flex-col ml-12 items-center ">

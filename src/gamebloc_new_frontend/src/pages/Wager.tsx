@@ -12,10 +12,10 @@ const Wager = () => {
   const { id } = useParams()
   const navigate = useNavigate()
   const tournamentData = useAppSelector((state) => state.tournamentData)
-
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
   const currentTournament = tourData.length > 0 ? tourData[0] : null
+  const game_type = currentTournament.game_type.toUpperCase()
 
   return (
     <div className="">
@@ -41,18 +41,56 @@ const Wager = () => {
                 </h1>
                 <InfoCard data={currentTournament} />
                 <h4 className="text-white font-[600] text-[0.9rem] mt-4 py-4">
-                  Bet on your favourite player
+                  Bet on your favourite{" "}
+                  {`${game_type === "SINGLE" ? "player" : "Squad"}`}
                 </h4>
                 {/* Players/Squad Section */}
-                <div className="grid mt-4 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                  {/* <GamerCard /> */}
-                  <SquadViewCard />
-                  <SquadViewCard />
-                  <SquadViewCard />
-                  <SquadViewCard />
-                  <SquadViewCard />
-                  <SquadViewCard />
-                  <SquadViewCard />
+                <div className="">
+                  {currentTournament.game_type.toUpperCase() === "SINGLE" ? (
+                    currentTournament.users.length === 0 ? (
+                      <div className="w-full flex justify-center mt-[3rem]">
+                        <div className="flex flex-col mb-4 ">
+                          <img src={`empty.svg`} alt="" />
+                          <p className="text-white text-[.8rem] mt-8 text-center">
+                            No player has joined this tournament.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div>
+                        {currentTournament.users.map((list, index) => (
+                          <div className="grid mt-4 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                            <GamerCard
+                              key={index}
+                              list={list}
+                              data={currentTournament}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    )
+                  ) : currentTournament.squad.length == 0 ? (
+                    <div className="w-full flex justify-center mt-[3rem]">
+                      <div className="flex flex-col mb-4 ">
+                        <img src={`empty.svg`} alt="" />
+                        <p className="text-white text-[.8rem] mt-8 text-center">
+                          No Squad has joined this tournament.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      {currentTournament.squad.map((list) => (
+                        <div className="grid mt-4 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+                          <SquadViewCard
+                            key={list.id_hash}
+                            list={list}
+                            data={currentTournament}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
