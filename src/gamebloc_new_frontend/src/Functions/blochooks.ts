@@ -28,7 +28,7 @@ export const useFetchAllTournaments = () => {
       // console.log("get tournament was called")
       dispatch(clearTournaments())
       const tour: any = await whoamiActor.get_all_tournament()
-      // console.log("Tour:", tour)
+      console.log("Tour:", tour)
       if (tour && tour.length !== 0) {
         const tourArray: any[] = []
         for (const data of tour) {
@@ -144,7 +144,7 @@ export const useUpdateTournament = () => {
       const update: any = await whoamiActor.get_all_tournament()
       if (update && update.length !== 0) {
         console.log("update function working")
-        // console.log("update", update)
+        console.log("update", update)
         const tourArray: any[] = []
         for (const data of update) {
           const point_function = (value: any) => {

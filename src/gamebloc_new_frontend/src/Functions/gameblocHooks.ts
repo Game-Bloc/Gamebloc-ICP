@@ -44,9 +44,9 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  // const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   // ! Production params
-  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+  // const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
@@ -302,7 +302,7 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setUpdating(true)
-      const user_details = []
+      const user_details: [] = []
       const creator_id: [string] = [owner_id]
       const tour_variation: [any] = [tournament_variation]
       const entry_fee: [bigint] = [_entry_fee]
