@@ -35,7 +35,7 @@ fn get_all_user() -> Vec<UserProfile> {
     PROFILE_STORE.with(|profile_store| {
         let mut all_users = Vec::new();
         profile_store.borrow().iter().for_each(|user| {
-            all_users.push((*user.1).clone().try_into().unwrap_or_default())
+            all_users.push((*user.1).to_owned().try_into().unwrap_or_default())
         });
         all_users
     })
@@ -59,7 +59,7 @@ fn create_profile(profile: UserProfile) {
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal_id);
+            .insert(profile.username.to_owned(), principal_id);
     });
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal_id, profile);
@@ -79,7 +79,7 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
         TOURNAMENT_STORE.with(|tournament_store| {
             let mut all_tournament = Vec::new();
             tournament_store.borrow().iter().for_each(|tournament| {
-                all_tournament.push((*tournament.1).clone().try_into().unwrap_or_default())
+                all_tournament.push((*tournament.1).to_owned().try_into().unwrap_or_default())
             });
             all_tournament
         })
@@ -87,7 +87,7 @@ fn get_all_tournament() -> Vec<TournamentAccount> {
 
 #[update]
 fn create_tournament(tournament: TournamentAccount) {
-    let id_hash = tournament.clone().id_hash;
+    let id_hash = tournament.to_owned().id_hash;
 
     TOURNAMENT_STORE.with(|tournament_store| {
         tournament_store.borrow_mut().insert(id_hash, tournament);

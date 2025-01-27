@@ -13,7 +13,7 @@ fn get_all_squad() -> Vec<Squad> {
         squad_store
             .borrow()
             .iter()
-            .for_each(|squad| all_squads.push((*squad.1).clone().try_into().unwrap()));
+            .for_each(|squad| all_squads.push((*squad.1).to_owned().try_into().unwrap()));
         all_squads
     })
 }
@@ -25,24 +25,24 @@ fn count_all_squad() -> u128 {
         squad_store
             .borrow()
             .iter()
-            .for_each(|squad| all_squads.push((*squad.1).clone().try_into().unwrap()));
+            .for_each(|squad| all_squads.push((*squad.1).to_owned().try_into().unwrap()));
         all_squads.len()
     }) as u128
 }
 
 #[update]
 fn create_squad(squad: Squad, principal: Principal) -> Result<u8, u8> {
-    let id_hash = squad.clone().id_hash;
+    let id_hash = squad.to_owned().id_hash;
 
     SQUAD_STORE.with(|squad_store| {
-        squad_store.borrow_mut().insert(id_hash, squad.clone());
+        squad_store.borrow_mut().insert(id_hash, squad.to_owned());
         PROFILE_STORE.with(|profile_store| {
             let mut user = profile_store
                 .borrow()
                 .get(&principal.to_text())
                 .cloned()
                 .unwrap();
-            user.squad_badge = squad.id_hash.clone();
+            user.squad_badge = squad.id_hash.to_owned();
             profile_store.borrow_mut().insert(principal.to_text(), user);
         })
     });
@@ -55,14 +55,14 @@ fn add_to_squad(member: Member, principal: Principal, id: String) {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         if squad.captain == principal.to_text() {
             squad.members.push(member);
-            squad_store.borrow_mut().insert(id, squad.clone());
+            squad_store.borrow_mut().insert(id, squad.to_owned());
             PROFILE_STORE.with(|profile_store| {
                 let mut user = profile_store
                     .borrow()
                     .get(&principal.to_text())
                     .cloned()
                     .unwrap();
-                user.squad_badge = squad.id_hash.clone();
+                user.squad_badge = squad.id_hash.to_owned();
                 profile_store.borrow_mut().insert(principal.to_text(), user);
             });
         } else {
@@ -109,13 +109,13 @@ fn join_squad(member: Member, principal: Principal, id: String) {
         let mut squad = squad_store.borrow().get(&id).cloned().unwrap();
         match squad.status {
             SquadType::Open => {
-                squad.members.push(member.clone());
+                squad.members.push(member.to_owned());
                 let mut tournaments: Vec<TournamentAccount> = Vec::new();
                 TOURNAMENT_STORE.with(|tournament_store| {
                     tournament_store.borrow().iter().for_each(|tournament| {
-                        let mut tournament_joined = tournament.1.clone();
+                        let mut tournament_joined = tournament.1.to_owned();
                         tournament.1.squad.iter().for_each(|squad| {
-                            if squad.clone().id_hash == id {
+                            if squad.to_owned().id_hash == id {
                                 let position = tournament
                                     .1
                                     .squad
@@ -124,7 +124,7 @@ fn join_squad(member: Member, principal: Principal, id: String) {
                                     .unwrap();
                                 tournament_joined.squad[position]
                                     .members
-                                    .push(member.clone());
+                                    .push(member.to_owned());
                             }
                         });
                         tournaments.push(tournament_joined);
@@ -132,17 +132,17 @@ fn join_squad(member: Member, principal: Principal, id: String) {
                     tournaments.iter().for_each(|tournament| {
                         tournament_store
                             .borrow_mut()
-                            .insert(tournament.id_hash.clone(), tournament.clone());
+                            .insert(tournament.id_hash.to_owned(), tournament.to_owned());
                     });
                 });
-                squad_store.borrow_mut().insert(id, squad.clone());
+                squad_store.borrow_mut().insert(id, squad.to_owned());
                 PROFILE_STORE.with(|profile_store| {
                     let mut user = profile_store
                         .borrow()
                         .get(&principal.to_text())
                         .cloned()
                         .unwrap();
-                    user.squad_badge = squad.id_hash.clone();
+                    user.squad_badge = squad.id_hash.to_owned();
                     profile_store.borrow_mut().insert(principal.to_text(), user);
                 })
             }
@@ -160,7 +160,7 @@ fn update_squad_details(id: String) {
             squad_store
                 .borrow()
                 .iter()
-                .for_each(|squad| squads.push((*squad.1).clone().try_into().unwrap()));
+                .for_each(|squad| squads.push((*squad.1).to_owned().try_into().unwrap()));
             tournament.squad = squads;
         });
         tournament_store.borrow_mut().insert(id, tournament);
