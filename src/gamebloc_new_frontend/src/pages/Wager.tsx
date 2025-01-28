@@ -82,7 +82,7 @@ const Wager = () => {
                     <div>
                       {currentTournament.squad.map((list) => (
                         <div className="grid mt-4 gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                          <SquadViewCard
+                          <GamerCard
                             key={list.id_hash}
                             list={list}
                             data={currentTournament}

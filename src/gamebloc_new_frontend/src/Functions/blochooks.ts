@@ -186,7 +186,7 @@ export const useUpdateTournament = () => {
               ]),
             )
           }
-          // console.log("convertedPoints update", convertedPoints)
+          console.log("user profile", data.user_details[0])
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
