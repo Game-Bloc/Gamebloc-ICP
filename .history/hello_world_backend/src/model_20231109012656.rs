@@ -62,7 +62,7 @@ fn update_tournament(profile: UserProfile) {
     ID_STORE.with(|id_store| {
         id_store
             .borrow_mut()
-            .insert(profile.username.clone(), principal_id);
+            .insert(profile.username.to_owned(), principal_id);
     });
     PROFILE_STORE.with(|profile_store| {
         profile_store.borrow_mut().insert(principal_id, profile);
