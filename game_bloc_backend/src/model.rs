@@ -1,15 +1,9 @@
 use std::borrow::Cow;
 
 use candid::{CandidType, Decode, Deserialize, Encode};
-// use candid::types::CandidType;
-// use candid::CandidType as CandidType;
-// use candid::types::Compound;
-// use candid::types::Serializer;
-use candid::encode_one;
 use ic_stable_structures::{storable::Bound, Storable};
 use serde::Serialize;
 
-use crate::*;
 
 macro_rules! pub_struct {
     ($name:ident {$($field:ident: $t:ty,)*}) => {
@@ -23,10 +17,6 @@ macro_rules! pub_struct {
 
 const MAX_VALUE_SIZE: u32 = 100;
 
-pub_struct!(AppMessage {
-    text: String,
-    timestamp: u64,
-});
 
 pub_struct!(UserProfile {
      id_hash: String,
@@ -61,7 +51,7 @@ pub_struct!(
      tournament_type: TournamentType,
      game: String,
      squad:Vec<Squad>,
-     squad_in_game_names:Option<Vec<(Vec<(String, String, String)>)>>,
+     squad_in_game_names:Option<Vec<Vec<(String, String, String)>>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
      user_details: Option<Vec<UserProfile>>,
@@ -172,14 +162,12 @@ pub_struct!(Member {
     principal_id: String,
 });
 
-pub_struct!(
-    Wager {
+pub_struct!(Wager {
     amount: u128,
     staker_principal_id: String,
     staker_account_id: String,
     player_principal_id: String,
 });
-
 
 pub_struct!(Chat {
     name: String,
@@ -228,7 +216,7 @@ pub enum GameType {
 }
 
 impl GameType {
-    pub fn name(&self) -> String {
+    pub fn _to_str(&self) -> String {
         match self {
             GameType::TeamvTeam => "primary".to_string(),
             GameType::Single => "unique".to_string(),
@@ -285,12 +273,6 @@ pub enum SquadType {
     #[default]
     Open,
     Closed,
-}
-
-impl AppMessage {
-    pub fn candid_serialize(&self) -> Vec<u8> {
-        encode_one(&self).unwrap()
-    }
 }
 
 // For a type to be used in a `StableBTreeMap`, it needs to implement the `Storable`
