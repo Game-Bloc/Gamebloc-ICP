@@ -16,6 +16,7 @@ import JoinAsSolo from "../Modals/JoinAsSolo"
 import JoinAsSquad from "../Modals/JoinAsSquad"
 import { hasDateReached, inProgress } from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
+import WagerModal from "../Modals/WagerModal"
 interface Props {
   data: any
 }
@@ -38,7 +39,10 @@ const TournamentInfo = ({ data }: Props) => {
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
-
+  const [openWager, setOpenWager] = useState<boolean>(true)
+  const option =
+    Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG" &&
+    data.creator == owner
   const override = {
     display: "block",
     margin: "0 auto",
@@ -54,6 +58,15 @@ const TournamentInfo = ({ data }: Props) => {
       background: "#01070E",
       color: "#fff",
     })
+  }
+
+  const handleWagerModal = () => {
+    setOpenWager(false)
+    setOpenPaymentModal(true)
+  }
+
+  const handleWagerModal2 = () => {
+    setOpenWager(false)
   }
 
   const squadCount = () => {
@@ -726,6 +739,14 @@ const TournamentInfo = ({ data }: Props) => {
             creator={data.creator}
             userId={principal}
             modal={handleModal}
+          />
+        )}
+        {openWager && (
+          <WagerModal
+            data={data}
+            option={option}
+            modal={handleWagerModal}
+            handleModal={handleWagerModal2}
           />
         )}
       </div>

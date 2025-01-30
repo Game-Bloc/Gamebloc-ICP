@@ -60,7 +60,7 @@ private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
 private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
 private stable var feedback_id : Nat = 0;
 private stable let day : Nat = 86_400;
-private stable let e8s : Nat = 10_000_000_000;
+private stable let e8s : Nat = 100_000_000;
 private stable var volume : Nat64 = 0;
 private stable var SupportedGames : [Text] = [];
 private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
@@ -188,11 +188,11 @@ public shared ({ caller }) func payUsers(pays : [Bloctypes.Pay]) : async () {
     }
 };
 
-public func checkThis() : async Principal {
+func checkThis() : async Principal {
     Principal.fromActor(this);
 };
 
-public func checkThisText() : async Text {
+func checkThisText() : async Text {
     Principal.toText(Principal.fromActor(this));
 };
 
@@ -211,7 +211,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
         case (null) {};
         case (?(ended)) {
             if (ended == false) {
-                throw Error.reject("Warning! Tournamnet has to end before the payment can be initiated!")
+                throw Error.reject("Warning! Tournament has to end before the payment can be initiated!")
             }
         }
     };
@@ -232,20 +232,16 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
 
                         // ? var account = tournament.winners.
                         // var _account = pay.account;
-                        var block = await ICPLedger.icrc2_transfer_from({
+                        var block = await ICPLedger.icrc1_transfer({
                             to = {
                                 owner = Principal.fromText(winner.user_account);
                                 subaccount = null
                             };
                             fee = null;
-                            spender_subaccount = null;
-                            from = {
-                                owner = gbc_admin;
-                                subaccount = null
-                            };
                             memo = null;
+                            from_subaccount = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (winner.amount * 10_000_000_000)/icp_price;
+                            amount = (winner.amount * e8s * 100)/icp_price;
                         });
                     }
                 }
@@ -254,6 +250,60 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     } catch err {
         throw (err)
     }
+};
+
+private func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
+    await ICPLedger.icrc1_transfer({
+        to = {
+            owner = recipient;
+            subaccount = null
+        };
+        fee = null;
+        memo = null;
+        from_subaccount = null;
+        created_at_time = ?Nat64.fromIntWrap(Time.now());
+        amount = _amount * e8s;
+    }); 
+};
+
+private func share4(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
+    await ICPLedger.icrc1_transfer({
+        to = {
+            owner = recipient;
+            subaccount = null
+        };
+        fee = null;
+        memo = null;
+        from_subaccount = null;
+        created_at_time = ?Nat64.fromIntWrap(Time.now());
+        amount = _amount * 10_000_000_000;
+    }); 
+};
+
+func isAnonymous(p : Principal) : Bool {
+    Blob.equal(Principal.toBlob(p), Blob.fromArray([0x04]))
+};
+
+private func share2(recipient : Principal, _amount : Nat) : async Nat64 {
+    await ICPLedger.send_dfx({
+        to = await getAccountIdentifier(recipient);
+        fee = { e8s = 10_000};
+        memo = 1234;
+        from_subaccount = null;
+        created_at_time = ?{ timestamp_nanos = Nat64.fromIntWrap(Time.now())};
+        amount = { e8s = Nat64.fromNat(_amount) * Nat64.fromNat(e8s)};
+    }); 
+};
+
+public func share3(recipient : Principal, _amount : Nat) : async Nat64 {
+    await ICPLedger.send_dfx({
+        to = await getAccountIdentifier(recipient);
+        fee = { e8s = 10_000};
+        memo = 1234;
+        from_subaccount = null;
+        created_at_time = ?{ timestamp_nanos = Nat64.fromIntWrap(Time.now())};
+        amount = { e8s = Nat64.fromNat(_amount) * Nat64.fromNat(10_000_000_000)};
+    }); 
 };
 
 // Using the caller
@@ -268,23 +318,6 @@ public shared ({ caller }) func getLedgerBalance() : async Result.Result<Nat, Te
         return #err(Error.message(err))
     }
 };
-
-// public func transferICPFrom(_from : AccountIdentifier, _to : AccountIdentifier, _amount : Nat) : async LedgerTypes.Result_2 {
-//     try {
-//         let transfer = await ICPLedger.icrc2_transfer_from({
-//             to = _to;
-//             fee = null;
-//             spender_subaccount = null;
-//             from = _from;
-//             memo = null;
-//             created_at_time = Nat64.fromIntWrap(Time.now());
-//             amount = _amount;
-//         });
-//         return #ok(transfer);
-//     } catch (err) {
-//         retrun #err(Error.nessage(err));
-//     }
-// };
 
 // using the canister
 public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
@@ -319,6 +352,12 @@ public shared ({ caller }) func icp_balance() : async ICP {
     })
 };
 
+public shared ({ caller }) func getKitchenBalance() : async ICP {
+    await ICPLedger.account_balance_dfx({
+        account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromActor(this), null))
+    })
+};
+
 public func icp_balance2(account : Principal) : async ICP {
     await ICPLedger.account_balance_dfx({
         account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(account, null))
@@ -332,7 +371,7 @@ public func icp_balance_icrc1(account : Principal) : async Nat {
     })
 };
 
-//
+
 public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
     await ICPLedger.icrc1_balance_of({
         owner = caller;
@@ -340,10 +379,6 @@ public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
     })
 };
 
-// Takes in the account id as an argument
-// public func icrc1_balance_of(account : IndexTypes.Account) : async Nat64 {
-//     await ICPIndex.icrc1_balance_of(account)
-// };
 
 // Transfers ICP from the caller to receipient
 public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
@@ -358,19 +393,6 @@ public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time 
         amount = amount
     })
 };
-
-// public func transferICPFrom(_from : LedgerTypes.Account, _to : LedgerTypes.Account, _amount : Nat, ) : async LedgerTypes.Result_2 {
-//     await ICPLedger.icrc2_transfer_from({
-//         to = _to;
-//         fee = null;
-//         spender_subaccount = null;
-//         from = _from;
-//         memo = null;
-//         created_at_time = null;
-//         amount = _amount;
-
-//     });
-// };
 
 /// Ledger Canister Ends
 
@@ -391,10 +413,6 @@ public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time 
 public func get_account_identifier_balance(aid : Text) : async Nat64 {
     await ICPIndex.get_account_identifier_balance(aid)
 };
-
-// public func get_account_identifier_transactions(args : IndexTypes.GetAccountIdentifierTransactionsArgs) : async IndexTypes.GetAccountIdentifierTransactionsResult {
-//     await ICPIndex.get_account_identifier_transactions(args);
-// };
 
 public func index_status() : async IndexTypes.Status {
     await ICPIndex.status()
@@ -490,66 +508,13 @@ public func getPrincipal() : async Principal {
     Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
 };
 
-// public shared ({ caller }) func pay_to_join_tournament(name : Text, id : Text, fee : Nat) : async Result.Result<(), Text>{
-//     // let transfer = await transferICP(await getAccountIdentifier(caller), fee);
-//     switch(transfer) {
-//         case(#ok()){
-//             try {
-//                 return #ok(await RustBloc.join_tournament(name, id));
-//             } catch err {
-//                 throw (err);
-//             }
-//         }; case (_){
-//             return #err("An error occured! Kindly check your balance");
-//         }
-//     }
-// };
-
-// public shared ({ caller }) func prepaid_tournament(name : Text, id : Text, fee : Nat, tournamentAccount : Bloctypes.TournamentAccount) : async Result.Result<Bloctypes.Result, Text>{
-//     let payment : Nat = tournamentAccount.total_prize;
-//     let transfer = await transferICP(Principal.fromText"rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe", payment);
-//     switch(transfer){
-//         case(#ok){
-//             try {
-//                 return #ok(await RustBloc.create_tournament(tournamentAccount));
-//             } catch err {
-//                 throw (err);
-//             }
-//         };
-//         case(_){
-//             return #err("An error occured! Kindly check if you have enough balance to create this tournament ")
-//         }
-//     }
-
-// };
-
-/// Index Canister Ends
-
-/// Profile
 
 func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
     // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
     ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
 };
 
-// public func update_users() : async () {
 
-//     let result = await RustBloc.get_all_user();
-//     var users : [(Principal, Bloctypes.UserProfile)] = [];
-//     for (i in Iter.fromArray(result)){
-//         users := Array.append(users, [(i.principal_id, i)]);
-//     };
-//      := [] := users;
-
-// };
-
-// public func updatePays(payment : Bloctypes.PoH) : () {
-//     PAY_STORE.add(payment);
-// };
-
-// public func getPays() : async [Bloctypes.PoH] {
-//     PAY_STORE.toArray();
-// };
 
 public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
     // call the balnce function to get and set the balance of newly registered users
@@ -573,15 +538,6 @@ func usernameChecker(username : Text) : Bool {
     };
     unique
 };
-
-// public shared ({ caller }) func initBalance(me : Principal) : async () {
-//     var token = await icp_balance2(caller);
-
-//     BalanceHashMap.put(caller, {
-//         user = caller;
-//         balance = token.e8s;
-//     });
-// };
 
 public shared ({ caller }) func updateBalance(_amount : Nat, deposit : Bool) : async Bool {
     var _balance = BalanceHashMap.get(caller);
@@ -627,7 +583,6 @@ public shared ({ caller }) func checkLastBalance() : async Nat {
             return _balance.balance
         }
     }
-    // return _balance.balance;
 };
 
 func checkUserLastBalance(caller : Principal) : async Nat {
@@ -714,43 +669,6 @@ public query func getOwnerCanister() : async Principal {
     userCanisterId
 };
 
-// * For testing purposes
-
-public func testNat(entry : Nat, icp_price : Nat) : async Nat {
-    (entry * 10_000_000_000) / (icp_price)
-};
-
-public func testNat2(entry : Nat, icp_price : Nat) : async Nat {
-    (entry * 100) / (icp_price)
-};
-
-public func testNat3() : async Nat {
-    10_000_000_000
-};
-
-public func ApproveThisCanister1() : async LedgerTypes.Account {
-    return {
-        owner = userCanisterId;
-        subaccount = null
-    }
-};
-
-public func ApproveThisCanister2() : async LedgerTypes.Account {
-    return {
-        owner = caller;
-        subaccount = null
-    }
-};
-
-// public func ApproveThisCanister3() : async LedgerTypes.Account {
-//     return {
-//         owner = caller;
-//         subaccount = null;
-//     }
-// };
-
-// * End of Test
-
 public query ({ caller }) func getOwner() : async Principal {
     caller
 };
@@ -831,17 +749,6 @@ var messages : [Message] = [];
 public shared ({ caller }) func sendMessage2(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
     var sent : Bool = false;
     var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    // switch(messageID){
-    //     case (null) {
-    //         // Do absolutely nothing
-    //         // MessageHashMap.put(messageID, newMessage);
-    //     };
-    //     case (?messageID){
-    //         MessageHashMap.put(messageID, newMessage);
-    //         messageID := messageID + 1;
-    //     }
-    // };
-    // MessageHashMap.put(messageID, newMessage);
     MessageHashMap.put(messageID, newMessage);
     messageID := messageID + 1;
     await update_messages_sent(caller);
@@ -853,17 +760,6 @@ public shared ({ caller }) func sendMessage2(body : Text, time : Text, username 
 public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async () {
     var sent : Bool = false;
     var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    // switch(messageID){
-    //     case (null) {
-    //         // Do absolutely nothing
-    //         // MessageHashMap.put(messageID, newMessage);
-    //     };
-    //     case (?messageID){
-    //         MessageHashMap.put(messageID, newMessage);
-    //         messageID := messageID + 1;
-    //     }
-    // };
-    // MessageHashMap.put(messageID, newMessage);
     MessageHashMap.put(messageID, newMessage);
     messageID := messageID + 1;
     await update_messages_sent(caller);
@@ -1256,7 +1152,7 @@ private func update_tournaments_created(caller : Principal) : async () {
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+                total_point = tracker.total_point + 10;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1276,7 +1172,7 @@ public func update_wagers_participated(caller : Principal) : async () {
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+                total_point = tracker.total_point + 10;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1296,10 +1192,54 @@ private func update_tournaments_joined(caller : Principal) : async () {
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+                total_point = tracker.total_point + 2;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
+    }
+};
+
+private func update_feedbacks_sent(caller : Principal) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {};
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                tournaments_joined = tracker.tournaments_joined;
+                wager_participated = tracker.wager_participated;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent + 1;
+                total_point = tracker.total_point + 1;
+            };
+            var updated = USER_TRACK_STORE.replace(caller, update)
+        }
+    }
+};
+
+public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
+    if (await is_mod(caller)){
+        var tracker = USER_TRACK_STORE.get(recipient);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + _point;
+                };
+                var updated = USER_TRACK_STORE.replace(recipient, update)
+            }
+        }
+    } else {
+        throw Error.reject("You are not authorised to make this action! You imposter, you dissappoint me! tueh!")
     }
 };
 
@@ -1316,7 +1256,7 @@ private func update_tournaments_won(caller : Principal) : async () {
                 tournaments_won = tracker.tournaments_won + 2;
                 messages_sent = tracker.messages_sent;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+                total_point = tracker.total_point + 2;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1336,7 +1276,7 @@ private func update_messages_sent(caller : Principal) : async () {
                 tournaments_won = tracker.tournaments_won;
                 messages_sent = tracker.messages_sent + 1;
                 feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+                total_point = tracker.total_point + 1;
             };
             var updated = USER_TRACK_STORE.replace(caller, update)
         }
@@ -1355,7 +1295,9 @@ public query func get_point_track(caller : Principal) : async Nat {
     return temporary_point;
 };
 
-public func reset_point_tracker(caller : Principal) : async () {
+
+
+private func reset_point_tracker(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1395,6 +1337,26 @@ private func update_point(caller : Principal, point : Nat) : async () {
     }
 };
 
+private func allocateUserPoint(caller : Principal, point : Nat) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {};
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                wager_participated = tracker.wager_participated;
+                tournaments_joined = tracker.tournaments_joined;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = tracker.total_point + point;
+            };
+            var updated = USER_TRACK_STORE.replace(caller, update)
+        }
+    }
+};
+
 
 public query func get_user_point(caller : Principal) : async Nat {
     var tracker = USER_TRACK_STORE.get(caller);
@@ -1412,22 +1374,24 @@ public query func get_user_point(caller : Principal) : async Nat {
 // Feedbacks
 //
 
-private func update_feedbacks_sent(caller : Principal) : async () {
+private func burn_user_point(caller : Principal, _point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
         case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent + 1;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.tournaments_created + tracker.tournaments_joined + tracker.tournaments_won + tracker.messages_sent + tracker.feedbacks_sent + tracker.wager_participated
+            if (tracker.total_point > _point) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point - _point;
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update);
             };
-            var updated = USER_TRACK_STORE.replace(caller, update)
         }
     }
 };
@@ -1476,9 +1440,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
 
-    //  let gbc_admin : Principal = Principal.fromText("khtoe-aqiz3-wienb-44aei-er3dv-6f7mu-4r2rc-6tzwa-74qbw-5wvgf-hqe"); // * Demo here
+     let gbc_admin : Principal = Principal.fromText("6jvvx-vkfin-q3qbr-wlgsz-pfnmm-jgtnk-eze4p-lhpam-ey34o-742hy-yqe"); // * Demo here
 
-    let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
+    // let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
 
 //
 // * Tournaments Features
@@ -1498,7 +1462,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
             var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
             var toAccount : LedgerTypes.Account = {
-                owner = gbc_admin;
+                owner = Principal.fromActor(this);
                 subaccount = null
             };
 
@@ -1529,7 +1493,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = gbc_admin;
+                                    owner = Principal.fromActor(this);
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1554,7 +1518,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                 //Should be #prepaid
                 var result = await ICPLedger.icrc2_transfer_from({
                     to = {
-                        owner = gbc_admin;
+                        owner = Principal.fromActor(this);
                         subaccount = null
                     };
                     fee = null;
@@ -1804,7 +1768,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     try {
 
         var _to : LedgerTypes.Account = {
-            owner = gbc_admin;
+            owner = Principal.fromActor(this);
             subaccount = null
         };
 
@@ -1831,7 +1795,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = gbc_admin;
+                                    owner = Principal.fromActor(this);
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1868,7 +1832,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = gbc_admin;
+                                    owner = Principal.fromActor(this);
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1907,7 +1871,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 var tournamentAccount = await get_tournament(id);
 
                 var _to : LedgerTypes.Account = {
-                    owner = gbc_admin;
+                    owner = Principal.fromActor(this);
                     subaccount = null
                 };
 
@@ -1931,7 +1895,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                                 // var actual_price = amount / icp_price;
                                 var result = await ICPLedger.icrc2_transfer_from({
                                     to = {
-                                        owner = gbc_admin;
+                                        owner = Principal.fromActor(this);
                                         subaccount = null
                                     };
                                     fee = null;

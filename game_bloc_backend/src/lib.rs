@@ -41,6 +41,11 @@ pub fn get_self() -> UserProfile {
     })
 }
 
+#[query(name = "whoami")]
+pub fn whoami() -> Principal {
+   ic_cdk::api::caller()
+}
+
 #[query]
 pub fn get_profile_by_principal(principal: Principal) -> UserProfile {
     // let id = ic_cdk::api::caller();

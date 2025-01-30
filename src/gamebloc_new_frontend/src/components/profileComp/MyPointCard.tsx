@@ -81,7 +81,7 @@ const MyPointCard = () => {
           />
           <div className="flex flex-col ml-4">
             <p className="text-bold text-[1rem] p-[.65rem] sm:p-[.8rem] sm:text-[1rem]  text-[#ffffff]">
-              {streak}-Day check-in 🔥
+              {streak}-{streak > 1 ? "Days" : "Day"} check-in 🔥
             </p>
             <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
               Next claim in {countdown}

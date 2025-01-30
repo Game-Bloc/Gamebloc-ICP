@@ -105,9 +105,19 @@ const Admin = () => {
           <div className="flex flex-col w-full">
             <div className="m-4 mt-[4rem]">
               <div className="ml-[17rem]">
-                <h1 className="text-primary-second font-[600] mt-4  text-[2rem]">
-                  Dashboard
-                </h1>
+                <div className="flex justify-between items-center w-full">
+                  <h1 className="text-primary-second font-[600] mt-4  text-[2rem]">
+                    Dashboard
+                  </h1>
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className={`justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base ${"bg-primary-second hover:bg-primary-light"} text-black mt-[0.8rem] sm:mt-[1.5rem] flex rounded-[12px] items-center py-3 mr-8`}
+                  >
+                    <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
+                      Homepage
+                    </div>
+                  </button>
+                </div>
 
                 <div className="flex flex-col w-full mt-[2.5rem]">
                   <h2 className="text-white mb-[1.5rem] text-semibold text-[1.5rem]">

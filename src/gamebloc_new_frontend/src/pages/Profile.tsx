@@ -18,6 +18,7 @@ import { useAuth } from "../Auth/use-auth-client"
 import { Principal } from "@dfinity/principal"
 import Stats from "../components/profileComp/stats/Stats"
 import MyPointCard from "../components/profileComp/MyPointCard"
+import hooks from "../Functions/hooks"
 
 const items: TabsProps["items"] = [
   {
@@ -73,6 +74,7 @@ const Profile = () => {
     getTransactions,
     getNotificationId,
   } = useGameblocHooks()
+  const { kitchenBalance } = hooks()
   const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
@@ -92,6 +94,7 @@ const Profile = () => {
     updateTournament()
     getNotificationId(_principal)
     getICPBalance()
+    kitchenBalance()
     getTransactions(accountId)
   }, [isAuthenticated])
 

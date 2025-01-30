@@ -58,6 +58,15 @@ export const hooks = () => {
 
   // ADMIN HUB FUNCTION
 
+  const kitchenBalance = async () => {
+    try {
+      const balance = await whoamiActor.getKitchenBalance()
+      console.log("Kitchen Balance: ", balance)
+    } catch (err) {
+      console.log("Kitchen Balance Error: ", err)
+    }
+  }
+
   const setAdmin = async (principal: Principal) => {
     try {
       setUpdating(true)
@@ -165,12 +174,47 @@ export const hooks = () => {
     }
   }
 
+  const whoami = async () => {
+    try {
+      const _whoami = await whoamiActor2.whoami()
+      console.log("whoami principal:", _whoami.toText())
+    } catch (err) {
+      console.log("Whoami Error:", err)
+    }
+  }
+
+  const allocateUserPoint = async (
+    principal: Principal,
+    point: any,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    try {
+      setActivateloading(true)
+      const allocatePoint = await whoamiActor.allocatePoint(
+        principal,
+        BigInt(point),
+      )
+      setActivateloading(false)
+      popUp(successMsg, route)
+      console.log("Principal:", principal)
+      console.log("Point:", point)
+      console.log("Points allocated")
+    } catch (err) {
+      setActivateloading(false)
+      console.log("Error allocating Points :", err)
+      errorPopUp(errorMsg)
+    }
+  }
+
   return {
     done,
+    sending,
     updating,
     isLoading,
     claimloading,
-    sending,
+    activateloading,
     setAdmin,
     setTribunal,
     disburseFunds,
@@ -178,6 +222,9 @@ export const hooks = () => {
     getMyPoints,
     getMyStreakCount,
     getStreakTime,
+    whoami,
+    allocateUserPoint,
+    kitchenBalance,
   }
 }
 

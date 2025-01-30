@@ -44,9 +44,9 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  // const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   // ! Production params
-  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+  // const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
@@ -290,6 +290,7 @@ export const useGameblocHooks = () => {
     lobbies: [],
     tournament_lobby_type: any,
     winners: [],
+    wagers: [],
     ended: [],
     tournament_variation: any,
     _nominal_entry_fee: any,
@@ -301,9 +302,11 @@ export const useGameblocHooks = () => {
   ) => {
     try {
       setUpdating(true)
+      const user_details: [] = []
       const creator_id: [string] = [owner_id]
       const tour_variation: [any] = [tournament_variation]
       const entry_fee: [bigint] = [_entry_fee]
+      const accepts_wagers: [boolean] = [true]
       const nominal_entry_fee: [bigint] = [_nominal_entry_fee]
       const entry_fee_bump: [bigint] = [_entry_fee_bump]
       const no_of_participants_at_bump: [bigint] = [_no_of_participants_at_bump]
@@ -321,8 +324,11 @@ export const useGameblocHooks = () => {
         squad_in_game_names,
         messages,
         user,
+        user_details,
         winers,
         entry_prize,
+        accepts_wagers,
+        wagers,
         entry_fee,
         nominal_entry_fee,
         entry_fee_bump,
