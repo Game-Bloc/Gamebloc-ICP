@@ -11,19 +11,22 @@ interface Prop {
 const GamerCard = ({ data, list }: Prop) => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const game_type = data.game_type.toUpperCase()
-  const loss = game_type !== "SINGLE" ? list.losses[0] : null
-  const win = game_type !== "SINGLE" ? list.wins[0] : null
+  const loss = game_type !== "SINGLE" ? list.losses[0] : list.losses[0]
+  const win = game_type !== "SINGLE" ? list.wins[0] : list.wins
+  const win_loss = win === 0 && loss === 0
+  const soloWin = win_loss ? 1 : win
   const squadLoss = loss === undefined ? 0 : loss
   const squadWin = win === undefined ? 1 : win
   const _squadWin = win === undefined ? 0 : squadWin
   const _squadLoss = loss === undefined ? 0 : squadLoss
   const winRate = (squadWin / (squadWin + squadLoss)) * 100 - 1
+  const _winRate = (soloWin / (soloWin + loss)) * 100 - 1
   const handleModal = () => {
     setOpenModal(false)
   }
 
-  console.log("data", data)
-  console.log("list", list)
+  console.log("win", soloWin)
+  console.log("loss", loss)
 
   return (
     <div className="flex  flex-col p-4 border  border-solid border-[#9F9FA8] rounded-xl w-full">
@@ -34,7 +37,7 @@ const GamerCard = ({ data, list }: Prop) => {
               <SiNintendogamecube className=" text-[#9F9FA8] w-6 h-6" />
             </div>
             <p className=" ml-4 text-[.7rem] text-[#9F9FA8] font-bold">
-              {game_type === "SINGLE" ? list : list?.name}
+              {game_type === "SINGLE" ? list?.username : list?.name}
             </p>
           </div>
           <div className="flex flex-col ml-12 items-center ">
@@ -48,7 +51,7 @@ const GamerCard = ({ data, list }: Prop) => {
             >
               <Progress
                 type="circle"
-                percent={game_type === "SINGLE" ? 65 : winRate}
+                percent={game_type === "SINGLE" ? _winRate : winRate}
                 steps={8}
                 size={"small"}
                 trailColor="rgba(0, 0, 0, 0.06)"
@@ -66,7 +69,7 @@ const GamerCard = ({ data, list }: Prop) => {
               <p className="text-[.7rem] ml-2 text-[#3DB569] font-bold">Wins</p>
             </div>
             <p className="text-[.7rem] ml-2 text-[#3DB569] font-bold">
-              {game_type === "SINGLE" ? "9" : _squadWin}
+              {game_type === "SINGLE" ? (win_loss ? 0 : soloWin) : _squadWin}
             </p>
           </div>
           <div className="bg-[#211416] flex justify-between items-center mb-2 p-2 w-full rounded-lg">
@@ -77,7 +80,7 @@ const GamerCard = ({ data, list }: Prop) => {
               </p>
             </div>
             <p className="text-[.7rem] ml-2 text-[#EA4343] font-bold">
-              {game_type === "SINGLE" ? "9" : _squadLoss}
+              {game_type === "SINGLE" ? loss : _squadLoss}
             </p>
           </div>
         </div>
