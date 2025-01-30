@@ -32,6 +32,7 @@ export interface TournamentState {
   users: any[]
   winers: any[]
   winners: any[]
+  user_details: any
   squad_points: []
   squad_vector_mod_1: []
   points_vector_mod_1: []

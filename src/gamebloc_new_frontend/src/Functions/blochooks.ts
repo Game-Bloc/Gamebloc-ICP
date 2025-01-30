@@ -95,6 +95,7 @@ export const useFetchAllTournaments = () => {
             winers: data.winers.map((winner: any) => winner),
             winners: winners(data.winners),
             squad_points: squad_function(data.squad_points),
+            user_details: data.user_details[0],
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
             squad_vector_mod_2: squad_function(data.squad_vector_mod_2),
@@ -186,7 +187,7 @@ export const useUpdateTournament = () => {
               ]),
             )
           }
-          console.log("user profile", data.user_details[0])
+          // console.log("user profile", data.user_details[0])
           const tournamentData = {
             creator: data.creator,
             creator_id: data.creator_id,
@@ -209,6 +210,7 @@ export const useUpdateTournament = () => {
             users: data.user.map((user: any) => user),
             winers: data.winers.map((winner: any) => winner),
             winners: winners(data.winners),
+            user_details: data.user_details[0],
             squad_points: squad_function(data.squad_points),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
@@ -309,6 +311,7 @@ export const useGetTournamentMessages = () => {
             winers: data.winers.map((winner: any) => winner),
             winners: data.winners,
             squad_points: squad_function(data.squad_points),
+            user_details: data.user_details[0],
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
             squad_vector_mod_2: squad_function(data.squad_vector_mod_2),
