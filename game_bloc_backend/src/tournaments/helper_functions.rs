@@ -72,7 +72,7 @@ pub fn append_squad_to_tournament(
     }
 }
 
-pub fn get_profile(name: String) -> UserProfile {
+fn get_profile(name: String) -> UserProfile {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
             id_store
