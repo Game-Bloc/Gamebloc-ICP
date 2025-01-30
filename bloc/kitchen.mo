@@ -1693,13 +1693,13 @@ public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, 
     }
 };
 
-public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : Nat8) : async Bool {
-    try {
-        await RustBloc.test_end_tournament(id, caller, no_of_winners)
-    } catch err {
-        throw (err)
-    }
-};
+// public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : Nat8) : async Bool {
+//     try {
+//         await RustBloc.test_end_tournament(id, caller, no_of_winners)
+//     } catch err {
+//         throw (err)
+//     }
+// };
 
 // public shared ({ caller }) func archive_tournament(id : Text) {
 //     try {
@@ -1776,7 +1776,7 @@ public shared ({ caller }) func add_to_squad(member : Bloctypes.Member, id : Tex
 // *
 public shared ({ caller }) func close_squad(names : [Text], id : Text) : async () {
     try {
-        return await RustBloc.close_squad(id, names, caller)
+        return await RustBloc.close_squad(id, caller)
     } catch err {
         throw (err)
     }
@@ -1784,7 +1784,7 @@ public shared ({ caller }) func close_squad(names : [Text], id : Text) : async (
 
 public shared ({ caller }) func open_squad(names : [Text], id : Text) : async () {
     try {
-        return await RustBloc.open_squad(id, names, caller)
+        return await RustBloc.open_squad(id, caller)
     } catch err {
         throw (err)
     }

@@ -68,9 +68,11 @@ type TournamentAccount = record {
   ended : opt bool;
   squad_in_game_names : opt vec vec record { text; text; text };
   squad : vec Squad;
+  accepts_wagers : opt bool;
   no_of_participants_at_bump : opt nat;
   lobbies : opt vec LobbyAccount;
   game_type : text;
+  user_details : opt vec UserProfile;
   starting_date : text;
   entry_fee_bump : opt nat;
   nominal_entry_fee : opt nat;
@@ -141,7 +143,7 @@ service : () -> {
   cleanse_all_squad_type_tournament_branching_tribunal_points : (text) -> (
       bool,
     );
-  close_squad : (text, vec text, principal) -> ();
+  close_squad : (text, principal) -> ();
   count_all_referral : (text) -> (nat) query;
   count_all_squad : () -> (nat) query;
   count_all_tournament : () -> (nat) query;
@@ -180,8 +182,7 @@ service : () -> {
     ) -> ();
   leave_or_remove_squad_member : (principal, text) -> ();
   lobbies_exterminator : (text) -> ();
-  lobbies_extraditor : (text, text, record { text; text }) -> ();
-  open_squad : (text, vec text, principal) -> ();
+  open_squad : (text, principal) -> ();
   postpone_tournament : (text, text) -> ();
   send_message_tournament : (text, Chat) -> ();
   set_mod : (principal) -> ();
@@ -189,13 +190,11 @@ service : () -> {
   structure_tournament_into_duo_lobbies : (text, text) -> ();
   structure_tournament_into_lobbies : (text) -> ();
   structure_tournament_into_squad_lobbies : (text, text) -> ();
-  test_end_tournament : (text, principal, nat8) -> (bool);
   three_lobbies_merge : (text) -> ();
-  two_lobbies_merge : (text, text, record { text; text }) -> ();
+  two_lobbies_merge : (text) -> ();
   update_squad_details : (text) -> ();
   update_tournament_details : (text, text) -> ();
   update_tournament_past_leaderboard : () -> ();
   update_tournament_pool_price : (text, nat) -> ();
   update_tournament_type_to_blitzkrieg : (text) -> ();
-  whoami : () -> (principal) query;
 }
