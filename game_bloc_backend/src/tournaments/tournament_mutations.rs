@@ -808,8 +808,8 @@ pub fn join_tournament(name: String, id: String, ign: (String, String, String)) 
                                 }
                                 Variation::Infinite => {
                                     tournament.entry_fee = Some(
-                                        tournament.entry_fee.unwrap()
-                                            + tournament.entry_fee_bump.unwrap(),
+                                        tournament.entry_fee.unwrap().to_owned()
+                                            + tournament.entry_fee_bump.unwrap().to_owned(),
                                     );
                                     tournament = append_player_to_participants(name, ign, tournament.to_owned());
                                 }
