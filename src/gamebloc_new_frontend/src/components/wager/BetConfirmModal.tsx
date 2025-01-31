@@ -5,12 +5,11 @@ import { useAppSelector } from "../../redux/hooks"
 
 type Prop = {
   modal: any
-  //   data: any
-  //   option: boolean
-  //   handleModal: any
+  id: any
+  name: any
 }
 
-const BetConfirmModal = ({ modal }: Prop) => {
+const BetConfirmModal = ({ modal, id, name }: Prop) => {
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const username = useAppSelector((state) => state.userProfile.username)
   const initials = username!.substring(0, 2).toUpperCase()
@@ -41,6 +40,9 @@ const BetConfirmModal = ({ modal }: Prop) => {
                     className="absolute text-white right-4 text-[1rem] top-4 cursor-pointer"
                   />
                   <div className="flex justify-center items-center flex-col mt-4">
+                    <p className=" text-[1rem] text-start text-[#9F9FA8] font-bold">
+                      Bet on {name}
+                    </p>
                     <div className="flex w-full items-center">
                       <div className="mr-4 ">
                         <Avatar
@@ -57,7 +59,7 @@ const BetConfirmModal = ({ modal }: Prop) => {
                       </div>
                       <div className="flex flex-col">
                         <p className=" text-[1rem] text-start text-[#9F9FA8] font-bold">
-                          Deonorla
+                          {username}
                         </p>
                         <div className="flex flex-row">
                           <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
@@ -68,15 +70,15 @@ const BetConfirmModal = ({ modal }: Prop) => {
                       </div>
                     </div>
                     {/*  */}
-                    <div className="bg-[#1E1E21] flex justify-between items-center mt-4 px-4 py-2 w-[80vw] lg:max-w-80 rounded-full">
+                    <div className="bg-[#1E1E21] flex justify-between items-center mt-4 px-4 py-2 w-[80vw] sm:w-[60vw] lg:max-w-80 rounded-full">
                       <p className=" text-[.85rem] text-[#A1A1AA] font-bold">
                         Available
                       </p>
                       <p className=" text-[.85rem] text-[#A1A1AA] font-bold">
-                        $700
+                        ${(balance * _icp2Usd).toFixed(2)}
                       </p>
                     </div>
-                    <div className="flex flex-col bg-[#1E1E21] items-center justify-center rounded-xl mt-4 p-4 w-[80vw] lg:max-w-80">
+                    <div className="flex flex-col bg-[#1E1E21] items-center justify-center rounded-xl mt-4 p-4 w-[80vw] sm:w-[60vw] lg:max-w-80">
                       <p className="text-[.7rem] text-[#9F9FA8]">
                         Enter the value of your bet
                       </p>
@@ -96,9 +98,13 @@ const BetConfirmModal = ({ modal }: Prop) => {
                         <img src={`Icp.svg`} className="w-3 h-3 m-0" alt="" />
                       </div>
                     </div>
-                    <button className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  text-xs sm:text-sm rounded-full ">
+                    <button className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  lg:max-w-80  text-xs sm:text-sm rounded-full ">
                       Confirm Bet
                     </button>
+                    <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                      By clicking on confirm an amount of will be deducted for
+                      this bet!
+                    </p>
                   </div>
                 </div>
               </div>

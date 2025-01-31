@@ -198,9 +198,6 @@ export const hooks = () => {
       )
       setActivateloading(false)
       popUp(successMsg, route)
-      console.log("Principal:", principal)
-      console.log("Point:", point)
-      console.log("Points allocated")
     } catch (err) {
       setActivateloading(false)
       console.log("Error allocating Points :", err)
@@ -208,7 +205,40 @@ export const hooks = () => {
     }
   }
 
+  // BET FUNCTIONS
+  const bet = async (
+    id: string,
+    amount: bigint,
+    staker_principal_id: string,
+    staker_account_id: string,
+    player_principal_id: string,
+    route: string,
+    successMsg: string,
+    errorMsg: string,
+  ) => {
+    const wager = {
+      amount,
+      staker_principal_id,
+      staker_account_id,
+      player_principal_id,
+    }
+    try {
+      setIsLoading(true)
+      const wage = await whoamiActor2.add_or_increase_tournament_wager(
+        id,
+        wager,
+      )
+      popUp(successMsg, route)
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log("Error placing bet :", err)
+      errorPopUp(errorMsg)
+    }
+  }
+
   return {
+    bet,
     done,
     sending,
     updating,

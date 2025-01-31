@@ -91,7 +91,13 @@ const GamerCard = ({ data, list }: Prop) => {
       >
         Place Bet
       </button>
-      {openModal && <BetConfirmModal modal={handleModal} />}
+      {openModal && (
+        <BetConfirmModal
+          name={game_type === "SINGLE" ? list?.username : list?.name}
+          id={game_type === "SINGLE" ? list?.principal_id : list?.id_hash}
+          modal={handleModal}
+        />
+      )}
     </div>
   )
 }

@@ -379,7 +379,7 @@ const CreateTournament = () => {
       [],
       tournamentVariation,
       +entryPrice,
-      tourVariation === "infinite" ? +entry_fee_bump : null,
+      tourVariation === "infinite" ? +entry_fee_bump : 0,
       tourVariation === "infinite" ? +no_of_participants_at_bump : 0,
       "Successful",
       "Try again something went wrong",
