@@ -1,25 +1,69 @@
 import { Avatar } from "antd"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useAppSelector } from "../../redux/hooks"
+import hooks from "../../Functions/hooks"
+import ClipLoader from "react-spinners/ClipLoader"
+import { errorPopUp } from "../utils/ErrorModal"
 
 type Prop = {
   modal: any
   id: any
   name: any
+  data: any
 }
 
-const BetConfirmModal = ({ modal, id, name }: Prop) => {
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "white",
+}
+
+const BetConfirmModal = ({ modal, id, name, data }: Prop) => {
+  const { bet, isLoading } = hooks()
+  const [color, setColor] = useState("#ffffff")
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const username = useAppSelector((state) => state.userProfile.username)
+  const principal_id = useAppSelector((state) => state.userProfile.principal_id)
+  const account_id = useAppSelector((state) => state.userProfile.account_id)
   const initials = username!.substring(0, 2).toUpperCase()
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const [dollar, setDollar] = useState<string>("")
+  const [icpValue, setIcpValue] = useState<number>(0)
 
   const dollarChange = (e: any) => {
     e.preventDefault()
     const value = e.target.value
     setDollar(value)
+  }
+
+  useEffect(() => {
+    const calculateIcpValue = () => {
+      if (_icp2Usd > 0 && +dollar > 0) {
+        const icpValue = +dollar / _icp2Usd
+        setIcpValue(icpValue)
+      } else {
+        setIcpValue(0)
+      }
+    }
+    calculateIcpValue()
+  }, [dollar, _icp2Usd])
+
+  const confirmBet = () => {
+    if (balance > icpValue) {
+      bet(
+        data.id_hash,
+        BigInt(+dollar),
+        principal_id,
+        account_id,
+        id,
+        "",
+        "Bet placed",
+        "Error, something went wrong",
+      )
+    } else {
+      errorPopUp("Your ICP balance is low, pls fund your account.")
+    }
   }
 
   return (
@@ -82,7 +126,7 @@ const BetConfirmModal = ({ modal, id, name }: Prop) => {
                       <p className="text-[.7rem] text-[#9F9FA8]">
                         Enter the value of your bet
                       </p>
-                      <div className=" my-4 items-center pr-8 pl-2 h-[2rem] border-[#595959] hover:border-primary-second w-[5rem]  bg-[#141414] border-solid border rounded-[6px] flex">
+                      <div className=" my-4 items-center pl-2 h-[2rem] border-[#595959] hover:border-primary-second w-[5rem]  bg-[#141414] border-solid border rounded-[6px] flex">
                         <input
                           className="border-none w-full text-white pl-0 focus:outline-none placeholder:text-[0.8rem] focus:ring-0 placeholder:text-[#595959] appearance-none text-[0.9rem] bg-[#141414] py-[.1rem]"
                           placeholder="$"
@@ -93,17 +137,38 @@ const BetConfirmModal = ({ modal, id, name }: Prop) => {
                       </div>
                       <div className="flex flex-row items-center">
                         <p className="text-[.7rem] mr-1 text-[#9F9FA8]">
-                          Total: 2
+                          Total: {icpValue.toFixed(8)}
                         </p>
                         <img src={`Icp.svg`} className="w-3 h-3 m-0" alt="" />
                       </div>
                     </div>
-                    <button className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  lg:max-w-80  text-xs sm:text-sm rounded-full ">
-                      Confirm Bet
+                    <button
+                      onClick={() => confirmBet()}
+                      className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  lg:max-w-80  text-xs sm:text-sm rounded-full "
+                    >
+                      <div className="flex justify-center items-center text-[0.65rem] text-primary-second font-bold sm:text-[.85rem]">
+                        {isLoading ? (
+                          <div className="flex items-center justify-center ">
+                            <p className="text-[0.65rem] mr-2 text-primary-second font-bold sm:text-[.85rem]">
+                              Wait
+                            </p>
+                            <ClipLoader
+                              color={color}
+                              loading={isLoading}
+                              cssOverride={override}
+                              size={10}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          </div>
+                        ) : (
+                          "Confirm bet"
+                        )}
+                      </div>
                     </button>
                     <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                      By clicking on confirm an amount of will be deducted for
-                      this bet!
+                      By clicking on confirm an amount of {icpValue.toFixed(8)}{" "}
+                      ICP will be deducted for this bet!
                     </p>
                   </div>
                 </div>

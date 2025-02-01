@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import Sidebar from "../components/dashboardComps/Sidebar"
 import Header from "../components/Header/Header"
 import { IoIosArrowRoundBack } from "react-icons/io"
@@ -7,15 +7,21 @@ import InfoCard from "../components/wager/infoCard"
 import GamerCard from "../components/wager/GamerCard"
 import SquadViewCard from "../components/wager/SquadViewCard"
 import { useAppSelector } from "../redux/hooks"
+import hooks from "../Functions/hooks"
 
 const Wager = () => {
   const { id } = useParams()
+  const { getAllWager } = hooks()
   const navigate = useNavigate()
   const tournamentData = useAppSelector((state) => state.tournamentData)
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
   const currentTournament = tourData.length > 0 ? tourData[0] : null
   const game_type = currentTournament.game_type.toUpperCase()
+
+  useEffect(() => {
+    getAllWager(id)
+  }, [])
 
   return (
     <div className="">

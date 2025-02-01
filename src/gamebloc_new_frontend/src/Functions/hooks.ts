@@ -230,10 +230,20 @@ export const hooks = () => {
       )
       popUp(successMsg, route)
       setIsLoading(false)
+      window.location.reload()
     } catch (err) {
       setIsLoading(false)
       console.log("Error placing bet :", err)
       errorPopUp(errorMsg)
+    }
+  }
+
+  const getAllWager = async (id: string) => {
+    try {
+      const wager = await whoamiActor2.get_all_wagers(id)
+      console.log("Wagers", wager)
+    } catch (err) {
+      console.log("Error getting wager :", err)
     }
   }
 
@@ -253,6 +263,7 @@ export const hooks = () => {
     getMyStreakCount,
     getStreakTime,
     whoami,
+    getAllWager,
     allocateUserPoint,
     kitchenBalance,
   }
