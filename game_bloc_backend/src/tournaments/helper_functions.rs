@@ -6,8 +6,8 @@ pub fn append_squad_to_tournament(
     squad_id: &String,
     ign: Vec<(String, String, String)>,
     new_member_ign: &Option<Vec<(String, String, String)>>,
-    tournament: &mut TournamentAccount,
-) {
+    mut tournament: TournamentAccount,
+) -> TournamentAccount {
     match tournament
         .to_owned()
         .no_of_participants
@@ -59,18 +59,20 @@ pub fn append_squad_to_tournament(
             match tournament.to_owned().squad_in_game_names {
                 None => {
                     tournament.squad_in_game_names = Some(vec![ign]);
+                    tournament
                 }
                 Some(mut previous_igns) => {
                     previous_igns.push(ign);
                     tournament.squad_in_game_names = Some(previous_igns);
+                    tournament
                 }
             }
         }
-        _ => {}
+        _ => {tournament}
     }
 }
 
-pub fn get_profile(name: String) -> UserProfile {
+fn get_profile(name: String) -> UserProfile {
     ID_STORE.with(|id_store| {
         PROFILE_STORE.with(|profile_store| {
             id_store
@@ -85,8 +87,8 @@ pub fn get_profile(name: String) -> UserProfile {
 pub fn append_player_to_participants(
     name: String,
     ign: (String, String, String),
-    tournament: &mut TournamentAccount,
-) {
+    mut tournament: TournamentAccount,
+) -> TournamentAccount {
     match GameType::from_str(tournament.game_type.to_owned().as_str()) {
         GameType::Single => {
             match tournament
@@ -109,16 +111,22 @@ pub fn append_player_to_participants(
                     match tournament.user_details.to_owned() {
                         None => {
                             tournament.user_details = Some(vec![user_details]);
+                            tournament
                         }
                         Some(mut previous_user_details) => {
                             previous_user_details.push(user_details);
                             tournament.user_details = Some(previous_user_details);
+                            tournament
                         }
                     }
                 }
-                _ => {}
+                _ => {
+                    tournament
+                }
             }
         }
-        _ => {}
+        _ => {
+            tournament
+        }
     }
 }

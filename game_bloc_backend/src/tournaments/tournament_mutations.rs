@@ -791,46 +791,36 @@ pub fn join_tournament(name: String, id: String, ign: (String, String, String)) 
         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
         match tournament.no_of_participants_at_bump {
             None => {
-                append_player_to_participants(name, ign, &mut tournament);
+                tournament = append_player_to_participants(name, ign, tournament.to_owned());
             }
             Some(no_of_participants_at_bump) => {
-                if tournament.user.to_owned().len() != 0
-                    && tournament.user.to_owned().len() % (no_of_participants_at_bump as usize) == 0
-                {
-                    match tournament.to_owned().tournament_variation {
-                        None => {
-                            append_player_to_participants(name, ign, &mut tournament);
-                        }
-                        Some(variation) => match variation {
-                            Variation::Capped => {
-                                append_player_to_participants(name, ign, &mut tournament);
+                if no_of_participants_at_bump != 0 {
+                    if tournament.user.to_owned().len() != 0
+                        && tournament.user.to_owned().len() % (no_of_participants_at_bump as usize) == 0
+                    {
+                        match tournament.to_owned().tournament_variation {
+                            None => {
+                                tournament = append_player_to_participants(name, ign, tournament.to_owned());
                             }
-                            Variation::Infinite => {
-                                tournament.entry_fee = Some(
-                                    tournament.entry_fee.unwrap()
-                                        + tournament.entry_fee_bump.unwrap(),
-                                );
-                                match GameType::from_str(tournament.game_type.to_owned().as_str()) {
-                                    GameType::Single => {
-                                        tournament.user.push(name);
-                                        match tournament.to_owned().in_game_names {
-                                            None => {
-                                                tournament.in_game_names =
-                                                    Some(vec![ign.to_owned()]);
-                                            }
-                                            Some(mut previous_igns) => {
-                                                previous_igns.push(ign);
-                                                tournament.in_game_names = Some(previous_igns);
-                                            }
-                                        }
-                                    }
-                                    _ => {}
+                            Some(variation) => match variation {
+                                Variation::Capped => {
+                                    tournament = append_player_to_participants(name, ign, tournament.to_owned());
                                 }
-                            }
-                        },
+                                Variation::Infinite => {
+                                    tournament.entry_fee = Some(
+                                        tournament.entry_fee.unwrap().to_owned()
+                                            + tournament.entry_fee_bump.unwrap().to_owned(),
+                                    );
+                                    tournament = append_player_to_participants(name, ign, tournament.to_owned());
+                                }
+                            },
+                        }
+                    } else {
+                        tournament = append_player_to_participants(name, ign, tournament.to_owned());
                     }
-                } else {
-                    append_player_to_participants(name, ign, &mut tournament);
+                }
+                else {
+                    tournament = append_player_to_participants(name, ign, tournament.to_owned());
                 }
             }
         }
@@ -850,35 +840,35 @@ pub fn join_tournament_with_squad(
             tournament_store.borrow().get(&id).cloned().unwrap();
         match tournament.no_of_participants_at_bump {
             None => {
-                append_squad_to_tournament(
+                tournament = append_squad_to_tournament(
                     &squad_id.to_owned(),
                     ign,
                     &new_member_ign,
-                    &mut tournament,
+                    tournament.to_owned(),
                 );
             }
             Some(no_of_participants_at_bump) => {
-                if no_of_participants_at_bump != 0{
+                if no_of_participants_at_bump != 0 {
                     if tournament.squad.to_owned().len() != 0
                         && tournament.squad.to_owned().len() % (no_of_participants_at_bump as usize)
                         == 0
                     {
                         match tournament.to_owned().tournament_variation {
                             None => {
-                                append_squad_to_tournament(
+                                tournament = append_squad_to_tournament(
                                     &squad_id.to_owned(),
                                     ign,
                                     &new_member_ign,
-                                    &mut tournament,
+                                    tournament.to_owned(),
                                 );
                             }
                             Some(variation) => match variation {
                                 Variation::Capped => {
-                                    append_squad_to_tournament(
+                                   tournament = append_squad_to_tournament(
                                         &squad_id.to_owned(),
                                         ign,
                                         &new_member_ign,
-                                        &mut tournament,
+                                        tournament.to_owned(),
                                     );
                                 }
                                 Variation::Infinite => {
@@ -886,81 +876,30 @@ pub fn join_tournament_with_squad(
                                         tournament.entry_fee.unwrap()
                                             + tournament.entry_fee_bump.unwrap(),
                                     );
-                                    SQUAD_STORE.with(|squad_store| {
-                                        let mut squad =
-                                            squad_store.borrow().get(&squad_id).cloned().unwrap();
-                                        if new_member_ign.is_some() {
-                                            let count = new_member_ign.to_owned().unwrap().len();
-                                            if count > 0 {
-                                                PROFILE_STORE.with(|profile_store| {
-                                                    loop {
-                                                        if count == 0 {
-                                                            break;
-                                                        }
-                                                        let mut user = profile_store
-                                                            .borrow()
-                                                            .get(
-                                                                &new_member_ign.to_owned().unwrap()
-                                                                    [count - 1]
-                                                                    .0,
-                                                            )
-                                                            .cloned()
-                                                            .unwrap();
-                                                        let missing: Member = Member {
-                                                            name: user.to_owned().username,
-                                                            principal_id: new_member_ign
-                                                                .to_owned()
-                                                                .unwrap()[count - 1]
-                                                                .0
-                                                                .to_owned(),
-                                                        };
-                                                        squad.members.push(missing);
-                                                        user.squad_badge = squad.id_hash.to_owned();
-                                                        profile_store.borrow_mut().insert(
-                                                            new_member_ign.to_owned().unwrap()
-                                                                [count - 1]
-                                                                .0
-                                                                .to_owned(),
-                                                            user,
-                                                        );
-                                                    }
-                                                    squad_store
-                                                        .borrow_mut()
-                                                        .insert(squad_id, squad.to_owned());
-                                                });
-                                            }
-                                            let mut mutable_new_member_ign = new_member_ign.unwrap();
-                                            ign.to_owned().append(&mut mutable_new_member_ign);
-                                        }
-                                        tournament.squad.push(squad);
-                                    });
-                                    match tournament.to_owned().squad_in_game_names {
-                                        None => {
-                                            tournament.squad_in_game_names = Some(vec![ign]);
-                                        }
-                                        Some(mut previous_igns) => {
-                                            previous_igns.push(ign);
-                                            tournament.squad_in_game_names = Some(previous_igns);
-                                        }
-                                    }
+                                    tournament = append_squad_to_tournament(
+                                        &squad_id.to_owned(),
+                                        ign,
+                                        &new_member_ign,
+                                        tournament.to_owned(),
+                                    );
                                 }
                             },
                         }
                     } else {
-                        append_squad_to_tournament(
+                        tournament = append_squad_to_tournament(
                             &squad_id.to_owned(),
                             ign,
                             &new_member_ign,
-                            &mut tournament,
+                            tournament.to_owned(),
                         );
                     }
                 }
                 else {
-                    append_squad_to_tournament(
+                    tournament = append_squad_to_tournament(
                         &squad_id.to_owned(),
                         ign,
                         &new_member_ign,
-                        &mut tournament,
+                        tournament.to_owned(),
                     );
                 }
             }
