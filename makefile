@@ -68,7 +68,6 @@ deploy: candid
 	@echo ">> Final dfx deploy"
 	@dfx deploy
 
-# Clean up the build artifacts
 clean:
 	@echo ">> Cleaning up build artifacts"
 	@cargo clean
