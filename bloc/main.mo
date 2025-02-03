@@ -296,5 +296,4 @@ shared ({caller}) actor class BlocFactory() = this {
   //   };
 
   // };
-
-};
+}

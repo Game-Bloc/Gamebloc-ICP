@@ -27,6 +27,7 @@ import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
+//import Bloctypes "bloctypes";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -1809,6 +1810,28 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         }
     };
 
+    public func getLobbyFromTournament(tournament_id : Text, lobby_id : Nat8) : async Bloctypes.LobbyAccount {
+    try {
+        return await RustBloc.get_lobby_from_tournament(tournament_id, lobby_id);
+        } catch err {
+            throw err;
+        };
+    };
+
+    // public query func getAllTournamentLobbies(tournament_id : Text, points : [(Text, Text, Nat8)], principal : Principal) : async Bloctypes.Point
+    // {
+    //     try
+    //     {
+    //         let result = await RustBloc.get_all_tournament(tournament_id, points);
+    //     }
+    //     catch err
+    //     {
+    //         throw(err)
+    //     }
+    // };
+    
+
+
     public func assign_solo_points(tournament_id : Text, user_id_and_points : [(Text, Text, Bloctypes.Point)], principal : Principal) : async Bool {
         try {
             return await RustBloc.assign_squad_points(tournament_id, user_id_and_points, principal)
@@ -1817,9 +1840,6 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         }
     };
 
-    //
-    //  * HTTP outcalls
-    //
 
     public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
         let transformed : HTTP.CanisterHttpResponsePayload = {
