@@ -17,6 +17,7 @@ import JoinAsSquad from "../Modals/JoinAsSquad"
 import { hasDateReached, inProgress } from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
 import WagerModal from "../Modals/WagerModal"
+import hooks from "../../Functions/hooks"
 interface Props {
   data: any
 }
@@ -40,6 +41,7 @@ const TournamentInfo = ({ data }: Props) => {
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const [openWager, setOpenWager] = useState<boolean>(true)
+  const { getExpectedReward } = hooks()
   const option =
     Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG" &&
     data.creator == owner
@@ -198,6 +200,7 @@ const TournamentInfo = ({ data }: Props) => {
   }
 
   useEffect(() => {
+    getExpectedReward(id, principal)
     if (squad?.length > 0) {
       updateAllSquads()
     } else {

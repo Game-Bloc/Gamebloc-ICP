@@ -10,6 +10,8 @@ import {
   updateStreak,
   updateTime,
 } from "../redux/slice/dailyStreak"
+import { updateBet } from "../redux/slice/wagerSlice"
+import store from "../redux/store"
 
 export const hooks = () => {
   const {
@@ -23,6 +25,7 @@ export const hooks = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const MySwal = withReactContent(Swal)
+  const [reward, setReward] = useState<any>()
   const [done, setDone] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -247,6 +250,45 @@ export const hooks = () => {
     }
   }
 
+  const getUserBet = async (id: string, staker_principal_id: string) => {
+    try {
+      setUpdating(true)
+      const bet = await whoamiActor2.get_wager(id, staker_principal_id)
+      if (bet && bet.length !== 0) {
+        for (const data of bet) {
+          const betData = {
+            amount: Number(data.amount),
+            player_principal_id: data.player_principal_id,
+            staker_account_id: data.staker_account_id,
+            staker_principal_id: data.staker_principal_id,
+          }
+          // console.log("bet data", betData)
+          dispatch(updateBet(betData))
+        }
+      }
+      setUpdating(false)
+    } catch (err) {
+      setUpdating(false)
+      console.log("Error getting user bet", err)
+    }
+  }
+
+  const getExpectedReward = async (id: string, staker_principal_id: string) => {
+    try {
+      setActivateloading(true)
+      const reward = await whoamiActor2.expected_wager_reward(
+        id,
+        staker_principal_id,
+      )
+      // console.log("reward:", reward[0])
+      setReward(Number(reward[0]))
+      setActivateloading(false)
+    } catch (err) {
+      setActivateloading(false)
+      console.log("Error getting reward", err)
+    }
+  }
+
   return {
     bet,
     done,
@@ -255,6 +297,7 @@ export const hooks = () => {
     isLoading,
     claimloading,
     activateloading,
+    reward,
     setAdmin,
     setTribunal,
     disburseFunds,
@@ -266,6 +309,8 @@ export const hooks = () => {
     getAllWager,
     allocateUserPoint,
     kitchenBalance,
+    getUserBet,
+    getExpectedReward,
   }
 }
 
