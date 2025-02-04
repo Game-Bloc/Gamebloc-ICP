@@ -128,8 +128,8 @@ dfx deploy --network local --specified-id ss2fx-dyaaa-aaaar-qacoq-cai cketh_ledg
         controller_id = principal "'${OWNER}'";
       }
     }
-  })
-'
+  })'
+
 
 dfx deploy --network local cketh_index --argument '
   record {
@@ -140,7 +140,7 @@ dfx deploy --network local cketh_index --argument '
 
 dfx deploy
 
-#  "system_api": {
+# {
 #       "candid": "system_api/vetkd_system_api.did",
 #       "type": "rust",
 #       "package": "vetkd_system_api"

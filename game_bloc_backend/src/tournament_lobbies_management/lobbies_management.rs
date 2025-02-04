@@ -1,8 +1,7 @@
 use crate::*;
 use crate::tournament_lobbies_management::helper_functions::*;
 
-///Lobby (or sub tournament) CRUD
-
+//Lobby (or sub tournament) CRUD
 #[query]
 pub fn get_lobby_from_tournament(tournament_id: String, lobby_id: u8) -> LobbyAccount {
     TOURNAMENT_STORE.with(|tournament_store| {
