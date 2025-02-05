@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react"
 import hooks from "../../../Functions/hooks"
 import { useAppSelector } from "../../../redux/hooks"
+import { useNavigate } from "react-router-dom"
 interface Props {
   data: any
 }
 const Wager = ({ data }: Props) => {
+  const navigate = useNavigate()
   const { updating, reward, activateloading, getUserBet, getExpectedReward } =
     hooks()
   const bet = useAppSelector((state) => state.userWager)
@@ -18,7 +20,7 @@ const Wager = ({ data }: Props) => {
   }, [])
 
   return (
-    <div className="mt-8 w-full p-4 ">
+    <div className="w-full p-4 ">
       {bet?.player_principal_id === "" ? (
         <div className="w-full flex justify-center mt-[3rem]">
           <div className="flex flex-col mb-4 ">
@@ -30,7 +32,7 @@ const Wager = ({ data }: Props) => {
         </div>
       ) : (
         <div className="flex flex-col">
-          <h2 className="text-[0.8rem] font-semibold sm:text-base  text-white">
+          <h2 className="text-[0.8rem] mb-4 font-semibold sm:text-base  text-white">
             Your stake info
           </h2>
           <div className="flex flex-col">
@@ -46,6 +48,16 @@ const Wager = ({ data }: Props) => {
             <p className="text-[#E0DFBA] text-[.8rem] my-2 sm:text-base text-normal">
               Expected reward: ${reward}
             </p>
+          </div>
+          <div className="w-full flex justify-center items-center mt-4">
+            <button
+              onClick={() =>
+                navigate(`/active-tournament/${data.id_hash}/Wager_account`)
+              }
+              className="py-2 px-8 bg-primary-second text-[#000] w-full  text-xs sm:text-sm "
+            >
+              Increase bet
+            </button>
           </div>
         </div>
       )}

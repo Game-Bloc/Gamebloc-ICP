@@ -11,6 +11,7 @@ type Prop = {
 
 const WagerModal = ({ modal, data, handleModal, option }: Prop) => {
   const navigate = useNavigate()
+  const game_type = data.game_type.toUpperCase()
 
   return (
     <div>
@@ -36,8 +37,9 @@ const WagerModal = ({ modal, data, handleModal, option }: Prop) => {
                   >
                     <h4 className="font-medium text-[#08172E] text-white/90 text-base ">
                       {" "}
-                      Bet on your favourite Player
-                      {option ? "" : "or Participate in this tournament"}
+                      Bet on your favourite{" "}
+                      {game_type === "SINGLE" ? "player" : "squad"}
+                      {option ? "" : " or participate in this tournament"}
                     </h4>
                     <p className=" text-white/90 text-sm my-2"></p>
                     <div className=" flex mt-6 flex-row  ">

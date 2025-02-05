@@ -28,6 +28,8 @@ const TournamentInfo = ({ data }: Props) => {
   const [count, setCount] = useState(0)
   const MySwal = withReactContent(Swal)
   const [color, setColor] = useState("#ffffff")
+  const [forceClose, setForceClose] = useState(false)
+  const bet = useAppSelector((state) => state.userWager)
   const [days, hours, minutes, seconds] = useCountdown(count)
   const owner = useAppSelector((state) => state.userProfile.username)
   const { noData, updating, getAllSquads } = useGetAllSquad()
@@ -40,8 +42,8 @@ const TournamentInfo = ({ data }: Props) => {
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
-  const [openWager, setOpenWager] = useState<boolean>(true)
-  const { getExpectedReward } = hooks()
+  const [openWager, setOpenWager] = useState<boolean>(false)
+  const { getExpectedReward, getUserBet } = hooks()
   const option =
     Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG" &&
     data.creator == owner
@@ -69,6 +71,7 @@ const TournamentInfo = ({ data }: Props) => {
 
   const handleWagerModal2 = () => {
     setOpenWager(false)
+    setForceClose(true)
   }
 
   const squadCount = () => {
@@ -201,6 +204,7 @@ const TournamentInfo = ({ data }: Props) => {
 
   useEffect(() => {
     getExpectedReward(id, principal)
+    getUserBet(id, principal)
     if (squad?.length > 0) {
       updateAllSquads()
     } else {
@@ -744,14 +748,20 @@ const TournamentInfo = ({ data }: Props) => {
             modal={handleModal}
           />
         )}
-        {openWager && (
+        {data.users.some((index: any) => index.includes(owner)) === true ||
+        data.squad.some((players: any) =>
+          players.members.some((gamer: any) => gamer.name.includes(owner)),
+        ) === true ? (
+          <></>
+        ) : !forceClose &&
+          (openWager || bet?.staker_principal_id !== principal) ? (
           <WagerModal
             data={data}
             option={option}
             modal={handleWagerModal}
             handleModal={handleWagerModal2}
           />
-        )}
+        ) : null}
       </div>
     )
   }
