@@ -66,6 +66,7 @@ const TournamentInfo = ({ data }: Props) => {
 
   const handleWagerModal = () => {
     setOpenWager(false)
+    setForceClose(true)
     setOpenPaymentModal(true)
   }
 

@@ -233,7 +233,6 @@ export const hooks = () => {
       )
       popUp(successMsg, route)
       setIsLoading(false)
-      window.location.reload()
     } catch (err) {
       setIsLoading(false)
       console.log("Error placing bet :", err)

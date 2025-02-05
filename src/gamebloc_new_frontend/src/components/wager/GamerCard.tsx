@@ -3,12 +3,15 @@ import { ConfigProvider, Progress } from "antd"
 import { SiNintendogamecube } from "react-icons/si"
 import { FaArrowTrendUp, FaArrowTrendDown } from "react-icons/fa6"
 import BetConfirmModal from "./BetConfirmModal"
+import { useAppSelector } from "../../redux/hooks"
+import { errorPopUp } from "../utils/ErrorModal"
 interface Prop {
   list: any
   data: any
 }
 
 const GamerCard = ({ data, list }: Prop) => {
+  const bet = useAppSelector((state) => state.userWager)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const game_type = data.game_type.toUpperCase()
   const loss = game_type !== "SINGLE" ? list.losses[0] : list.losses[0]
@@ -21,12 +24,13 @@ const GamerCard = ({ data, list }: Prop) => {
   const _squadLoss = loss === undefined ? 0 : squadLoss
   const winRate = (squadWin / (squadWin + squadLoss)) * 100 - 1
   const _winRate = (soloWin / (soloWin + loss)) * 100 - 1
+  const bet_id = game_type === "SINGLE" ? list?.principal_id : list?.id_hash
   const handleModal = () => {
     setOpenModal(false)
   }
 
-  console.log("win", soloWin)
-  console.log("loss", loss)
+  // console.log("win", soloWin)
+  console.log("id", bet?.player_principal_id)
 
   return (
     <div className="flex  flex-col p-4 border  border-solid border-[#9F9FA8] rounded-xl w-full">
@@ -86,7 +90,18 @@ const GamerCard = ({ data, list }: Prop) => {
         </div>
       </div>
       <button
-        onClick={() => setOpenModal(true)}
+        onClick={
+          bet?.player_principal_id === ""
+            ? () => setOpenModal(true)
+            : bet?.player_principal_id !== bet_id
+            ? () =>
+                errorPopUp(
+                  `You can't bet on two different ${
+                    game_type === "SINGLE" ? "player" : "squad"
+                  }`,
+                )
+            : () => setOpenModal(true)
+        }
         className="py-2 px-8 mt-3 bg-[#211422] text-primary-second w-full  text-xs sm:text-sm rounded-full "
       >
         Place Bet

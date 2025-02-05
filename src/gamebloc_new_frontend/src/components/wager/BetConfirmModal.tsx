@@ -57,7 +57,7 @@ const BetConfirmModal = ({ modal, id, name, data }: Prop) => {
         principal_id,
         account_id,
         id,
-        "",
+        `/active-tournament/${data.id_hash}`,
         "Bet placed",
         "Error, something went wrong",
       )
