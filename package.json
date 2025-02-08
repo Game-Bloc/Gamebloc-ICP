@@ -19,6 +19,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
     "@babel/eslint-parser": "^7.23.3",
+    "@ctrl/tinycolor": "^4.1.0",
     "@dfinity/agent": "^1.0.1",
     "@dfinity/auth-client": "^1.0.1",
     "@dfinity/candid": "^1.0.1",

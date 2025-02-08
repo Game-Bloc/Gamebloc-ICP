@@ -1810,26 +1810,39 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         }
     };
 
+
     public func getLobbyFromTournament(tournament_id : Text, lobby_id : Nat8) : async Bloctypes.LobbyAccount {
     try {
         return await RustBloc.get_lobby_from_tournament(tournament_id, lobby_id);
         } catch err {
             throw err;
-        };
+        }
     };
 
-    // public query func getAllTournamentLobbies(tournament_id : Text, points : [(Text, Text, Nat8)], principal : Principal) : async Bloctypes.Point
-    // {
-    //     try
-    //     {
-    //         let result = await RustBloc.get_all_tournament(tournament_id, points);
-    //     }
-    //     catch err
-    //     {
-    //         throw(err)
-    //     }
-    // };
-    
+
+   public func getAllTournamentLobbies(tournament_id: Text) : async [Bloctypes.LobbyAccount] {
+        try 
+        {
+            let getAlTournament = await RustBloc.get_all_tournament_lobbies(tournament_id);
+            return getAlTournament;
+        }
+        catch err
+        {
+            throw err;
+        }
+    };
+
+    public func count_tournament_lobbies(tournament_id : Text) : async Nat {
+        try
+        {
+            let lobbyCount = await RustBloc.count_tournament_lobbies(tournament_id);
+            return lobbyCount;
+        }
+        catch err
+        {
+            throw err;
+        }
+    };
 
 
     public func assign_solo_points(tournament_id : Text, user_id_and_points : [(Text, Text, Bloctypes.Point)], principal : Principal) : async Bool {
