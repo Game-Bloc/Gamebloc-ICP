@@ -38,7 +38,7 @@ pub fn assign_squad_points(
                     .cloned()
                     .unwrap();
                 let mut sorted_squad_id_and_points = squad_id_and_points;
-                sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                sorted_squad_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                 tournament.squad_points = Some(sorted_squad_id_and_points);
 
                 tournament_store
@@ -54,7 +54,7 @@ pub fn assign_squad_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_squad_id_and_points = squad_id_and_points;
-                    sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_squad_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.squad_vector_mod_1 = Some(sorted_squad_id_and_points);
 
                     tournament_store
@@ -69,7 +69,7 @@ pub fn assign_squad_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_squad_id_and_points = squad_id_and_points;
-                    sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_squad_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.squad_vector_mod_2 = Some(sorted_squad_id_and_points);
 
                     tournament_store
@@ -84,7 +84,7 @@ pub fn assign_squad_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_squad_id_and_points = squad_id_and_points;
-                    sorted_squad_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_squad_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.squad_vector_mod_3 = Some(sorted_squad_id_and_points);
 
                     tournament_store
@@ -120,7 +120,7 @@ pub fn assign_solo_points(
                     .cloned()
                     .unwrap();
                 let mut sorted_user_id_and_points = user_id_and_points;
-                sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                sorted_user_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                 tournament.points = Some(sorted_user_id_and_points);
                 tournament_store
                     .borrow_mut()
@@ -135,7 +135,7 @@ pub fn assign_solo_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_user_id_and_points = user_id_and_points;
-                    sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_user_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.points_vector_mod_1 = Some(sorted_user_id_and_points);
                     tournament_store
                         .borrow_mut()
@@ -149,7 +149,7 @@ pub fn assign_solo_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_user_id_and_points = user_id_and_points;
-                    sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_user_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.points_vector_mod_2 = Some(sorted_user_id_and_points);
                     tournament_store
                         .borrow_mut()
@@ -163,7 +163,7 @@ pub fn assign_solo_points(
                         .cloned()
                         .unwrap();
                     let mut sorted_user_id_and_points = user_id_and_points;
-                    sorted_user_id_and_points.sort_by_key(|k| k.2.total_points);
+                    sorted_user_id_and_points.sort_by_key(|k| Reverse(k.2.total_points));
                     tournament.points_vector_mod_3 = Some(sorted_user_id_and_points);
                     tournament_store
                         .borrow_mut()
