@@ -12,6 +12,7 @@ CANDID_FILE := game_bloc_backend/game_bloc_backend.did
 
 # Targets
 
+
 # Default target: build and deploy everything
 all: build deploy
 
