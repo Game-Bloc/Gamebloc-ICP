@@ -3,11 +3,13 @@ use std::collections::{BTreeMap};
 
 use candid::{Principal};
 use ic_cdk::{init, post_upgrade, pre_upgrade, query, update};
-
-use model::*;
 use serialization_memory_ids::*;
 
-mod model;
+use models::model::*;
+use models::news::*;
+
+#[cfg(target_arch = "wasm32")]
+use reqwest::Client;
 
 mod serialization_memory_ids;
 
@@ -15,6 +17,7 @@ mod squad_mutations;
 mod tournament_lobbies_management;
 mod wager_mutations;
 mod tournaments;
+mod models;
 
 type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
@@ -232,6 +235,27 @@ pub fn get_mods() -> Vec<UserProfile> {
             });
         all_users
     })
+}
+
+#[query]
+pub async fn get_fortnite_news() -> Vec<News> {
+    let http_client = Client::new();
+
+    let result_v2 = fortnite_api::get_news_v2(&http_client, None).await;
+    // println!("Result: {:#?}", result);
+
+    let result_br = fortnite_api::get_news_br_v2(&http_client, None).await;
+    // println!("Result: {:#?}", result);
+
+    let result_stw = fortnite_api::get_news_stw_v2(&http_client, None).await;
+    // println!("Result: {:#?}", result);
+    // let result_creative:Result<News> = fortnite_api::get_news_creative_v2(&http_client, None).await;
+    // println!("Result: {:#?}", result);
+
+    let stw_news_inner = result_stw.unwrap();
+    let br_news_inner = result_stw.unwrap();
+    let all_news:Vec<News> = vec![stw_news_inner, br_news_inner];
+    all_news
 }
 
 #[update]

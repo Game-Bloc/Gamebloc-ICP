@@ -1,4 +1,4 @@
-use crate::model::{GameType, Member, TournamentAccount, UserProfile};
+use crate::models::model::{GameType, Member, TournamentAccount, UserProfile};
 use crate::{ID_STORE, PROFILE_STORE, SQUAD_STORE};
 use std::cmp::Ordering;
 

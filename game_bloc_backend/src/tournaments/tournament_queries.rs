@@ -1,5 +1,5 @@
 use ic_cdk_macros::query;
-use crate::model::TournamentAccount;
+use crate::models::model::TournamentAccount;
 use crate::TOURNAMENT_STORE;
 
 #[query]
