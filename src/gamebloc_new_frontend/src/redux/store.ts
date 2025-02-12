@@ -21,6 +21,7 @@ import transactionReducer from "./slice/transactionSlice"
 import notificationReducer from "./slice/notificationSlice"
 import leaderboardReducer from "./slice/leaderboardSlice"
 import dailyStreakReducer from "./slice/dailyStreak"
+import wagerReducer from "./slice/wagerSlice"
 
 const persistConfig = {
   key: "root",
@@ -41,6 +42,7 @@ const reducer = combineReducers({
   notification: notificationReducer,
   leaderboard: leaderboardReducer,
   dailyStreak: dailyStreakReducer,
+  userWager: wagerReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)

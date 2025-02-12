@@ -10,6 +10,8 @@ import {
   updateStreak,
   updateTime,
 } from "../redux/slice/dailyStreak"
+import { updateBet } from "../redux/slice/wagerSlice"
+import store from "../redux/store"
 
 export const hooks = () => {
   const {
@@ -23,6 +25,7 @@ export const hooks = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const MySwal = withReactContent(Swal)
+  const [reward, setReward] = useState<any>()
   const [done, setDone] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -198,9 +201,6 @@ export const hooks = () => {
       )
       setActivateloading(false)
       popUp(successMsg, route)
-      console.log("Principal:", principal)
-      console.log("Point:", point)
-      console.log("Points allocated")
     } catch (err) {
       setActivateloading(false)
       console.log("Error allocating Points :", err)
@@ -208,13 +208,95 @@ export const hooks = () => {
     }
   }
 
+  // BET FUNCTIONS
+  const bet = async (
+    id: string,
+    amount: bigint,
+    staker_principal_id: string,
+    staker_account_id: string,
+    player_principal_id: string,
+    route: string,
+    successMsg: string,
+    errorMsg: string,
+  ) => {
+    const wager = {
+      amount,
+      staker_principal_id,
+      staker_account_id,
+      player_principal_id,
+    }
+    try {
+      setIsLoading(true)
+      const wage = await whoamiActor2.add_or_increase_tournament_wager(
+        id,
+        wager,
+      )
+      popUp(successMsg, route)
+      setIsLoading(false)
+    } catch (err) {
+      setIsLoading(false)
+      console.log("Error placing bet :", err)
+      errorPopUp(errorMsg)
+    }
+  }
+
+  const getAllWager = async (id: string) => {
+    try {
+      const wager = await whoamiActor2.get_all_wagers(id)
+      console.log("Wagers", wager)
+    } catch (err) {
+      console.log("Error getting wager :", err)
+    }
+  }
+
+  const getUserBet = async (id: string, staker_principal_id: string) => {
+    try {
+      setUpdating(true)
+      const bet = await whoamiActor2.get_wager(id, staker_principal_id)
+      if (bet && bet.length !== 0) {
+        for (const data of bet) {
+          const betData = {
+            amount: Number(data.amount),
+            player_principal_id: data.player_principal_id,
+            staker_account_id: data.staker_account_id,
+            staker_principal_id: data.staker_principal_id,
+          }
+          // console.log("bet data", betData)
+          dispatch(updateBet(betData))
+        }
+      }
+      setUpdating(false)
+    } catch (err) {
+      setUpdating(false)
+      console.log("Error getting user bet", err)
+    }
+  }
+
+  const getExpectedReward = async (id: string, staker_principal_id: string) => {
+    try {
+      setActivateloading(true)
+      const reward = await whoamiActor2.expected_wager_reward(
+        id,
+        staker_principal_id,
+      )
+      // console.log("reward:", reward[0])
+      setReward(Number(reward[0]))
+      setActivateloading(false)
+    } catch (err) {
+      setActivateloading(false)
+      console.log("Error getting reward", err)
+    }
+  }
+
   return {
+    bet,
     done,
     sending,
     updating,
     isLoading,
     claimloading,
     activateloading,
+    reward,
     setAdmin,
     setTribunal,
     disburseFunds,
@@ -223,8 +305,11 @@ export const hooks = () => {
     getMyStreakCount,
     getStreakTime,
     whoami,
+    getAllWager,
     allocateUserPoint,
     kitchenBalance,
+    getUserBet,
+    getExpectedReward,
   }
 }
 

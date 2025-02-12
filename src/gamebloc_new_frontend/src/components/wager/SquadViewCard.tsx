@@ -66,7 +66,7 @@ const SquadViewCard = ({ data, list }: Prop) => {
           </motion.div>
         )}
       </AnimatePresence>
-      {openModal && <BetConfirmModal modal={handleModal} />}
+      {/* {openModal && <BetConfirmModal modal={handleModal} />} */}
     </div>
   )
 }
