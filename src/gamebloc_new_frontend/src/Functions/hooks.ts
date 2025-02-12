@@ -11,7 +11,17 @@ import {
   updateTime,
 } from "../redux/slice/dailyStreak"
 import { updateBet } from "../redux/slice/wagerSlice"
-import store from "../redux/store"
+
+import { updateKitchenBalance } from "../redux/slice/icpBalanceSlice"
+import {
+  addAdminTransactions,
+  clearTransaction,
+} from "../redux/slice/adminTransaction"
+
+// * Local dev
+const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+// ! Production params
+// const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
 export const hooks = () => {
   const {
@@ -32,6 +42,7 @@ export const hooks = () => {
   const [activateloading, setActivateloading] = useState<boolean>(false)
   const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
+  const [fetching, setFetching] = useState<boolean>(false)
 
   const popUp = (successMsg: string, route: any) => {
     MySwal.fire({
@@ -60,13 +71,96 @@ export const hooks = () => {
   }
 
   // ADMIN HUB FUNCTION
+  const getAdminTransaction = async () => {
+    try {
+      const account = {
+        owner: admin_principal,
+        subaccount: [],
+      }
+      const args: any = {
+        max_results: BigInt(100),
+        start: [],
+        account: account,
+      }
 
+      const history: any = await indexActor.get_account_transactions(args)
+      console.log("admin transaction history:", history.Ok.transactions)
+
+      dispatch(clearTransaction())
+
+      for (const data of history.Ok.transactions) {
+        const operation = data.transaction.operation
+
+        let action = ""
+        let amount = 0
+        let from = ""
+        let to = ""
+
+        if (operation.Transfer) {
+          // operation.Transfer.from === accountId ? "sent" :
+          action = "received"
+          amount = Number(operation.Transfer.amount.e8s) / 100000000 // Convert e8s to ICP
+          from = operation.Transfer.from
+          to = operation.Transfer.to
+        } else if (operation.Approve) {
+          action = "approve"
+          amount = Number(operation.Approve.allowance.e8s) / 100000000 // Convert e8s to ICP
+          from = operation.Approve.from
+          to = operation.Approve.spender
+        }
+
+        const timestampNanos =
+          data.transaction.created_at_time?.[0]?.timestamp_nanos || BigInt(0)
+        const timestampMillis = Number(timestampNanos / BigInt(1000000))
+        const date = new Date(timestampMillis)
+
+        const options: any = {
+          weekday: "short",
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+        }
+        const formattedDate = date
+          .toLocaleString("en-US", options)
+          .replace(",", " at")
+
+        const transaction = {
+          id: Number(data.id),
+          action: action,
+          amount: amount,
+          from: from,
+          to: to,
+          date: formattedDate,
+        }
+
+        dispatch(addAdminTransactions(transaction))
+        console.log("Dispatched admin transaction:", transaction)
+      }
+    } catch (err) {
+      console.log("Error getting admin transaction history:", err)
+    }
+  }
   const kitchenBalance = async () => {
     try {
+      setFetching(true)
       const balance = await whoamiActor.getKitchenBalance()
-      console.log("Kitchen Balance: ", balance)
+
+      if (balance) {
+        const value = Object.values(balance)[0]
+        const Icp: any = {
+          balance: Number(value) / 100000000,
+        }
+        console.log("Kitchen Balance: ", Icp.balance)
+        dispatch(updateKitchenBalance(Icp.balance))
+        setFetching(false)
+      }
     } catch (err) {
       console.log("Kitchen Balance Error: ", err)
+      setFetching(false)
+    } finally {
+      setFetching(false)
     }
   }
 
@@ -292,6 +386,7 @@ export const hooks = () => {
     bet,
     done,
     sending,
+    fetching,
     updating,
     isLoading,
     claimloading,
@@ -310,6 +405,7 @@ export const hooks = () => {
     kitchenBalance,
     getUserBet,
     getExpectedReward,
+    getAdminTransaction,
   }
 }
 
