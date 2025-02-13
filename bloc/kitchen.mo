@@ -197,13 +197,23 @@ func checkThisText() : async Text {
 };
 
 // Check 2
-public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
+public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat, number_of_winners : Nat8, winner : [Bloctypes.Winner]) : async () {
     // Tournamnet Id
     var mod = await is_mod(caller);
     var tournament = await get_tournament(id);
 
     // * Required variables for the switch cases
+    var tournamentType =  tournament.tournament_type;
+    var winnerSet : Bool = false;
+
+    if (tournamentType == #Blizkrieg) {
+        winnerSet := await RustBloc.allocate_winners_to_blitzkrieg_tournament(id, caller);
+        
+    } else {
+        winnerSet := await RustBloc.allocate_winners_to_tournament(id, caller, number_of_winners, winner);
+    };
     var winners = tournament.winners;
+    await end_tournament(id);
     var ended = tournament.ended;
 
     // * Check if tournamnet has ended
