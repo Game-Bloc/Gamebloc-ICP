@@ -7,8 +7,11 @@ use serialization_memory_ids::*;
 
 use models::model::*;
 use models::news::*;
+use fortnite_api::response_types::news::News as NewsResponse;
+use wasm_bindgen::prelude::*;
 
-#[cfg(target_arch = "wasm32")]
+
+// #[cfg(target_arch = "wasm32")]
 use reqwest::Client;
 
 mod serialization_memory_ids;
@@ -252,8 +255,16 @@ pub async fn get_fortnite_news() -> Vec<News> {
     // let result_creative:Result<News> = fortnite_api::get_news_creative_v2(&http_client, None).await;
     // println!("Result: {:#?}", result);
 
-    let stw_news_inner = result_stw.unwrap();
-    let br_news_inner = result_stw.unwrap();
+    let stw_news_inner:NewsResponse = result_stw.unwrap();
+    let br_news_inner:NewsResponse = result_stw.unwrap();
+    let mut stw_news = News::new(&stw_news_inner);
+    let mut br_news;
+    match stw_news_inner {
+        NewsResponse::NewsContent(stw_news) => {
+
+        }
+        NewsResponse::NoNews => {}
+    }
     let all_news:Vec<News> = vec![stw_news_inner, br_news_inner];
     all_news
 }
