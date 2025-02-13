@@ -940,7 +940,6 @@ public shared ({ caller }) func read_notification(caller : Principal, id : Nat) 
         }
     }
     // switch(notfication)
-
 };
 
 public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
@@ -976,6 +975,12 @@ public query func get_read_notifications(caller : Principal) : async [Bloctypes.
     };
     return read_notifications.toArray()
 };
+
+// public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
+//     for (user in Iter.fromArray(users)){
+//         await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
+//     }
+// };
 
 /// Notfications Panel Ends
 
@@ -1507,7 +1512,9 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                                 // * since the price is in hundreds to bypass the datatype restrictions
                                 amount = (entry * multiplier * 10_000_000_000) / (icp_price); //In USD
                             });
+                            // await notify("Tournament created successfully", "Your crowdfunded tournament has been successfully created", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
                             _amount := (entry * multiplier * 10_000_000_000) / (icp_price);
+                            
 
                         } catch (err) {
                             throw Error.reject("There is an issue wih the transfer")
@@ -1538,12 +1545,12 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
             var result = await RustBloc.create_tournament(tournamentAccount);
             // TODO: Notify the users, fix date, notify deposit and withdrawals
             // ? Is approval notifications really necessary though
-            let withdrawalNotification = await notify("ICP Withdrawal Request Processed", "Dear " # tournamentAccount.creator # ",\n 
-                Your request to withdraw "# Nat.toText(_amount) # " ICP from your Gamebloc account has been successfully processed. The funds should now be available in the destination wallet.\n
-                If you encounter any issues or have any questions, please contact our support team.\n
-                Thank you for using Gamebloc, and we look forward to seeing you in future tournaments!\n
-                Best regards,\n
-                Gamebloc Team", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
+            // await notify("ICP Withdrawal Request Processed", "Dear " # tournamentAccount.creator # ",\n 
+            //     Your request to withdraw "# Nat.toText(_amount) # " ICP from your Gamebloc account has been successfully processed. The funds should now be available in the destination wallet.\n
+            //     If you encounter any issues or have any questions, please contact our support team.\n
+            //     Thank you for using Gamebloc, and we look forward to seeing you in future tournaments!\n
+            //     Best regards,\n
+            //     Gamebloc Team", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
             // let depositNotification = await notify("Successful ICP Deposit to Your Gamebloc Account");
             let tournamentNotification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
             result;
@@ -1554,91 +1561,6 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
         }
     }
 };
-
-// ! Deprecated func
-
-// public shared ({ caller }) func create_tournament2(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
-//     if (icp_price == 0){
-//         Debug.print(debug_show(icp_price));
-//         throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
-//     } else {
-//         try {
-
-//             await update_tournaments_created(caller);
-//             TournamentHashMap.put(caller, tournamentAccount);
-//             var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
-
-//             Debug.print(debug_show(fromPrincipal));
-
-//             var toAccount : LedgerTypes.Account = {
-//                 owner = gbc_admin;
-//                 subaccount = null;
-//             };
-
-//             Debug.print(debug_show(toAccount));
-
-//             var fromAccount : LedgerTypes.Account = {
-//                 owner = fromPrincipal;
-//                 subaccount = null;
-//             };
-
-//             Debug.print(debug_show(fromAccount));
-
-//             Debug.print(debug_show(tournamentAccount.tournament_type));
-
-//             if (tournamentAccount.tournament_type == #Crowdfunded) {
-
-//                 try {
-//                     // var actual_price = amount / icp_price;
-//                     var result = await ICPLedger.icrc2_transfer_from({
-//                         to = toAccount;
-//                         // ! Deprecated
-//                         // {
-//                         //     owner = gbc_admin;
-//                         //     subaccount = null;
-//                         // };
-//                         fee = null;
-//                         spender_subaccount = null;
-//                         from = fromAccount;
-//                         // ! Deprecated
-//                         // {
-//                         //     owner = fromPrincipal;
-//                         //     subaccount = null;
-//                         // };
-//                         memo = null;
-//                         created_at_time = null;
-//                         amount = Nat8.toNat(tournamentAccount.entry_prize)/icp_price; //In USD
-//                     });
-//                 } catch (err) {
-//                     throw Error.reject("There is an issue wih the transfer");
-//                 }
-
-//             } else { //Should be #prepaid
-//                 var result = await ICPLedger.icrc2_transfer_from({
-//                     to = {
-//                 owner = gbc_admin;
-//                 subaccount = null;
-//             };
-//                     fee = null;
-//                     spender_subaccount = null;
-//                     from = {
-//                 owner = fromPrincipal;
-//                 subaccount = null;
-//             };
-//                     memo = null;
-//                     created_at_time = null;
-//                     amount = tournamentAccount.total_prize/icp_price;
-//                 });
-//             };
-
-//             await RustBloc.create_tournament(tournamentAccount);
-
-//             // return result
-//         } catch err {
-//             throw (err)
-//         }
-//     }
-// };
 
 public func count_all_squad() : async Nat {
     await RustBloc.count_all_squad()
@@ -1656,28 +1578,6 @@ public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, 
         throw (err)
     }
 };
-
-// public shared ({ caller }) func test_end_tournament(id : Text, no_of_winners : Nat8) : async Bool {
-//     try {
-//         await RustBloc.test_end_tournament(id, caller, no_of_winners)
-//     } catch err {
-//         throw (err)
-//     }
-// };
-
-// public shared ({ caller }) func archive_tournament(id : Text) {
-//     try {
-//         await RustBloc.archive_tournament(id)
-//     } catch err {
-//         throw (err)
-//     }
-// };
-
-// public shared ({ caller }) func getSelf() : async Bloctypes.UserProfile {
-//     // assert(caller == userCanisterId);
-//     let result : Bloctypes.UserProfile = await RustBloc.get_profile_by_principal(caller);y
-//     result
-// };
 
 public shared ({ caller }) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
     // assert(caller == userCanisterId);
@@ -1710,6 +1610,11 @@ public shared func getUserPrincipal(name : Text) : async Principal {
     var result = await RustBloc.get_profile(name);
     return Principal.fromText(result.principal_id)
 };
+
+// public func getUsername(caller : Principal) : async Text {
+//     var result = await RustBloc.get_profile(await getUserPrincipal(ca));
+//     return result.username
+// };
 
 public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
     try {
@@ -1918,7 +1823,8 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
 
                 await update_tournaments_joined(caller);
                 // var _caller : Text = caller.toText();
-                return await RustBloc.join_tournament(name, id, ign)
+                // await notify("🎉 Tournament Joined Successfully! 🎉", "Congratulations, " # getUsername(caller) # "! You have successfully joined the tournament " # tournamentAccount.title #  ". 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), getUsername(caller));
+                return await RustBloc.join_tournament(name, id, ign);
             } catch err {
                 throw (err)
             }
