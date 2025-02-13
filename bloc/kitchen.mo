@@ -905,6 +905,9 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
     }
 };
 
+public func whoami() : async Principal {
+    Principal.fromActor(this)
+};
 public shared ({ caller }) func read_notification(caller : Principal, id : Nat) : async ?() {
     var notification = NOTIFICATION_STORE.get(caller);
     var updatedNotifications = Buffer.Buffer<Bloctypes.Notification>(0);
@@ -976,11 +979,12 @@ public query func get_read_notifications(caller : Principal) : async [Bloctypes.
     return read_notifications.toArray()
 };
 
-// public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
-//     for (user in Iter.fromArray(users)){
-//         await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
-//     }
-// };
+public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
+    for (user in Iter.fromArray(users)){
+        await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
+    }
+
+};
 
 /// Notfications Panel Ends
 
@@ -2134,15 +2138,6 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 }
             }
         };
-        // switch(msg) {
-        //     case(#GroupMessage(message)){
-
-        //     } case ()
-        // };
-
-        // var john = msg.
-        // var actualMessage = msg.GroupMessage.Messagse;
-        // var newMessage = sendMessage( msg.GroupChatMessage.Message.body, msg.GroupMessage.Message.time, msg.GroupMessage.Message.username, msg.GroupMessage.Message.f_id )
     };
 
     func on_open(args : IcWebSocketCdk.OnOpenCallbackArgs) : async () {
