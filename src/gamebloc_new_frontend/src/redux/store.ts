@@ -23,6 +23,7 @@ import leaderboardReducer from "./slice/leaderboardSlice"
 import dailyStreakReducer from "./slice/dailyStreak"
 import wagerReducer from "./slice/wagerSlice"
 import adminTransactionReducer from "./slice/adminTransaction"
+import adminProfileReducer from "./slice/adminProfile"
 
 const persistConfig = {
   key: "root",
@@ -33,6 +34,7 @@ const persistConfig = {
 
 const reducer = combineReducers({
   userProfile: profileReducer,
+  adminProfile: adminProfileReducer,
   tournamentData: tournamentReducer,
   gameCategory: categoryReducer,
   authenticationClient: authReducer,

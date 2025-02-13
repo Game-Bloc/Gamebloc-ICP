@@ -164,6 +164,19 @@ export const hooks = () => {
     }
   }
 
+  const getAdminAccID = async (principal_id: string) => {
+    const admin_id = Principal.fromText(principal_id)
+    try {
+      setIsLoading(true)
+      const id = whoamiActor.getAccountIdentifier(admin_id)
+      console.log("admin_id", id)
+      setIsLoading(false)
+    } catch (err) {
+      console.log("Error getting admin id: ", err)
+      setIsLoading(false)
+    }
+  }
+
   const setAdmin = async (principal: Principal) => {
     try {
       setUpdating(true)
@@ -393,6 +406,7 @@ export const hooks = () => {
     activateloading,
     reward,
     setAdmin,
+    getAdminAccID,
     setTribunal,
     disburseFunds,
     claimToday,

@@ -1,4 +1,5 @@
 use std::cell::RefCell;
+use std::cmp::Reverse;
 use std::collections::{BTreeMap};
 
 use candid::{Principal};
@@ -307,7 +308,7 @@ pub fn get_leaderboard() -> Vec<Contestant> {
             }
         });
         let mut sorted_leaderboard = leaderboard;
-        sorted_leaderboard.sort_by_key(|k| k.point);
+        sorted_leaderboard.sort_by_key(|k| Reverse(k.point));
 
         sorted_leaderboard
     })
