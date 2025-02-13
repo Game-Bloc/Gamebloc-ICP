@@ -283,7 +283,7 @@ pub fn start_tournament(id: String) {
 }
 
 #[update]
-pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
+pub fn allocate_winners_to_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
     match get_profile_by_principal(principal).role {
         None => {
             println!("you're not admin");
@@ -298,10 +298,6 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                 Role::Mod => {
                     TOURNAMENT_STORE.with(|tournament_store| {
                         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-                        tournament.status = match tournament.status {
-                            TournamentStatus::GameInProgress => TournamentStatus::GameCompleted,
-                            _ => TournamentStatus::GameCompleted,
-                        };
                         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
                             GameType::TeamvTeam => {}
                             GameType::Single => {
@@ -531,7 +527,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
 }
 
 #[update]
-pub fn end_tournament(
+pub fn allocate_winners_to_tournament(
     id: String,
     principal: Principal,
     number_of_winners: u8,
@@ -552,10 +548,6 @@ pub fn end_tournament(
                 Role::Mod => {
                     TOURNAMENT_STORE.with(|tournament_store| {
                         let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
-                        tournament.status = match tournament.status {
-                            TournamentStatus::GameInProgress => TournamentStatus::GameCompleted,
-                            _ => TournamentStatus::GameCompleted,
-                        };
                         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
                             GameType::TeamvTeam => {}
                             GameType::Single => {
@@ -780,6 +772,17 @@ pub fn archive_tournament(id: String) {
         tournament.status = match tournament.status {
             TournamentStatus::GameInProgress => TournamentStatus::Archived,
             _ => TournamentStatus::Archived,
+        };
+        tournament_store.borrow_mut().insert(id, tournament);
+    });
+}
+#[update]
+pub fn end_tournament(id: String) {
+    TOURNAMENT_STORE.with(|tournament_store| {
+        let mut tournament = tournament_store.borrow().get(&id).cloned().unwrap();
+        tournament.status = match tournament.status {
+            TournamentStatus::GameInProgress => TournamentStatus::GameCompleted,
+            _ => TournamentStatus::GameCompleted,
         };
         tournament_store.borrow_mut().insert(id, tournament);
     });
