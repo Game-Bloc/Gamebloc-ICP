@@ -1,11 +1,13 @@
 node_modules
 .DS_Store
+idea
+.idea/*
 dist
 dist-ssr
 *.local
 .dfx
 .history/*
-.idea/*
+game_bloc_backend/.idea/*
 .vscode/*
 
 target
