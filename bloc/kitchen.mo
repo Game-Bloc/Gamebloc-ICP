@@ -197,7 +197,7 @@ func checkThisText() : async Text {
 };
 
 // Check 2
-public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat, number_of_winners : Nat8, winner : [Bloctypes.Winner]) : async () {
+public shared ({ caller }) func concludeTournament(id : Text, icp_price : Nat, number_of_winners : Nat8, winner : [Bloctypes.Winner]) : async () {
     // Tournamnet Id
     var mod = await is_mod(caller);
     var tournament = await get_tournament(id);
@@ -206,7 +206,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat, numb
     var tournamentType =  tournament.tournament_type;
     var winnerSet : Bool = false;
 
-    if (tournamentType == #Blizkrieg) {
+    if (tournamentType == #Blitzkrieg) {
         winnerSet := await RustBloc.allocate_winners_to_blitzkrieg_tournament(id, caller);
         
     } else {
@@ -228,7 +228,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat, numb
 
     // ? OR should i use the transfer_From feature.
     // * That would probably require series of approvals, mendokseee
-    // TODO: Test this function's automated feat
+    // TODO: Test this function's automation feat
 
     try {
         if (await is_mod(caller)) {
@@ -1580,10 +1580,10 @@ public func count_all_users() : async Nat {
     await RustBloc.count_all_users()
 };
 
-public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
+public shared ({ caller }) func end_tournament(id : Text) : async () {
     try {
         // Checks the role and other conditions before actually ending the tournament
-        await RustBloc.end_tournament(id, caller, no_of_winners, winner)
+        await RustBloc.end_tournament(id)
     } catch err {
         throw (err)
     }
