@@ -992,6 +992,18 @@ public query func get_read_notifications(caller : Principal) : async [Bloctypes.
 //     }
 // };
 
+// public func broadcast(title : Text, body : Text, date : Text) : async () {
+//     for ((principal, notifications) in NOTIFICATION_STORE.entries()) {
+//         let id = await get_notification_id(principal);
+//         let newNotification = makeNotification(id + 1, title, body, principal, notifications.user, date, false);
+//         let updatedNotifications : Bloctypes.Notifications = {
+//             notifications = Array.append(notifications.notifications, [newNotification]);
+//             user = principal
+//         };
+//         NOTIFICATION_STORE.replace(principal, updatedNotifications);
+//     };
+// };
+
 /// Notfications Panel Ends
 
 public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
@@ -2295,7 +2307,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 // };
             }
         }
-    }
+    };
     // Call this method to check the balance.
     // public query func checkBalance(accountId: Text): async Nat {
     //     // Use the ICP ledger to query the account balance.
@@ -2311,5 +2323,106 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     //     };
     //     transactionHistory := transactionHistory # [transaction];  // Append to history
     // }
+
+    // TODO:  Wagers disbursements;
+
+    module FeedTypes {
+        public type GameId = Principal;
+        public type PostId = Nat;
+
+        public type GameProfile = {
+            id : GameId;
+            name : Text;
+            description : Text;
+            logo : Text; //URI
+        };
+
+        public type Post = {
+            id : PostId;
+            gameId : GameId;
+            title : Text;
+            content : Text;
+            date : Text;
+        };
+
+        public type Posts = [Post];
+
+    };
+
+    let GAME_PROFILES = HashMap.HashMap<FeedTypes.GameId, FeedTypes.GameProfile>(10, Principal.equal, Principal.hash);
+    let POSTS = HashMap.HashMap<FeedTypes.PostId, FeedTypes.Posts>(10, Nat.equal, Hash.hash);
+    let FEED = Buffer.Buffer<FeedTypes.Post>(0);
+
+    var postIdCounter : FeedTypes.PostId = 0;
+
+    func generatePostId() : FeedTypes.PostId {
+        postIdCounter += 1;
+        postIdCounter
+    };
+
+    public shared ({ caller }) func createGameProfile(name : Text, description : Text, logo : Text) : async Text {
+        let gameProfile = {
+            id = caller;
+            name = name;
+            description = description;
+            logo = logo;
+        };
+        GAME_PROFILES.put(gameId, gameProfile);
+        return "Your game profile has been successfully created"
+    };
+
+    public shared ({ caller }) func createPost(gameId : FeedTypes.GameId, title : Text, content : Text, date : Text) : async Text {
+        switch (GAME_PROFILES.get(caller)) {
+            case null {
+                return "Game profile not found, please register and try again"
+            };
+            case (?gameProfile) {
+                let post = {
+                    id = generatePostId();
+                    gameId = caller;
+                    title = title;
+                    content = content;
+                    date = date;
+                };
+                POSTS.put(postId, post);
+                FEED.add(post);
+                return "Your post has been successfully created"
+            }
+        };
+    };
+
+    public query func getTotalGameProfiles() : async Nat {
+        GAME_PROFILES.size()
+    };
+
+    public query func getTotalPosts() : async Nat {
+        POSTS.size()
+    };
+
+    // public query func getAllGameProfiles() : async [FeedTypes.GameProfile] {
+    //     GAME_PROFILES.values()
+    // };
+
+    public query func getGameProfile(gameId : FeedTypes.GameId) : async ?FeedTypes.GameProfile {
+        GAME_PROFILES.get(gameId)
+    };
+
+    public query func getGlobalFeed() : async [FeedTypes.Post] {
+        FEED.toArray()
+    };
+
+    public query func getPost(postId : FeedTypes.PostId) : async ?FeedTypes.Posts {
+        POSTS.get(postId)
+    };
+
+    public query func getGameFeed(gameId : FeedTypes.GameId) : async [FeedTypes.Post] {
+        let gameFeed = Buffer.Buffer<FeedTypes.Post>(0);
+        for (post in POSTS.vals()) {
+            if (post.gameId == gameId) {
+                gameFeed.add(post)
+            }
+        };
+        gameFeed.toArray()
+    };
 
 }
