@@ -81,7 +81,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
           <p className=" text-[.6rem] sm:text-lg my-[.6rem] sm:my-4">
             Host: {list.Host}
           </p>
-          <button
+          {/* <button
             onClick={() =>
               navigate("/active-tournament/0000000009Q0QTTVA8FNSP0BVZ")
             }
@@ -89,7 +89,7 @@ const CarouselCard = ({ list, setModal }: Props) => {
           >
             Join now
             <img src={`details.png`} alt="" className=" ml-[.6rem] sm:ml-6" />
-          </button>
+          </button> */}
           <div className="sm:flex sm:flex-wrap gap-4 mt-8 hidden ">
             {list.tags.map((value, index) => (
               <p

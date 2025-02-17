@@ -40,14 +40,14 @@ const Carousell = () => {
       hash: "L28hE@~VQm.m8yyBJ|$-0000s@ne",
       tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
     },
-    // {
-    //   title: "KOMBAT CHAMPIONSHIP",
-    //   name: "Mortal Kombat 1",
-    //   Host: "Kobra Kia",
-    //   img: `img4.png`,
-    //   hash: "LMKnl5t7_2oI.TRjVXofxvt6RPWB",
-    //   tags: ["Fighting", "Action", "Battle Royle", "Multiplayer"],
-    // },
+    {
+      title: "ALL OUR PAST TOURNAMENTS",
+      name: "Call of Duty: Mobile",
+      Host: "GAMEBLOC",
+      img: `ad.png`,
+      hash: "L9G825$:qs5E#Mkf?1IvI-IVoNxv",
+      tags: ["Fighting", "Action", "Battle Royle", "Multiplayer"],
+    },
     {
       title: "BLITZKRIEG",
       name: "Call of Duty: Mobile",
@@ -56,14 +56,14 @@ const Carousell = () => {
       hash: "LJF5yU-.~KV=-gRkxsWZ0ToeE4WU",
       tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
     },
-    // {
-    //   title: "FORTNITE ROYALE ",
-    //   name: "Fortnite",
-    //   Host: "Dealth Ream",
-    //   img: `img6.png`,
-    //   hash: "LUF=z3XmJRt6uPaeNFR+xvaKRjRj",
-    //   tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
-    // },
+    {
+      title: "THE BLITZKRIEG TOURNAMENT",
+      name: "Call of Duty: Mobile",
+      Host: "GAMEBLOC ",
+      img: `_ad.png`,
+      hash: "LUG*RE_NoeRP?t-;ayaxrgVzazt8",
+      tags: ["FPS", "Shooting", "Battle Royale", "Multiplayer"],
+    },
   ]
 
   return (

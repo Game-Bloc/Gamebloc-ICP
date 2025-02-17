@@ -117,6 +117,7 @@ const TransactionHistory = () => {
             colorBorder: "#595959",
             colorSplit: "#595959",
             controlItemBgActive: "#f6b8fc86",
+            colorText: "#fff",
           },
         }}
       >

@@ -2,7 +2,7 @@ import Swal from "sweetalert2"
 import React, { useEffect, useState } from "react"
 import withReactContent from "sweetalert2-react-content"
 import AdminSidebar from "../AdminComps/AdminSidebar"
-import AdminTabBar from "../AdminComps/AdminTabBar"
+import hooks from "../../Functions/hooks"
 import { useNavigate } from "react-router-dom"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import FallbackLoading from "../../components/Modals/FallBackLoader"
@@ -24,6 +24,8 @@ const Admin = () => {
   const { fetchAllTournaments } = useFetchAllTournaments()
   const [totalUsers, setTotalUsers] = useState<String>("")
   const { isAdmin, isLoading, getPlayers, getProfile } = useGameblocHooks()
+  const { getAdminTransaction, getAdminAccID } = hooks()
+
   const ongoingTournnamentCount = tournament.filter(
     (tour: any) =>
       Object.keys(tour.status)[0].toUpperCase() === "GAMEINPROGRESS",
@@ -39,6 +41,8 @@ const Admin = () => {
 
   useEffect(() => {
     getProfile()
+    getAdminAccID()
+    getAdminTransaction()
     console.log("is admin:", Object.keys(isMod[0])[0])
     if (Object.keys(isMod[0])[0].toUpperCase() === "PLAYER") {
       navigate("/admin-login")
@@ -109,14 +113,14 @@ const Admin = () => {
                   <h1 className="text-primary-second font-[600] mt-4  text-[2rem]">
                     Dashboard
                   </h1>
-                  <button
+                  {/* <button
                     onClick={() => navigate("/dashboard")}
                     className={`justify-center h-[2rem] w-fit px-6 text-[.6rem] sm:text-base ${"bg-primary-second hover:bg-primary-light"} text-black mt-[0.8rem] sm:mt-[1.5rem] flex rounded-[12px] items-center py-3 mr-8`}
                   >
                     <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
                       Homepage
                     </div>
-                  </button>
+                  </button> */}
                 </div>
 
                 <div className="flex flex-col w-full mt-[2.5rem]">
