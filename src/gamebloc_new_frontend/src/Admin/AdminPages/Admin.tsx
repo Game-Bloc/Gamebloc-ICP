@@ -24,7 +24,7 @@ const Admin = () => {
   const { fetchAllTournaments } = useFetchAllTournaments()
   const [totalUsers, setTotalUsers] = useState<String>("")
   const { isAdmin, isLoading, getPlayers, getProfile } = useGameblocHooks()
-  const { getAdminTransaction } = hooks()
+  const { getAdminTransaction, getAdminAccID } = hooks()
 
   const ongoingTournnamentCount = tournament.filter(
     (tour: any) =>
@@ -41,6 +41,7 @@ const Admin = () => {
 
   useEffect(() => {
     getProfile()
+    getAdminAccID()
     getAdminTransaction()
     console.log("is admin:", Object.keys(isMod[0])[0])
     if (Object.keys(isMod[0])[0].toUpperCase() === "PLAYER") {

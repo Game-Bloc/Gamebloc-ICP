@@ -11,7 +11,7 @@ import {
   updateTime,
 } from "../redux/slice/dailyStreak"
 import { updateBet } from "../redux/slice/wagerSlice"
-
+import { updateAdminProfile } from "../redux/slice/adminProfileSlice"
 import { updateKitchenBalance } from "../redux/slice/icpBalanceSlice"
 import {
   addAdminTransactions,
@@ -21,7 +21,7 @@ import {
 // * Local dev
 const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
 // ! Production params
-// const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+// const admin_principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
 export const hooks = () => {
   const {
@@ -43,6 +43,7 @@ export const hooks = () => {
   const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
+  const admin_id = useAppSelector((state) => state.adminProfile.account_id)
 
   const popUp = (successMsg: string, route: any) => {
     MySwal.fire({
@@ -97,8 +98,7 @@ export const hooks = () => {
         let to = ""
 
         if (operation.Transfer) {
-          // operation.Transfer.from === accountId ? "sent" :
-          action = "received"
+          action = operation.Transfer.from === admin_id ? "sent" : "received"
           amount = Number(operation.Transfer.amount.e8s) / 100000000 // Convert e8s to ICP
           from = operation.Transfer.from
           to = operation.Transfer.to
@@ -164,12 +164,15 @@ export const hooks = () => {
     }
   }
 
-  const getAdminAccID = async (principal_id: string) => {
-    const admin_id = Principal.fromText(principal_id)
+  const getAdminAccID = async () => {
     try {
       setIsLoading(true)
-      const id = whoamiActor.getAccountIdentifier(admin_id)
-      console.log("admin_id", id)
+      const id = await whoamiActor.getAccountIdentifier(admin_principal)
+      // console.log("admin_id", id)
+      const _id = {
+        account_id: id,
+      }
+      dispatch(updateAdminProfile(_id))
       setIsLoading(false)
     } catch (err) {
       console.log("Error getting admin id: ", err)

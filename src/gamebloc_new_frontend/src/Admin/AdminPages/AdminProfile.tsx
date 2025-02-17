@@ -6,6 +6,7 @@ import { Avatar } from "antd"
 import hooks from "../../Functions/hooks"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useAppSelector } from "../../redux/hooks"
+import Copy from "../../components/utils/Copy"
 
 const override = {
   display: "block",
@@ -19,7 +20,8 @@ const AdminProfile = () => {
   const dataState = useAppSelector((state) => state.adminTransaction)
   const balance = useAppSelector((state) => state.IcpBalance.kitchenBalance)
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
-  console.log("admin trans", dataState)
+  const admin_id = useAppSelector((state) => state.adminProfile.account_id)
+  console.log("admin ui id", admin_id)
   useEffect(() => {
     kitchenBalance()
     getAdminTransaction()
@@ -200,10 +202,10 @@ const AdminProfile = () => {
                       </div>
                     </div>
 
-                    {/* <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" /> */}
+                    <div className=" border-t-[1px] border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
-                    {/* <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
-                        <div className="flex flex-col justify-start">
+                    <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
+                      {/* <div className="flex flex-col justify-start">
                           <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                             Principal I.D{" "}
                           </p>
@@ -217,24 +219,24 @@ const AdminProfile = () => {
                                 : null}
                             </h2>
                           </div>
+                        </div> */}
+                      <div className="flex flex-col justify-start">
+                        <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                          Wallet Address{" "}
+                        </p>
+                        <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
+                          <Copy textToCopy={admin_id} />
+                          <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                            {admin_id
+                              ? admin_id.substring(0, 7) +
+                                "......" +
+                                admin_id.substring(58, 64)
+                              : null}
+                          </h2>
                         </div>
-                        <div className="flex flex-col justify-start">
-                          <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                            Wallet Address{" "}
-                          </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
-                            <Copy textToCopy={accountId} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
-                              {accountId
-                                ? accountId.substring(0, 7) +
-                                  "......" +
-                                  accountId.substring(58, 64)
-                                : null}
-                            </h2>
-                          </div>
-                        </div>
+                      </div>
 
-                        {squadId !== "" && (
+                      {/* {squadId !== "" && (
                           <div className="flex flex-col justify-start">
                             <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                               Squad I.D{" "}
@@ -250,8 +252,8 @@ const AdminProfile = () => {
                               </h2>
                             </div>
                           </div>
-                        )}
-                      </div> */}
+                        )} */}
+                    </div>
                   </div>
                 </div>
                 {/* TRANSACTIONS TAB*/}

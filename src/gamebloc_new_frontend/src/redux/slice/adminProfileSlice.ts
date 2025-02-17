@@ -17,6 +17,7 @@ export const adminProfileSlice = createSlice({
       state: AdminProfileState,
       { payload }: PayloadAction<AdminProfileState>,
     ) => {
+      // console.log("id payload", payload)
       state.account_id = payload.account_id
     },
   },

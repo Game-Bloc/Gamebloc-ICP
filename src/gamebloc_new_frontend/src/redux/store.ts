@@ -23,7 +23,7 @@ import leaderboardReducer from "./slice/leaderboardSlice"
 import dailyStreakReducer from "./slice/dailyStreak"
 import wagerReducer from "./slice/wagerSlice"
 import adminTransactionReducer from "./slice/adminTransaction"
-import adminProfileReducer from "./slice/adminProfile"
+import adminProfileReducer from "./slice/adminProfileSlice"
 
 const persistConfig = {
   key: "root",

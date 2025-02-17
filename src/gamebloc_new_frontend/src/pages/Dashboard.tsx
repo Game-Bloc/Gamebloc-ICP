@@ -36,7 +36,7 @@ const Dashboard = () => {
     getChatmessage,
     getICPrice,
   } = useGameblocHooks()
-  const { getMyPoints, getMyStreakCount, whoami } = hooks()
+  const { getMyPoints, getMyStreakCount, whoami, getAdminAccID } = hooks()
   const principalText = useAppSelector(
     (state) => state.userProfile.principal_id,
   )
@@ -68,6 +68,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (userSession === "true") {
       const principal = Principal.fromText(principalText)
+      getAdminAccID()
       getMyNotifications(principal)
       getNotificationId(principal)
       getMyPoints(principal)
