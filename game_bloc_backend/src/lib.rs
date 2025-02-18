@@ -6,13 +6,12 @@ use ic_cdk::{init, post_upgrade, pre_upgrade, query, update};
 use serialization_memory_ids::*;
 
 use models::model::*;
-use models::news::*;
-use fortnite_api::response_types::news::News as NewsResponse;
-use wasm_bindgen::prelude::*;
+// use models::news::*;
+// use fortnite_api::response_types::news::News as NewsResponse;
 
 
 // #[cfg(target_arch = "wasm32")]
-use reqwest::Client;
+// use reqwest::Client;
 
 mod serialization_memory_ids;
 
@@ -240,34 +239,28 @@ pub fn get_mods() -> Vec<UserProfile> {
     })
 }
 
-#[query]
-pub async fn get_fortnite_news() -> Vec<News> {
-    let http_client = Client::new();
-
-    let result_v2 = fortnite_api::get_news_v2(&http_client, None).await;
-    // println!("Result: {:#?}", result);
-
-    let result_br = fortnite_api::get_news_br_v2(&http_client, None).await;
-    // println!("Result: {:#?}", result);
-
-    let result_stw = fortnite_api::get_news_stw_v2(&http_client, None).await;
-    // println!("Result: {:#?}", result);
-    // let result_creative:Result<News> = fortnite_api::get_news_creative_v2(&http_client, None).await;
-    // println!("Result: {:#?}", result);
-
-    let stw_news_inner:NewsResponse = result_stw.unwrap();
-    let br_news_inner:NewsResponse = result_stw.unwrap();
-    let mut stw_news = News::new(&stw_news_inner);
-    let mut br_news;
-    match stw_news_inner {
-        NewsResponse::NewsContent(stw_news) => {
-
-        }
-        NewsResponse::NoNews => {}
-    }
-    let all_news:Vec<News> = vec![stw_news_inner, br_news_inner];
-    all_news
-}
+// #[query]
+// pub async fn get_fortnite_news() -> Vec<News> {
+//     let http_client = Client::new();
+//
+//     let result_v2 = fortnite_api::get_news_v2(&http_client, None).await;
+//     // println!("Result: {:#?}", result);
+//
+//     let result_br = fortnite_api::get_news_br_v2(&http_client, None).await;
+//     // println!("Result: {:#?}", result);
+//
+//     let result_stw = fortnite_api::get_news_stw_v2(&http_client, None).await;
+//     // println!("Result: {:#?}", result);
+//     // let result_creative:Result<News> = fortnite_api::get_news_creative_v2(&http_client, None).await;
+//     // println!("Result: {:#?}", result);
+//
+//     let stw_news_inner: NewsResponse = result_stw.unwrap();
+//     let br_news_inner: NewsResponse = result_br.unwrap();
+//     let mut stw_news = NewsContent::new(stw_news_inner);
+//     let mut br_news = NewsContent::new(br_news_inner);
+//     let all_news:Vec<News> = vec![News::new(stw_news.unwrap()), News::new(br_news.unwrap())];
+//     all_news
+// }
 
 #[update]
 pub fn send_message_tournament(id: String, message: Chat) {
