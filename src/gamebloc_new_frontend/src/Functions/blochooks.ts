@@ -46,6 +46,40 @@ export const useFetchAllTournaments = () => {
             )
           }
 
+          const user_function = (value: any) => {
+            return value.map((userArray) =>
+              userArray.map((user) => ({
+                account_id: user.account_id,
+                age: Number(user.age),
+                attendance: user.attendance.map(Number),
+                canister_id: user.canister_id,
+                date: user.date,
+                id_hash: user.id_hash,
+                is_mod: user.is_mod,
+                losses: user.losses.map(Number),
+                points: user.points.map((pointArray) =>
+                  pointArray.map((pointPair) => [
+                    pointPair[0], // Username
+                    pointPair[1], // Principal ID
+                    {
+                      kill_points: Number(pointPair[2].kill_points),
+                      total_points: Number(pointPair[2].total_points),
+                      position_points: Number(pointPair[2].position_points),
+                    },
+                  ]),
+                ),
+                principal_id: user.principal_id,
+                referral_id: user.referral_id,
+                role: user.role,
+                squad_badge: user.squad_badge,
+                status: user.status,
+                tournaments_created: Number(user.tournaments_created),
+                username: user.username,
+                wins: Number(user.wins),
+              })),
+            )
+          }
+
           const squad_function = (value: any) => {
             return value.map((pointsArray) =>
               pointsArray.map((pointPair) => [
@@ -95,7 +129,7 @@ export const useFetchAllTournaments = () => {
             winers: data.winers.map((winner: any) => winner),
             winners: winners(data.winners),
             squad_points: squad_function(data.squad_points),
-            user_details: data.user_details[0],
+            user_details: user_function(data.user_details),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),
             squad_vector_mod_2: squad_function(data.squad_vector_mod_2),
@@ -162,6 +196,40 @@ export const useUpdateTournament = () => {
             )
           }
 
+          const user_function = (value: any) => {
+            return value.map((userArray) =>
+              userArray.map((user) => ({
+                account_id: user.account_id,
+                age: Number(user.age),
+                attendance: user.attendance.map(Number),
+                canister_id: user.canister_id,
+                date: user.date,
+                id_hash: user.id_hash,
+                is_mod: user.is_mod,
+                losses: user.losses.map(Number),
+                points: user.points.map((pointArray) =>
+                  pointArray.map((pointPair) => [
+                    pointPair[0], // Username
+                    pointPair[1], // Principal ID
+                    {
+                      kill_points: Number(pointPair[2].kill_points),
+                      total_points: Number(pointPair[2].total_points),
+                      position_points: Number(pointPair[2].position_points),
+                    },
+                  ]),
+                ),
+                principal_id: user.principal_id,
+                referral_id: user.referral_id,
+                role: user.role,
+                squad_badge: user.squad_badge,
+                status: user.status,
+                tournaments_created: Number(user.tournaments_created),
+                username: user.username,
+                wins: Number(user.wins),
+              })),
+            )
+          }
+
           const squad_function = (value: any) => {
             return value.map((pointsArray) =>
               pointsArray.map((pointPair) => [
@@ -210,7 +278,7 @@ export const useUpdateTournament = () => {
             users: data.user.map((user: any) => user),
             winers: data.winers.map((winner: any) => winner),
             winners: winners(data.winners),
-            user_details: data.user_details[0],
+            user_details: user_function(data.user_details),
             squad_points: squad_function(data.squad_points),
             squad_vector_mod_1: squad_function(data.squad_vector_mod_1),
             points_vector_mod_1: point_function(data.points_vector_mod_1),

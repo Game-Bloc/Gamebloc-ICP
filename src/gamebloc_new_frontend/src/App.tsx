@@ -25,6 +25,7 @@ import AdminHub from "./Admin/AdminPages/AdminHub"
 import NewPage from "./pages/NewPage"
 import HowTo from "./pages/HowTo"
 import Wager from "./pages/Wager"
+import AdminProfile from "./Admin/AdminPages/AdminProfile"
 
 const App = () => {
   const { isAuthenticated } = useAuth()
@@ -64,6 +65,7 @@ const App = () => {
           >
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route path="/admin-dashboard" element={<Admin />} />
+            <Route path="/admin-profile" element={<AdminProfile />} />
             <Route
               path="/admin-tournament-view"
               element={<AdminTournamentView />}

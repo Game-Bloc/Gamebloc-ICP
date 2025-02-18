@@ -3,12 +3,14 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface IcpBalanceState {
   balance: any
+  kitchenBalance: any
   currentICPrice: number
   id: number
 }
 
 const initialState: IcpBalanceState = {
   balance: 0.0,
+  kitchenBalance: 0.0,
   currentICPrice: 0.0,
   id: 0,
 }
@@ -22,6 +24,13 @@ export const icpBalanceSlice = createSlice({
       { payload }: PayloadAction<IcpBalanceState>,
     ) => {
       state.balance = payload.balance
+    },
+    updateKitchenBalance: (
+      state: IcpBalanceState,
+      { payload }: PayloadAction<IcpBalanceState>,
+    ) => {
+      console.log("payload", payload)
+      state.kitchenBalance = payload
     },
     updateICP: (
       state: IcpBalanceState,
@@ -38,5 +47,6 @@ export const icpBalanceSlice = createSlice({
   },
 })
 
-export const { updateBalance, updateICP, updateId } = icpBalanceSlice.actions
+export const { updateBalance, updateICP, updateId, updateKitchenBalance } =
+  icpBalanceSlice.actions
 export default icpBalanceSlice.reducer
