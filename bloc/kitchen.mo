@@ -207,8 +207,7 @@ public shared ({ caller }) func concludeTournament(id : Text, icp_price : Nat, n
     var winnerSet : Bool = false;
 
     if (tournamentType == #Blitzkrieg) {
-        winnerSet := await RustBloc.allocate_winners_to_blitzkrieg_tournament(id, caller);
-        
+        winnerSet := await RustBloc.allocate_winners_to_blitzkrieg_tournament(id, caller); 
     } else {
         winnerSet := await RustBloc.allocate_winners_to_tournament(id, caller, number_of_winners, winner);
     };
