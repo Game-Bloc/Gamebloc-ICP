@@ -752,7 +752,7 @@ pub fn allocate_winners_to_tournament(
 
                         tournament_store
                             .borrow_mut()
-                            .insert(id, tournament.to_owned());
+                            .insert(id, tournament);
                         true
                     })
                 }

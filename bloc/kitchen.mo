@@ -211,7 +211,7 @@ public shared ({ caller }) func concludeTournament(id : Text, icp_price : Nat, n
     } else {
         winnerSet := await RustBloc.allocate_winners_to_tournament(id, caller, number_of_winners, winner);
     };
-    var winners = tournament.winners;
+    
     await end_tournament(id);
     var ended = tournament.ended;
 
@@ -228,6 +228,8 @@ public shared ({ caller }) func concludeTournament(id : Text, icp_price : Nat, n
     // ? OR should i use the transfer_From feature.
     // * That would probably require series of approvals, mendokseee
     // TODO: Test this function's automation feat
+
+    var winners = tournament.winners;
 
     try {
         if (await is_mod(caller)) {
