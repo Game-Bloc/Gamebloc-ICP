@@ -979,12 +979,12 @@ public query func get_read_notifications(caller : Principal) : async [Bloctypes.
     return read_notifications.toArray()
 };
 
-public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
-    for (user in Iter.fromArray(users)){
-        await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
-    }
+// public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
+//     for (user in Iter.fromArray(users)){
+//         await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
+//     }
 
-};
+// };
 
 /// Notfications Panel Ends
 
