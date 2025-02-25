@@ -65,7 +65,9 @@ const PaymentModal = ({
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const username = useAppSelector((state) => state.userProfile.username)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
-  const game_type = data.game_type.toUpperCase() === "SINGLE"
+  const game_type =
+    data.game_type.toUpperCase() === "SINGLE" ||
+    data.game_type.toUpperCase() == "1 V 1"
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const _principal = Principal.fromText(principal)
@@ -74,7 +76,7 @@ const PaymentModal = ({
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
-
+  console.log("Game Type", game_type)
   useEffect(() => {
     setCreatedAt(generateDate())
     setDate(Date.now())

@@ -99,7 +99,7 @@ const CreateTournament = () => {
       setStartingDate(value)
     }
 
-    if (tourVariation === "Capped") {
+    if (tourVariation === "Capped" || gameType === "1 v 1") {
       setTournamentVariation({ Capped: null })
     } else {
       setTournamentVariation({ Infinite: null })
@@ -170,7 +170,7 @@ const CreateTournament = () => {
 
   const disabledDate: RangePickerProps["disabledDate"] = (current) => {
     // Can not select days before today and today
-    return current && current < dayjs().endOf("day")
+    return current && current < dayjs().startOf("day")
     return null
   }
 
@@ -269,6 +269,8 @@ const CreateTournament = () => {
       ? setGameType("Duo")
       : value === "BR Squad"
       ? setGameType("Squad")
+      : value === "1 v 1"
+      ? setGameType("1 v 1")
       : setGameType("Single")
   }
 
@@ -314,9 +316,9 @@ const CreateTournament = () => {
   const proceed_to_payment = () => {
     if (
       // noOfUsers === 0 ||
-      noOfWinners === 0 ||
+      // noOfWinners === 0 ||
       tournamentRules.trim() === "" ||
-      tournamentType.trim() === "" ||
+      // tournamentType.trim() === "" ||
       startingDate.trim() === "" ||
       title.trim() === "" ||
       endDate.trim() === "" ||
@@ -325,7 +327,7 @@ const CreateTournament = () => {
     ) {
       errorPopUp("Field Input is invalid !")
     } else if (tourType === "Blitzkrieg" && entryPrice.trim() === "") {
-      errorPopUp("Field Input is invalid !")
+      errorPopUp("Field Input is invalid !!")
     } else {
       if (
         (tourType === "Prepaid" && balance > icpValue) ||
@@ -354,11 +356,15 @@ const CreateTournament = () => {
       BigInt(+poolPrize),
       tournamentRules,
       startingDate,
-      variantType,
+      gameType === "1 v 1" ? { Crowdfunded: null } : variantType,
       +entryPrice,
       +entryPrice,
-      noOfWinners,
-      tourVariation === "infinite" ? BigInt(1000) : BigInt(noOfUsers),
+      gameType === "1 v 1" ? 1 : noOfWinners,
+      tourVariation === "infinite"
+        ? BigInt(1000)
+        : gameType === "1 v 1"
+        ? BigInt(2)
+        : BigInt(noOfUsers),
       gameType,
       endDate,
       title,
@@ -534,6 +540,10 @@ const CreateTournament = () => {
                               filterOption={filterOption}
                               options={[
                                 {
+                                  value: "1 v 1",
+                                  label: "1 v 1",
+                                },
+                                {
                                   value: "MP/BR Single",
                                   label: "MP/BR Single",
                                 },
@@ -549,47 +559,49 @@ const CreateTournament = () => {
                             />
                           </ConfigProvider>
                         </div>
-                        <div className="flex mt-4 flex-col">
-                          <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                            Select Tournament Variation
-                          </p>
-                          <ConfigProvider
-                            theme={{
-                              algorithm: theme.defaultAlgorithm,
-                              token: {
-                                colorPrimaryActive: "#F6B8FC",
-                                colorPrimary: "#F6B8FC",
-                                colorPrimaryHover: "#F6B8FC",
-                                colorText: "#fff",
-                                colorBorder: "#595959",
-                                colorBgContainer: "#01070E",
-                                colorBgElevated: "#01070E",
-                                controlOutline: "transparent",
-                                colorTextBase: "#ffffff",
-                                controlItemBgActive: "#f6b8fc86",
-                              },
-                            }}
-                          >
-                            <Select
-                              placeholder="Tournament Variation"
-                              optionFilterProp="children"
-                              onChange={handleTournamentVariationChange}
-                              filterOption={filterOption1}
-                              options={[
-                                {
-                                  value: "Capped",
-                                  label: "Capped",
+                        {gameType !== "1 v 1" && (
+                          <div className="flex mt-4 flex-col">
+                            <p className=" mb-4 text-sm sm:text-base font-normal text-white">
+                              Select Tournament Variation
+                            </p>
+                            <ConfigProvider
+                              theme={{
+                                algorithm: theme.defaultAlgorithm,
+                                token: {
+                                  colorPrimaryActive: "#F6B8FC",
+                                  colorPrimary: "#F6B8FC",
+                                  colorPrimaryHover: "#F6B8FC",
+                                  colorText: "#fff",
+                                  colorBorder: "#595959",
+                                  colorBgContainer: "#01070E",
+                                  colorBgElevated: "#01070E",
+                                  controlOutline: "transparent",
+                                  colorTextBase: "#ffffff",
+                                  controlItemBgActive: "#f6b8fc86",
                                 },
-                                {
-                                  value: "Infinite",
-                                  label: "Infinite",
-                                },
-                              ]}
-                            />
-                          </ConfigProvider>
-                        </div>
+                              }}
+                            >
+                              <Select
+                                placeholder="Tournament Variation"
+                                optionFilterProp="children"
+                                onChange={handleTournamentVariationChange}
+                                filterOption={filterOption1}
+                                options={[
+                                  {
+                                    value: "Capped",
+                                    label: "Capped",
+                                  },
+                                  {
+                                    value: "Infinite",
+                                    label: "Infinite",
+                                  },
+                                ]}
+                              />
+                            </ConfigProvider>
+                          </div>
+                        )}
                       </div>
-                      {tourVariation === "Capped" && (
+                      {tourVariation === "Capped" && gameType !== "1 v 1" ? (
                         <div className="flex-col  flex m-4 ">
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             Number of Participant
@@ -604,6 +616,8 @@ const CreateTournament = () => {
                             />
                           </div>
                         </div>
+                      ) : (
+                        <></>
                       )}
 
                       <div className="flex-col flex m-4 ">
@@ -643,95 +657,96 @@ const CreateTournament = () => {
                         </p>
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
-                        <div className="flex mt-4 flex-col">
-                          <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                            Select Tournament Type
-                          </p>
-                          <ConfigProvider
-                            theme={{
-                              algorithm: theme.defaultAlgorithm,
-                              token: {
-                                colorPrimaryActive: "#F6B8FC",
-                                colorPrimary: "#F6B8FC",
-                                colorPrimaryHover: "#F6B8FC",
-                                colorText: "#fff",
-                                colorBorder: "#595959",
-                                colorBgContainer: "#01070E",
-                                colorBgElevated: "#01070E",
-                                controlOutline: "transparent",
-                                colorTextBase: "#ffffff",
-                                controlItemBgActive: "#f6b8fc86",
-                              },
-                            }}
-                          >
-                            <Select
-                              placeholder="Tournament Type"
-                              optionFilterProp="children"
-                              onChange={handleTournamentTypeChange}
-                              filterOption={filterOption1}
-                              options={[
-                                {
-                                  value: "Crowdfunded",
-                                  label: "Crowdfunded",
+                      {gameType !== "1 v 1" && (
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
+                          <div className="flex mt-4 flex-col">
+                            <p className=" mb-4 text-sm sm:text-base font-normal text-white">
+                              Select Tournament Type
+                            </p>
+                            <ConfigProvider
+                              theme={{
+                                algorithm: theme.defaultAlgorithm,
+                                token: {
+                                  colorPrimaryActive: "#F6B8FC",
+                                  colorPrimary: "#F6B8FC",
+                                  colorPrimaryHover: "#F6B8FC",
+                                  colorText: "#fff",
+                                  colorBorder: "#595959",
+                                  colorBgContainer: "#01070E",
+                                  colorBgElevated: "#01070E",
+                                  controlOutline: "transparent",
+                                  colorTextBase: "#ffffff",
+                                  controlItemBgActive: "#f6b8fc86",
                                 },
-                                {
-                                  value: "Prepaid",
-                                  label: "Prepaid",
+                              }}
+                            >
+                              <Select
+                                placeholder="Tournament Type"
+                                optionFilterProp="children"
+                                onChange={handleTournamentTypeChange}
+                                filterOption={filterOption1}
+                                options={[
+                                  {
+                                    value: "Crowdfunded",
+                                    label: "Crowdfunded",
+                                  },
+                                  {
+                                    value: "Prepaid",
+                                    label: "Prepaid",
+                                  },
+                                  {
+                                    value: "Blitzkrieg",
+                                    label: "Blitzkrieg",
+                                  },
+                                ]}
+                              />
+                            </ConfigProvider>
+                          </div>
+                          <div className="flex flex-col">
+                            <p className=" mb-4 text-sm mt-4 lg:mt-0 sm:text-base font-normal text-white">
+                              Select Number of Winners
+                            </p>
+                            <ConfigProvider
+                              theme={{
+                                algorithm: theme.defaultAlgorithm,
+                                token: {
+                                  colorPrimaryActive: "#F6B8FC",
+                                  colorPrimary: "#F6B8FC",
+                                  colorPrimaryHover: "#F6B8FC",
+                                  colorText: "#fff",
+                                  colorBorder: "#595959",
+                                  colorBgContainer: "#01070E",
+                                  colorBgElevated: "#01070E",
+                                  controlOutline: "transparent",
+                                  colorTextBase: "#ffffff",
+                                  controlItemBgActive: "#f6b8fc86",
                                 },
-                                {
-                                  value: "Blitzkrieg",
-                                  label: "Blitzkrieg",
-                                },
-                              ]}
-                            />
-                          </ConfigProvider>
+                              }}
+                            >
+                              <Select
+                                placeholder="Select number of Winners"
+                                optionFilterProp="children"
+                                onChange={handleWinnersChange}
+                                filterOption={filterOption}
+                                options={[
+                                  {
+                                    value: "1",
+                                    label: "1",
+                                  },
+                                  {
+                                    value: "2",
+                                    label: "2",
+                                  },
+                                  {
+                                    value: "3",
+                                    label: "3",
+                                  },
+                                ]}
+                              />
+                            </ConfigProvider>
+                          </div>
                         </div>
-                        <div className="flex flex-col">
-                          <p className=" mb-4 text-sm mt-4 lg:mt-0 sm:text-base font-normal text-white">
-                            Select Number of Winners
-                          </p>
-                          <ConfigProvider
-                            theme={{
-                              algorithm: theme.defaultAlgorithm,
-                              token: {
-                                colorPrimaryActive: "#F6B8FC",
-                                colorPrimary: "#F6B8FC",
-                                colorPrimaryHover: "#F6B8FC",
-                                colorText: "#fff",
-                                colorBorder: "#595959",
-                                colorBgContainer: "#01070E",
-                                colorBgElevated: "#01070E",
-                                controlOutline: "transparent",
-                                colorTextBase: "#ffffff",
-                                controlItemBgActive: "#f6b8fc86",
-                              },
-                            }}
-                          >
-                            <Select
-                              placeholder="Select number of Winners"
-                              optionFilterProp="children"
-                              onChange={handleWinnersChange}
-                              filterOption={filterOption}
-                              options={[
-                                {
-                                  value: "1",
-                                  label: "1",
-                                },
-                                {
-                                  value: "2",
-                                  label: "2",
-                                },
-                                {
-                                  value: "3",
-                                  label: "3",
-                                },
-                              ]}
-                            />
-                          </ConfigProvider>
-                        </div>
-                      </div>
+                      )}
 
                       <div className="flex  flex-col sm:flex-row sm:justify-between mt-4 sm:items-center m-4 ">
                         <div className="flex mt-4 flex-col">
@@ -885,7 +900,8 @@ const CreateTournament = () => {
 
                       {tourType != "Prepaid" && (
                         <>
-                          {tourVariation === "Infinite" && (
+                          {tourVariation === "Infinite" &&
+                          gameType !== "1 v 1" ? (
                             <div>
                               <div className="flex-col flex m-4 ">
                                 <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
@@ -916,6 +932,8 @@ const CreateTournament = () => {
                                 </div>
                               </div>
                             </div>
+                          ) : (
+                            <></>
                           )}
                         </>
                       )}
