@@ -76,7 +76,7 @@ const PaymentModal = ({
   const players = squad.filter((player: any) =>
     player.members.some((member: any) => member.name === username),
   )
-  console.log("Game Type", game_type)
+
   useEffect(() => {
     setCreatedAt(generateDate())
     setDate(Date.now())

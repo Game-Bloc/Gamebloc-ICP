@@ -32,12 +32,10 @@ const NotiModal = ({ modal, data, principal }: notiState) => {
                   />
 
                   <div key={data.id} className="flex relative flex-col mt-4">
-                    <p className="text-white/50 mb-4 font-bold">
-                      {data?.title}
-                    </p>
+                    <p className="text-white/50 mb-4 font-bold">{data?.body}</p>
                     <div className="flex items-center">
                       <p className=" text-white/40 text-[.8rem] ">
-                        {data?.body}
+                        {data?.title}
                       </p>
                     </div>
                     <p className="text-white/25 mt-2 text-[.7rem]">

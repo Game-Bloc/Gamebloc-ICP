@@ -749,10 +749,13 @@ const TournamentInfo = ({ data }: Props) => {
             modal={handleModal}
           />
         )}
-        {data.users.some((index: any) => index.includes(owner)) === true ||
+        {Object.keys(data.status)[0].toUpperCase() === "GAMEINPROGRESS" ||
+        data.users.some((index: any) => index.includes(owner)) === true ||
         data.squad.some((players: any) =>
           players.members.some((gamer: any) => gamer.name.includes(owner)),
-        ) === true ? (
+        ) === true ||
+        (Object.keys(data.tournament_type)[0].toUpperCase() == "PREPAID" &&
+          data.creator == owner) ? (
           <></>
         ) : !forceClose &&
           (openWager || bet?.staker_principal_id !== principal) ? (

@@ -44,7 +44,7 @@ const TournamentCard = ({ data, index }: Props) => {
             alt=""
             className="rounded-[12px] m-0 h-[18rem] 2xl:h-[20rem]  w-full"
           />
-          <div className="absolute flex top-2 left-2 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
+          <div className="absolute hidden md:flex top-2 left-2 bg-gradient-to-r justify-between items-center from-[#77536F] to-[#574151] rounded-md py-1 px-2 sm:px-[.5rem] sm:py-[.3rem] ">
             <img src={`mdi_crowd.png`} className="m-0 w-3 h-3" alt="" />
             <p className=" ml-[.5rem]  text-[0.6rem]  sm:text-[.6rem] text-white">
               {Object.keys(data.tournament_type)[0].toUpperCase() ===

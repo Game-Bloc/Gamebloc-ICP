@@ -66,9 +66,9 @@ const NewNoti = () => {
               <div className="flex justify-between items-center w-full">
                 <p className="ml-4 text-white/50 font-bold">
                   {" "}
-                  {noti?.title.length > 25
-                    ? noti?.title.substring(0, 25) + "....."
-                    : noti?.title}
+                  {noti?.body.length > 25
+                    ? noti?.body.substring(0, 25) + "....."
+                    : noti?.body}
                 </p>
                 <p
                   onClick={() => {

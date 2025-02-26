@@ -23,8 +23,10 @@ import Blitz from "../components/dashboardComps/Blitz"
 import Funded from "../components/dashboardComps/Funded"
 import Prepaid from "../components/dashboardComps/Prepaid"
 import hooks from "../Functions/hooks"
+import { IoIosCreate } from "react-icons/io"
 
 const Dashboard = () => {
+  const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
   const {
     getProfile,
@@ -120,19 +122,36 @@ const Dashboard = () => {
             },
           }}
         >
-          <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
-            <FloatButton
-              shape="circle"
-              type="primary"
-              style={{ right: 15, bottom: 15 }}
-              icon={<VscFeedback className="text-black" />}
-              onClick={
-                isAuthenticated
-                  ? () => setOpenModal(!openModal)
-                  : () => handleLoginModal()
-              }
-            />
-          </Tooltip>
+          <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }}>
+            <Tooltip
+              placement="left"
+              title="Create Tournament"
+              color="#bfa9c27e"
+            >
+              <FloatButton
+                shape="circle"
+                type="primary"
+                icon={<IoIosCreate className="text-black" />}
+                onClick={
+                  isAuthenticated
+                    ? () => navigate("/game-category")
+                    : () => handleLoginModal()
+                }
+              />
+            </Tooltip>
+            <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
+              <FloatButton
+                shape="circle"
+                type="primary"
+                icon={<VscFeedback className="text-black" />}
+                onClick={
+                  isAuthenticated
+                    ? () => setOpenModal(!openModal)
+                    : () => handleLoginModal()
+                }
+              />
+            </Tooltip>
+          </FloatButton.Group>
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
@@ -143,15 +162,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-
-{
-  /* <div className="">
-  <section className="flex">
-    <Header />
-    <Sidebar />
-    <div className="flex flex-col w-full">
-      <div className="m-4 mt-24  "></div>
-    </div>
-  </section>
-</div>; */
-}
