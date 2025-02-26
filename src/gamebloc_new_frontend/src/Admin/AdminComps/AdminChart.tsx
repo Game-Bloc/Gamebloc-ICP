@@ -14,7 +14,7 @@ const AdminChart = ({ tournament }: prop) => {
     tournament.forEach((tour: any) => {
       const startingDate = new Date(tour.starting_date)
       const month = startingDate.toLocaleString("default", { month: "short" }) // Get the month name (e.g., Jan, Feb, etc.)
-      // console.log("Month", month)
+      console.log("Month", month)
       // Initialize the count for this month if not already initialized
       if (!monthCounts[month]) {
         monthCounts[month] = {
@@ -68,7 +68,7 @@ const AdminChart = ({ tournament }: prop) => {
   }
 
   const monthlyCounts = countTournamentsByMonth(tournament)
-  // console.log("chart", monthlyCounts)
+  console.log("chart", monthlyCounts)
 
   const [value, setValue] = useState<EventProps>(null)
   return (
