@@ -19,9 +19,9 @@ import {
 } from "../redux/slice/adminTransaction"
 
 // * Local dev
-const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+// const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
 // ! Production params
-// const admin_principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+const admin_principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
 export const hooks = () => {
   const {
