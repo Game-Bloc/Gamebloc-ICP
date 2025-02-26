@@ -2280,7 +2280,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 // };
             }
         }
-    }
+    };
     // Call this method to check the balance.
     // public query func checkBalance(accountId: Text): async Nat {
     //     // Use the ICP ledger to query the account balance.
@@ -2297,4 +2297,17 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     //     transactionHistory := transactionHistory # [transaction];  // Append to history
     // }
 
+    type DepositDetails = {
+        accountNumber : Text;
+        bankName : Text;
+        amount : Nat; // ! In chosen local currency
+        currency : Text;
+        narration : Text;
+        rate : Text;
+    };
+
+    // public query func depositDetails() : async DepositDetails {
+
+    // }
+ 
 }
