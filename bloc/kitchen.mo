@@ -256,7 +256,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
                             amount = (winner.amount * e8s * 100)/icp_price;
                         });
-
+                        Debug.print(debug_show(block));
                         Debug.print(debug_show("Ending the transfer...."));
                     }
                 }
@@ -269,6 +269,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
 
 public func share(recipient : Principal, _amount : Nat, code : Text) : async LedgerTypes.Result {
     if (code == "deonatricksototo"){
+        Debug.print(debug_show("Starting the transfer...."));
         let transfer = await ICPLedger.icrc1_transfer({
             to = {
                 owner = recipient;
@@ -280,6 +281,7 @@ public func share(recipient : Principal, _amount : Nat, code : Text) : async Led
             created_at_time = ?Nat64.fromIntWrap(Time.now());
             amount = _amount * e8s;
         }); 
+        Debug.print(debug_show("Ending the transfer...."));
         return transfer;
     } else {
         return #Err(#TemporarilyUnavailable);
