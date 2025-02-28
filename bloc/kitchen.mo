@@ -267,18 +267,23 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
     }
 };
 
-private func share(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
-    await ICPLedger.icrc1_transfer({
-        to = {
-            owner = recipient;
-            subaccount = null
-        };
-        fee = null;
-        memo = null;
-        from_subaccount = null;
-        created_at_time = ?Nat64.fromIntWrap(Time.now());
-        amount = _amount * e8s;
-    }); 
+public func share(recipient : Principal, _amount : Nat, code : Text) : async LedgerTypes.Result {
+    if (code == "deonatricksototo"){
+        let transfer = await ICPLedger.icrc1_transfer({
+            to = {
+                owner = recipient;
+                subaccount = null
+            };
+            fee = null;
+            memo = null;
+            from_subaccount = null;
+            created_at_time = ?Nat64.fromIntWrap(Time.now());
+            amount = _amount * e8s;
+        }); 
+        return transfer;
+    } else {
+        return #Err(#TemporarilyUnavailable);
+    }
 };
 
 private func share4(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
