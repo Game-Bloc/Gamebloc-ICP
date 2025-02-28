@@ -24,6 +24,17 @@
       }
     },
 
+    "gamebloc_point": {
+      "type": "custom",
+      "candid": "https://raw.githubusercontent.com/dfinity/ic/cacf86a2ea7e21150d106e9e4dda5973088f53c5/rs/rosetta-api/icrc1/ledger/ledger.did",
+      "wasm": "https://download.dfinity.systems/ic/cacf86a2ea7e21150d106e9e4dda5973088f53c5/canisters/ic-icrc1-ledger.wasm.gz",
+      "pullable": {
+        "dependencies": [],
+        "wasm_url": "https://github.com/Game-Bloc/Gamebloc-Ledger-Impl/releases/download/v1.0.0-GBT-Ledger-Release/gbc_ledger.wasm.gz",
+        "init_guide": ""
+      }
+    },
+
     "icp_index": {
       "type": "custom",
       "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/index/index.did",

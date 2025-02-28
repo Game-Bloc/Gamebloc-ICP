@@ -35,3 +35,33 @@ Pending message - "Your withdrawal is currently being processed
 
 0.025 icp
 0.025e8s
+
+```
+
+type Currency = {
+    #Naira; #Cedis; #USD; 
+}
+
+type DepositDetails = {
+        accountNumber : Text;
+        bankName : Text;
+        amount : Nat; // ! In chosen local currency
+        currency : Text;
+        narration : Text;
+        rate : Text;
+        notice : Text;
+    };
+
+public query func depositNairaDetails(_amount : Nat) : async DepositDetails {
+    let detail : DepositDetails= {
+        accountNumber = "0494721886";
+        bankName = "GTBank";
+        amount = _amount; // ! In chosen local currency
+        currency = "Naira";
+        narration = Principal.toText(caller);
+        rate = "N/A";
+        notice = "Please, make sure that the details are as writen above. Especially the narration or reference. Please copy and paste the right narration"
+    }
+    
+}
+```

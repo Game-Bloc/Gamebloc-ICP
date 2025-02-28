@@ -108,6 +108,10 @@ system func preupgrade() {
     PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
 };
 
+system func heartbeat() : async () {
+
+};
+
 system func postupgrade() {
     TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -199,12 +203,14 @@ func checkThisText() : async Text {
 // Check 2
 public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
     // Tournamnet Id
-    var mod = await is_mod(caller);
+    // var mod = await is_mod(caller);
     var tournament = await get_tournament(id);
 
     // * Required variables for the switch cases
     var winners = tournament.winners;
     var ended = tournament.ended;
+
+    Debug.print(debug_show("Checking tournamnet Status...."));
 
     // * Check if tournamnet has ended
     switch (ended) {
@@ -215,6 +221,12 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
             }
         }
     };
+
+    Debug.print(debug_show("Tournament Status checked...."));
+
+    // func fail() : async () {
+    //     Debug.trap("Something is happening here");
+    // };
 
     // ? OR should i use the transfer_From feature.
     // * That would probably require series of approvals, mendokseee
@@ -231,6 +243,7 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                     for (winner in Iter.fromArray(winners)) {
 
                         // ? var account = tournament.winners.
+                        Debug.print(debug_show("Starting the transfer...."));
                         // var _account = pay.account;
                         var block = await ICPLedger.icrc1_transfer({
                             to = {
@@ -243,6 +256,8 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
                             amount = (winner.amount * e8s * 100)/icp_price;
                         });
+
+                        Debug.print(debug_show("Ending the transfer...."));
                     }
                 }
             }
