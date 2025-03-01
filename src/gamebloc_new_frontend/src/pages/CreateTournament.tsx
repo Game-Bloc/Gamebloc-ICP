@@ -38,8 +38,7 @@ const CreateTournament = () => {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
   const { id } = useParams<{ id: string }>()
-  // const game_name = new URLSearchParams(location.search).get("title") || ""
-  const game_name = "Call of Duty Mobile"
+  const [game_name, setGame_Name] = useState<string | null>(null)
   const [color, setColor] = useState("#ffffff")
   const [poolPrize, setPoolPrize] = useState("")
   const [entryPrice, setEntryPrize] = useState("")
@@ -89,6 +88,11 @@ const CreateTournament = () => {
     setTournamentID(id)
     // console.log("ulid:", id)
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setGame_Name(params.get("title"))
+  }, [])
 
   useEffect(() => {
     generateULID()

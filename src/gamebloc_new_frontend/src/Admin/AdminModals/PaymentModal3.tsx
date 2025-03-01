@@ -130,6 +130,20 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                           {
                             title: (
                               <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Approve
+                              </p>
+                            ),
+                            status: paid === true ? "finish" : "process",
+                            icon:
+                              paid === true ? (
+                                <DollarOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
+                              ) : (
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
+                              ),
+                          },
+                          {
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
                                 Pay
                               </p>
                             ),
@@ -191,9 +205,7 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                           <button
                             disabled={selectedPayment === "ICP" ? false : true}
                             onClick={() =>
-                              done === true
-                                ? window.location.reload()
-                                : payPlayers()
+                              paid === true ? setActive("second") : payFee()
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
                               selectedPayment === "ICP"
@@ -201,10 +213,10 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                                 : "bg-primary-second/15"
                             } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                           >
-                            {sending ? (
+                            {isLoading ? (
                               <ClipLoader
                                 color={color}
-                                loading={sending}
+                                loading={isLoading}
                                 cssOverride={override}
                                 size={20}
                                 aria-label="Loading Spinner"
@@ -212,8 +224,7 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                               />
                             ) : (
                               <p className="font-semibold">
-                                {" "}
-                                {done === true ? "Done" : "Pay Players"}
+                                {paid === true ? "Next" : "Approve"}
                               </p>
                             )}
                           </button>
@@ -232,6 +243,50 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                         )}
                       </>
                     )}
+                    {active === "second" && (
+                      <div className="mt-2">
+                        <button
+                          onClick={() =>
+                            done === true
+                              ? window.location.reload()
+                              : payPlayers()
+                          }
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          {sending ? (
+                            <ClipLoader
+                              color={color}
+                              loading={sending}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {" "}
+                              {done === true ? "Done" : "Pay Players"}
+                            </p>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    {/* {active === "third" && (
+                      <div className="mt-2">
+                        <div className="mt-8 mb-4 flex w-full justify-center">
+                          <img src={`check2.png`} alt="" />
+                        </div>
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                          successful
+                        </p>
+                        <button
+                          onClick={() => window.location.reload()}
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          Back to Dashboard
+                        </button>
+                      </div>
+                    )} */}
                   </div>
                 </div>
               </div>
