@@ -148,7 +148,7 @@ system func postupgrade() {
 // TODO: Test functions
 
 func floatNum(num : Float) : Float {
-    num * 2
+    num * 2;
 };
 
 func floatNum2(num : Float) : Int {
@@ -245,16 +245,20 @@ public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : as
                         // ? var account = tournament.winners.
                         Debug.print(debug_show("Starting the transfer...."));
                         // var _account = pay.account;
-                        var block = await ICPLedger.icrc1_transfer({
+                        var block = await ICPLedger.icrc2_transfer_from({
                             to = {
                                 owner = Principal.fromText(winner.user_account);
                                 subaccount = null
                             };
                             fee = null;
+                            spender_subaccount = null;
+                            from = {
+                                owner = gbc_admin;
+                                subaccount = null
+                            };
                             memo = null;
-                            from_subaccount = null;
                             created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (winner.amount * e8s * 100)/icp_price;
+                            amount = (winner.amount * 10_000_000_000)/icp_price;
                         });
                         Debug.print(debug_show(block));
                         Debug.print(debug_show("Ending the transfer...."));
@@ -1470,10 +1474,10 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     };
     buffer.toArray()
 };
-
+    // * Local params
      let gbc_admin : Principal = Principal.fromText("6jvvx-vkfin-q3qbr-wlgsz-pfnmm-jgtnk-eze4p-lhpam-ey34o-742hy-yqe"); // * Demo here
-
-    // let gbc_admin : Principal = Principal.fromText("hx2cb-wpih5-ecie2-m22jf-e2heu-ih4ca-4qo2k-xswqq-ldbie-jppsc-dqe"); // ! Production 
+    // ! Production params @Deonorla
+    // let gbc_admin : Principal = Principal.fromText("ls34l-2mn3r-6r5sv-m5z46-wdwe2-waihi-6er6x-5lvzy-5fhlm-wzg2m-pqe"); 
 
 //
 // * Tournaments Features
@@ -1493,7 +1497,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
             var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
 
             var toAccount : LedgerTypes.Account = {
-                owner = Principal.fromActor(this);
+                owner = gbc_admin;
                 subaccount = null
             };
 
@@ -1524,7 +1528,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = Principal.fromActor(this);
+                                    owner = gbc_admin;
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1551,7 +1555,7 @@ public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.
                 //Should be #prepaid
                 var result = await ICPLedger.icrc2_transfer_from({
                     to = {
-                        owner = Principal.fromActor(this);
+                        owner = gbc_admin;
                         subaccount = null
                     };
                     fee = null;
@@ -1699,7 +1703,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     try {
 
         var _to : LedgerTypes.Account = {
-            owner = Principal.fromActor(this);
+            owner = gbc_admin;
             subaccount = null
         };
 
@@ -1726,7 +1730,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = Principal.fromActor(this);
+                                    owner = gbc_admin;
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1763,7 +1767,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                             // var actual_price = amount / icp_price;
                             var result = await ICPLedger.icrc2_transfer_from({
                                 to = {
-                                    owner = Principal.fromActor(this);
+                                    owner = gbc_admin;
                                     subaccount = null
                                 };
                                 fee = null;
@@ -1802,7 +1806,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 var tournamentAccount = await get_tournament(id);
 
                 var _to : LedgerTypes.Account = {
-                    owner = Principal.fromActor(this);
+                    owner = gbc_admin;
                     subaccount = null
                 };
 
@@ -1826,7 +1830,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                                 // var actual_price = amount / icp_price;
                                 var result = await ICPLedger.icrc2_transfer_from({
                                     to = {
-                                        owner = Principal.fromActor(this);
+                                        owner = gbc_admin;
                                         subaccount = null
                                     };
                                     fee = null;
