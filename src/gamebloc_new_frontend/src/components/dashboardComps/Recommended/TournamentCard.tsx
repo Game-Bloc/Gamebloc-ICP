@@ -15,11 +15,9 @@ const TournamentCard = ({ data, index }: Props) => {
 
   useEffect(() => {
     const img = new Image()
-    if (cardImg) {
-      setIsimageLoaded(true)
-    }
-    img.src = cardImg
-  }, [cardImg])
+    img.src = `cod.jpg` // Using string literal
+    img.onload = () => setIsimageLoaded(true)
+  }, [])
 
   return (
     <>

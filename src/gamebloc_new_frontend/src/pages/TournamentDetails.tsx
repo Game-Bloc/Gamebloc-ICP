@@ -101,10 +101,8 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     const img = new Image()
-    if (gameImage) {
-      setImageLoaded(true)
-    }
-    img.src = gameImage
+    img.src = `category1.png` // Using string literal
+    img.onload = () => setImageLoaded(true)
   }, [gameImage])
 
   useEffect(() => {

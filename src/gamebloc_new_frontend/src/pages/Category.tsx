@@ -4,39 +4,35 @@ import Sidebar from "../components/dashboardComps/Sidebar"
 import { Link, useNavigate } from "react-router-dom"
 import { IoIosArrowRoundBack } from "react-icons/io"
 import CategoryCard from "../components/category/CategoryCard"
-const loader = require("../../assets/category1.png").default
-const loader1 = require("../../assets/category2.png").default
-const loader2 = require("../../assets/category3.png").default
-const loader3 = require("../../assets/category4.png").default
 
 const Category = () => {
   const navigate = useNavigate()
 
   const images = [
     {
-      img: loader,
+      img: `cat1.png`,
       id: 1,
       title: "Call of Duty Mobile",
       hash: "L48D:--.~JV=?7NHxtWZ0RofE3WU",
     },
-    // {
-    //   img: loader1,
-    //   id: 2,
-    //   title: "Apex Legends Mobile",
-    //   hash: "L571TZ-Ux^xBTOR*RoaJt:T1W:R+",
-    // },
-    // {
-    //   img: loader2,
-    //   id: 3,
-    //   title: "Call of Duty Modern Warfare",
-    //   hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
-    // },
-    // {
-    //   img: loader3,
-    //   id: 4,
-    //   title: "Valorant",
-    //   hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
-    // },
+    {
+      img: `cat2.png`,
+      id: 2,
+      title: "Apex Legends Mobile",
+      hash: "L571TZ-Ux^xBTOR*RoaJt:T1W:R+",
+    },
+    {
+      img: `cat3.png`,
+      id: 3,
+      title: "Fortnite",
+      hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
+    },
+    {
+      img: `cat4.png`,
+      id: 4,
+      title: "Chess",
+      hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
+    },
   ]
 
   return (
