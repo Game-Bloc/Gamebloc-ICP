@@ -103,7 +103,7 @@ const CreateTournament = () => {
       setStartingDate(value)
     }
 
-    if (tourVariation === "Capped" || gameType === "1 v 1") {
+    if (tourVariation === "Capped" || gameType === "TeamvTeam") {
       setTournamentVariation({ Capped: null })
     } else {
       setTournamentVariation({ Infinite: null })
@@ -274,7 +274,7 @@ const CreateTournament = () => {
       : value === "BR Squad"
       ? setGameType("Squad")
       : value === "1 v 1"
-      ? setGameType("1 v 1")
+      ? setGameType("TeamvTeam")
       : setGameType("Single")
   }
 
@@ -360,13 +360,13 @@ const CreateTournament = () => {
       BigInt(+poolPrize),
       tournamentRules,
       startingDate,
-      gameType === "1 v 1" ? { Crowdfunded: null } : variantType,
+      gameType === "TeamvTeam" ? { Crowdfunded: null } : variantType,
       +entryPrice,
       +entryPrice,
-      gameType === "1 v 1" ? 1 : noOfWinners,
+      gameType === "TeamvTeam" ? 1 : noOfWinners,
       tourVariation === "infinite"
         ? BigInt(1000)
-        : gameType === "1 v 1"
+        : gameType === "TeamvTeam"
         ? BigInt(2)
         : BigInt(noOfUsers),
       gameType,
@@ -563,7 +563,7 @@ const CreateTournament = () => {
                             />
                           </ConfigProvider>
                         </div>
-                        {gameType !== "1 v 1" && (
+                        {gameType !== "TeamvTeam" && (
                           <div className="flex mt-4 flex-col">
                             <p className=" mb-4 text-sm sm:text-base font-normal text-white">
                               Select Tournament Variation
@@ -605,7 +605,8 @@ const CreateTournament = () => {
                           </div>
                         )}
                       </div>
-                      {tourVariation === "Capped" && gameType !== "1 v 1" ? (
+                      {tourVariation === "Capped" &&
+                      gameType !== "TeamvTeam" ? (
                         <div className="flex-col  flex m-4 ">
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             Number of Participant
@@ -661,7 +662,7 @@ const CreateTournament = () => {
                         </p>
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-                      {gameType !== "1 v 1" && (
+                      {gameType !== "TeamvTeam" && (
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
                           <div className="flex mt-4 flex-col">
                             <p className=" mb-4 text-sm sm:text-base font-normal text-white">
@@ -905,7 +906,7 @@ const CreateTournament = () => {
                       {tourType != "Prepaid" && (
                         <>
                           {tourVariation === "Infinite" &&
-                          gameType !== "1 v 1" ? (
+                          gameType !== "TeamvTeam" ? (
                             <div>
                               <div className="flex-col flex m-4 ">
                                 <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">

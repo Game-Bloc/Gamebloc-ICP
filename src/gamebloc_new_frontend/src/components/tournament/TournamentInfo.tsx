@@ -709,7 +709,8 @@ const TournamentInfo = ({ data }: Props) => {
                     />
                   ) : (
                     <p className="font-semibold">
-                      {data.game_type.toUpperCase() === "SINGLE"
+                      {data.game_type.toUpperCase() === "SINGLE" ||
+                      data.game_type.toUpperCase() === "TEAMVTEAM"
                         ? "Join Solo Tournament"
                         : "Join Tournament with Squad"}
                     </p>

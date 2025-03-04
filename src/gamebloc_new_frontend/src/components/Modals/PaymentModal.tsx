@@ -67,7 +67,7 @@ const PaymentModal = ({
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type =
     data.game_type.toUpperCase() === "SINGLE" ||
-    data.game_type.toUpperCase() == "1 V 1"
+    data.game_type.toUpperCase() == "TEAMVTEAM"
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
   const _principal = Principal.fromText(principal)
@@ -291,7 +291,8 @@ const PaymentModal = ({
                           <button
                             disabled={selectedPayment === "ICP" ? false : true}
                             onClick={
-                              data.game_type === "Single"
+                              data.game_type === "Single" ||
+                              data.game_type === "TeamvTeam"
                                 ? () =>
                                     paid === true
                                       ? setActive("second")
