@@ -370,7 +370,7 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
 
         if is_even {
             tournament.to_owned().lobbies.unwrap().iter().for_each(|e| {
-               let _ = e.no_of_participants as f64 * 0.5;
+                let _ = e.no_of_participants as f64 * 0.5;
             });
         }
 
@@ -696,7 +696,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
 
 //merge two lobbies members
 #[update]
-pub fn two_lobbies_merge(tournament_id: String,) {
+pub fn two_lobbies_merge(tournament_id: String) {
     TOURNAMENT_STORE.with(|tournament_store| {
         let mut tournament = tournament_store
             .borrow()

@@ -1,9 +1,9 @@
 use crate::*;
 
 pub(crate) fn squad_or_player_religator(
-     tournament: &mut TournamentAccount,
-     participant_queue: &mut Vec<String>,
-     squad_queue: &mut Vec<Squad>,
+    tournament: &mut TournamentAccount,
+    participant_queue: &mut Vec<String>,
+    squad_queue: &mut Vec<Squad>,
 ) {
     match GameType::from_str(tournament.game_type.to_owned().as_str()) {
         GameType::TeamvTeam => {}
@@ -31,9 +31,9 @@ pub(crate) fn squad_or_player_religator(
 }
 
 pub(crate) fn squad_or_player_promoter(
-     tournament: &mut TournamentAccount,
-     mut participant_queue: Vec<String>,
-     squad_queue: Vec<Squad>,
+    tournament: &mut TournamentAccount,
+    mut participant_queue: Vec<String>,
+    squad_queue: Vec<Squad>,
 ) {
     match GameType::from_str(tournament.game_type.to_owned().as_str()) {
         GameType::Single => {

@@ -1,8 +1,8 @@
 use std::cell::RefCell;
 use std::cmp::Reverse;
-use std::collections::{BTreeMap};
+use std::collections::BTreeMap;
 
-use candid::{Principal};
+use candid::Principal;
 use ic_cdk::{init, post_upgrade, pre_upgrade, query, update};
 
 use model::*;
@@ -14,8 +14,8 @@ mod serialization_memory_ids;
 
 mod squad_mutations;
 mod tournament_lobbies_management;
-mod wager_mutations;
 mod tournaments;
+mod wager_mutations;
 
 type IdStore = BTreeMap<String, String>;
 type ProfileStore = BTreeMap<String, UserProfile>;
@@ -44,7 +44,7 @@ pub fn get_self() -> UserProfile {
 
 #[query(name = "whoami")]
 pub fn whoami() -> Principal {
-   ic_cdk::api::caller()
+    ic_cdk::api::caller()
 }
 
 #[query]

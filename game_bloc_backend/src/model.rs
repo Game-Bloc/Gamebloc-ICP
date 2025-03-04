@@ -4,7 +4,6 @@ use candid::{CandidType, Decode, Deserialize, Encode};
 use ic_stable_structures::{storable::Bound, Storable};
 use serde::Serialize;
 
-
 macro_rules! pub_struct {
     ($name:ident {$($field:ident: $t:ty,)*}) => {
        #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize
@@ -16,7 +15,6 @@ macro_rules! pub_struct {
 }
 
 const MAX_VALUE_SIZE: u32 = 100;
-
 
 pub_struct!(UserProfile {
      id_hash: String,
