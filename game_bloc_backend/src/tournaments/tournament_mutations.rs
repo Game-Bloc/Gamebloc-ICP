@@ -796,30 +796,40 @@ pub fn join_tournament(name: String, id: String, ign: (String, String, String)) 
             Some(no_of_participants_at_bump) => {
                 if no_of_participants_at_bump != 0 {
                     if tournament.user.to_owned().len() != 0
-                        && tournament.user.to_owned().len() % (no_of_participants_at_bump as usize) == 0
+                        && tournament.user.to_owned().len() % (no_of_participants_at_bump as usize)
+                            == 0
                     {
                         match tournament.to_owned().tournament_variation {
                             None => {
-                                tournament = append_player_to_participants(name, ign, tournament.to_owned());
+                                tournament =
+                                    append_player_to_participants(name, ign, tournament.to_owned());
                             }
                             Some(variation) => match variation {
                                 Variation::Capped => {
-                                    tournament = append_player_to_participants(name, ign, tournament.to_owned());
+                                    tournament = append_player_to_participants(
+                                        name,
+                                        ign,
+                                        tournament.to_owned(),
+                                    );
                                 }
                                 Variation::Infinite => {
                                     tournament.entry_fee = Some(
                                         tournament.entry_fee.unwrap().to_owned()
                                             + tournament.entry_fee_bump.unwrap().to_owned(),
                                     );
-                                    tournament = append_player_to_participants(name, ign, tournament.to_owned());
+                                    tournament = append_player_to_participants(
+                                        name,
+                                        ign,
+                                        tournament.to_owned(),
+                                    );
                                 }
                             },
                         }
                     } else {
-                        tournament = append_player_to_participants(name, ign, tournament.to_owned());
+                        tournament =
+                            append_player_to_participants(name, ign, tournament.to_owned());
                     }
-                }
-                else {
+                } else {
                     tournament = append_player_to_participants(name, ign, tournament.to_owned());
                 }
             }
@@ -851,7 +861,7 @@ pub fn join_tournament_with_squad(
                 if no_of_participants_at_bump != 0 {
                     if tournament.squad.to_owned().len() != 0
                         && tournament.squad.to_owned().len() % (no_of_participants_at_bump as usize)
-                        == 0
+                            == 0
                     {
                         match tournament.to_owned().tournament_variation {
                             None => {
@@ -864,7 +874,7 @@ pub fn join_tournament_with_squad(
                             }
                             Some(variation) => match variation {
                                 Variation::Capped => {
-                                   tournament = append_squad_to_tournament(
+                                    tournament = append_squad_to_tournament(
                                         &squad_id.to_owned(),
                                         ign,
                                         &new_member_ign,
@@ -893,8 +903,7 @@ pub fn join_tournament_with_squad(
                             tournament.to_owned(),
                         );
                     }
-                }
-                else {
+                } else {
                     tournament = append_squad_to_tournament(
                         &squad_id.to_owned(),
                         ign,

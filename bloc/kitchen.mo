@@ -1086,6 +1086,7 @@ public shared ({ caller }) func claimToday() : async () {
             await activateDailyClaims(caller); 
         };
         case(?today){
+            // Checks if countdown is complete
             if ((today.streakTime + day) >= Int.abs(Time.now())) {
                 if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
                     await resetClaims(caller);
@@ -1098,7 +1099,10 @@ public shared ({ caller }) func claimToday() : async () {
                     streakCount = today.streakCount + 1;
                     highestStreak = today.highestStreak;
                     pointBalance = today.pointBalance + point;
-                }
+                };
+                let updated = DailyRewardHashMap.replace(caller, claimed);
+
+            } else {
 
             }
         }
@@ -1116,7 +1120,8 @@ func resetClaims(caller : Principal) : async () {
                     streakCount = 1;
                     highestStreak = today.highestStreak;
                     pointBalance = today.pointBalance;
-            }
+            };
+            let updated = DailyRewardHashMap.replace(caller, claimed);
         }
     }
 };

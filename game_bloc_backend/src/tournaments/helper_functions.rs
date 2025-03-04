@@ -68,7 +68,7 @@ pub fn append_squad_to_tournament(
                 }
             }
         }
-        _ => {tournament}
+        _ => tournament,
     }
 }
 
@@ -120,13 +120,9 @@ pub fn append_player_to_participants(
                         }
                     }
                 }
-                _ => {
-                    tournament
-                }
+                _ => tournament,
             }
         }
-        _ => {
-            tournament
-        }
+        _ => tournament,
     }
 }
