@@ -1,6 +1,6 @@
-use ic_cdk_macros::query;
 use crate::model::TournamentAccount;
 use crate::TOURNAMENT_STORE;
+use ic_cdk_macros::query;
 
 #[query]
 pub fn get_all_tournament() -> Vec<TournamentAccount> {
@@ -23,7 +23,6 @@ pub fn count_all_tournament() -> u128 {
         all_tournament.len()
     }) as u128
 }
-
 
 #[query]
 pub fn get_tournament(id: String) -> TournamentAccount {
