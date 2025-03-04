@@ -96,7 +96,7 @@ This document outlines the technical requirements for the APIs that GameBloc wil
 |-------------------|------------------------------------------------------|
 | **Streaming**     | Theta Video API, Livepeer                            |
 | **Authentication**| Firebase Auth, Web3Auth, OAuth                       |
-| **Payments**      | Stripe, PayPal, Crypto Wallets                       |
+| **Payments**      | Crypto Wallets, Stripe, PayPal                     |
 | **NFTs**          | OpenSea, Ancient8 Swap, ThetaDrop                    |
 | **Tournaments**   | Battlefy, Toornament API                             |
 | **Notifications** | Firebase Cloud Messaging, Push Protocol              |
