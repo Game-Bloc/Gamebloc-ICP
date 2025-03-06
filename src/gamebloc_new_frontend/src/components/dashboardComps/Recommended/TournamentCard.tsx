@@ -38,7 +38,13 @@ const TournamentCard = ({ data, index }: Props) => {
           className=" h-fit relative  flex flex-col cursor-pointer rounded-xl "
         >
           <img
-            src={`cod.jpg`}
+            src={
+              data.game.toUpperCase() === "FORTNITE"
+                ? `fortnite1.jpg`
+                : data.game.toUpperCase() === "CALL OF DUTY MOBILE"
+                ? `cod2.jpg`
+                : `cod2.jpg`
+            }
             alt=""
             className="rounded-[12px] m-0 h-[18rem] 2xl:h-[20rem]  w-full"
           />

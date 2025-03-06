@@ -33,7 +33,13 @@ const RecommendedCard = ({ data, index }: Props) => {
           </div>
         ) : (
           <img
-            src={`cod2.jpg`} // Using string literal
+            src={
+              data.game.toUpperCase() === "FORTNITE"
+                ? `fortnite1.jpg`
+                : data.game.toUpperCase() === "CALL OF DUTY MOBILE"
+                ? `cod2.jpg`
+                : `cod2.jpg`
+            } // Using string literal
             alt="COD Tournament"
             className="rounded-[12px] m-0 w-full max-h-52"
           />

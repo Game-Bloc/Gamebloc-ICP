@@ -53,6 +53,12 @@ const TournamentInfo = ({ data }: Props) => {
     borderColor: "white",
   }
 
+  const per_kill =
+    Object.keys(data.tournament_variation)[0].toUpperCase() == "INFINITE" &&
+    Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG"
+      ? data?.users?.length
+      : data?.no_of_participants
+
   const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
       position: "center",
@@ -262,9 +268,10 @@ const TournamentInfo = ({ data }: Props) => {
                   <div className="flex flex-col w-full rounded-md  bg-primary-first pt-[.5rem] pl-[.5rem]">
                     <p className="text-[.8rem]  text-white">Prize Pool</p>
                     <h1 className="text-[2rem] sm:text-[3rem] font-valorant bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
-                      {Object.keys(data.tournament_type)[0].toUpperCase() ===
+                      {(Object.keys(data.tournament_type)[0].toUpperCase() ===
                         "CROWDFUNDED" &&
-                      data.game_type.toUpperCase() === "SINGLE"
+                        data.game_type.toUpperCase() === "SINGLE") ||
+                      data.game_type.toUpperCase() === "TEAMVTEAM"
                         ? `$${data.entry_prize * data?.users?.length}`
                         : Object.keys(data.tournament_type)[0].toUpperCase() ==
                             "CROWDFUNDED" &&
@@ -283,9 +290,7 @@ const TournamentInfo = ({ data }: Props) => {
               "BLITZKRIEG" ? (
                 <div className="mt-8">
                   <h1 className="text-[1rem]  font-bold bg-gradient-to-b from-[#A380C4]  to-[#96C2FB] text-[transparent] bg-clip-text ">
-                    Prize : $
-                    {(data.total_prize / data.no_of_participants).toFixed(2)}{" "}
-                    per kill
+                    Prize : ${(data.total_prize / per_kill).toFixed(2)} per kill
                   </h1>
                 </div>
               ) : (
@@ -300,7 +305,8 @@ const TournamentInfo = ({ data }: Props) => {
                             {Object.keys(
                               data.tournament_type,
                             )[0].toUpperCase() === "CROWDFUNDED" &&
-                            data.game_type.toUpperCase() === "SINGLE"
+                            (data.game_type.toUpperCase() === "SINGLE" ||
+                              data.game_type.toUpperCase() === "TEAMVTEAM")
                               ? `$${(
                                   data.entry_prize * data?.users?.length
                                 ).toFixed(2)}`

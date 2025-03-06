@@ -24,6 +24,7 @@ import Funded from "../components/dashboardComps/Funded"
 import Prepaid from "../components/dashboardComps/Prepaid"
 import hooks from "../Functions/hooks"
 import { IoIosCreate } from "react-icons/io"
+import { MdOutlineCreate } from "react-icons/md"
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -131,7 +132,7 @@ const Dashboard = () => {
               <FloatButton
                 shape="circle"
                 type="primary"
-                icon={<IoIosCreate className="text-black" />}
+                icon={<MdOutlineCreate className="text-black" />}
                 onClick={
                   isAuthenticated
                     ? () => navigate("/game-category")
@@ -139,7 +140,7 @@ const Dashboard = () => {
                 }
               />
             </Tooltip>
-            <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
+            {/* <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
               <FloatButton
                 shape="circle"
                 type="primary"
@@ -150,7 +151,7 @@ const Dashboard = () => {
                     : () => handleLoginModal()
                 }
               />
-            </Tooltip>
+            </Tooltip> */}
           </FloatButton.Group>
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}

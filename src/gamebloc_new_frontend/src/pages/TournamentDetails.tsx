@@ -367,8 +367,12 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  {currentTournament.no_of_participants} Team
-                                  Slots
+                                  {Object.keys(
+                                    currentTournament.tournament_variation,
+                                  )[0].toUpperCase() == "INFINITE"
+                                    ? "Infinite"
+                                    : currentTournament.no_of_participants}{" "}
+                                  Team Slots
                                 </p>
                               </div>
                             </div>
