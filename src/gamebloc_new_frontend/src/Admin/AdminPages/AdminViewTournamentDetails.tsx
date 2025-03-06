@@ -512,7 +512,7 @@ const AdminViewTournamentDetails = () => {
                           <div className="flex flex-col">
                             <div className="flex gap-4">
                               <img
-                                src={`xbox-pad.jpg`}
+                                src={`gamelogo.png`}
                                 alt=""
                                 className="w-[6.75rem] h-[6.375rem] m-0 object-fill"
                               />
@@ -590,7 +590,10 @@ const AdminViewTournamentDetails = () => {
                                       {Object.keys(
                                         list.tournament_type,
                                       )[0].toUpperCase() === "CROWDFUNDED" &&
-                                      list.game_type.toUpperCase() === "SINGLE"
+                                      (list.game_type.toUpperCase() ===
+                                        "SINGLE" ||
+                                        list.game_type.toUpperCase() ===
+                                          "TEAMVTEAM")
                                         ? `$${
                                             list.entry_prize * list.users.length
                                           }`

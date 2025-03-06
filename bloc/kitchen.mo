@@ -1480,7 +1480,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
     // * Local params
-     let gbc_admin : Principal = Principal.fromText("qfdmk-hnmoy-xuyzr-b466v-qp46c-lhgeq-feftm-zwanh-vdzhy-fy4am-fqe"); // * Demo here
+     let gbc_admin : Principal = Principal.fromText("oxobn-p5jaz-xeiwh-pi2rz-s3te5-u7woq-n5mn3-56iil-2qj27-4giy4-dae"); // * Demo here
     // ! Production params @Deonorla
     // let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
 

@@ -13,7 +13,7 @@ import PaymentCard from "../../components/Modals/payment/PaymentCard"
 import SoloModal from "../../components/Modals/payment/SoloModal"
 import SquadModal from "../../components/Modals/payment/SquadModal"
 import { useNavigate } from "react-router-dom"
-import { generateDate } from "../../components/utils/utills"
+import { generateDate, squadCount } from "../../components/utils/utills"
 import { Principal } from "@dfinity/principal"
 import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
@@ -42,10 +42,20 @@ const PaymentModal = ({ modal, id, data }: Props) => {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-
+  const dollarAmount =
+    Object.keys(data.tournament_type)[0].toUpperCase() === "CROWDFUNDED" &&
+    (data.game_type.toUpperCase() === "SINGLE" ||
+      data.game_type.toUpperCase() === "TEAMVTEAM")
+      ? data.entry_prize * data.users.length
+      : Object.keys(data.tournament_type)[0].toUpperCase() == "CROWDFUNDED" &&
+        data.game_type.toUpperCase() === "DUO"
+      ? data.entry_prize * squadCount(data)
+      : Object.keys(data.tournament_type)[0].toUpperCase() == "CROWDFUNDED" &&
+        data.game_type.toUpperCase() === "SQUAD"
+      ? data.entry_prize * squadCount(data)
+      : data.total_prize
   useEffect(() => {
     const calculateIcpValue = () => {
-      const dollarAmount = data.total_prize
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
@@ -237,8 +247,8 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
-                            {data.total_prize} worth of ICP to be deducted from
-                            your wallet.
+                            {dollarAmount} worth of ICP to be deducted from your
+                            wallet.
                           </p>
                         )}
                       </>
