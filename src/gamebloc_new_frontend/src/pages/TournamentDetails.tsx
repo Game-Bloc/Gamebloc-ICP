@@ -186,16 +186,19 @@ const TournamentDetail = () => {
                             <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                               <img
                                 src={
-                                  //   id == "1"
-                                  //     ? `category1.png`
-                                  //     : id == "2"
-                                  //     ? `category2.png`
-                                  //     : id == "3"
-                                  //     ? `category3.png`
-                                  //     : id == "4"
-                                  //     ? `category4.png`
-                                  //                                           :
-                                  `category1.png`
+                                  currentTournament.game.toUpperCase() ===
+                                  "CALL OF DUTY MOBILE"
+                                    ? `cat1.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "APEX LEGENDS MOBILE"
+                                    ? `cat2.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "FORTNITE"
+                                    ? `cat3.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "CHESS"
+                                    ? `cat4.png`
+                                    : `cat1.png`
                                 }
                                 alt=""
                                 className="rounded-[0.625rem]"
