@@ -101,10 +101,8 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     const img = new Image()
-    if (gameImage) {
-      setImageLoaded(true)
-    }
-    img.src = gameImage
+    img.src = `category1.png` // Using string literal
+    img.onload = () => setImageLoaded(true)
   }, [gameImage])
 
   useEffect(() => {
@@ -188,16 +186,19 @@ const TournamentDetail = () => {
                             <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                               <img
                                 src={
-                                  //   id == "1"
-                                  //     ? `category1.png`
-                                  //     : id == "2"
-                                  //     ? `category2.png`
-                                  //     : id == "3"
-                                  //     ? `category3.png`
-                                  //     : id == "4"
-                                  //     ? `category4.png`
-                                  //                                           :
-                                  `category1.png`
+                                  currentTournament.game.toUpperCase() ===
+                                  "CALL OF DUTY MOBILE"
+                                    ? `cat1.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "APEX LEGENDS MOBILE"
+                                    ? `cat2.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "FORTNITE"
+                                    ? `cat3.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "CHESS"
+                                    ? `cat4.png`
+                                    : `cat1.png`
                                 }
                                 alt=""
                                 className="rounded-[0.625rem]"
@@ -369,8 +370,12 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  {currentTournament.no_of_participants} Team
-                                  Slots
+                                  {Object.keys(
+                                    currentTournament.tournament_variation,
+                                  )[0].toUpperCase() == "INFINITE"
+                                    ? "Infinite"
+                                    : currentTournament.no_of_participants}{" "}
+                                  Team Slots
                                 </p>
                               </div>
                             </div>

@@ -15,11 +15,9 @@ const TournamentCard = ({ data, index }: Props) => {
 
   useEffect(() => {
     const img = new Image()
-    if (cardImg) {
-      setIsimageLoaded(true)
-    }
-    img.src = cardImg
-  }, [cardImg])
+    img.src = `cod.jpg` // Using string literal
+    img.onload = () => setIsimageLoaded(true)
+  }, [])
 
   return (
     <>
@@ -40,7 +38,15 @@ const TournamentCard = ({ data, index }: Props) => {
           className=" h-fit relative  flex flex-col cursor-pointer rounded-xl "
         >
           <img
-            src={`cod.jpg`}
+            src={
+              data.game.toUpperCase() === "FORTNITE"
+                ? `fortnite1.jpg`
+                : data.game.toUpperCase() === "CALL OF DUTY MOBILE"
+                ? `cod.jpg`
+                : data.game.toUpperCase() === "CHESS"
+                ? `chess1.jpg`
+                : `any1.jpg`
+            }
             alt=""
             className="rounded-[12px] m-0 h-[18rem] 2xl:h-[20rem]  w-full"
           />

@@ -13,7 +13,7 @@ import PaymentCard from "../../components/Modals/payment/PaymentCard"
 import SoloModal from "../../components/Modals/payment/SoloModal"
 import SquadModal from "../../components/Modals/payment/SquadModal"
 import { useNavigate } from "react-router-dom"
-import { generateDate } from "../../components/utils/utills"
+import { generateDate, squadCount } from "../../components/utils/utills"
 import { Principal } from "@dfinity/principal"
 import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
@@ -42,10 +42,20 @@ const PaymentModal = ({ modal, id, data }: Props) => {
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-
+  const dollarAmount =
+    Object.keys(data.tournament_type)[0].toUpperCase() === "CROWDFUNDED" &&
+    (data.game_type.toUpperCase() === "SINGLE" ||
+      data.game_type.toUpperCase() === "TEAMVTEAM")
+      ? data.entry_prize * data.users.length
+      : Object.keys(data.tournament_type)[0].toUpperCase() == "CROWDFUNDED" &&
+        data.game_type.toUpperCase() === "DUO"
+      ? data.entry_prize * squadCount(data)
+      : Object.keys(data.tournament_type)[0].toUpperCase() == "CROWDFUNDED" &&
+        data.game_type.toUpperCase() === "SQUAD"
+      ? data.entry_prize * squadCount(data)
+      : data.total_prize
   useEffect(() => {
     const calculateIcpValue = () => {
-      const dollarAmount = data.total_prize
       if (_icp2Usd > 0 && dollarAmount > 0) {
         const icpValue = dollarAmount / _icp2Usd
         setIcpValue(icpValue)
@@ -130,6 +140,20 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                           {
                             title: (
                               <p className="text-[0.6rem] sm:text-[0.75rem]">
+                                Approve
+                              </p>
+                            ),
+                            status: paid === true ? "finish" : "process",
+                            icon:
+                              paid === true ? (
+                                <DollarOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
+                              ) : (
+                                <LoadingOutlined className="w-2 h-2 sm:w-4 sm:h-4 " />
+                              ),
+                          },
+                          {
+                            title: (
+                              <p className="text-[0.6rem] sm:text-[0.75rem]">
                                 Pay
                               </p>
                             ),
@@ -191,9 +215,7 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                           <button
                             disabled={selectedPayment === "ICP" ? false : true}
                             onClick={() =>
-                              done === true
-                                ? window.location.reload()
-                                : payPlayers()
+                              paid === true ? setActive("second") : payFee()
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
                               selectedPayment === "ICP"
@@ -201,10 +223,10 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                                 : "bg-primary-second/15"
                             } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                           >
-                            {sending ? (
+                            {isLoading ? (
                               <ClipLoader
                                 color={color}
-                                loading={sending}
+                                loading={isLoading}
                                 cssOverride={override}
                                 size={20}
                                 aria-label="Loading Spinner"
@@ -212,8 +234,7 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                               />
                             ) : (
                               <p className="font-semibold">
-                                {" "}
-                                {done === true ? "Done" : "Pay Players"}
+                                {paid === true ? "Next" : "Approve"}
                               </p>
                             )}
                           </button>
@@ -226,12 +247,56 @@ const PaymentModal = ({ modal, id, data }: Props) => {
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
-                            {data.total_prize} worth of ICP to be deducted from
-                            your wallet.
+                            {dollarAmount} worth of ICP to be deducted from your
+                            wallet.
                           </p>
                         )}
                       </>
                     )}
+                    {active === "second" && (
+                      <div className="mt-2">
+                        <button
+                          onClick={() =>
+                            done === true
+                              ? window.location.reload()
+                              : payPlayers()
+                          }
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          {sending ? (
+                            <ClipLoader
+                              color={color}
+                              loading={sending}
+                              cssOverride={override}
+                              size={20}
+                              aria-label="Loading Spinner"
+                              data-testid="loader"
+                            />
+                          ) : (
+                            <p className="font-semibold">
+                              {" "}
+                              {done === true ? "Done" : "Pay Players"}
+                            </p>
+                          )}
+                        </button>
+                      </div>
+                    )}
+                    {/* {active === "third" && (
+                      <div className="mt-2">
+                        <div className="mt-8 mb-4 flex w-full justify-center">
+                          <img src={`check2.png`} alt="" />
+                        </div>
+                        <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
+                          successful
+                        </p>
+                        <button
+                          onClick={() => window.location.reload()}
+                          className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
+                        >
+                          Back to Dashboard
+                        </button>
+                      </div>
+                    )} */}
                   </div>
                 </div>
               </div>
