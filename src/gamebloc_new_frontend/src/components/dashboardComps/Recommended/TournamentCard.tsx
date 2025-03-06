@@ -42,7 +42,7 @@ const TournamentCard = ({ data, index }: Props) => {
               data.game.toUpperCase() === "FORTNITE"
                 ? `fortnite1.jpg`
                 : data.game.toUpperCase() === "CALL OF DUTY MOBILE"
-                ? `cod2.jpg`
+                ? `cod.jpg`
                 : data.game.toUpperCase() === "CHESS"
                 ? `chess1.jpg`
                 : `any1.jpg`
