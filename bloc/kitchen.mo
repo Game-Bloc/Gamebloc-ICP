@@ -1088,11 +1088,14 @@ public shared ({ caller }) func claimToday() : async () {
         case(?today){
             // Checks if countdown is complete
             if ((today.streakTime + day) >= Int.abs(Time.now())) {
+                var point = today.streakCount + 1;
                 if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
                     await resetClaims(caller);
+                    point := 1;
                 };
-                var point = today.streakCount + 1;
+                Debug.print("Updating point..");
                 await update_point(caller, point);
+                Debug.print(debug_show("Updated point.."));
                 var claimed = {
                     user = today.user;
                     streakTime = Int.abs(Time.now()); 
@@ -1431,7 +1434,9 @@ private func burn_user_point(caller : Principal, _point : Nat) : async () {
                     total_point = tracker.total_point - _point;
                 };
                 var updated = USER_TRACK_STORE.replace(caller, update);
-            };
+            } else {
+                throw Error.reject("Not enough balance to perform action!");
+            }
         }
     }
 };
@@ -1480,9 +1485,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
     // * Local params
-     let gbc_admin : Principal = Principal.fromText("6jvvx-vkfin-q3qbr-wlgsz-pfnmm-jgtnk-eze4p-lhpam-ey34o-742hy-yqe"); // * Demo here
+    //  let gbc_admin : Principal = Principal.fromText("6jvvx-vkfin-q3qbr-wlgsz-pfnmm-jgtnk-eze4p-lhpam-ey34o-742hy-yqe"); // * Demo here
     // ! Production params @Deonorla
-    // let gbc_admin : Principal = Principal.fromText("ls34l-2mn3r-6r5sv-m5z46-wdwe2-waihi-6er6x-5lvzy-5fhlm-wzg2m-pqe"); 
+    let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
 
 //
 // * Tournaments Features
