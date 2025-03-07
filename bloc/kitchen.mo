@@ -27,6 +27,7 @@ import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
+import List "mo:base/List";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -1282,7 +1283,10 @@ public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Na
             }
         }
     } else {
-        throw Error.reject("You are not authorised to make this action! You imposter, you dissappoint me! tueh!")
+        throw Error.reject(
+            "You are not authorised to make this action!\n
+            You imposter, you dissappoint me! tueh!"
+        )
     }
 };
 
@@ -1338,6 +1342,48 @@ public query func get_point_track(caller : Principal) : async Nat {
     return temporary_point;
 };
 
+
+func merge(left: [(Principal, Nat)], right: [(Principal, Nat)]) : [(Principal, Nat)] {
+    var result: [(Principal, Nat)] = [];
+    var i = 0;
+    var j = 0;
+    while (i < left.size() and j < right.size()) {
+        if (left[i].1 >= right[j].1) {
+            result := Array.append(result, [left[i]]);
+            i += 1;
+        } else {
+            result := Array.append(result, [right[j]]);
+            j += 1;
+        }
+    };
+    while (i < left.size()) {
+        result := Array.append(result, [left[i]]);
+        i += 1;
+    };
+    while (j < right.size()) {
+        result := Array.append(result, [right[j]]);
+        j += 1;
+    };
+    result
+};
+
+func mergeSort(arr: [(Principal, Nat)]) : [(Principal, Nat)] {
+    if (arr.size() <= 1) return arr;
+    let mid = arr.size() / 2;
+    let left = mergeSort(Array.subArray(arr, 0, mid));
+    let right = mergeSort(Array.subArray(arr, mid, arr.size() - mid));
+    merge(left, right);
+};
+
+
+
+public query func get_point_leadersboard() : async [(Principal, Nat)] {
+    var leaderboard : [(Principal, Nat)] = []; //Array.init<[(Principal, Nat)]>();
+    for ((key, value) in USER_TRACK_STORE.entries()){
+        leaderboard := Array.append(leaderboard, [(key, value.total_point)]);
+    };
+    return mergeSort(leaderboard);
+};
 
 
 private func reset_point_tracker(caller : Principal) : async () {
