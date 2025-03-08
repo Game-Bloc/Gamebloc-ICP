@@ -688,6 +688,17 @@ public func getUser(caller : Principal) : async ?Bloctypes.UserProfile {
     ProfileHashMap.get(caller)
 };
 
+public query func get_username(caller : Principal) : async  Text {
+    let profile = ProfileHashMap.get(caller);
+    switch(profile) {
+        case(null){
+            return "Anonymous user";
+        }; case(?profile){
+            return profile.username;
+        }
+    }
+};
+
 type TournamentAccount = Bloctypes.TournamentAccount;
 
 // private let ic : IC.Self = actor "aaaaa-aa";
@@ -1342,9 +1353,10 @@ public query func get_point_track(caller : Principal) : async Nat {
     return temporary_point;
 };
 
+// 
 
-func merge(left: [(Principal, Nat)], right: [(Principal, Nat)]) : [(Principal, Nat)] {
-    var result: [(Principal, Nat)] = [];
+func merge(left: [(Principal, Nat, Text)], right: [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
+    var result: [(Principal, Nat, Text)] = [];
     var i = 0;
     var j = 0;
     while (i < left.size() and j < right.size()) {
@@ -1367,7 +1379,7 @@ func merge(left: [(Principal, Nat)], right: [(Principal, Nat)]) : [(Principal, N
     result
 };
 
-func mergeSort(arr: [(Principal, Nat)]) : [(Principal, Nat)] {
+func mergeSort(arr : [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
     if (arr.size() <= 1) return arr;
     let mid = arr.size() / 2;
     let left = mergeSort(Array.subArray(arr, 0, mid));
@@ -1377,10 +1389,25 @@ func mergeSort(arr: [(Principal, Nat)]) : [(Principal, Nat)] {
 
 
 
-public query func get_point_leadersboard() : async [(Principal, Nat)] {
-    var leaderboard : [(Principal, Nat)] = []; //Array.init<[(Principal, Nat)]>();
+public func get_point_leadersboard() : async [(Principal, Nat, Text)] {
+    var leaderboard : [(Principal, Nat, Text)] = []; //Array.init<[(Principal, Nat)]>();
     for ((key, value) in USER_TRACK_STORE.entries()){
-        leaderboard := Array.append(leaderboard, [(key, value.total_point)]);
+        leaderboard := Array.append(leaderboard, [(key, value.total_point, await getUsername(key))]);
+    };
+    return mergeSort(leaderboard);
+};
+
+public query func get_point_leadersboard_fast() : async [(Principal, Nat, Text)] {
+    var leaderboard : [(Principal, Nat, Text)] = []; //Array.init<[(Principal, Nat)]>();
+    for ((key, value) in USER_TRACK_STORE.entries()){
+        var profile = ProfileHashMap.get(key);
+        switch(profile) {
+            case(null){
+                leaderboard := Array.append(leaderboard, [(key, value.total_point, "Anonymous User GBC")]);
+            }; case(?profile){
+                leaderboard := Array.append(leaderboard, [(key, value.total_point, profile.username)]);
+            }
+        }
     };
     return mergeSort(leaderboard);
 };
@@ -1697,10 +1724,10 @@ public shared func getUserPrincipal(name : Text) : async Principal {
     return Principal.fromText(result.principal_id)
 };
 
-// public func getUsername(caller : Principal) : async Text {
-//     var result = await RustBloc.get_profile(await getUserPrincipal(ca));
-//     return result.username
-// };
+public func getUsername(caller : Principal) : async Text {
+    var result = await RustBloc.get_profile_by_principal(caller);
+    return result.username
+};
 
 public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
     try {
@@ -2072,6 +2099,8 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     public query func get_number_of_unique_users() : async Nat {
         ProfileHashMap.size()
     };
+
+
 
     public query func get_total_number_of_tournament() : async Nat {
         TournamentHashMap.size()
