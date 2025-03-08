@@ -1238,29 +1238,42 @@ export const useGameblocHooks = () => {
   const get_leaderboard = async () => {
     try {
       setUpdating(true)
-      const leaderboard = await whoamiActor.get_point_leadersboard()
-      // dispatch(clearBoard())
-      // for (const data of leaderboard) {
-      //   const board: LeaderboardState = {
-      //     losses: data.losses,
-      //     name: data.name,
-      //     point: Number(data.point),
-      //     wins: data.wins,
-      //   }
-      console.log("board", leaderboard)
-      // dispatch(updateLeaderboard(board))
-      // }
+      dispatch(clearBoard())
+      const leaderboard = await whoamiActor.get_point_leadersboard_fast()
+      console.log("leaderboard (raw data):", leaderboard)
 
       if (leaderboard) {
+        const processedBoard = leaderboard.map((entry) => {
+          const [principal, points, name] = entry
+          return {
+            principal: principal.toString(), // Convert Principal to string
+            points: Number(points), // Convert points to number
+            name: name, // Player name
+          }
+        })
+
+        // Remove duplicate entries based on 'principal'
+        const uniqueBoard = processedBoard.filter(
+          (value, index, self) =>
+            index === self.findIndex((t) => t.principal === value.principal),
+        )
+
+        // Log uniqueBoard to ensure duplicates are filtered out
+        // console.log("uniqueBoard (after filtering duplicates):", uniqueBoard)
+
+        // Dispatch the unique leaderboard entries
+        uniqueBoard.forEach((board) => {
+          dispatch(updateLeaderboard(board))
+          // console.log("called")
+        })
+
         setUpdating(false)
-        // console.log("Leaderboard", leaderboard)
       }
     } catch (err) {
       setUpdating(false)
       console.log("Can't get leaderboard stats", err)
     }
   }
-
   return {
     paid,
     done,

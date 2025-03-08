@@ -33,6 +33,10 @@ const TournamentDetail = () => {
   const { updating, updateTournament } = useUpdateTournament()
   const { start_tournament } = useGameblocHooks()
 
+  useEffect(() => {
+    updateTournament()
+  }, [isAuthenticated])
+
   // Safeguard for tournament data filtering
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
@@ -104,10 +108,6 @@ const TournamentDetail = () => {
     img.src = `category1.png` // Using string literal
     img.onload = () => setImageLoaded(true)
   }, [gameImage])
-
-  useEffect(() => {
-    updateTournament()
-  }, [isAuthenticated])
 
   if (status) {
     return (
