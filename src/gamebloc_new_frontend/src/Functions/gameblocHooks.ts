@@ -1238,18 +1238,18 @@ export const useGameblocHooks = () => {
   const get_leaderboard = async () => {
     try {
       setUpdating(true)
-      const leaderboard = await whoamiActor2.get_leaderboard()
-      dispatch(clearBoard())
-      for (const data of leaderboard) {
-        const board: LeaderboardState = {
-          losses: data.losses,
-          name: data.name,
-          point: Number(data.point),
-          wins: data.wins,
-        }
-        // console.log("board", board)
-        dispatch(updateLeaderboard(board))
-      }
+      const leaderboard = await whoamiActor.get_point_leadersboard()
+      // dispatch(clearBoard())
+      // for (const data of leaderboard) {
+      //   const board: LeaderboardState = {
+      //     losses: data.losses,
+      //     name: data.name,
+      //     point: Number(data.point),
+      //     wins: data.wins,
+      //   }
+      console.log("board", leaderboard)
+      // dispatch(updateLeaderboard(board))
+      // }
 
       if (leaderboard) {
         setUpdating(false)

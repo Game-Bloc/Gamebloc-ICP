@@ -1531,9 +1531,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
     // * Local params
-      let gbc_admin : Principal = Principal.fromText("kqlfa-pdtg3-s2qbr-tnw66-a74iq-mv3oo-ojxp4-5m3nk-x6yo5-a6iy7-gqe"); // * Demo here
+      let gbc_admin : Principal = Principal.fromText("4fqkb-lpdun-6hyso-fhk4m-qwfym-5tubs-f56mc-7ucb2-uczuk-epx5a-gae"); // * Demo here
     // ! Production params @Deonorla
-    //let gbc_admin : Principal = Principal.fromText("ls34l-2mn3r-6r5sv-m5z46-wdwe2-waihi-6er6x-5lvzy-5fhlm-wzg2m-pqe"); 
+    //let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
 
 //
 // * Tournaments Features

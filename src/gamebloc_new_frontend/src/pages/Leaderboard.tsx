@@ -22,18 +22,18 @@ const Leaderboard = () => {
 
   const columns = [
     {
-      title: "Position",
+      title: "Rank",
       dataIndex: "position",
       key: "position",
     },
     { title: "Username", dataIndex: "name", key: "name" },
 
-    {
-      title: "Wins",
-      dataIndex: "wins",
-      key: "wins",
-    },
-    { title: "Losses", dataIndex: "losses", key: "losses" },
+    // {
+    //   title: "Wins",
+    //   dataIndex: "wins",
+    //   key: "wins",
+    // },
+    // { title: "Losses", dataIndex: "losses", key: "losses" },
     { title: "Points", dataIndex: "point", key: "point" },
   ]
 
@@ -56,9 +56,16 @@ const Leaderboard = () => {
             <div className="m-4 mt-24">
               <div className="">
                 <div className=" sm:ml-4 mt-4  flex flex-col ">
-                  <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
-                    Leaderboard
-                  </h1>
+                  <div className="flex items-center">
+                    <img
+                      src={`league.png`}
+                      alt=""
+                      className="mr-3 w-8 h-8 lg:w-16 lg:h-16"
+                    />
+                    <h1 className="text-primary-second font-valorant  text-base md:text-[1.5rem] 2xl:text-[2rem]">
+                      GAMEBLOC LEAGUE
+                    </h1>
+                  </div>
 
                   <div className="mt-[3rem]">
                     <ConfigProvider
@@ -78,7 +85,7 @@ const Leaderboard = () => {
                         columns={columns}
                         rowClassName={() => "rowClassName1"}
                         dataSource={board}
-                        scroll={{ x: true }}
+                        // scroll={{ x: true }}
                         rowKey={"position"}
                       />
                     </ConfigProvider>
