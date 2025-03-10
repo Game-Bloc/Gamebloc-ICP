@@ -17,7 +17,7 @@ import {
 export const useFetchAllTournaments = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { whoamiActor, isAuthenticated } = useAuth()
+  const { whoamiActor2 } = useAuth()
   const [loading, setIsLoading] = useState(false)
   const [nodata, setNoData] = useState(false)
 
@@ -27,7 +27,7 @@ export const useFetchAllTournaments = () => {
       setIsLoading(true)
       // console.log("get tournament was called")
       dispatch(clearTournaments())
-      const tour: any = await whoamiActor.get_all_tournament()
+      const tour: any = await whoamiActor2.get_all_tournament()
       console.log("Tour:", tour)
       if (tour && tour.length !== 0) {
         const tourArray: any[] = []
@@ -167,7 +167,7 @@ export const useFetchAllTournaments = () => {
 }
 
 export const useUpdateTournament = () => {
-  const { whoamiActor, isAuthenticated } = useAuth()
+  const {whoamiActor2} = useAuth()
   const dispatch = useAppDispatch()
   const [updating, setUpdating] = useState<boolean>(false)
   const [noData, setNoData] = useState<boolean>(false)
@@ -176,7 +176,7 @@ export const useUpdateTournament = () => {
     // if (isAuthenticated) {
     try {
       setUpdating(true)
-      const update: any = await whoamiActor.get_all_tournament()
+      const update: any = await whoamiActor2.get_all_tournament()
       if (update && update.length !== 0) {
         console.log("update function working")
         console.log("update", update)
@@ -316,7 +316,7 @@ export const useUpdateTournament = () => {
   return { updateTournament, updating, setNoData }
 }
 export const useGetTournamentMessages = () => {
-  const { whoamiActor, isAuthenticated } = useAuth()
+  const { whoamiActor2 } = useAuth()
   const dispatch = useAppDispatch()
   const [updating, setUpdating] = useState<boolean>(false)
   const [noData, setNoData] = useState<boolean>(false)
@@ -325,7 +325,7 @@ export const useGetTournamentMessages = () => {
     // if (isAuthenticated) {
     try {
       setUpdating(true)
-      const update: any = await whoamiActor.get_all_tournament()
+      const update: any = await whoamiActor2.get_all_tournament()
       if (update && update.length !== 0) {
         // console.log("message function working")
         for (const data of update) {
@@ -415,7 +415,7 @@ export const useGetTournamentMessages = () => {
 }
 
 export const useGetAllSquad = () => {
-  const { whoamiActor } = useAuth()
+  const { whoamiActor2 } = useAuth()
   const dispatch = useAppDispatch()
   const [updating, setUpdating] = useState<boolean>(false)
   const [noData, setNoData] = useState<boolean>(false)
@@ -423,7 +423,7 @@ export const useGetAllSquad = () => {
   const getAllSquads = async () => {
     try {
       setUpdating(true)
-      const fetchSquads: any = await whoamiActor.get_all_squad()
+      const fetchSquads: any = await whoamiActor2.get_all_squad()
       dispatch(clearSquad())
       // console.log("All Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
@@ -459,7 +459,7 @@ export const useGetAllSquad = () => {
 }
 
 export const useUpdateAllSquad = () => {
-  const { whoamiActor } = useAuth()
+  const { whoamiActor2 } = useAuth()
   const dispatch = useAppDispatch()
   const [updating, setUpdating] = useState<boolean>(false)
   const [noData, setNoData] = useState<boolean>(false)
@@ -468,7 +468,7 @@ export const useUpdateAllSquad = () => {
     try {
       setUpdating(true)
 
-      const fetchSquads: any = await whoamiActor.get_all_squad()
+      const fetchSquads: any = await whoamiActor2.get_all_squad()
       // console.log("update Squads", fetchSquads)
       if (fetchSquads && fetchSquads.length !== 0) {
         for (const data of fetchSquads) {
