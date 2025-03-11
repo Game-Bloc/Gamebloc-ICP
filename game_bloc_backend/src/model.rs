@@ -216,10 +216,10 @@ pub enum GameType {
 impl GameType {
     pub fn _to_str(&self) -> String {
         match self {
-            GameType::TeamvTeam => "primary".to_string(),
-            GameType::Single => "unique".to_string(),
-            GameType::Duo => "unique".to_string(),
-            GameType::Squad => "unique".to_string(),
+            GameType::TeamvTeam => "TeamvTeam".to_string(),
+            GameType::Single => "Single".to_string(),
+            GameType::Duo => "Duo".to_string(),
+            GameType::Squad => "Squad".to_string(),
         }
     }
     pub fn from_str(name: &str) -> GameType {
