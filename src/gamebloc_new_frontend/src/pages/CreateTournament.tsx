@@ -446,11 +446,11 @@ const CreateTournament = () => {
                               id == "1"
                                 ? `category1.png`
                                 : id == "2"
-                                ? loader1
+                                ? `cat2.png`
                                 : id == "3"
-                                ? loader2
+                                ? `cat3.png`
                                 : id == "4"
-                                ? loader3
+                                ? `cat4.png`
                                 : `gamepad.png`
                             }
                             alt=""
@@ -464,7 +464,7 @@ const CreateTournament = () => {
                         <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
                           Host Tournament
                         </p>
-                        <div className="flex flex-wrap justify-end items-center gap-4">
+                        {/* <div className="flex flex-wrap justify-end items-center gap-4">
                           <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
                             <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                               Action
@@ -480,7 +480,7 @@ const CreateTournament = () => {
                               Shooting
                             </p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
 

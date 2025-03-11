@@ -757,6 +757,7 @@ const TournamentInfo = ({ data }: Props) => {
           />
         )}
         {Object.keys(data.status)[0].toUpperCase() === "GAMEINPROGRESS" ||
+        Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ||
         data.users.some((index: any) => index.includes(owner)) === true ||
         data.squad.some((players: any) =>
           players.members.some((gamer: any) => gamer.name.includes(owner)),

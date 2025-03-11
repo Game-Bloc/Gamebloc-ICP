@@ -33,10 +33,6 @@ const TournamentDetail = () => {
   const { updating, updateTournament } = useUpdateTournament()
   const { start_tournament } = useGameblocHooks()
 
-  useEffect(() => {
-    updateTournament()
-  }, [isAuthenticated])
-
   // Safeguard for tournament data filtering
   const tourData =
     tournamentData?.filter((tour: any) => tour?.id_hash === id) || []
@@ -50,6 +46,11 @@ const TournamentDetail = () => {
     ? Object.keys(currentTournament.status)[0].toUpperCase() === "ARCHIVED"
     : false
 
+  useEffect(() => {
+    updateTournament()
+  }, [isAuthenticated])
+
+  // console.log("data", tournamentData)
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -234,7 +235,7 @@ const TournamentDetail = () => {
                                 />
                               </div>
                               <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
-                                <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
+                                {/* <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
                                   <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                                     Action
                                   </p>
@@ -248,7 +249,7 @@ const TournamentDetail = () => {
                                   <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                                     Shooting
                                   </p>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           )}
