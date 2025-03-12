@@ -70,7 +70,9 @@ pub_struct!(
      game_type: String,
      end_date: String,
      title: String,
+    //player same squad_id and points
      squad_points: Option<Vec<(String,String,Point)>>,
+    //playername user_id and points
      points: Option<Vec<(String,String,Point)>>,
      squad_vector_mod_1: Option<Vec<(String,String,Point)>>,
      points_vector_mod_1: Option<Vec<(String,String,Point)>>,
