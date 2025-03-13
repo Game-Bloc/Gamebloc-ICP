@@ -17,6 +17,14 @@ module {
         total_point : Nat
     };
 
+    public type DailyClaim = {
+        user : Principal;
+        streakTime : Nat; //  Type Time
+        streakCount : Nat;
+        highestStreak : Nat;
+        pointBalance : Nat;
+    };
+
     // Multipliers
 
     public type ModTag = {
@@ -290,16 +298,5 @@ module {
         wins : Nat8;
         losses : Nat8
     };
-
-    public type DailyClaim = {
-        user : Principal;
-        streakTime : Nat; //  Type Time
-        streakCount : Nat;
-        highestStreak : Nat;
-        pointBalance : Nat;
-    };
-
-
-
 
 }

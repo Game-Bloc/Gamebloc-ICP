@@ -60,7 +60,7 @@ private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
 private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
 private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
 private stable var feedback_id : Nat = 0;
-private stable let day : Nat = 86_400;
+private stable let day : Nat = 86_400 * 1_000_000_000;
 private stable let e8s : Nat = 100_000_000;
 private stable var volume : Nat64 = 0;
 private stable var SupportedGames : [Text] = [];
@@ -539,6 +539,11 @@ public func getPrincipal() : async Principal {
 func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
     // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
     ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
+};
+
+public func createOneProfilesTest(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : async () {
+    // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+    ignore ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
 };
 
 
@@ -1099,26 +1104,25 @@ public shared ({ caller }) func claimToday() : async () {
         };
         case(?today){
             // Checks if countdown is complete
-            if ((today.streakTime + day) >= Int.abs(Time.now())) {
+            if (((today.streakTime + day) <= Int.abs(Time.now())) and (Int.abs(Time.now()) < (today.streakTime + (2*day))) ) {
                 var point = today.streakCount + 1;
-                if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
-                    await resetClaims(caller);
-                    point := 1;
-                };
-                Debug.print("Updating point..");
-                await update_point(caller, point);
-                Debug.print(debug_show("Updated point.."));
                 var claimed = {
                     user = today.user;
                     streakTime = Int.abs(Time.now()); 
-                    streakCount = today.streakCount + 1;
-                    highestStreak = today.highestStreak;
+                    streakCount = point;
+                    highestStreak = if (point > today.highestStreak){ point } else {today.highestStreak};
                     pointBalance = today.pointBalance + point;
                 };
-                let updated = DailyRewardHashMap.replace(caller, claimed);
-
+                ignore DailyRewardHashMap.replace(caller, claimed);
+                Debug.print("Updating point..");
+                await update_point(caller, point);
+                Debug.print(debug_show("Updated point.."));
+            } else if (Int.abs(Time.now()) >= (today.streakTime + (2*day))) {
+                await resetClaims(caller);
+                Debug.print(debug_show("Lost streak, streak count resetted"))
             } else {
-
+                Debug.print("Claim already made today. Try again tomorrow!");
+                throw Error.reject("You have already claimed today, try again later")
             }
         }
     }
@@ -1134,9 +1138,10 @@ func resetClaims(caller : Principal) : async () {
                     streakTime = Int.abs(Time.now()); 
                     streakCount = 1;
                     highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance;
+                    pointBalance = today.pointBalance + 1;
             };
-            let updated = DailyRewardHashMap.replace(caller, claimed);
+            await update_point(caller, 1);
+            ignore DailyRewardHashMap.replace(caller, claimed);
         }
     }
 };
@@ -1353,8 +1358,6 @@ public query func get_point_track(caller : Principal) : async Nat {
     return temporary_point;
 };
 
-// 
-
 func merge(left: [(Principal, Nat, Text)], right: [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
     var result: [(Principal, Nat, Text)] = [];
     var i = 0;
@@ -1436,7 +1439,10 @@ private func reset_point_tracker(caller : Principal) : async () {
 private func update_point(caller : Principal, point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
-        case (null) {};
+        case (null) {
+            await create_usertrack(caller);
+            await update_point(caller, point);
+        };
         case (?tracker) {
             var update = {
                 user = tracker.user;
@@ -1453,7 +1459,7 @@ private func update_point(caller : Principal, point : Nat) : async () {
     }
 };
 
-private func allocateUserPoint(caller : Principal, point : Nat) : async () {
+public func allocateUserPoint(caller : Principal, point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
         case (null) {};
@@ -1490,27 +1496,32 @@ public query func get_user_point(caller : Principal) : async Nat {
 // Feedbacks
 //
 
-private func burn_user_point(caller : Principal, _point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            if (tracker.total_point > _point) {
-                var update = {
-                    user = tracker.user;
-                    tournaments_created = tracker.tournaments_created;
-                    tournaments_joined = tracker.tournaments_joined;
-                    wager_participated = tracker.wager_participated;
-                    tournaments_won = tracker.tournaments_won;
-                    messages_sent = tracker.messages_sent;
-                    feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.total_point - _point;
-                };
-                var updated = USER_TRACK_STORE.replace(caller, update);
-            } else {
-                throw Error.reject("Not enough balance to perform action!");
+public func burn_user_point(caller : Principal, _point : Nat, access : Text) : async () {
+
+    if (access == "operator may trap for inferred type"){
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                if (tracker.total_point > _point) {
+                    var update = {
+                        user = tracker.user;
+                        tournaments_created = tracker.tournaments_created;
+                        tournaments_joined = tracker.tournaments_joined;
+                        wager_participated = tracker.wager_participated;
+                        tournaments_won = tracker.tournaments_won;
+                        messages_sent = tracker.messages_sent;
+                        feedbacks_sent = tracker.feedbacks_sent;
+                        total_point = tracker.total_point - _point;
+                    };
+                    var updated = USER_TRACK_STORE.replace(caller, update);
+                } else {
+                    throw Error.reject("Not enough balance to perform action!");
+                }
             }
         }
+    } else {
+        throw Error.reject("You are not allowed to perform this operation");
     }
 };
 
@@ -1558,9 +1569,9 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
     // * Local params
-      let gbc_admin : Principal = Principal.fromText("4fqkb-lpdun-6hyso-fhk4m-qwfym-5tubs-f56mc-7ucb2-uczuk-epx5a-gae"); // * Demo here
+    //   let gbc_admin : Principal = Principal.fromText("4fqkb-lpdun-6hyso-fhk4m-qwfym-5tubs-f56mc-7ucb2-uczuk-epx5a-gae"); // * Demo here
     // ! Production params @Deonorla
-    //let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
+    let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
 
 //
 // * Tournaments Features

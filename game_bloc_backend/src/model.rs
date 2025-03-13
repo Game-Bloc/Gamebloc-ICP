@@ -47,7 +47,7 @@ pub_struct!(
      starting_date: String,
      tournament_rules: String,
      tournament_type: TournamentType,
-     game: String,
+     game: String, // To save 
      squad:Vec<Squad>,
      squad_in_game_names:Option<Vec<Vec<(String, String, String)>>>,
      messages: Option<Vec<Chat>>,
