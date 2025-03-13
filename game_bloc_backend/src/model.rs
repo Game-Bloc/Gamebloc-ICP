@@ -70,7 +70,9 @@ pub_struct!(
      game_type: String,
      end_date: String,
      title: String,
+    //player same squad_id and points
      squad_points: Option<Vec<(String,String,Point)>>,
+    //playername user_id and points
      points: Option<Vec<(String,String,Point)>>,
      squad_vector_mod_1: Option<Vec<(String,String,Point)>>,
      points_vector_mod_1: Option<Vec<(String,String,Point)>>,
@@ -216,10 +218,10 @@ pub enum GameType {
 impl GameType {
     pub fn _to_str(&self) -> String {
         match self {
-            GameType::TeamvTeam => "primary".to_string(),
-            GameType::Single => "unique".to_string(),
-            GameType::Duo => "unique".to_string(),
-            GameType::Squad => "unique".to_string(),
+            GameType::TeamvTeam => "TeamvTeam".to_string(),
+            GameType::Single => "Single".to_string(),
+            GameType::Duo => "Duo".to_string(),
+            GameType::Squad => "Squad".to_string(),
         }
     }
     pub fn from_str(name: &str) -> GameType {
@@ -256,6 +258,7 @@ pub enum TournamentType {
     Crowdfunded,
     Prepaid,
     Blitzkrieg,
+    SquadTraining
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentLobbyType {
