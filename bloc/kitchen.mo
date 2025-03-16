@@ -2,7 +2,7 @@ import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import DateTime "mo:datetime/DateTime";
-// import AccountIdentifier "mo:account-identifier";
+import AccountIdentifierMops "mo:account-identifier";
 // import Account "mo:account";
 
 import { now } = "mo:base/Time";
@@ -28,6 +28,10 @@ import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
 import List "mo:base/List";
+import Random "mo:base/Random";
+import Nat32 "mo:base/Nat32";
+import Char "mo:base/Char";
+import Int64 "mo:base/Int64";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -70,6 +74,7 @@ private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
 private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
 private stable var DailyRewardEntries : [(Principal, Bloctypes.DailyClaim)] = [];
 private stable var LockedAssetsEntries : [(Principal, Bloctypes.LockedAsset)] = [];
+private stable var UpdatedUsersEntries : [(Principal, User)] = [];
 
 
 var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -79,6 +84,8 @@ var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = H
 var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
 var DailyRewardHashMap : HashMap.HashMap<Principal, Bloctypes.DailyClaim> = HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
 var LockedAssetsHashMap : HashMap.HashMap<Principal, Bloctypes.LockedAsset> = HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
+var UpdatedUsersHashMap : HashMap.HashMap<Principal, User> = HashMap.fromIter<Principal, User>(UpdatedUsersEntries.vals(), 10, Principal.equal, Principal.hash);
+private let accountIdentifiers = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
 
 var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
 var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
@@ -101,6 +108,7 @@ system func preupgrade() {
     NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
     DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
     LockedAssetsEntries := Iter.toArray(LockedAssetsHashMap.entries());
+    UpdatedUsersEntries := Iter.toArray(UpdatedUsersHashMap.entries());
 
     messageEntries := Iter.toArray(MessageHashMap.entries());
     BalanceEntries := Iter.toArray(BalanceHashMap.entries());
@@ -109,8 +117,78 @@ system func preupgrade() {
     PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
 };
 
-system func heartbeat() : async () {
+  private stable var latestTransactionIndex : Nat = 0;
 
+system func timer(setGlobalTimer : Nat64 -> ()) : async () {
+    let next = Nat64.fromIntWrap(Time.now()) + 20_000_000_000; // 20 seconds
+    setGlobalTimer(next);
+    await check_notify(1);
+};
+
+// public func t_create_accountidentifier(principal : Principal, )
+
+private func check_notify(_startblock : Nat) : async () {
+    var start : Nat = _startblock;
+    if (latestTransactionIndex > 0) {
+      start := latestTransactionIndex + 1;
+    };
+
+    var blockResponse = await ICPLedger.query_blocks({
+        start = Nat64.fromNat(start);
+        length = 10;
+    });
+
+    for (block in blockResponse.blocks.vals()){
+        switch(block.transaction.operation){
+            case(?operation){
+                switch(operation){
+                    case(#Transfer(transfer)) {
+                        let destinationAccount = AccountIdentifier.toText(transfer.to);
+                        switch(accountIdentifiers.get((destinationAccount))) {
+                            case (?userPrincipal){
+                                // notify user on-chain
+                                ignore await notify(
+                                    "ICP Deposit Successful",
+                                    "You have successfully deposited "# Float.toText(Float.fromInt64(Int64.fromNat64(transfer.amount.e8s))/100_000_000) #" to your GameBloc wallet.",
+                                    userPrincipal, 
+                                    Int.toText(Time.now()),
+                                    await get_notification_id(userPrincipal),
+                                    await getUsername(userPrincipal)
+                                );
+                                Debug.print("Notification sent");
+                            }; case (null){};
+                        };
+                    };
+                    case _ {};
+                };
+            };
+            case (null) {};
+        };
+    };
+};
+
+public func testAccountBlob() : async Text {
+    let account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe"), null));
+    return account;
+};
+
+
+public func testToAccountIdentifier(_account : AccountIdentifier) : async Text {
+    let account =AccountIdentifier.toText(_account);
+    return account;
+};
+
+public func testAccountNotBlob() : async AccountIdentifier {
+    let account = AccountIdentifier.fromPrincipal(Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe"), null);
+    return account;
+};
+
+type AID = Blob;
+
+ private func getPrincipalFromAccountIdentifier(accountIdentifier : AID) : Principal {
+        // Extract the Principal from the AccountIdentifier (this is a simplified example)
+        // In a real implementation, you would need to decode the AccountIdentifier properly.
+        Principal.fromBlob(accountIdentifier);
 };
 
 system func postupgrade() {
@@ -121,6 +199,7 @@ system func postupgrade() {
     NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
     DailyRewardHashMap := HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
     LockedAssetsHashMap := HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
+    UpdatedUsersHashMap := HashMap.fromIter<Principal, User>(UpdatedUsersEntries.vals(), 10, Principal.equal, Principal.hash);
 
     ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
     SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
@@ -137,13 +216,98 @@ system func postupgrade() {
     FeedbackEntries := [];
     PasswordEntries := [];
     messageEntries := [];
-    NotificationEntries := []
+    NotificationEntries := [];
+    UpdatedUsersEntries := [];
 };
+
+type User = {
+    email : Text;
+    username  : Text;
+    principal : Principal;
+};
+
+private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+
+// Function to register a new user with their email
+    public shared ({ caller }) func updateUser(email : Text) : async Result.Result<(), Text> {
+        switch(emails.get(email)){
+            case(?existingPrincipal){
+                return #err("Email is already in use \n If your email was stolen you can reach out to the admins or tribunal to resolve disputes");
+            }; case (null) {
+                // * Email is probably unique
+                switch(UpdatedUsersHashMap.get(caller)){
+                    case(?profile){
+                        return #err("Your profile is already up to date");
+                    }; case(null){
+                        let user : User = {
+                            email = email;
+                            username = await get_username(caller);
+                            principal = caller;
+                        };
+                        // let subaccount = AccountIdentifierMops.defaultSubaccount();
+                        // let accountIdentifier = AccountIdentifierMops.accountIdentifier(caller, subaccount);
+                        emails.put(email, caller);
+                        accountIdentifiers.put(
+                            AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)),
+                            caller
+                        );
+                        UpdatedUsersHashMap.put(caller, user);
+                        return #ok(());
+                    }
+                }
+            }
+        }
+    };
+
+    public query func getUserEmail(userPrincipal : Principal) : async ?Text {
+        let user = UpdatedUsersHashMap.get(userPrincipal);
+        switch (user) {
+            case (?u) { ?u.email };
+            case (null) { null };
+        }
+    };
+
+     public query func isEmailRegistered(email : Text) : async Bool {
+        switch (emails.get(email)) {
+            case (?principal) { true };
+            case (null) { false };
+        }
+    };
+
+    public query func getAllUsers() : async [(Principal, User)] {
+        Iter.toArray(UpdatedUsersHashMap.entries());
+    };
+
+//  public func generateIdempotencyKey() : async Text {
+//     // Generate a random seed (Blob)
+//     let randomSeed = await Random.blob();
+
+//     // Create a Finite random generator from the seed
+//     let random = Random.Finite(randomSeed);
+
+//     // Get the current timestamp in nanoseconds
+//     let timestamp = Time.now();
+
+//     // Generate a random number between 0 and 9999
+//     var randomNum = 0;
+//     switch (random.range(30)) {
+//       case (?num) randomNum := num;
+//       case (null) randomNum := 0; // Fallback in case of error
+//     };
+
+//     // Combine timestamp and random number into a key
+//     return Int.toText(timestamp) # "-" # Nat.toText(randomNum);
+// };
+
+// func generateUUID() : Text {
+//     return
+// }
+
+
 
 //
 // Ledger Canister
 //
-
 
 // TODO: Test functions
 
@@ -539,13 +703,6 @@ func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : 
     // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
     ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
 };
-
-public func createOneProfilesTest(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : async () {
-    // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-    ignore ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
-};
-
-
 
 public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
     // call the balnce function to get and set the balance of newly registered users
@@ -945,6 +1102,83 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
             }
         }
     }
+};
+
+ public query func transformer(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
+      let transformed : HTTP.CanisterHttpResponsePayload = {
+          status = raw.response.status;
+          body = raw.response.body;
+          headers = [
+              {
+                  name = "Content-Security-Policy";
+                  value = "default-src 'self'";
+              },
+              { name = "Referrer-Policy"; value = "strict-origin" },
+              { name = "Permissions-Policy"; value = "geolocation=(self)" },
+              {
+                  name = "Strict-Transport-Security";
+                  value = "max-age=63072000";
+              },
+              { name = "X-Frame-Options"; value = "DENY" },
+              { name = "X-Content-Type-Options"; value = "nosniff" },
+          ];
+      };
+      transformed;
+  };
+
+
+public func sendNotification(subject : Text, body : Text, receiver_email : Text) : async () {
+    // Managment canister
+    let ic : HTTP.IC = actor ("aaaaa-aa");
+
+
+    let idempotencyKey : Text = Text.concat(receiver_email, Int.toText(Time.now()));
+    let requestBodyJson : Text = "{ \"to\": \"" # receiver_email # "\", \"subject\": \"" # subject # "\", \"body\": \"" # body # "\"}";
+    let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+    let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+    let transform_context : HTTP.TransformContext = {
+        function = transform;
+        context = Blob.fromArray([])
+    };
+
+    // Setup request
+    let httpRequest : HTTP.HttpRequestArgs = {
+      // The notification service is hosted on Netlify and the URL is hardcoded
+      // in this example. In a real application, the URL would be configurable.
+      url = "https://notifier-4l85.onrender.com/send-email";
+      max_response_bytes = ?Nat64.fromNat(1000);
+      headers = [
+        { name = "Content-Type"; value = "application/json" },
+      ];
+      body = ?requestBodyAsNat8;
+      method = #post;
+      transform = ?transform_context;
+    };
+
+    // Cycle cost of sending a notification
+    // 49.14M + 5200 * request_size + 10400 * max_response_bytes
+    // 49.14M + (5200 * 1000) + (10400 * 1000) = 64.74M
+    Cycles.add(70_000_000);
+
+    // Send the request
+    let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(httpRequest);
+
+    // Check the response
+    if (httpResponse.status > 299) {
+      let response_body : Blob = Blob.fromArray(httpResponse.body);
+      let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
+        case (null) { "No value returned" };
+        case (?y) { y };
+      };
+      throw Error.reject("Error sending notification: " # decoded_text);
+    } else {
+      Debug.print("Notification sent");
+    };
+};
+
+public func testNotification() : async () {
+    await sendNotification("Local Testing", "This is just local testing \n Lets see how this is shown or displayed \n \n\n\n Yours", "successaje7@gmail.com")
 };
 
 public func whoami() : async Principal {

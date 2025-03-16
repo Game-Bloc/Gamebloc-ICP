@@ -257,8 +257,7 @@ pub enum TournamentType {
     #[default]
     Crowdfunded,
     Prepaid,
-    Blitzkrieg,
-    SquadTraining
+    Blitzkrieg
 }
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum TournamentLobbyType {
