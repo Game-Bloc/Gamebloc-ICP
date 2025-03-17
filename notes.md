@@ -65,3 +65,18 @@ public query func depositNairaDetails(_amount : Nat) : async DepositDetails {
     
 }
 ```
+
+
+### Proxy query calls reverts
+
+- count_all_squads()
+- count_all_users()
+- get_all_tournament()
+- get_all_user()
+- get_profile(str)
+- get_profile_by_principal(addr)
+- get_tournament(str)
+- get_all_squad()
+- get_squad(str)
+- is_mod(addr)
+  

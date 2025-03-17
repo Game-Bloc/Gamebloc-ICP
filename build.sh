@@ -35,9 +35,9 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 # dfx canister --network local call icp_ledger icr1_transfer '
 #     (record {
 #       to=(record {
-#         owner=(principal "b77ix-eeaaa-aaaaa-qaada-cai")
+#         owner=(principal "2vxsx-fae")
 #         });
-#         amount=500_000
+#         amount=500_000_000
 #     })'
 
 # dfx ledger transfer --amount 500_000 --memo 123 476653ac80a51b906bcc24f5ce59c1c6b4290d8dddc7ac6fae4a4b5070cf5abd
