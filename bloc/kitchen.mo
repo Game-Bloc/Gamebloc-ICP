@@ -1558,7 +1558,7 @@ public query func get_all_feedback() : async [Bloctypes.Feedback] {
     buffer.toArray()
 };
     // * Local params
-      let gbc_admin : Principal = Principal.fromText("vbsuf-33cin-6tkou-57qmm-brrar-l5pgq-lft5x-l427m-g3f36-zhdv4-pqe"); // * Demo here
+      let gbc_admin : Principal = Principal.fromText("6jqu6-vpvt7-jk65q-yjj7a-yf7l6-tn5he-thfsu-ctwak-sjusz-b5rac-pqe"); // * Demo here
     // ! Production params @Deonorla
     //let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe"); 
 
