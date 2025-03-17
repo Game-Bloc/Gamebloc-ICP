@@ -351,18 +351,32 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         accountNumber : Text;
         bankName : Text;
         currency : Text;
+        amount : Nat;
         narration : Text;
         notice : Text;
     };
 
-    public query ({caller}) func iWantToDeposit() : async DepositDetails {
+    public query ({caller}) func iWantToDeposit(_amount : Nat) : async DepositDetails {
         return {
             accountNumber = "0494721886";
             bankName = "GTBank";
             currency = "Naira";
+            amount = _amount;
             narration = Principal.toText(caller);
             notice = "Please, make sure that the details are as writen above. Especially the narration or reference. Please copy and paste the right narration"
         }
+    };
+
+    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text) : async Text {
+        let subject = "New ICP Deposit Confirmation";
+        let body = "User with Principal: " # Principal.toText(caller) # 
+                " has initiated a deposit of " # Nat.toText(amount) # 
+                " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+        let receiver_email = "deonoluleye@gmail.com";
+
+        await sendNotification(subject, body, receiver_email);
+        
+        return "Deposit confirmation sent to admin. Please await deposit";
     };
 
     public query func getAllUsers() : async [(Principal, User)] {
@@ -1391,12 +1405,19 @@ func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, userna
     await RustBloc.create_profile(profile, caller)
 };
 
-public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
+public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text, email : Text) : async Bloctypes.Result {
     let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, ?0, referral_id, ?0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
     try {
         await create_usertrack(caller);
         await create_notification_panel(caller, username, time);
         ProfileHashMap.put(caller, profile);
+         // Call sendNotification function after successful profile creation
+
+        let subject = "Welcome to GameBloc!";
+        let body = "Hello " # username # ",\n\nYour GameBloc profile has been successfully created. Enjoy your gaming journey!";
+        
+        await sendNotification(subject, body, email);
+
         return await RustBloc.create_profile(profile, caller)
     } catch err {
         throw (err)
@@ -2695,6 +2716,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         #Ok : Any;
         #Err : Any
     };
+
 
     public shared ({ caller }) func lockICP(_amount : Nat, icp_price : Nat) : async () {
         var vault = LockedAssetsHashMap.get(caller);
