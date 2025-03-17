@@ -123,6 +123,7 @@ system func timer(setGlobalTimer : Nat64 -> ()) : async () {
     let next = Nat64.fromIntWrap(Time.now()) + 20_000_000_000; // 20 seconds
     setGlobalTimer(next);
     await check_notify(1);
+    // print("Tick");
 };
 
 // public func t_create_accountidentifier(principal : Principal, )
@@ -277,6 +278,8 @@ system func postupgrade() {
     messageEntries := [];
     NotificationEntries := [];
     UpdatedUsersEntries := [];
+
+    latestTransactionIndex := 1;
 };
 
 type User = {
@@ -334,6 +337,31 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         switch (emails.get(email)) {
             case (?principal) { true };
             case (null) { false };
+        }
+    };
+
+    public query ({ caller }) func isUserUpdated() : async Bool {
+        switch(UpdatedUsersHashMap.get(caller)) {
+            case (?user) true ;
+            case (null) false;
+        }
+    };
+
+    type DepositDetails = {
+        accountNumber : Text;
+        bankName : Text;
+        currency : Text;
+        narration : Text;
+        notice : Text;
+    };
+
+    public query ({caller}) func iWantToDeposit() : async DepositDetails {
+        return {
+            accountNumber = "0494721886";
+            bankName = "GTBank";
+            currency = "Naira";
+            narration = Principal.toText(caller);
+            notice = "Please, make sure that the details are as writen above. Especially the narration or reference. Please copy and paste the right narration"
         }
     };
 
@@ -2715,14 +2743,14 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     //     transactionHistory := transactionHistory # [transaction];  // Append to history
     // }
 
-    type DepositDetails = {
-        accountNumber : Text;
-        bankName : Text;
-        amount : Nat; // ! In chosen local currency
-        currency : Text;
-        narration : Text;
-        rate : Text;
-    };
+    // type DepositDetails = {
+    //     accountNumber : Text;
+    //     bankName : Text;
+    //     amount : Nat; // ! In chosen local currency
+    //     currency : Text;
+    //     narration : Text;
+    //     rate : Text;
+    // };
 
     // public query func depositDetails() : async DepositDetails {
 
