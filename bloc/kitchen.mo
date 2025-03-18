@@ -94,7 +94,7 @@ var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
 var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
 
 // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
-
+private var logData = Buffer.Buffer<Text>(0);
 // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
 /// stabilizing the motoko backup
@@ -119,67 +119,67 @@ system func preupgrade() {
 
 private stable var latestTransactionIndex : Nat = 0;
 
-system func timer(setGlobalTimer : Nat64 -> ()) : async () {
-    let next = Nat64.fromIntWrap(Time.now()) + 20_000_000_000; // 20 seconds
-    setGlobalTimer(next);
-    await check_notify(1);
-    // print("Tick");
-};
+// system func timer(setGlobalTimer : Nat64 -> ()) : async () {
+//     let next = Nat64.fromIntWrap(Time.now()) + 20_000_000_000; // 20 seconds
+//     setGlobalTimer(next);
+//     await check_notify(1);
+//     // print("Tick");
+// };
 
 // public func t_create_accountidentifier(principal : Principal, )
 
-private func check_notify(_startblock : Nat) : async () {
+// private func check_notify(_startblock : Nat) : async () {
 
 
-    var start : Nat = _startblock;
-    if (latestTransactionIndex > 0) {
-      start := latestTransactionIndex + 1;
-    };
+//     var start : Nat = _startblock;
+//     if (latestTransactionIndex > 0) {
+//       start := latestTransactionIndex + 1;
+//     };
 
-    var blockResponse = //try {
-         await ICPLedger.query_blocks({
-            start = Nat64.fromNat(start);
-            length = 10;
-        });
-    // } catch (e) {
-    //     throw(e)
-    // }; 
+//     var blockResponse = //try {
+//          await ICPLedger.query_blocks({
+//             start = Nat64.fromNat(start);
+//             length = 10;
+//         });
+//     // } catch (e) {
+//     //     throw(e)
+//     // }; 
 
-    for (block in blockResponse.blocks.vals()){
-        switch(block.transaction.operation){
-            case(?operation){
-                switch(operation){
-                    case(#Transfer(transfer)) {
-                        let destinationAccount = AccountIdentifier.toText(transfer.to);
-                        switch(accountIdentifiers.get((destinationAccount))) {
-                            case (?userPrincipal){
-                                // notify user on-chain
-                                ignore await notify(
-                                    "ICP Deposit Confirmed",
-                                    "You have successfully deposited "# Float.toText(Float.fromInt64(Int64.fromNat64(transfer.amount.e8s))/100_000_000) #" to your GameBloc wallet.",
-                                    userPrincipal, 
-                                    Int.toText(Time.now()),
-                                    await get_notification_id(userPrincipal),
-                                    await getUsername(userPrincipal)
-                                );
-                                switch(await getUserMail(userPrincipal)){
-                                    case(?user){ await sendNotification(
-                                        "GameBloc Alert: Deposit Successful",
-                                        "Dear " # user.username # ", \n \nA deposit of " # Float.toText(Float.fromInt64(Int64.fromNat64(transfer.amount.e8s))/100_000_000) # " ICP is now available your GameBloc wallet. \nLogin to check your balance - https://gamebloc.app. \n \nThanks for using Gamebloc! \n \nBest regards, \nGamebloc Team",
-                                        user.email
-                                    )}; case(null){};
-                                };
-                                Debug.print("Notification sent");
-                            }; case (null){};
-                        };
-                    };
-                    case _ {};
-                };
-            };
-            case (null) {};
-        };
-    };
-};
+//     for (block in blockResponse.blocks.vals()){
+//         switch(block.transaction.operation){
+//             case(?operation){
+//                 switch(operation){
+//                     case(#Transfer(transfer)) {
+//                         let destinationAccount = AccountIdentifier.toText(transfer.to);
+//                         switch(accountIdentifiers.get((destinationAccount))) {
+//                             case (?userPrincipal){
+//                                 // notify user on-chain
+//                                 ignore await notify(
+//                                     "ICP Deposit Confirmed",
+//                                     "You have successfully deposited "# Float.toText(Float.fromInt64(Int64.fromNat64(transfer.amount.e8s))/100_000_000) #" to your GameBloc wallet.",
+//                                     userPrincipal, 
+//                                     Int.toText(Time.now()),
+//                                     await get_notification_id(userPrincipal),
+//                                     await getUsername(userPrincipal)
+//                                 );
+//                                 switch(await getUserMail(userPrincipal)){
+//                                     case(?user){ await sendNotification(
+//                                         "GameBloc Alert: Deposit Successful",
+//                                         "Dear " # user.username # ", \n \nA deposit of " # Float.toText(Float.fromInt64(Int64.fromNat64(transfer.amount.e8s))/100_000_000) # " ICP is now available your GameBloc wallet. \nLogin to check your balance - https://gamebloc.app. \n \nThanks for using Gamebloc! \n \nBest regards, \nGamebloc Team",
+//                                         user.email
+//                                     )}; case(null){};
+//                                 };
+//                                 Debug.print("Notification sent");
+//                             }; case (null){};
+//                         };
+//                     };
+//                     case _ {};
+//                 };
+//             };
+//             case (null) {};
+//         };
+//     };
+// };
 
 // private func process_block(block : ICPLedger.Block) : async () {
 //     switch (block.transaction.operation) {
@@ -367,14 +367,18 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         }
     };
 
-    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text) : async Text {
-        let subject = "New ICP Deposit Confirmation";
-        let body = "User with Principal: " # Principal.toText(caller) # 
-                " has initiated a deposit of " # Nat.toText(amount) # 
-                " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
-        let receiver_email = "deonoluleye@gmail.com";
+    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text, _subject : Text, _body : Text, _receiver_email : Text) : async Text {
+        // let subject : Text = "New ICP Deposit Confirmation";
+        // let body : Text = "User with Principal: " # Principal.toText(caller) # 
+        //         " has initiated a deposit of " # Nat.toText(amount) # 
+        //         " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+        // let receiver_email : Text = "deonoluleye@gmail.com";
 
-        await sendNotification(subject, body, receiver_email);
+        await sendNotification(
+            "New ICP Deposit Confirmation", 
+            "User with Principal: " # Principal.toText(caller) # " has initiated a deposit of " # Nat.toText(amount) # " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time, 
+            "deonoluleye@gmail.com"
+        );
         
         return "Deposit confirmation sent to admin. Please await deposit";
     };
