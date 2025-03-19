@@ -191,7 +191,7 @@ const WelcomeModal = ({ modal }: Props) => {
                         onChange={onChangeAge}
                       />
                     </div>
-                    <div className="flex items-center  h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+                    <div className="flex items-center mt-8 h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
                       <input
                         className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
                         type="text"
@@ -201,7 +201,9 @@ const WelcomeModal = ({ modal }: Props) => {
                       />
                     </div>
                     {emailError && (
-                      <p className="text-red-500 text-xs mt-2">{emailError}</p>
+                      <p className="text-red-500 text-center text-xs mt-2">
+                        {emailError}
+                      </p>
                     )}
                   </div>
                   <div className="mt-8">
