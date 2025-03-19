@@ -1257,7 +1257,7 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
       transformed;
   };
 
-    func textCleaner(text : Text) : Text {
+    func cleaner(text : Text) : Text {
         let replacements = [
             ("\\", "\\\\"), 
             ("\"", "\\\""), 
