@@ -20,6 +20,7 @@ import Nat64 "mo:base/Nat64";
 import TrieMap "mo:base/TrieMap";
 import Text "mo:base/Text";
 import Debug "mo:base/Debug";
+
 import Nat "mo:base/Nat";
 import Nat8 "mo:base/Nat8";
 import Hash "mo:base/Hash";
@@ -367,20 +368,41 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         }
     };
 
-    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text, _subject : Text, _body : Text, _receiver_email : Text) : async Text {
-        // let subject : Text = "New ICP Deposit Confirmation";
-        // let body : Text = "User with Principal: " # Principal.toText(caller) # 
-        //         " has initiated a deposit of " # Nat.toText(amount) # 
-        //         " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
-        // let receiver_email : Text = "deonoluleye@gmail.com";
-
+    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text) : async Text {
         await sendNotification(
             "New ICP Deposit Confirmation", 
             "User with Principal: " # Principal.toText(caller) # " has initiated a deposit of " # Nat.toText(amount) # " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time, 
-            "deonoluleye@gmail.com"
+            "successaje7@gmail.com"
         );
         
         return "Deposit confirmation sent to admin. Please await deposit";
+    };
+
+    public shared ({ caller }) func confirmDepositViaVariables(amount : Nat, time : Text) : async Text {
+        let subject : Text = "New ICP Deposit Confirmation";
+        let body : Text = "User with Principal: " # Principal.toText(caller) # 
+                " has initiated a deposit of " # Nat.toText(amount) # 
+                " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+        let receiver_email : Text = "successaje7@gmail.com";
+        await sendNotification(
+            subject, 
+            body,
+            receiver_email
+        );
+        
+        return "Deposit confirmation sent to admin. Please await deposit";
+    };
+
+    public shared ({ caller }) func confirmDepositViaParams(_subject : Text, _body : Text, _receiver_email : Text) : async () {
+        try {
+            await sendNotification(
+                _subject, 
+                _body, 
+                _receiver_email
+            );
+        } catch err {
+            throw (err)
+        }
     };
 
     public query func getAllUsers() : async [(Principal, User)] {
@@ -1235,14 +1257,31 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
       transformed;
   };
 
+    func textCleaner(text : Text) : Text {
+        let replacements = [
+            ("\\", "\\\\"), 
+            ("\"", "\\\""), 
+            ("\n", "\\n"),  
+            ("\t", "\\t"), 
+            ("\r", "\\r"),  
+        ];
+
+        var result = text;
+        for ((search, replace) in replacements.vals()) {
+            result := Text.replace(result, #text search, replace);
+        };
+        return result;
+    };
+
 
 public func sendNotification(subject : Text, body : Text, receiver_email : Text) : async () {
-    // Managment canister
     let ic : HTTP.IC = actor ("aaaaa-aa");
 
+    let cleanSubject = cleaner(subject);
+    let cleanBody = cleaner(body);
+    let cleanEmail = cleaner(receiver_email);
 
-    let idempotencyKey : Text = Text.concat(receiver_email, Int.toText(Time.now()));
-    let requestBodyJson : Text = "{ \"to\": \"" # receiver_email # "\", \"subject\": \"" # subject # "\", \"body\": \"" # body # "\"}";
+    let requestBodyJson : Text = "{ \"to\": \"" # cleanEmail # "\", \"subject\": \"" # cleanSubject # "\", \"body\": \"" # cleanBody # "\"}";
     let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
     let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
 
@@ -1253,8 +1292,6 @@ public func sendNotification(subject : Text, body : Text, receiver_email : Text)
 
     // Setup request
     let httpRequest : HTTP.HttpRequestArgs = {
-      // The notification service is hosted on Netlify and the URL is hardcoded
-      // in this example. In a real application, the URL would be configurable.
       url = "https://notifier-4l85.onrender.com/send-email";
       max_response_bytes = ?Nat64.fromNat(1000);
       headers = [
@@ -1264,11 +1301,8 @@ public func sendNotification(subject : Text, body : Text, receiver_email : Text)
       method = #post;
       transform = ?transform_context;
     };
-
-    // Cycle cost of sending a notification
-    // 49.14M + 5200 * request_size + 10400 * max_response_bytes
-    // 49.14M + (5200 * 1000) + (10400 * 1000) = 64.74M
-    Cycles.add(70_000_000);
+    
+    Cycles.add(80_000_000);
 
     // Send the request
     let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(httpRequest);
@@ -1417,8 +1451,8 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
         ProfileHashMap.put(caller, profile);
          // Call sendNotification function after successful profile creation
 
-        let subject = "Welcome to GameBloc!";
-        let body = "Hello " # username # ",\n\nYour GameBloc profile has been successfully created. Enjoy your gaming journey!";
+        let subject : Text = "Welcome to GameBloc!";
+        let body : Text = "Hello " # username # ",\n\nYour GameBloc profile has been successfully created. Enjoy your gaming journey!";
         
         await sendNotification(subject, body, email);
 
