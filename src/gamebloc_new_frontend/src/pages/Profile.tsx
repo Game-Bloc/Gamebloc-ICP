@@ -19,6 +19,7 @@ import { Principal } from "@dfinity/principal"
 import Stats from "../components/profileComp/stats/Stats"
 import MyPointCard from "../components/profileComp/MyPointCard"
 import hooks from "../Functions/hooks"
+import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
 
 const items: TabsProps["items"] = [
   {
@@ -54,6 +55,7 @@ const Profile = () => {
   const { isAuthenticated } = useAuth()
   const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
+  const [promptModal, setPromptModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
@@ -74,7 +76,7 @@ const Profile = () => {
     getTransactions,
     getNotificationId,
   } = useGameblocHooks()
-  const { kitchenBalance } = hooks()
+  const { kitchenBalance, getUserMail } = hooks()
   const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
@@ -90,7 +92,7 @@ const Profile = () => {
     } else {
       updateProfile()
     }
-
+    getUserMail(_principal)
     updateTournament()
     getNotificationId(_principal)
     getICPBalance()
@@ -98,7 +100,11 @@ const Profile = () => {
     getTransactions(accountId)
   }, [isAuthenticated])
 
-  console.log("icp_price", _icp2Usd)
+  // console.log("icp_price", _icp2Usd)
+
+  const handlePromptModal = () => {
+    setPromptModal(!promptModal)
+  }
 
   if (!isAuthenticated || isLoadingProfile) {
     return (
@@ -183,18 +189,30 @@ const Profile = () => {
                               Member since {date}
                             </p>
                           </div>
-
-                          <button
-                            onClick={() => setTransferModal(!transferModal)}
-                            className="pt-1 pb-[.25rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
-                          >
-                            <p className="font-semibold mr-2">Send </p>
-                            <img
-                              src={`Icp.svg`}
-                              className="w-6 h-6 m-0"
-                              alt=""
-                            />
-                          </button>
+                          <div className="flex gap-7">
+                            <button
+                              onClick={() => setPromptModal(!promptModal)}
+                              className="pt-[0.4rem] pb-[.4rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
+                            >
+                              <img
+                                src={`withdraw.png`}
+                                className="w-6 h-6 m-0"
+                                alt=""
+                              />
+                              <p className="font-semibold ml-2">Deposit </p>
+                            </button>
+                            <button
+                              onClick={() => setTransferModal(!transferModal)}
+                              className="pt-[0.4rem] pb-[.4rem]   px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
+                            >
+                              <img
+                                src={`deposit.png`}
+                                className="w-6 h-6 m-0"
+                                alt=""
+                              />
+                              <p className="font-semibold ml-2">Withdraw</p>
+                            </button>
+                          </div>
                         </div>
                       </div>
 
@@ -285,6 +303,9 @@ const Profile = () => {
             _principal={_principal}
             modal={handleModal}
           />
+        )}
+        {promptModal && (
+          <DepositPromptModal handlePromptModal={handlePromptModal} />
         )}
       </div>
     )

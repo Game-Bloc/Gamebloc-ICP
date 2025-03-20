@@ -400,16 +400,14 @@ export const hooks = () => {
 
   // USER MAIL AND DEPOSIT
 
-  // const getUserMail = async (
-  // principal: Principal,
-  // ) => {
-  //   try {
-  //     const mail = await whoamiActor.getUserEmail()
-
-  //   } catch (err) {
-  //     console.log("Error getting user mail", err)
-  //   }
-  // }
+  const getUserMail = async (principal: Principal) => {
+    try {
+      const mail = await whoamiActor.getUserMail(principal)
+      console.log("User mail:", mail)
+    } catch (err) {
+      console.log("Error getting user mail", err)
+    }
+  }
 
   return {
     bet,
@@ -434,6 +432,7 @@ export const hooks = () => {
     allocateUserPoint,
     kitchenBalance,
     getUserBet,
+    getUserMail,
     getExpectedReward,
     getAdminTransaction,
   }
