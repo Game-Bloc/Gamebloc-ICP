@@ -209,6 +209,7 @@ pub enum ModTag {
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
 pub enum GameType {
     #[default]
+    OnevOne,
     TeamvTeam,
     Single,
     Duo,
@@ -218,6 +219,7 @@ pub enum GameType {
 impl GameType {
     pub fn _to_str(&self) -> String {
         match self {
+            GameType::OnevOne=> "OnevOne".to_string(),
             GameType::TeamvTeam => "TeamvTeam".to_string(),
             GameType::Single => "Single".to_string(),
             GameType::Duo => "Duo".to_string(),
@@ -226,6 +228,7 @@ impl GameType {
     }
     pub fn from_str(name: &str) -> GameType {
         match name {
+            "OnevOne" => GameType::OnevOne,
             "TeamvTeam" => GameType::TeamvTeam,
             "Single" => GameType::Single,
             "Duo" => GameType::Duo,

@@ -324,6 +324,23 @@ pub fn structure_tournament_into_lobbies(tournament_id: String) {
                 game_type: GameType::from_str(tournament.game_type.to_owned().as_str()),
                 name: Some(tournament.title.to_owned()),
             }),
+            GameType::OnevOne => tournament.to_owned().lobbies.unwrap().push(LobbyAccount {
+                status: TournamentStatus::GameInProgress.to_owned(),
+                lobby_status: LobbyStatus::ReadyToStart.to_owned(),
+                idx: 0,
+                starting_date: None,
+                lobby_rules: tournament.tournament_rules.to_owned(),
+                tournament_type: tournament.tournament_type.to_owned(),
+                game: tournament.game.to_owned(),
+                squads: tournament.squad.to_owned(),
+                messages: Some(Vec::new()),
+                participants: Vec::new(),
+                winers: Vec::new(),
+                no_of_winners: None,
+                no_of_participants: tournament.no_of_participants.to_owned(),
+                game_type: GameType::from_str(tournament.game_type.to_owned().as_str()),
+                name: Some(tournament.title.to_owned()),
+            }),
         }
         tournament_store
             .borrow_mut()
@@ -472,6 +489,23 @@ pub fn create_new_lobbies_from_winners(tournament_id: String) -> Result<u8, u8> 
                 game_type: GameType::from_str(tournament.game_type.to_owned().as_str()),
                 name: Some(tournament.title.to_owned()),
             }),
+            GameType::OnevOne => tournament.to_owned().lobbies.unwrap().push(LobbyAccount {
+                status: TournamentStatus::GameInProgress,
+                lobby_status: LobbyStatus::ReadyToStart,
+                idx: 0,
+                starting_date: None,
+                lobby_rules: tournament.tournament_rules.to_owned(),
+                tournament_type: tournament.tournament_type.to_owned(),
+                game: tournament.game.to_owned(),
+                squads: tournament.squad.to_owned(),
+                messages: Some(Vec::new()),
+                participants: Vec::new(),
+                winers: Vec::new(),
+                no_of_winners: None,
+                no_of_participants: tournament.no_of_participants.to_owned(),
+                game_type: GameType::from_str(tournament.game_type.to_owned().as_str()),
+                name: Some(tournament.title.to_owned()),
+            }),
         }
         tournament_store
             .borrow_mut()
@@ -518,6 +552,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
         // eliminating players
         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
             GameType::TeamvTeam => {}
+            GameType::OnevOne => {}
             GameType::Single => {
                 tournament.to_owned().lobbies.unwrap().iter().for_each(|e| {
                     let new_no_of_participant = e.participants.len() as f64 * 0.333333333;
@@ -687,6 +722,7 @@ pub fn three_lobbies_merge(tournament_id: String) {
                 }
             }
             GameType::TeamvTeam => {}
+            GameType::OnevOne => {}
         }
         tournament_store
             .borrow_mut()
