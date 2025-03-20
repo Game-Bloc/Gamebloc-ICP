@@ -20,6 +20,7 @@ import Stats from "../components/profileComp/stats/Stats"
 import MyPointCard from "../components/profileComp/MyPointCard"
 import hooks from "../Functions/hooks"
 import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
+import QrModal from "../components/Modals/Deposit/QrModal"
 
 const items: TabsProps["items"] = [
   {
@@ -56,6 +57,8 @@ const Profile = () => {
   const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const [promptModal, setPromptModal] = useState<boolean>(false)
+  const [qrModal, setQrModal] = useState<boolean>(false)
+  const [fiatModal, setFiatModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
@@ -104,6 +107,14 @@ const Profile = () => {
 
   const handlePromptModal = () => {
     setPromptModal(!promptModal)
+  }
+
+  const handleQRModal = () => {
+    setQrModal(!qrModal)
+  }
+
+  const handleFiatModal = () => {
+    setFiatModal(!fiatModal)
   }
 
   if (!isAuthenticated || isLoadingProfile) {
@@ -305,8 +316,13 @@ const Profile = () => {
           />
         )}
         {promptModal && (
-          <DepositPromptModal handlePromptModal={handlePromptModal} />
+          <DepositPromptModal
+            handlePromptModal={handlePromptModal}
+            handleQRModal={handleQRModal}
+            handleFiatModal={handleFiatModal}
+          />
         )}
+        {qrModal && <QrModal handleQRModal={handleQRModal} />}
       </div>
     )
   }
