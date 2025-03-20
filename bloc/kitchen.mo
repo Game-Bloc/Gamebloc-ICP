@@ -1455,7 +1455,12 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
         let body : Text = "Hello " # username # ",\n\nYour GameBloc profile has been successfully created. Enjoy your gaming journey!";
         
         await sendNotification(subject, body, email);
-        UpdatedUsersHashMap.put(caller, email);
+        let user : User = {
+            email = email;
+            username = await get_username(caller);
+            principal = caller;
+        };
+        UpdatedUsersHashMap.put(caller, user);
 
         return await RustBloc.create_profile(profile, caller)
     } catch err {
