@@ -52,7 +52,7 @@ const DepositPromptModal = ({
                       Deposit ICP
                     </p>
                     {/*  */}
-                    <div className="bg-[#1E1E21] flex justify-between items-center mt-4 px-4 py-2 w-[80vw] sm:w-[80vw] lg:max-w-[29rem] rounded-full">
+                    <div className="bg-[#1E1E21] flex justify-between items-center mt-4 px-4 py-2 w-[80vw]  sm:max-w-[29rem] rounded-full">
                       <p className=" text-[.85rem] text-[#A1A1AA] font-bold">
                         Available
                       </p>
@@ -75,7 +75,10 @@ const DepositPromptModal = ({
                     </div>
                     {/*  */}
                     <div className="flex flex-col lg:flex-row mt-8 gap-8">
-                      <button className="flex cursor-pointer  justify-between items-center py-6 border border-solid border-primary-second hover:bg-primary-second/20  px-4 w-full h-[2.4rem] rounded-md">
+                      <button
+                        onClick={() => (handlePromptModal(), handleFiatModal())}
+                        className="flex cursor-pointer  justify-between items-center py-6 border border-solid border-primary-second hover:bg-primary-second/20  px-4 w-full h-[2.4rem] rounded-md"
+                      >
                         <div className="flex items-center w-full">
                           <img
                             src={`gamelogo.png`}
