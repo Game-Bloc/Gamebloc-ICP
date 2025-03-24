@@ -1,5 +1,6 @@
 import React from "react"
 import Button from "./Button"
+import { motion } from "motion/react"
 interface props {
   setVisible: (arg0: boolean) => void
 }
@@ -20,7 +21,17 @@ function Hero({ setVisible }: props) {
         </div>
       </div>
       <div className="md:w-2/3">
-        <img src={`Hero2.png`} alt="" className="w-full" />
+        <motion.img
+          animate={{
+            y: [0, -65, 0],
+            transition: {
+              y: { duration: 4, ease: "easeInOut", repeat: Infinity },
+            },
+          }}
+          src={`Hero2.png`}
+          alt=""
+          className="w-full"
+        />
       </div>
     </div>
   )
