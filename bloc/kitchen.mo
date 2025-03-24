@@ -53,6 +53,7 @@ import CKTypes "types/ck_types";
 import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
+// import CycleMonitor "utils/CycleMonitor";
 
 shared ({ caller }) actor class Kitchen() = this {
 
@@ -393,6 +394,26 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         
         return "Deposit confirmation sent to admin. Please await deposit";
     };
+
+    // public shared ({ caller }) func confirmDepositViaVariablesTest(amount : Nat, time : Text) : async Text {
+    //     let cyclesUsed = await CycleMonitor.measureAsync(async {
+    //         let subject : Text = "New ICP Deposit Confirmation";
+    //         let body : Text = "User with Principal: " # Principal.toText(caller) # 
+    //                 " has initiated a deposit of " # Nat.toText(amount) # 
+    //                 " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+    //         let receiver_email : Text = "successaje7@gmail.com";
+            
+    //         await sendNotification(subject, body, receiver_email);
+    //         "Deposit confirmation sent to admin. Please await deposit";
+    //     }, "confirmDeposit");
+
+    //     // Optional: Fail if too expensive
+    //     if (cyclesUsed > 10_000_000) {
+    //         Debug.print("⚠️ Warning: Expensive deposit confirmation!");
+    //     };
+        
+    //     result
+    // };
 
     public shared ({ caller }) func confirmDepositViaParams(_subject : Text, _body : Text, _receiver_email : Text) : async () {
         try {
