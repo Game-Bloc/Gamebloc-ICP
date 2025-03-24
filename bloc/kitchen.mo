@@ -33,6 +33,7 @@ import Random "mo:base/Random";
 import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
 import Int64 "mo:base/Int64";
+import JSON "mo:json";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -1271,6 +1272,126 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
             result := Text.replace(result, #text search, replace);
         };
         return result;
+    };
+
+    let external_url = "https://notifier-4l85.onrender.com/send-email";
+    let ic : HTTP.IC = actor ("aaaaa-aa");
+
+    public func getUserFromClashRoyale(ingameUserName : Text) : async Result.Result<Text, Text> {
+
+        let requestBodyJson : Text = "{ \"ingameUserName\": \"" # ingameUserName # "\"}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/players/" # ingameUserName;
+            headers = [
+                { name = "Content-Type"; value = "application/json" },
+            ];
+            body = null; //requestBodyAsNat8;
+            method = #get;
+            transform = ?{
+                 function = transform;
+                context = Blob.fromArray([])
+            };
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+        };
+
+        return #ok(json);
+    };
+
+    public func getPlayerUpcomingChests(playerTag : Text) : async Result.Result<Text, Text> {
+        
+        let http_request = {
+            url = "https://api.clashroyale.com/v1/players/" # playerTag # "/upcomingchests";
+            headers = [
+                { name = "Content-Type"; value = "application/json" }
+            ];
+            body = null;
+            method = #get;
+            transform = ?{
+                function = transform;
+                context = Blob.fromArray([])
+            }; 
+        }
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+        };
+
+        return #ok(json);
+
+    };
+
+    public func searchTournaments(name : ?Text, limit : ?Nat, after : ?Text, before : ?Text) : async Result.Result<Text, Text> {
+
+        let requestBodyJson : Text = "{";
+        if (name != null) {
+            requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+        };
+        if (limit != null) {
+            requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+        };
+        if (after != null) {
+            requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+        };
+        if (before != null) {
+            requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+        };
+        requestBodyJson := requestBodyJson # "}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/tournaments";
+            headers = [
+                { name = "Content-Type"; value = "application/json" }
+            ];
+            body = ?requestBodyAsNat8; 
+            method = #get;
+            transform = ?{
+                function = transform;
+                context = Blob.fromArray([])
+            };
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+        };
+
+        return #ok(json);
     };
 
 
