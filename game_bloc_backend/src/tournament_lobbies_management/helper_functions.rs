@@ -7,6 +7,7 @@ pub(crate) fn squad_or_player_religator(
 ) {
     match GameType::from_str(tournament.game_type.to_owned().as_str()) {
         GameType::TeamvTeam => {}
+        GameType::OnevOne => {}
         GameType::Single => {
             tournament.to_owned().lobbies.unwrap().iter().for_each(|e| {
                 let new_no_of_participant = e.participants.len() as f64 * 0.5;
@@ -178,5 +179,6 @@ pub(crate) fn squad_or_player_promoter(
             }
         }
         GameType::TeamvTeam => {}
+        GameType::OnevOne => {}
     }
 }

@@ -303,8 +303,8 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                             _ => TournamentStatus::GameCompleted,
                         };
                         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
-                            GameType::TeamvTeam => {
-                                
+                            GameType::OnevOne => {
+
                                 let mut count = 0;
                                 tournament.points.to_owned().unwrap().iter().for_each(
                                     |id_mapping| {
@@ -328,7 +328,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                                             amount: tournament.total_prize,
                                             user_account: id_mapping.1.to_owned(),
                                         };
-                                        
+
                                         count = count + 1;
                                         tournament.winers.push(id_mapping.1.to_owned());
                                         match tournament.winners.to_owned() {
@@ -362,6 +362,78 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                                             profile_store
                                                 .borrow_mut()
                                                 .insert(id_mapping.1.to_owned(), profile);
+                                        });
+                                    },
+                                );
+                            }
+                            GameType::TeamvTeam => {
+                                let mut count = 0;
+                                let mut tournament_winner = Winner::default();
+                                tournament.squad_points.to_owned().unwrap().iter().for_each(
+                                    |id_mapping| {
+                                        SQUAD_STORE.with(|squad_store| {
+                                            let mut squad = squad_store
+                                                .borrow()
+                                                .get(id_mapping.1.to_owned().as_str())
+                                                .cloned()
+                                                .unwrap();
+                                            squad.wins = match squad.wins {
+                                                None => Some(1),
+                                                Some(wins) => Some(wins + 1),
+                                            };
+                                            squad.attendance = match squad.attendance {
+                                                None => Some(1),
+                                                Some(attendance) => Some(attendance + 1),
+                                            };
+                                            tournament_winner = Winner {
+                                                position: "".to_string(),
+                                                amount: ((id_mapping.2.to_owned().total_points as f64
+                                                    * (tournament.total_prize as f64
+                                                    / tournament.no_of_participants as f64)
+                                                    as f64)
+                                                    * 10_000_000_000.00)
+                                                    as u128,
+                                                user_account: squad.captain.to_string(),
+                                            };
+                                            squad_store
+                                                .borrow_mut()
+                                                .insert(id_mapping.1.to_owned(), squad.to_owned());
+                                        });
+
+                                        count = count + 1;
+                                        tournament
+                                            .winers
+                                            .push((*id_mapping.1.to_owned()).to_owned());
+                                        match tournament.winners.to_owned() {
+                                            None => {
+                                                tournament.winners = Some(vec![tournament_winner.to_owned()]);
+                                            }
+                                            Some(mut winners) => {
+                                                winners.push(tournament_winner.to_owned());
+                                                tournament.winners = Some(winners);
+                                            }
+                                        }
+                                    },
+                                );
+                                tournament.squad_points.to_owned().unwrap().iter().for_each(
+                                    |id_mapping| {
+                                        SQUAD_STORE.with(|squad_store| {
+                                            let mut squad = squad_store
+                                                .borrow()
+                                                .get(id_mapping.1.to_owned().as_str())
+                                                .cloned()
+                                                .unwrap();
+                                            squad.losses = match squad.losses {
+                                                None => Some(1),
+                                                Some(losses) => Some(losses + 1),
+                                            };
+                                            squad.attendance = match squad.attendance {
+                                                None => Some(1),
+                                                Some(attendance) => Some(attendance + 1),
+                                            };
+                                            squad_store
+                                                .borrow_mut()
+                                                .insert(id_mapping.1.to_owned(), squad);
                                         });
                                     },
                                 );
@@ -492,7 +564,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                                                 .unwrap();
                                             squad.losses = match squad.losses {
                                                 None => Some(1),
-                                                Some(lossses) => Some(lossses + 1),
+                                                Some(losses) => Some(losses + 1),
                                             };
                                             squad.attendance = match squad.attendance {
                                                 None => Some(1),
@@ -564,7 +636,7 @@ pub fn end_blitzkrieg_tournament(id: String, principal: Principal) -> bool {
                                                 .unwrap();
                                             squad.losses = match squad.losses {
                                                 None => Some(1),
-                                                Some(lossses) => Some(lossses + 1),
+                                                Some(losses) => Some(losses + 1),
                                             };
                                             squad.attendance = match squad.attendance {
                                                 None => Some(1),
@@ -621,8 +693,7 @@ pub fn end_tournament(
                             _ => TournamentStatus::GameCompleted,
                         };
                         match GameType::from_str(tournament.game_type.to_owned().as_str()) {
-                            GameType::TeamvTeam => {
-                                
+                            GameType::OnevOne => {
                                 let mut count = 0;
                                 tournament.points.to_owned().unwrap().iter().for_each(
                                     |id_mapping| {
@@ -646,7 +717,7 @@ pub fn end_tournament(
                                             amount: tournament.total_prize,
                                             user_account: id_mapping.1.to_owned(),
                                         };
-                                        
+
                                         count = count + 1;
                                         tournament.winers.push(id_mapping.1.to_owned());
                                         match tournament.winners.to_owned() {
@@ -684,8 +755,74 @@ pub fn end_tournament(
                                     },
                                 );
                             }
+                            GameType::TeamvTeam => {
+                                let mut count = 0;
+                                tournament.to_owned().squad_points.to_owned().unwrap()
+                                    [..(number_of_winners as usize)]
+                                    .iter()
+                                    .for_each(|id_mapping| {
+                                        let mut old_tournament_winner =
+                                            old_tournament_winners[count].to_owned();
+                                        SQUAD_STORE.with(|squad_store| {
+                                            let mut squad = squad_store
+                                                .borrow()
+                                                .get(id_mapping.1.to_owned().as_str())
+                                                .cloned()
+                                                .unwrap();
+                                            squad.wins = match squad.wins {
+                                                None => Some(1),
+                                                Some(wins) => Some(wins + 1),
+                                            };
+                                            squad.attendance = match squad.attendance {
+                                                None => Some(1),
+                                                Some(attendance) => Some(attendance + 1),
+                                            };
+                                            old_tournament_winner.user_account = squad.captain.to_string();
+                                            squad_store.borrow_mut().insert(
+                                                (*id_mapping.1.to_owned()).to_owned(),
+                                                squad.to_owned(),
+                                            );
+                                        });
+                                        count = count + 1;
+                                        tournament
+                                            .winers
+                                            .push((*id_mapping.1.to_owned()).to_owned());
+                                        match tournament.winners.to_owned() {
+                                            None => {
+                                                tournament.winners =
+                                                    Some(vec![old_tournament_winner]);
+                                            }
+                                            Some(mut winners) => {
+                                                winners.push(old_tournament_winner);
+                                                tournament.winners = Some(winners);
+                                            }
+                                        }
+                                    });
+                                tournament.squad_points.to_owned().unwrap()
+                                    [(number_of_winners as usize)..]
+                                    .iter()
+                                    .for_each(|id_mapping| {
+                                        SQUAD_STORE.with(|squad_store| {
+                                            let mut squad = squad_store
+                                                .borrow()
+                                                .get(id_mapping.1.to_owned().as_str())
+                                                .cloned()
+                                                .unwrap();
+                                            squad.losses = match squad.losses {
+                                                None => Some(1),
+                                                Some(losses) => Some(losses + 1),
+                                            };
+                                            squad.attendance = match squad.attendance {
+                                                None => Some(1),
+                                                Some(attendance) => Some(attendance + 1),
+                                            };
+                                            squad_store
+                                                .borrow_mut()
+                                                .insert(id_mapping.1.to_owned(), squad);
+                                        });
+                                    });
+                            }
                             GameType::Single => {
-                                
                                 let mut count = 0;
                                 tournament.to_owned().points.to_owned().unwrap()
                                     [..(number_of_winners as usize)]
@@ -802,7 +939,7 @@ pub fn end_tournament(
                                                 .unwrap();
                                             squad.losses = match squad.losses {
                                                 None => Some(1),
-                                                Some(lossses) => Some(lossses + 1),
+                                                Some(losses) => Some(losses + 1),
                                             };
                                             squad.attendance = match squad.attendance {
                                                 None => Some(1),
@@ -869,7 +1006,7 @@ pub fn end_tournament(
                                                 .unwrap();
                                             squad.losses = match squad.losses {
                                                 None => Some(1),
-                                                Some(lossses) => Some(lossses + 1),
+                                                Some(losses) => Some(losses + 1),
                                             };
                                             squad.attendance = match squad.attendance {
                                                 None => Some(1),
