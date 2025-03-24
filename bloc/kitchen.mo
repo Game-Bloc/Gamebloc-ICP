@@ -1283,20 +1283,23 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
         let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
         let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
 
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
         let http_request = {
             url = "https://notifier-4l85.onrender.com/players/" # ingameUserName;
+            max_response_bytes = null;
             headers = [
                 { name = "Content-Type"; value = "application/json" },
             ];
             body = null; //requestBodyAsNat8;
             method = #get;
-            transform = ?{
-                 function = transform;
-                context = Blob.fromArray([])
-            };
+            transform = ?transform_context;
         };
 
-        Cycles.add(80_000_000);
+        Cycles.add(1_703_096_680);
 
         let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
 
@@ -1306,26 +1309,29 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
         };
         let json = switch(JSON.parse(decoded_text)){
             case(#ok(parsed)) { parsed };
-            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: " ) };
         };
 
-        return #ok(json);
+        return #ok(JSON.stringify(json, null));
     };
 
     public func getPlayerUpcomingChests(playerTag : Text) : async Result.Result<Text, Text> {
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
         
         let http_request = {
             url = "https://api.clashroyale.com/v1/players/" # playerTag # "/upcomingchests";
             headers = [
                 { name = "Content-Type"; value = "application/json" }
             ];
+            max_response_bytes = null;
             body = null;
             method = #get;
-            transform = ?{
-                function = transform;
-                context = Blob.fromArray([])
-            }; 
-        }
+            transform = ?transform_context;
+        };
 
         Cycles.add(80_000_000);
 
@@ -1338,31 +1344,59 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
 
         let json = switch(JSON.parse(decoded_text)){
             case(#ok(parsed)) { parsed };
-            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: ") };
         };
 
-        return #ok(json);
+        return #ok(JSON.stringify(json, null));
 
     };
 
     public func searchTournaments(name : ?Text, limit : ?Nat, after : ?Text, before : ?Text) : async Result.Result<Text, Text> {
-
-        let requestBodyJson : Text = "{";
-        if (name != null) {
-            requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+        
+        var requestBodyJson : Text = "{";
+        switch(name) {
+            case(null) {};
+            case(?name) {
+                requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+            }
         };
-        if (limit != null) {
-            requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+        switch(limit) {
+            case(null) {};
+            case(?limit) {
+                requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+            }
         };
-        if (after != null) {
-            requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+        switch(after) {
+            case(null) {};
+            case(?after) {
+                requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+            }
         };
-        if (before != null) {
-            requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+        switch(before) {
+            case(null) {};
+            case(?before) {
+                requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+            }
         };
         requestBodyJson := requestBodyJson # "}";
         let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
         let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        // if (name != null) {
+        //     requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+        // };
+        // if (limit != null) {
+        //     requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+        // };
+        // if (after != null) {
+        //     requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+        // };
+        // if (before != null) {
+        //     requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+        // };
+        // requestBodyJson := requestBodyJson # "}";
+        // let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        // let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
 
         let http_request = {
             url = "https://notifier-4l85.onrender.com/tournaments";
@@ -1370,6 +1404,7 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
                 { name = "Content-Type"; value = "application/json" }
             ];
             body = ?requestBodyAsNat8; 
+            max_response_bytes = ?Nat64.fromNat(10000);
             method = #get;
             transform = ?{
                 function = transform;
@@ -1388,10 +1423,10 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
 
         let json = switch(JSON.parse(decoded_text)){
             case(#ok(parsed)) { parsed };
-            case(#err(_)) { throw Error.reject("Error parsing JSON: " # error) };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: ") };
         };
 
-        return #ok(json);
+        return #ok(JSON.stringify(json, null));
     };
 
 
