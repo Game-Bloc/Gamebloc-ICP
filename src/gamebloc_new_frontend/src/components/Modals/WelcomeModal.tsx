@@ -18,6 +18,7 @@ const override = {
 
 const WelcomeModal = ({ modal }: Props) => {
   const [userName, setUserName] = useState<string>("")
+  const [mail, setMail] = useState<string>("")
   const [age, setAge] = useState("")
   const [joinDate, setJoinDate] = useState<string>("January, 2033")
   const [color, setColor] = useState("#ffffff")
@@ -25,6 +26,9 @@ const WelcomeModal = ({ modal }: Props) => {
   const { createAccount, isLoading } = useGameblocHooks()
   const MySwal = withReactContent(Swal)
   const Squad_badge = ""
+
+  // State to handle email validation
+  const [emailError, setEmailError] = useState<string>("")
 
   const generateDate = () => {
     let currentDate = new Date()
@@ -85,6 +89,20 @@ const WelcomeModal = ({ modal }: Props) => {
     setUserName(userNameInput)
   }
 
+  const onChangeMail = (e: any) => {
+    e.preventDefault()
+    const mailInput = e.target.value
+    setMail(mailInput)
+
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (emailRegex.test(mailInput)) {
+      setEmailError("") // Clear error if email is valid
+    } else {
+      setEmailError("Please enter a valid email address.")
+    }
+  }
+
   const onChangeAge = (e: any) => {
     e.preventDefault()
     const ageInput = e.target.value
@@ -92,8 +110,10 @@ const WelcomeModal = ({ modal }: Props) => {
   }
 
   const submit = () => {
-    if (userName.trim() === "" && age.trim() === "") {
+    if (userName.trim() === "" || age.trim() === "") {
       errorPopUp("Field is empty !")
+    } else if (emailError !== "") {
+      errorPopUp("Invalid email format!")
     } else {
       createAccount(
         idHash,
@@ -102,6 +122,7 @@ const WelcomeModal = ({ modal }: Props) => {
         joinDate,
         Squad_badge,
         [{ Player: null }],
+        mail,
         "Account Created",
         "Error, try again",
         "/dashboard",
@@ -147,7 +168,7 @@ const WelcomeModal = ({ modal }: Props) => {
                     Create Account
                   </h1>
                   <p className="text-[.7rem] lg:text-[.82rem] text-center text-primary-second/80 my-[.2rem]">
-                    Welcome, you are one step away from a world of emersive
+                    Welcome, you are one step away from a world of immersive
                     gaming experience.
                   </p>
 
@@ -170,6 +191,20 @@ const WelcomeModal = ({ modal }: Props) => {
                         onChange={onChangeAge}
                       />
                     </div>
+                    <div className="flex items-center mt-8 h-[2rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+                      <input
+                        className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                        type="text"
+                        placeholder="Email"
+                        onChange={onChangeMail}
+                        value={mail}
+                      />
+                    </div>
+                    {emailError && (
+                      <p className="text-red-500 text-center text-xs mt-2">
+                        {emailError}
+                      </p>
+                    )}
                   </div>
                   <div className="mt-8">
                     <button
@@ -178,8 +213,8 @@ const WelcomeModal = ({ modal }: Props) => {
                     >
                       <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
                         {isLoading ? (
-                          <div className="flex items-center  gap-2">
-                            <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[0.65rem] mr-2 font-bold sm:text-[.85rem]">
                               Wait
                             </p>
                             <ClipLoader
