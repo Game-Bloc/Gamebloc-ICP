@@ -1,11 +1,18 @@
 import React from "react"
 import Button from "./Button"
+import { motion } from "motion/react"
 interface props {
   setVisible: (arg0: boolean) => void
 }
 function Ancient({ setVisible }: props) {
   return (
-    <div className="containerr sectionn flex flex-col gap-8 relative">
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true }} // Animate only once
+      transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+      className="containerr sectionn flex flex-col gap-8 relative"
+    >
       <img
         src={`blur.png`}
         alt=""
@@ -27,7 +34,7 @@ function Ancient({ setVisible }: props) {
           <Button text="Get Started Now" style="w-max mx-auto mt-2" />
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

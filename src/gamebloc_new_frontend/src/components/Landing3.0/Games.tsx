@@ -18,10 +18,22 @@ function Games({ setVisible }: props) {
         className="absolute -z-30 w-[750px] -top-60 -left-20"
       />
       <div className="flex flex-col-reverse gap-5 md:gap-0 md:flex-row md:justify-between md:items-center w-full">
-        <div className="md:w-[40%] w-full">
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="md:w-[40%] w-full"
+        >
           <img src={`gaming.png`} alt="" className="mx-auto" />
-        </div>
-        <div className="w-full md:w-[50%] flex flex-col gap-3 md:text-left">
+        </motion.div>
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          whileInView={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
+          viewport={{ once: true }}
+          className="w-full md:w-[50%] flex flex-col gap-3 md:text-left"
+        >
           <h1 className="gradient-text md:text-4xl font-valorant text-transparent bg-gradient-to-r from-lgradient to-dgradient">
             New games joining the gamebloc gaming line up
           </h1>
@@ -34,13 +46,13 @@ function Games({ setVisible }: props) {
           <div onClick={() => setVisible(true)}>
             <Button text="Check it out" style="w-max " />
           </div>
-        </div>
+        </motion.div>
       </div>
       <div className="flex gap-8 justify-center md:justify-between items-center w-[90%] lg:w-2/3 mt-4 lg:mt-[4rem] mx-auto">
         <motion.img
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
+          transition={{ duration: 0.4, delay: 0.5, ease: "easeOut" }}
           viewport={{ once: true }}
           src={`ancient8.png`}
           alt=""
@@ -49,7 +61,7 @@ function Games({ setVisible }: props) {
         <motion.img
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.8 }}
+          transition={{ duration: 0.5, delay: 0.8, ease: "easeOut" }}
           viewport={{ once: true }}
           src={`sabertooth.png`}
           alt=""
@@ -58,7 +70,7 @@ function Games({ setVisible }: props) {
         <motion.img
           initial={{ y: 100, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 1.2 }}
+          transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
           viewport={{ once: true }}
           src={`GBLogo.png`}
           alt=""
