@@ -8,7 +8,7 @@ function Games({ setVisible }: props) {
   return (
     <div className="flex flex-col gap-5 containerr sectionn relative">
       <img
-        src={`blur.png`}
+        src={`blur2.png`}
         alt=""
         className="absolute -top-96 -left-32 w-[600px] -z-30"
       />
@@ -22,7 +22,6 @@ function Games({ setVisible }: props) {
           initial={{ x: -100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-          viewport={{ once: true }}
           className="md:w-[40%] w-full"
         >
           <img src={`gaming.png`} alt="" className="mx-auto" />
@@ -31,7 +30,6 @@ function Games({ setVisible }: props) {
           initial={{ x: 100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
-          viewport={{ once: true }}
           className="w-full md:w-[50%] flex flex-col gap-3 md:text-left"
         >
           <h1 className="gradient-text md:text-4xl font-valorant text-transparent bg-gradient-to-r from-lgradient to-dgradient">

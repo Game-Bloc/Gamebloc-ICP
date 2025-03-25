@@ -5,8 +5,7 @@ function Roadmap() {
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+      transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
       className="containerr sectionn flex flex-col gap-8"
     >
       <div className="w-full md:w-3/4 mx-auto flex flex-col gap-3 text-center">

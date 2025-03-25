@@ -4,6 +4,7 @@ import Swal from "sweetalert2"
 import withReactContent from "sweetalert2-react-content"
 import ClipLoader from "react-spinners/ClipLoader"
 import { useState } from "react"
+import { motion } from "motion/react"
 
 function Contact() {
   const MySwal = withReactContent(Swal)
@@ -83,7 +84,12 @@ function Contact() {
   }
 
   return (
-    <div className="containerr sectionn flex flex-col gap-8">
+    <motion.div
+      initial={{ y: 100, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
+      className="containerr sectionn flex flex-col gap-8"
+    >
       <div className="w-full md:w-3/4 mx-auto flex flex-col gap-3 text-center">
         <h1 className="md:text-4xl font-valorant text-white">
           Stay up to date
@@ -93,19 +99,19 @@ function Contact() {
           Web3 gaming.
         </p>
       </div>
-      <div className="flex flex-col gap-3 justify-center">
-        <div className="flex flex-row justify-center">
+      <div className="flex flex-col gap-3 justify-center h-max">
+        <div className="flex justify-center">
           <input
             type="text"
             placeholder="Enter your email address"
-            className="bg-[#3B3A3A] border-y border-l border-white text-white text-[10px] md:text-base p-2 rounded-l-sm w-2/3 md:w-1/2 outline-none"
+            className="bg-[#3B3A3A] border-y border-l border-white text-white text-[10px] md:text-base p-2 rounded-l-sm w-2/3 md:w-1/2 outline-none focus:ring-0 border-r-0"
             onChange={onChange}
             value={email}
           />
-          <div onClick={() => handleSubmit()}>
+          <div className="h-full" onClick={() => handleSubmit()}>
             {loading ? (
               <button
-                className={`bg-button px-3 py-2 md:px-10 md:py-3 rounded-sm font-opsans text-[10px] md:text-xs hover:bg-gradient-to-r from-[#F6B8FC] to-[#E875FC] transition-all`}
+                className={` h-full bg-button px-3 py-2 md:px-10 md:py-3 rounded-sm font-opsans text-[10px] md:text-xs hover:bg-gradient-to-r from-[#F6B8FC] to-[#E875FC] transition-all`}
               >
                 <ClipLoader
                   color={color}
@@ -117,7 +123,10 @@ function Contact() {
                 />
               </button>
             ) : (
-              <Button text="Subscribe" style="rounded-r-sm rounded-none" />
+              <Button
+                text="Subscribe"
+                style="rounded-none rounded-r-sm h-[41.33px] font-semibold"
+              />
             )}
           </div>
         </div>
@@ -127,7 +136,7 @@ function Contact() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
 

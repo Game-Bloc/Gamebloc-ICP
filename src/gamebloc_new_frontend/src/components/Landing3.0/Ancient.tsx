@@ -9,8 +9,7 @@ function Ancient({ setVisible }: props) {
     <motion.div
       initial={{ y: 100, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true }} // Animate only once
-      transition={{ delay: 0.4, duration: 0.5, ease: "easeOut" }}
+      transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
       className="containerr sectionn flex flex-col gap-8 relative"
     >
       <img

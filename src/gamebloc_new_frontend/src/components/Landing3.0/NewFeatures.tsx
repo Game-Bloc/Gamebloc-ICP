@@ -31,10 +31,14 @@ function NewFeatures() {
           />
         </motion.div>
         <motion.div
-          initial={{ x: -600, opacity: 0 }}
+          initial={{ x: -300, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 0.7 }}
+          transition={
+            window.innerWidth < 768
+              ? { duration: 0.7, ease: "easeOut", delay: 0.25 }
+              : { duration: 0.7, ease: "easeOut", delay: 0.7 }
+          }
         >
           <FeatureCard
             img={`community.png`}
@@ -43,10 +47,14 @@ function NewFeatures() {
           />
         </motion.div>
         <motion.div
-          initial={{ x: -900, opacity: 0 }}
+          initial={{ x: -300, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, ease: "easeOut", delay: 1.05 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={
+            window.innerWidth < 768
+              ? { duration: 0.7, ease: "easeOut", delay: 0.25 }
+              : { duration: 0.7, ease: "easeOut", delay: 1.05 }
+          }
         >
           <FeatureCard
             img={`versus.png`}
