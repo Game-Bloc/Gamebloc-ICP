@@ -1650,22 +1650,26 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 // * epoch value of 24 hours should be 86400
 
 private func activateDailyClaims(caller : Principal) : async () {
-
+    let initialPoint = 1;
     DailyRewardHashMap.put(caller, {
         user = caller;
         streakTime = Int.abs(Time.now()); 
         streakCount = 1;
         highestStreak = 1;
-        pointBalance = 1;
+        pointBalance = initialPoint;
     });
-    await update_point(caller, 1);
+    let tracker = USER_TRACK_STORE.get(caller);
+    if (tracker == null) {
+        await create_usertrack(caller)
+    };
+    await update_point(caller, initialPoint);
 };
 
 public shared ({ caller }) func claimToday() : async () {
     var today = DailyRewardHashMap.get(caller);
     switch(today) {
         case(null){
-            await create_usertrack(caller);
+            // await create_usertrack(caller);
             await activateDailyClaims(caller); 
         };
         case(?today){
@@ -1699,15 +1703,49 @@ func resetClaims(caller : Principal) : async () {
     switch(today) {
         case(null){};
         case(?today){
-                var claimed = {
-                    user = today.user;
-                    streakTime = Int.abs(Time.now()); 
-                    streakCount = 1;
-                    highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance + 1;
+            var claimed = {
+                user = today.user;
+                streakTime = Int.abs(Time.now()); 
+                streakCount = 1;
+                highestStreak = today.highestStreak;
+                pointBalance = today.pointBalance + 1; // Add 1 point for the day after reset
             };
             await update_point(caller, 1);
             ignore DailyRewardHashMap.replace(caller, claimed);
+        }
+    }
+};
+
+private func update_point(caller : Principal, point : Nat) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {
+            USER_TRACK_STORE.put(
+                caller,
+                {
+                    user = caller;
+                    tournaments_created = 0;
+                    wager_participated = 0;
+                    tournaments_joined = 0;
+                    tournaments_won = 0;
+                    messages_sent = 0;
+                    feedbacks_sent = 0;
+                    total_point = point;
+                },
+            )
+        };
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                wager_participated = tracker.wager_participated;
+                tournaments_joined = tracker.tournaments_joined;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = tracker.total_point + point;
+            };
+            ignore USER_TRACK_STORE.replace(caller, update)
         }
     }
 };
@@ -1760,7 +1798,7 @@ func create_usertrack(caller : Principal) : async () {
             tournaments_won = 0;
             messages_sent = 0;
             feedbacks_sent = 0;
-            total_point = 0
+            total_point = 1
         },
     )
 };
@@ -1845,33 +1883,6 @@ private func update_feedbacks_sent(caller : Principal) : async () {
     }
 };
 
-public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
-    if (await is_mod(caller)){
-        var tracker = USER_TRACK_STORE.get(recipient);
-        switch (tracker) {
-            case (null) {};
-            case (?tracker) {
-                var update = {
-                    user = tracker.user;
-                    tournaments_created = tracker.tournaments_created;
-                    tournaments_joined = tracker.tournaments_joined;
-                    wager_participated = tracker.wager_participated;
-                    tournaments_won = tracker.tournaments_won;
-                    messages_sent = tracker.messages_sent;
-                    feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.total_point + _point;
-                };
-                var updated = USER_TRACK_STORE.replace(recipient, update)
-            }
-        }
-    } else {
-        throw Error.reject(
-            "You are not authorised to make this action!\n
-            You imposter, you dissappoint me! tueh!"
-        )
-    }
-};
-
 private func update_tournaments_won(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
@@ -1923,6 +1934,34 @@ public query func get_point_track(caller : Principal) : async Nat {
     };
     return temporary_point;
 };
+
+public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
+    if (await is_mod(caller)){
+        var tracker = USER_TRACK_STORE.get(recipient);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + _point;
+                };
+                var updated = USER_TRACK_STORE.replace(recipient, update)
+            }
+        }
+    } else {
+        throw Error.reject(
+            "You are not authorised to make this action!\n
+            You imposter, you dissappoint me! tueh!"
+        )
+    }
+};
+
 
 func merge(left: [(Principal, Nat, Text)], right: [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
     var result: [(Principal, Nat, Text)] = [];
@@ -2002,28 +2041,6 @@ private func reset_point_tracker(caller : Principal) : async () {
     }
 };
 
-private func update_point(caller : Principal, point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {
-            await create_usertrack(caller);
-            await update_point(caller, point);
-        };
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                wager_participated = tracker.wager_participated;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + point;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
 
 public func allocateUserPoint(caller : Principal, point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
