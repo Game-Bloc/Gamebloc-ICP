@@ -410,6 +410,18 @@ export const hooks = () => {
     }
   }
 
+  const iWantToDeposit = async (amount: bigint) => {
+    try {
+      setIsSending(true)
+      const deposit = await whoamiActor.iWantToDeposit(amount)
+      console.log("Deposit successful")
+      setIsSending(false)
+    } catch (err) {
+      setIsSending(false)
+      console.log(err)
+    }
+  }
+
   // GET NAIRA EXCHANGE RATE
 
   const getNairaExchangeRate = async () => {
@@ -453,6 +465,7 @@ export const hooks = () => {
     getExpectedReward,
     getAdminTransaction,
     getNairaExchangeRate,
+    iWantToDeposit,
   }
 }
 

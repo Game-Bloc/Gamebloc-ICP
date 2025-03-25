@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useAppSelector } from "../../../redux/hooks"
-
+import hooks from "../../../Functions/hooks"
 type Prop = {
   handlePromptModal: any
   handleFiatModal: any
@@ -9,11 +9,13 @@ type Prop = {
 
 const NairaDepositModal = ({ handlePromptModal, handleFiatModal }: Prop) => {
   const [ngnAmount, setNGNAmount] = useState("")
-  const balance = useAppSelector((state) => state.IcpBalance.balance)
-  const ngn = useAppSelector((state) => state.IcpBalance.ngnRate)
-  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
-  const [icpValue, setIcpValue] = useState<number>(0)
   const [dollar, setDollar] = useState<string>("")
+  const [icpValue, setIcpValue] = useState<number>(0)
+  const [position, setPosition] = useState<string>("first")
+  const { iWantToDeposit } = hooks()
+  const ngn = useAppSelector((state) => state.IcpBalance.ngnRate)
+  const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
 
   const nairaChange = (e: any) => {
     e.preventDefault()
@@ -56,50 +58,64 @@ const NairaDepositModal = ({ handlePromptModal, handleFiatModal }: Prop) => {
                     <p className=" text-[1rem] text-start text-primary-second font-bold">
                       BUY ICP
                     </p>
-                    {/*  */}
-                    <div className="flex flex-col w-[100%] md:w-[80%] mt-4">
-                      <div className="flex justify-between items-center">
-                        <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                          Amount to buy
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-center pb-[.6rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
-                        <input
-                          className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
-                          type="number"
-                          placeholder="₦"
-                          onChange={nairaChange}
-                          value={ngnAmount}
-                        />
-                      </div>
-                      <div className="flex justify-between px-3 lg:px-6 items-center">
-                        <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                          Value in icp
-                        </p>
-                        <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                          Dollar equivalent
-                        </p>
-                      </div>
-                      {/* <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                        To
-                      </p> */}
-                      <div className="flex justify-between items-center  h-[2.5rem] px-3 lg:px-6 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
-                        <p className="text-[.7rem]  lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                          {icpValue.toFixed(4)} ICP
-                        </p>
-                        <p className="text-[.7rem]  lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
-                          ${parseFloat(dollar).toFixed(2)}
-                        </p>
-                      </div>
+                    <div className="flex mt-6">
+                      <p className="font-bold text-[.85rem] text-[#A1A1AA]">
+                        Dollar - Naira rate: ₦{ngn}
+                      </p>
                     </div>
-                    <button className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md ">
-                      Confirm amoumt
-                    </button>
-                    <p className="mt-6 mb-2 text-white/80 text-center text-[.65rem]">
-                      Note that the price of ICP is not stable and by the time
-                      of crediting your wallet the amount might slightly vary
-                      both in ICP and USD.
-                    </p>
+                    {/*  */}
+                    {position === "first" ? (
+                      <div className="flex flex-col w-[100%] md:w-[80%] mt-4">
+                        <div className="flex justify-between items-center">
+                          <p className="text-[.7rem] lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                            Amount to buy
+                          </p>
+                        </div>
+                        <div className="flex flex-col items-center pb-[.6rem] h-[2.5rem] border-[#F6B8FC]/30 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+                          <input
+                            className="border-none bg-[transparent] text-white/80 placeholder:text-[0.8rem] placeholder:text-white/80 focus:outline-none focus:ring-0 text-[0.8rem] appearance-none w-full"
+                            type="number"
+                            placeholder="₦"
+                            onChange={nairaChange}
+                            value={ngnAmount}
+                          />
+                        </div>
+                        <div className="flex justify-between px-3 lg:px-6 items-center">
+                          <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                            Value in icp
+                          </p>
+                          <p className="text-[.7rem] mt-8 lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                            Dollar equivalent
+                          </p>
+                        </div>
+
+                        <div className="flex justify-between items-center  h-[2.5rem] px-3 lg:px-6 bg-[#f6b8fc7a]/20 border border-solid rounded-[8px] w-full">
+                          <p className="text-[.7rem]  lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                            {icpValue.toFixed(4)} ICP
+                          </p>
+                          <p className="text-[.7rem]  lg:text-[.82rem]  text-primary-second/80  my-[.2rem]">
+                            ${parseFloat(dollar).toFixed(2)}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            setPosition("second")
+                          }}
+                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md "
+                        >
+                          Confirm amoumt
+                        </button>
+                        <p className="mt-6 mb-2 text-white/80 text-center text-[.65rem]">
+                          Note that the price of ICP is not stable and at the
+                          time of crediting your wallet the amount might
+                          slightly vary both in ICP and USD.
+                        </p>
+                      </div>
+                    ) : position === "second" ? (
+                      <div className="flex flex-col w-[100%] md:w-[80%] mt-4"></div>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </div>
