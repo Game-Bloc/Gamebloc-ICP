@@ -33,6 +33,7 @@ import Random "mo:base/Random";
 import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
 import Int64 "mo:base/Int64";
+import JSON "mo:json";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -52,6 +53,7 @@ import CKTypes "types/ck_types";
 import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
+// import CycleMonitor "utils/CycleMonitor";
 
 shared ({ caller }) actor class Kitchen() = this {
 
@@ -392,6 +394,26 @@ private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
         
         return "Deposit confirmation sent to admin. Please await deposit";
     };
+
+    // public shared ({ caller }) func confirmDepositViaVariablesTest(amount : Nat, time : Text) : async Text {
+    //     let cyclesUsed = await CycleMonitor.measureAsync(async {
+    //         let subject : Text = "New ICP Deposit Confirmation";
+    //         let body : Text = "User with Principal: " # Principal.toText(caller) # 
+    //                 " has initiated a deposit of " # Nat.toText(amount) # 
+    //                 " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+    //         let receiver_email : Text = "successaje7@gmail.com";
+            
+    //         await sendNotification(subject, body, receiver_email);
+    //         "Deposit confirmation sent to admin. Please await deposit";
+    //     }, "confirmDeposit");
+
+    //     // Optional: Fail if too expensive
+    //     if (cyclesUsed > 10_000_000) {
+    //         Debug.print("⚠️ Warning: Expensive deposit confirmation!");
+    //     };
+        
+    //     result
+    // };
 
     public shared ({ caller }) func confirmDepositViaParams(_subject : Text, _body : Text, _receiver_email : Text) : async () {
         try {
@@ -1273,6 +1295,161 @@ public func notify(title : Text, body : Text, caller : Principal, date : Text, i
         return result;
     };
 
+    let external_url = "https://notifier-4l85.onrender.com/send-email";
+    let ic : HTTP.IC = actor ("aaaaa-aa");
+
+    public func getUserFromClashRoyale(ingameUserName : Text) : async Result.Result<Text, Text> {
+
+        let requestBodyJson : Text = "{ \"ingameUserName\": \"" # ingameUserName # "\"}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/players/" # ingameUserName;
+            max_response_bytes = null;
+            headers = [
+                { name = "Content-Type"; value = "application/json" },
+            ];
+            body = null; //requestBodyAsNat8;
+            method = #get;
+            transform = ?transform_context;
+        };
+
+        Cycles.add(1_703_096_680);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: " ) };
+        };
+
+        return #ok(JSON.stringify(json, null));
+    };
+
+    public func getPlayerUpcomingChests(playerTag : Text) : async Result.Result<Text, Text> {
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+        
+        let http_request = {
+            url = "https://api.clashroyale.com/v1/players/" # playerTag # "/upcomingchests";
+            headers = [
+                { name = "Content-Type"; value = "application/json" }
+            ];
+            max_response_bytes = null;
+            body = null;
+            method = #get;
+            transform = ?transform_context;
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: ") };
+        };
+
+        return #ok(JSON.stringify(json, null));
+
+    };
+
+    public func searchTournaments(name : ?Text, limit : ?Nat, after : ?Text, before : ?Text) : async Result.Result<Text, Text> {
+        
+        var requestBodyJson : Text = "{";
+        switch(name) {
+            case(null) {};
+            case(?name) {
+                requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+            }
+        };
+        switch(limit) {
+            case(null) {};
+            case(?limit) {
+                requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+            }
+        };
+        switch(after) {
+            case(null) {};
+            case(?after) {
+                requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+            }
+        };
+        switch(before) {
+            case(null) {};
+            case(?before) {
+                requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+            }
+        };
+        requestBodyJson := requestBodyJson # "}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        // if (name != null) {
+        //     requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\",";
+        // };
+        // if (limit != null) {
+        //     requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ",";
+        // };
+        // if (after != null) {
+        //     requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\",";
+        // };
+        // if (before != null) {
+        //     requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\",";
+        // };
+        // requestBodyJson := requestBodyJson # "}";
+        // let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        // let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/tournaments";
+            headers = [
+                { name = "Content-Type"; value = "application/json" }
+            ];
+            body = ?requestBodyAsNat8; 
+            max_response_bytes = ?Nat64.fromNat(10000);
+            method = #get;
+            transform = ?{
+                function = transform;
+                context = Blob.fromArray([])
+            };
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y };
+        };
+
+        let json = switch(JSON.parse(decoded_text)){
+            case(#ok(parsed)) { parsed };
+            case(#err(_)) { throw Error.reject("Error parsing JSON: ") };
+        };
+
+        return #ok(JSON.stringify(json, null));
+    };
+
 
 public func sendNotification(subject : Text, body : Text, receiver_email : Text) : async () {
     let ic : HTTP.IC = actor ("aaaaa-aa");
@@ -1473,22 +1650,26 @@ public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, us
 // * epoch value of 24 hours should be 86400
 
 private func activateDailyClaims(caller : Principal) : async () {
-
+    let initialPoint = 1;
     DailyRewardHashMap.put(caller, {
         user = caller;
         streakTime = Int.abs(Time.now()); 
         streakCount = 1;
         highestStreak = 1;
-        pointBalance = 1;
+        pointBalance = initialPoint;
     });
-    await update_point(caller, 1);
+    let tracker = USER_TRACK_STORE.get(caller);
+    if (tracker == null) {
+        await create_usertrack(caller)
+    };
+    await update_point(caller, initialPoint);
 };
 
 public shared ({ caller }) func claimToday() : async () {
     var today = DailyRewardHashMap.get(caller);
     switch(today) {
         case(null){
-            await create_usertrack(caller);
+            // await create_usertrack(caller);
             await activateDailyClaims(caller); 
         };
         case(?today){
@@ -1522,15 +1703,49 @@ func resetClaims(caller : Principal) : async () {
     switch(today) {
         case(null){};
         case(?today){
-                var claimed = {
-                    user = today.user;
-                    streakTime = Int.abs(Time.now()); 
-                    streakCount = 1;
-                    highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance + 1;
+            var claimed = {
+                user = today.user;
+                streakTime = Int.abs(Time.now()); 
+                streakCount = 1;
+                highestStreak = today.highestStreak;
+                pointBalance = today.pointBalance + 1; // Add 1 point for the day after reset
             };
             await update_point(caller, 1);
             ignore DailyRewardHashMap.replace(caller, claimed);
+        }
+    }
+};
+
+private func update_point(caller : Principal, point : Nat) : async () {
+    var tracker = USER_TRACK_STORE.get(caller);
+    switch (tracker) {
+        case (null) {
+            USER_TRACK_STORE.put(
+                caller,
+                {
+                    user = caller;
+                    tournaments_created = 0;
+                    wager_participated = 0;
+                    tournaments_joined = 0;
+                    tournaments_won = 0;
+                    messages_sent = 0;
+                    feedbacks_sent = 0;
+                    total_point = point;
+                },
+            )
+        };
+        case (?tracker) {
+            var update = {
+                user = tracker.user;
+                tournaments_created = tracker.tournaments_created;
+                wager_participated = tracker.wager_participated;
+                tournaments_joined = tracker.tournaments_joined;
+                tournaments_won = tracker.tournaments_won;
+                messages_sent = tracker.messages_sent;
+                feedbacks_sent = tracker.feedbacks_sent;
+                total_point = tracker.total_point + point;
+            };
+            ignore USER_TRACK_STORE.replace(caller, update)
         }
     }
 };
@@ -1583,7 +1798,7 @@ func create_usertrack(caller : Principal) : async () {
             tournaments_won = 0;
             messages_sent = 0;
             feedbacks_sent = 0;
-            total_point = 0
+            total_point = 1
         },
     )
 };
@@ -1668,33 +1883,6 @@ private func update_feedbacks_sent(caller : Principal) : async () {
     }
 };
 
-public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
-    if (await is_mod(caller)){
-        var tracker = USER_TRACK_STORE.get(recipient);
-        switch (tracker) {
-            case (null) {};
-            case (?tracker) {
-                var update = {
-                    user = tracker.user;
-                    tournaments_created = tracker.tournaments_created;
-                    tournaments_joined = tracker.tournaments_joined;
-                    wager_participated = tracker.wager_participated;
-                    tournaments_won = tracker.tournaments_won;
-                    messages_sent = tracker.messages_sent;
-                    feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.total_point + _point;
-                };
-                var updated = USER_TRACK_STORE.replace(recipient, update)
-            }
-        }
-    } else {
-        throw Error.reject(
-            "You are not authorised to make this action!\n
-            You imposter, you dissappoint me! tueh!"
-        )
-    }
-};
-
 private func update_tournaments_won(caller : Principal) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
     switch (tracker) {
@@ -1746,6 +1934,34 @@ public query func get_point_track(caller : Principal) : async Nat {
     };
     return temporary_point;
 };
+
+public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
+    if (await is_mod(caller)){
+        var tracker = USER_TRACK_STORE.get(recipient);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + _point;
+                };
+                var updated = USER_TRACK_STORE.replace(recipient, update)
+            }
+        }
+    } else {
+        throw Error.reject(
+            "You are not authorised to make this action!\n
+            You imposter, you dissappoint me! tueh!"
+        )
+    }
+};
+
 
 func merge(left: [(Principal, Nat, Text)], right: [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
     var result: [(Principal, Nat, Text)] = [];
@@ -1825,28 +2041,6 @@ private func reset_point_tracker(caller : Principal) : async () {
     }
 };
 
-private func update_point(caller : Principal, point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {
-            await create_usertrack(caller);
-            await update_point(caller, point);
-        };
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                wager_participated = tracker.wager_participated;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + point;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
 
 public func allocateUserPoint(caller : Principal, point : Nat) : async () {
     var tracker = USER_TRACK_STORE.get(caller);
