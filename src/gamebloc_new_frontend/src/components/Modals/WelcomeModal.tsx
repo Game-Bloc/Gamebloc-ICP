@@ -211,7 +211,7 @@ const WelcomeModal = ({ modal }: Props) => {
                       onClick={() => submit()}
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
-                      <p className="text-[0.65rem] font-bold sm:text-[.85rem]">
+                      <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
                         {isLoading ? (
                           <div className="flex items-center gap-2">
                             <p className="text-[0.65rem] mr-2 font-bold sm:text-[.85rem]">
@@ -229,7 +229,7 @@ const WelcomeModal = ({ modal }: Props) => {
                         ) : (
                           "Create Account"
                         )}
-                      </p>
+                      </div>
                     </button>
                   </div>
                 </div>

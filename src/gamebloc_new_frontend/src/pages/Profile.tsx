@@ -20,6 +20,8 @@ import Stats from "../components/profileComp/stats/Stats"
 import MyPointCard from "../components/profileComp/MyPointCard"
 import hooks from "../Functions/hooks"
 import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
+import QrModal from "../components/Modals/Deposit/QrModal"
+import NairaDepositModal from "../components/Modals/Deposit/NairaDepositModal"
 
 const items: TabsProps["items"] = [
   {
@@ -56,6 +58,8 @@ const Profile = () => {
   const [color, setColor] = useState("#ffffff")
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const [promptModal, setPromptModal] = useState<boolean>(false)
+  const [qrModal, setQrModal] = useState<boolean>(false)
+  const [fiatModal, setFiatModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const _principal = Principal.fromText(principal)
@@ -63,6 +67,7 @@ const Profile = () => {
   const accountId = useAppSelector((state) => state.userProfile.account_id)
   const date = useAppSelector((state) => state.userProfile.date)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
+  const ngn = useAppSelector((state) => state.IcpBalance.ngnRate)
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
@@ -76,7 +81,7 @@ const Profile = () => {
     getTransactions,
     getNotificationId,
   } = useGameblocHooks()
-  const { kitchenBalance, getUserMail } = hooks()
+  const { kitchenBalance, getUserMail, getNairaExchangeRate } = hooks()
   const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
@@ -92,18 +97,28 @@ const Profile = () => {
     } else {
       updateProfile()
     }
+    getNairaExchangeRate()
     getUserMail(_principal)
     updateTournament()
     getNotificationId(_principal)
     getICPBalance()
     kitchenBalance()
     getTransactions(accountId)
+    console.log("ngn", ngn)
   }, [isAuthenticated])
 
   // console.log("icp_price", _icp2Usd)
 
   const handlePromptModal = () => {
     setPromptModal(!promptModal)
+  }
+
+  const handleQRModal = () => {
+    setQrModal(!qrModal)
+  }
+
+  const handleFiatModal = () => {
+    setFiatModal(!fiatModal)
   }
 
   if (!isAuthenticated || isLoadingProfile) {
@@ -189,7 +204,7 @@ const Profile = () => {
                               Member since {date}
                             </p>
                           </div>
-                          <div className="flex gap-7">
+                          <div className="flex gap-[.6rem] lg:gap-4">
                             <button
                               onClick={() => setPromptModal(!promptModal)}
                               className="pt-[0.4rem] pb-[.4rem]  px-[.6rem]  sm:px-4 text-[.7rem] sm:text-sm hover:text-black hover:bg-primary-second/70  text-primary-second justify-center border border-solid border-primary-second/70 flex bg-transparent rounded-lg items-center cursor-pointer sm:py-2"
@@ -305,7 +320,18 @@ const Profile = () => {
           />
         )}
         {promptModal && (
-          <DepositPromptModal handlePromptModal={handlePromptModal} />
+          <DepositPromptModal
+            handlePromptModal={handlePromptModal}
+            handleQRModal={handleQRModal}
+            handleFiatModal={handleFiatModal}
+          />
+        )}
+        {qrModal && <QrModal handleQRModal={handleQRModal} />}
+        {fiatModal && (
+          <NairaDepositModal
+            handlePromptModal={handlePromptModal}
+            handleFiatModal={handleFiatModal}
+          />
         )}
       </div>
     )
