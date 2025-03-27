@@ -7,7 +7,7 @@ type Prop = {
   handleFiatModal: any
 }
 
-const NairaDepositModal = ({ handlePromptModal, handleFiatModal }: Prop) => {
+const NairaDepositModal = ({ handleFiatModal }: Prop) => {
   const [ngnAmount, setNGNAmount] = useState("")
   const [dollar, setDollar] = useState<string>("")
   const [icpValue, setIcpValue] = useState<number>(0)
