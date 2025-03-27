@@ -558,6 +558,22 @@ shared ({ caller }) actor class Kitchen() = this {
         }
     };
 
+    type ICP = {
+        e8s : Nat64
+    };
+
+    public shared ({ caller }) func icp_balance() : async ICP {
+        await ICPLedger.account_balance_dfx({
+            account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+        })
+    };
+
+    public shared ({ caller }) func getKitchenBalance() : async ICP {
+        await ICPLedger.account_balance_dfx({
+            account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromActor(this), null))
+        })
+    };
+
     // Required to be parsed as an argument
     public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
         try {
