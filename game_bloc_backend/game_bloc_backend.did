@@ -5,7 +5,7 @@ type Contestant = record {
   losses : nat8;
   point : nat;
 };
-type GameType = variant { Duo; Squad; TeamvTeam; Single };
+type GameType = variant { Duo; Squad; OnevOne; TeamvTeam; Single };
 type LobbyAccount = record {
   idx : nat8;
   status : TournamentStatus;
