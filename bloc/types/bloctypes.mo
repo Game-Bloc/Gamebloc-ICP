@@ -273,6 +273,7 @@ module {
     };
 
     public type GameType = {
+        #OnevOne;
         #TeamvTeam;
         #Single;
         #Duo;
