@@ -156,3 +156,5 @@ dfx deploy
 # 4-10-03 21:07:49.875732 UTC: [Canister be2us-64aaa-aaaaa-qaabq-cai]
 
 # MOPS_VERSION=1.0.0 sh -ci "$(curl -fsSL cli.mops.one/install.sh | sh)"
+
+let 
