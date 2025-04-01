@@ -86,7 +86,17 @@ shared ({ caller }) actor class Kitchen() = this {
     private stable var UpdatedUsersEntries : [(Principal, User)] = [];
     private stable var messageID : Nat = 0;
     private stable var messageEntries : [(Nat, MessageEntry)] = [];
+    private stable var ReferralMapEntries : [(Principal, Text)] = [];
+    private stable var CodeToPrincipalMapEntries : [(Text, Principal)] = [];
+    private stable var ReferrerMapEntries : [(Principal, Principal)] = [];
+    private stable var ReferralsMapEntries : [(Principal, [Principal])] = [];
 
+    // private stable var RewardsMap
+
+    var ReferralsMap : HashMap.HashMap<Principal, [Principal]> = HashMap.fromIter<Principal, [Principal]>(ReferralsMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var ReferrerMap : HashMap.HashMap<Principal, Principal> = HashMap.fromIter<Principal, Principal>(ReferrerMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var ReferralMap : HashMap.HashMap<Principal, Text> = HashMap.fromIter<Principal, Text>(ReferralMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var CodeToPrincipalMap : HashMap.HashMap<Text, Principal> = HashMap.fromIter<Text, Principal>(CodeToPrincipalMapEntries.vals(), 10, Text.equal, Text.hash);
     var MessageHashMap : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
     var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
     var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
@@ -127,7 +137,12 @@ shared ({ caller }) actor class Kitchen() = this {
         BalanceEntries := Iter.toArray(BalanceHashMap.entries());
 
         // Passwords
-        PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
+        PasswordEntries := Iter.toArray(PASSWORD_STORE.entries());
+
+        ReferralMapEntries := Iter.toArray(ReferralMap.entries());
+        CodeToPrincipalMapEntries := Iter.toArray(CodeToPrincipalMap.entries());
+        ReferrerMapEntries := Iter.toArray(ReferrerMap.entries());
+        ReferralsMapEntries := Iter.toArray(ReferralsMap.entries());
     };
 
     private stable var latestTransactionIndex : Nat = 0;
@@ -148,6 +163,11 @@ shared ({ caller }) actor class Kitchen() = this {
         FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
         PASSWORD_STORE := TrieMap.fromEntries<Principal, Bloctypes.Access>(PasswordEntries.vals(), Principal.equal, Principal.hash);
 
+        ReferralMap := HashMap.fromIter<Principal, Text>(ReferralMapEntries.vals(), 10, Principal.equal, Principal.hash);
+        CodeToPrincipalMap := HashMap.fromIter<Text, Principal>(CodeToPrincipalMapEntries.vals(), 10, Text.equal, Text.hash);
+        ReferrerMap := HashMap.fromIter<Principal, Principal>(ReferrerMapEntries.vals(), 10, Principal.equal, Principal.hash);
+        ReferralsMap := HashMap.fromIter<Principal, [Principal]>(ReferralsMapEntries.vals(), 10, Principal.equal, Principal.hash);
+
         // clear the states
         ProfileEntries := [];
         UserTrackEntries := [];
@@ -159,6 +179,12 @@ shared ({ caller }) actor class Kitchen() = this {
         messageEntries := [];
         NotificationEntries := [];
         UpdatedUsersEntries := [];
+        DailyRewardEntries := [];
+        ReferralMapEntries := [];
+        CodeToPrincipalMapEntries := [];
+        ReferrerMapEntries := [];
+        ReferralsMapEntries := [];  
+
 
         latestTransactionIndex := 1
     };
@@ -2393,15 +2419,6 @@ shared ({ caller }) actor class Kitchen() = this {
                                                  ///    REFERRAL MANAGEMENT    ///
                                                 ///////////////////////////////////
 
-    private stable var codesEntries : [(Principal, Text)] = [];
-    // private stable codeToP
-    private let referralMap = HashMap.HashMap<Principal, Text>(10, Principal.equal, Principal.hash);
-    private let codeToPrincipalMap = HashMap.HashMap<Text, Principal>(10, Text.equal, Text.hash);
-    private let referrerMap = HashMap.HashMap<Principal, Principal>(10, Principal.equal, Principal.hash);
-    private let referralsMap = HashMap.HashMap<Principal, [Principal]>(10, Principal.equal, Principal.hash);
-    private let rewardsMap = HashMap.HashMap<Principal, Nat>(10, Principal.equal, Principal.hash);
-
-
 
     // Character set for code generation
     private let chars = [
@@ -2413,13 +2430,13 @@ shared ({ caller }) actor class Kitchen() = this {
 
     // Initialize on upgrade
     // system func preupgrade() {
-    //     codesEntries := Iter.toArray(referralMap.entries());
+    //     codesEntries := Iter.toArray(ReferralMap.entries());
     // };
 
     // system func postupgrade() {
     //     for ((p, c) in codesEntries.vals()) {
-    //         referralMap.put(p, c);
-    //         codeToPrincipalMap.put(c, p);
+    //         ReferralMap.put(p, c);
+    //         CodeToPrincipalMap.put(c, p);
     //     };
     //     codesEntries := [];
     // };
@@ -2448,7 +2465,7 @@ shared ({ caller }) actor class Kitchen() = this {
     //     };
         
     //     // Ensure uniqueness
-    //     if (codeToPrincipalMap.get(code) != null) {
+    //     if (CodeToPrincipalMap.get(code) != null) {
     //         return generateCode(); // Recursively retry if collision
     //     };
     //     code
@@ -2475,7 +2492,7 @@ shared ({ caller }) actor class Kitchen() = this {
     //         i += 1;
     //     };
         
-    //     if (codeToPrincipalMap.get(code) != null) {
+    //     if (CodeToPrincipalMap.get(code) != null) {
     //         return await generateCode();
     //     };
     //     code
@@ -2504,28 +2521,44 @@ shared ({ caller }) actor class Kitchen() = this {
     //         i += 1;
     //     };
         
-    //     if (codeToPrincipalMap.get(code) != null) {
+    //     if (CodeToPrincipalMap.get(code) != null) {
     //         return generateCode();
     //     };
     //     code
     // };
 
     // Get or create referral code for caller
-    public shared ({ caller }) func getMyReferralCode(code : Text) : async Text {
-        switch (referralMap.get(caller)) {
-            case (?code) { code };
+    // public shared ({ caller }) func getMyReferralCode(code : Text) : async Text {
+    //     switch (ReferralMap.get(caller)) {
+    //         case (?code) { code };
+    //         case null {
+    //             // let code = generateCode();
+    //             ReferralMap.put(caller, code);
+    //             CodeToPrincipalMap.put(code, caller);
+    //             return code
+    //         }
+    //     }
+    // };
+
+    public shared ({ caller}) func setCode(code : Text) : async Bool {
+        switch (ReferralMap.get(caller)) {
+            case (?code) { false };
             case null {
-                // let code = generateCode();
-                referralMap.put(caller, code);
-                codeToPrincipalMap.put(code, caller);
-                return code
+                ReferralMap.put(caller, code);
+                CodeToPrincipalMap.put(code, caller);
+                return true
             }
         }
     };
 
+    // Get referral code for a given principal
+    public shared query func getReferralCode(principal : Principal) : async ?Text {
+        ReferralMap.get(principal)
+    };
+
     // Lookup principal by referral code
     public shared query func getPrincipalByCode(code : Text) : async ?Principal {
-        codeToPrincipalMap.get(code)
+        CodeToPrincipalMap.get(code)
     };
 
     // Validate a referral code
@@ -2536,7 +2569,7 @@ shared ({ caller }) actor class Kitchen() = this {
     //             return false;
     //         }
     //     };
-    //     codeToPrincipalMap.get(code) != null
+    //     CodeToPrincipalMap.get(code) != null
     // };
 
     private func arrayContains<T>(array : [T], item : T, equal : (T, T) -> Bool) : Bool {
@@ -2557,7 +2590,7 @@ shared ({ caller }) actor class Kitchen() = this {
                 return false;
             }
         };
-        codeToPrincipalMap.get(code) != null
+        CodeToPrincipalMap.get(code) != null
     };
 
 }
