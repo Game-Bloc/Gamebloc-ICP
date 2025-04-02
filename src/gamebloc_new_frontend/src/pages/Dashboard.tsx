@@ -156,10 +156,10 @@ const Dashboard = () => {
             </Tooltip> */}
           </FloatButton.Group>
         </ConfigProvider>
-        {<WelcomeModal2 />}
         {openModal && <FeedbackModal modal={handleModal} />}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
-        {accountModal && <WelcomeModal modal={handleAccModal} />}
+        {accountModal && <WelcomeModal2 />}
+        {/* {accountModal && <WelcomeModal modal={handleAccModal} />} */}
       </div>
     )
   }
