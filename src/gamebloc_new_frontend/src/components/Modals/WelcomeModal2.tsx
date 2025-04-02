@@ -1,15 +1,142 @@
 // import { Button } from "antd"
-import React, { useEffect } from "react"
-import { useState } from "react"
-import { DatePicker } from "antd"
+// import { DatePicker } from "antd"
+import React, { useEffect, useState } from "react"
+import ClipLoader from "react-spinners/ClipLoader"
+import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { ulid } from "ulid"
+import withReactContent from "sweetalert2-react-content"
+import Swal from "sweetalert2"
 
 function WelcomeModal2() {
-  const [image, setImage] = useState("random.png")
+  const [avatar, setAvatar] = useState("random.png")
   const [page, setPage] = useState("user details")
   const [mobile, setMobile] = useState(false)
+  const [userName, setUserName] = useState<string>("")
+  const [mail, setMail] = useState<string>("")
+  const [age, setAge] = useState("")
+  const [joinDate, setJoinDate] = useState<string>("January, 2033")
+  const [color, setColor] = useState("#ffffff")
+  const [idHash, setIdHash] = useState<string>("")
+  const { createAccount, isLoading } = useGameblocHooks()
+  const MySwal = withReactContent(Swal)
+  const Squad_badge = ""
+
+  // State to handle email validation
+  const [emailError, setEmailError] = useState<string>("")
+
+  const generateDate = () => {
+    let currentDate = new Date()
+
+    const timeOptions: Intl.DateTimeFormatOptions = {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }
+
+    const dayOptions: Intl.DateTimeFormatOptions = {
+      weekday: "short",
+    }
+
+    const timeString = currentDate.toLocaleTimeString("en-US", timeOptions)
+    const dayString = currentDate.toLocaleDateString("en-US", dayOptions)
+
+    let currentMonth = currentDate.toLocaleString("default", { month: "long" })
+    let currentYear = currentDate.getFullYear()
+    let dayOfMonth = currentDate.getDate()
+
+    let date =
+      `${timeString}, ${dayString}` +
+      ", " +
+      dayOfMonth +
+      " " +
+      currentMonth +
+      ", " +
+      currentYear +
+      "."
+
+    console.log(date)
+    setJoinDate(date)
+  }
+
+  const errorPopUp = (errorMsg: string) => {
+    MySwal.fire({
+      position: "center",
+      icon: "error",
+      text: errorMsg,
+      showConfirmButton: true,
+      background: "#01070E",
+      color: "#fff",
+    })
+  }
+
+  const override = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "white",
+  }
+
+  const generateId = () => {
+    const date = new Date()
+    let day = date.getDate()
+    const id = ulid(day)
+    setIdHash(id)
+    // setJoinDate()
+  }
+
+  const onChangeUsername = (e: any) => {
+    e.preventDefault()
+    const userNameInput = e.target.value
+    setUserName(userNameInput)
+  }
+
+  const onChangeMail = (e: any) => {
+    e.preventDefault()
+    const mailInput = e.target.value
+    setMail(mailInput)
+
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    if (emailRegex.test(mailInput)) {
+      setEmailError("") // Clear error if email is valid
+    } else {
+      setEmailError("Please enter a valid email address.")
+    }
+  }
+
+  const onChangeAge = (e: any) => {
+    e.preventDefault()
+    const ageInput = e.target.value
+    setAge(ageInput)
+  }
+
+  const submit = () => {
+    if (userName.trim() === "" || age.trim() === "") {
+      errorPopUp("Field is empty !")
+    } else if (emailError !== "") {
+      errorPopUp("Invalid email format!")
+    } else {
+      createAccount(
+        idHash,
+        +age,
+        userName,
+        joinDate,
+        Squad_badge,
+        [{ Player: null }],
+        mail,
+        "Account Created",
+        "Error, try again",
+        "/dashboard",
+      )
+    }
+  }
 
   useEffect(() => {
-    if (window.innerWidth < 768) {
+    generateId()
+    generateDate()
+  }, [])
+
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
       setMobile(true)
     } else {
       setMobile(false)
@@ -17,10 +144,10 @@ function WelcomeModal2() {
   }, [window.innerWidth])
 
   function handleImg(img: string) {
-    if (img === image) {
+    if (img === avatar) {
       return
     } else {
-      setImage(img)
+      setAvatar(img)
     }
   }
   return (
@@ -33,8 +160,8 @@ function WelcomeModal2() {
         </h1>
         <div className="flex justify-between flex-col lg:flex-row gap-5">
           {((mobile && page === "user details") || !mobile) && (
-            <div className="w-full lg:w-[40%] lg:border-b-0  lg:border-r border-[#D0D0D5] lg:pr-5 lg:pb-10 flex flex-col gap-2 mb-2 lg:mb-0">
-              <h1 className="font-body text-xl mb-5 text-[#FBFBFC] font-semibold text-center lg:text-left">
+            <div className="w-full lg:border-b-0  border-[#D0D0D5] lg:pb-10 flex flex-col gap-2">
+              <h1 className="font-body text-xl mb-5 text-[#FBFBFC] font-semibold text-center">
                 User Details
               </h1>
               <form action="" className="flex flex-col gap-3">
@@ -50,6 +177,8 @@ function WelcomeModal2() {
                     name="username"
                     className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
                     placeholder="Enter your username. You cannot change this in the future"
+                    onChange={onChangeUsername}
+                    value={userName}
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -64,6 +193,8 @@ function WelcomeModal2() {
                     name="email"
                     className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
                     placeholder="Enter your email address"
+                    onChange={onChangeMail}
+                    value={mail}
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -71,32 +202,51 @@ function WelcomeModal2() {
                     htmlFor="dob"
                     className="text-[#FBFBFC] text-lg font-semibold font-body"
                   >
-                    Date of birth
+                    Age
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     name="email"
                     className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
-                    placeholder="DD/MM/YYYY"
+                    placeholder="Enter your age"
+                    value={age}
+                    onChange={onChangeAge}
                   />
-                  <DatePicker
-                    className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
+                  {/* <DatePicker
+                    className="bg-transparent hover:bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
                     placeholder="DD/MM/YYYY"
                     format="DD/MM/YYYY"
-                  />
+                  /> */}
                 </div>
               </form>
-              {mobile && (
+              <button
+                onClick={() => submit()}
+                className=" w-max ml-auto mt-3 font-body px-5 md:px-8 py-3 md:py-3 bg-[#F9CDFD] font-semibold text-xs md:text-sm rounded-sm  hover:bg-gradient-to-r hover:from-[#F9CDFD] hover:to-[#E875FC]  transition-all duration-200 ease-in-out"
+              >
+                {isLoading ? (
+                  <ClipLoader
+                    color={color}
+                    loading={isLoading}
+                    cssOverride={override}
+                    size={10}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                ) : (
+                  "Enter Gamebloc"
+                )}
+              </button>
+              {/* {mobile && (
                 <button
                   onClick={() => setPage("avatar")}
                   className="ml-auto mt-5 font-body px-5 md:px-8 py-3 md:py-3 bg-[#F9CDFD] font-semibold text-xs md:text-sm rounded-sm  hover:bg-gradient-to-r hover:from-[#F9CDFD] hover:to-[#E875FC]  transition-all duration-200 ease-in-out"
                 >
                   Next
                 </button>
-              )}
+              )} */}
             </div>
           )}
-          {((mobile && page === "avatar") || !mobile) && (
+          {/* {((mobile && page === "avatar") || !mobile) && (
             <div className="w-full lg:w-[60%] pl-5 flex flex-col gap-3 lg:gap-5">
               <h1 className="font-body text-xl lg:mb-5 text-[#FBFBFC] font-semibold text-center lg:text-left">
                 Select your profile avatar
@@ -106,7 +256,7 @@ function WelcomeModal2() {
                   className={`w-[90px] lg:w-[120px] flex-shrink-0 mx:auto md:mx-0`}
                 >
                   <img
-                    src={`${image}`}
+                    src={`${avatar}`}
                     alt="selects a random avatar"
                     className="w-[90px] lg:w-[120px] h-[90px] lg:h-[120px] border-2 p-[4px] bg-gradient-to-br from-[#E875FC] to-[#4E1EEC] cursor-pointer transition-all duration-200 ease-in-out hover:scale-105"
                     onClick={() => {
@@ -116,7 +266,7 @@ function WelcomeModal2() {
                           images[Math.floor(Math.random() * images.length)]
                         return randomImg
                       }
-                      while (randomize() === image) {
+                      while (randomize() === avatar) {
                         randomize()
                         console.log("same image")
                       }
@@ -131,7 +281,7 @@ function WelcomeModal2() {
                       src={imageName}
                       alt={`avatar ${index + 1}`}
                       className={`w-[70px] lg:w-[80px] h-[70px] lg:h-[80px] cursor-pointer mb-2 transition-all duration-200 ease-in-out hover:scale-105 ${
-                        image === imageName
+                        avatar === imageName
                           ? "border border-[#E875FC] opacity-30 "
                           : ""
                       }`}
@@ -154,7 +304,7 @@ function WelcomeModal2() {
                 </button>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
