@@ -121,7 +121,7 @@ const Profile = () => {
     setFiatModal(!fiatModal)
   }
 
-  if (!isAuthenticated || isLoadingProfile) {
+  if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <FallbackLoading />

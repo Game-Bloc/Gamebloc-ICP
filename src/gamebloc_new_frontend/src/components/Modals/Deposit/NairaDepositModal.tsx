@@ -125,7 +125,7 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
                           onClick={() => {
                             verifyAmount()
                           }}
-                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md "
+                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full  h-8 lg:h-[3rem] rounded-md "
                         >
                           Confirm amoumt
                         </button>
