@@ -5,7 +5,7 @@ type Contestant = record {
   losses : nat8;
   point : nat;
 };
-type GameType = variant { Duo; Squad; TeamvTeam; Single };
+type GameType = variant { Duo; Squad; OnevOne; TeamvTeam; Single };
 type LobbyAccount = record {
   idx : nat8;
   status : TournamentStatus;
@@ -70,6 +70,7 @@ type TournamentAccount = record {
   squad : vec Squad;
   accepts_wagers : opt bool;
   no_of_participants_at_bump : opt nat;
+  referal_ids : vec text;
   lobbies : opt vec LobbyAccount;
   game_type : text;
   user_details : opt vec UserProfile;
@@ -99,7 +100,12 @@ type TournamentStatus = variant {
   Archived;
   GameCompleted;
 };
-type TournamentType = variant { Prepaid; Crowdfunded; Blitzkrieg };
+type TournamentType = variant {
+  Prepaid;
+  Crowdfunded;
+  Blitzkrieg;
+  SquadTraining;
+};
 type UserProfile = record {
   age : nat8;
   account_id : text;
