@@ -52,6 +52,7 @@ pub_struct!(
      squad_in_game_names:Option<Vec<Vec<(String, String, String)>>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
+        referal_ids: Vec<String>,
      user_details: Option<Vec<UserProfile>>,
      winers: Vec<String>,
     //deprecated
