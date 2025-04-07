@@ -2572,6 +2572,7 @@ shared ({ caller }) actor class Kitchen() = this {
     //     CodeToPrincipalMap.get(code) != null
     // };
 
+    /// * @dev This function checks if an array contains a specific item using a custom equality function.
     private func arrayContains<T>(array : [T], item : T, equal : (T, T) -> Bool) : Bool {
         for (x in array.vals()) {
             if (equal(x, item)) {
@@ -2580,6 +2581,7 @@ shared ({ caller }) actor class Kitchen() = this {
         };
         false
     };
+
 
     let CODE_LENGTH = 5;
 
