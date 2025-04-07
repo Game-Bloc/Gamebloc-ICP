@@ -131,7 +131,11 @@ const AdminViewTournamentDetails = () => {
 
   const game_type = data
     .filter((tour: any) => tour.id_hash === id)
-    .map((tour) => tour.game_type.toUpperCase() === "SINGLE")
+    .map(
+      (tour) =>
+        tour.game_type.toUpperCase() === "SINGLE" ||
+        tour.game_type.toUpperCase() === "TEAMVTEAM",
+    )
 
   useEffect(() => {
     if (tournament.length > 0 || null || undefined) {
@@ -287,7 +291,9 @@ const AdminViewTournamentDetails = () => {
     if (no_of_winners === 1) {
       const amount =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(tourData[0].entry_prize * tourData[0]?.users?.length).toFixed(
               2,
             )}`
@@ -318,7 +324,9 @@ const AdminViewTournamentDetails = () => {
     } else if (no_of_winners === 2) {
       const amount1 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(
               tourData[0].entry_prize *
               tourData[0]?.users?.length *
@@ -333,7 +341,9 @@ const AdminViewTournamentDetails = () => {
           : `${(tourData[0].total_prize * 0.6).toFixed(2)}`
       const amount2 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(
               tourData[0].entry_prize *
               tourData[0]?.users?.length *
@@ -365,7 +375,9 @@ const AdminViewTournamentDetails = () => {
     } else {
       const amount1 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(
               tourData[0].entry_prize *
               tourData[0]?.users?.length *
@@ -380,7 +392,9 @@ const AdminViewTournamentDetails = () => {
           : `${(tourData[0].total_prize * 0.5).toFixed(2)}`
       const amount2 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(
               tourData[0].entry_prize *
               tourData[0]?.users?.length *
@@ -396,7 +410,9 @@ const AdminViewTournamentDetails = () => {
 
       const amount3 =
         Object.keys(tourData[0].tournament_type)[0].toUpperCase() ===
-          "CROWDFUNDED" && tourData[0].game_type.toUpperCase() === "SINGLE"
+          "CROWDFUNDED" &&
+        (tourData[0].game_type.toUpperCase() === "SINGLE" ||
+          tourData[0].game_type.toUpperCase() === "TEAMVTEAM")
           ? `${(
               tourData[0].entry_prize *
               tourData[0]?.users?.length *
@@ -512,7 +528,7 @@ const AdminViewTournamentDetails = () => {
                           <div className="flex flex-col">
                             <div className="flex gap-4">
                               <img
-                                src={`xbox-pad.jpg`}
+                                src={`gamelogo.png`}
                                 alt=""
                                 className="w-[6.75rem] h-[6.375rem] m-0 object-fill"
                               />
@@ -590,7 +606,10 @@ const AdminViewTournamentDetails = () => {
                                       {Object.keys(
                                         list.tournament_type,
                                       )[0].toUpperCase() === "CROWDFUNDED" &&
-                                      list.game_type.toUpperCase() === "SINGLE"
+                                      (list.game_type.toUpperCase() ===
+                                        "SINGLE" ||
+                                        list.game_type.toUpperCase() ===
+                                          "TEAMVTEAM")
                                         ? `$${
                                             list.entry_prize * list.users.length
                                           }`

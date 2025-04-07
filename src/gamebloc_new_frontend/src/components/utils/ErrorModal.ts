@@ -13,3 +13,14 @@ export const errorPopUp = (errorMsg: string) => {
     color: "#fff",
   })
 }
+
+export const SuccessPopUp = (successMsg: string) => {
+  MySwal.fire({
+    position: "bottom",
+    text: successMsg,
+    timer: 1500,
+    showConfirmButton: false,
+    background: "#01070E",
+    color: "#9B9B9B",
+  })
+}

@@ -81,7 +81,8 @@ const Players = ({ data }: Props) => {
   return (
     <div className="">
       <div className="flex flex-col mx-4 h-[25rem] max-h-[27rem]  overflow-x-hidden overflow-y-scroll">
-        {data.game_type.toUpperCase() === "SINGLE" ? (
+        {data.game_type.toUpperCase() === "SINGLE" ||
+        data.game_type.toUpperCase() === "TEAMVTEAM" ? (
           data.users.length === 0 ? (
             <div className="w-full flex justify-center mt-[3rem]">
               <div className="flex flex-col mb-4 ">
@@ -176,7 +177,8 @@ const Players = ({ data }: Props) => {
                   />
                 ) : (
                   <p className="font-semibold">
-                    {data.game_type.toUpperCase() === "SINGLE"
+                    {data.game_type.toUpperCase() === "SINGLE" ||
+                    data.game_type.toUpperCase() === "TEAMVTEAM"
                       ? "Join Solo Tournament"
                       : "Join Tournament with Squad"}
                   </p>

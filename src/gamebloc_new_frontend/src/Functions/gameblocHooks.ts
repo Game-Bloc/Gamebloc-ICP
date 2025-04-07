@@ -98,6 +98,7 @@ export const useGameblocHooks = () => {
     time: string,
     squad_badge: string,
     role: any,
+    mail: string,
     successMsg: string,
     errorMsg: string,
     route: any,
@@ -113,6 +114,7 @@ export const useGameblocHooks = () => {
         [],
         role,
         [],
+        mail,
       )
       if (user) {
         popUp(successMsg, route)
@@ -354,9 +356,10 @@ export const useGameblocHooks = () => {
         winners,
         ended,
       }
+
       // console.log("value", BigInt(Math.round(icp_price * 100)))
       // console.log("entry_fee", entry_fee)
-      // console.log("total prize", total_prize)
+      console.log("game", game)
       const create = await whoamiActor.create_tournament(
         tournamentData,
         BigInt(Math.round(icp_price * 100)),
@@ -1237,29 +1240,42 @@ export const useGameblocHooks = () => {
   const get_leaderboard = async () => {
     try {
       setUpdating(true)
-      const leaderboard = await whoamiActor2.get_leaderboard()
       dispatch(clearBoard())
-      for (const data of leaderboard) {
-        const board: LeaderboardState = {
-          losses: data.losses,
-          name: data.name,
-          point: Number(data.point),
-          wins: data.wins,
-        }
-        // console.log("board", board)
-        dispatch(updateLeaderboard(board))
-      }
+      const leaderboard = await whoamiActor.get_point_leadersboard_fast()
+      console.log("leaderboard (raw data):", leaderboard)
 
       if (leaderboard) {
+        const processedBoard = leaderboard.map((entry) => {
+          const [principal, points, name] = entry
+          return {
+            principal: principal.toString(), // Convert Principal to string
+            points: Number(points), // Convert points to number
+            name: name, // Player name
+          }
+        })
+
+        // Remove duplicate entries based on 'principal'
+        const uniqueBoard = processedBoard.filter(
+          (value, index, self) =>
+            index === self.findIndex((t) => t.principal === value.principal),
+        )
+
+        // Log uniqueBoard to ensure duplicates are filtered out
+        // console.log("uniqueBoard (after filtering duplicates):", uniqueBoard)
+
+        // Dispatch the unique leaderboard entries
+        uniqueBoard.forEach((board) => {
+          dispatch(updateLeaderboard(board))
+          // console.log("called")
+        })
+
         setUpdating(false)
-        // console.log("Leaderboard", leaderboard)
       }
     } catch (err) {
       setUpdating(false)
       console.log("Can't get leaderboard stats", err)
     }
   }
-
   return {
     paid,
     done,

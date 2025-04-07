@@ -24,6 +24,7 @@ import Funded from "../components/dashboardComps/Funded"
 import Prepaid from "../components/dashboardComps/Prepaid"
 import hooks from "../Functions/hooks"
 import { IoIosCreate } from "react-icons/io"
+import { MdOutlineCreate } from "react-icons/md"
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -37,6 +38,7 @@ const Dashboard = () => {
     getNotificationId,
     getChatmessage,
     getICPrice,
+    get_leaderboard,
   } = useGameblocHooks()
   const { getMyPoints, getMyStreakCount, whoami, getAdminAccID } = hooks()
   const principalText = useAppSelector(
@@ -53,10 +55,10 @@ const Dashboard = () => {
     if (isAuthenticated) {
       if (username === "") {
         getProfile()
-        whoami()
+        get_leaderboard()
       } else {
         updateProfile()
-        whoami()
+        get_leaderboard()
       }
       getChatmessage(20)
       if (userSession === "true") {
@@ -110,7 +112,7 @@ const Dashboard = () => {
               <Funded />
               <Prepaid />
               <Tutorials />
-              <GameblocTournaments loading={isLoadingProfile} />
+              {/* <GameblocTournaments loading={isLoadingProfile} /> */}
             </div>
           </div>
         </section>
@@ -131,7 +133,7 @@ const Dashboard = () => {
               <FloatButton
                 shape="circle"
                 type="primary"
-                icon={<IoIosCreate className="text-black" />}
+                icon={<MdOutlineCreate className="text-black" />}
                 onClick={
                   isAuthenticated
                     ? () => navigate("/game-category")
@@ -139,7 +141,7 @@ const Dashboard = () => {
                 }
               />
             </Tooltip>
-            <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
+            {/* <Tooltip placement="left" title="Feedback" color="#bfa9c27e">
               <FloatButton
                 shape="circle"
                 type="primary"
@@ -150,7 +152,7 @@ const Dashboard = () => {
                     : () => handleLoginModal()
                 }
               />
-            </Tooltip>
+            </Tooltip> */}
           </FloatButton.Group>
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}

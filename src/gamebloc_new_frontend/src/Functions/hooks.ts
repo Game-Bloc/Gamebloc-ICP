@@ -12,11 +12,12 @@ import {
 } from "../redux/slice/dailyStreak"
 import { updateBet } from "../redux/slice/wagerSlice"
 import { updateAdminProfile } from "../redux/slice/adminProfileSlice"
-import { updateKitchenBalance } from "../redux/slice/icpBalanceSlice"
+import { updateKitchenBalance, updateNGN } from "../redux/slice/icpBalanceSlice"
 import {
   addAdminTransactions,
   clearTransaction,
 } from "../redux/slice/adminTransaction"
+import axios from "axios"
 
 // * Local dev
 // const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
@@ -398,6 +399,45 @@ export const hooks = () => {
     }
   }
 
+  // USER MAIL AND DEPOSIT
+
+  const getUserMail = async (principal: Principal) => {
+    try {
+      const mail = await whoamiActor.getUserMail(principal)
+      console.log("User mail:", mail)
+    } catch (err) {
+      console.log("Error getting user mail", err)
+    }
+  }
+
+  const iWantToDeposit = async (amount: bigint) => {
+    try {
+      setIsSending(true)
+      const deposit = await whoamiActor.iWantToDeposit(amount)
+      console.log("Deposit successful")
+      setIsSending(false)
+    } catch (err) {
+      setIsSending(false)
+      console.log(err)
+    }
+  }
+
+  // GET NAIRA EXCHANGE RATE
+
+  const getNairaExchangeRate = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.coingecko.com/api/v3/simple/price?ids=usd&vs_currencies=ngn",
+      )
+      const rate = response.data["usd"].ngn
+      console.log("Naira Exchange Rate:", rate)
+      const ngn: any = {
+        ngnRate: Number(rate),
+      }
+      dispatch(updateNGN(ngn))
+    } catch (err) {}
+  }
+
   return {
     bet,
     done,
@@ -421,8 +461,11 @@ export const hooks = () => {
     allocateUserPoint,
     kitchenBalance,
     getUserBet,
+    getUserMail,
     getExpectedReward,
     getAdminTransaction,
+    getNairaExchangeRate,
+    iWantToDeposit,
   }
 }
 

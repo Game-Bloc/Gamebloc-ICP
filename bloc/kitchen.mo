@@ -2,7 +2,7 @@ import IcWebSocketCdk "mo:ic-websocket-cdk";
 import IcWebSocketCdkState "mo:ic-websocket-cdk/State";
 import IcWebSocketCdkTypes "mo:ic-websocket-cdk/Types";
 // import DateTime "mo:datetime/DateTime";
-// import AccountIdentifier "mo:account-identifier";
+import AccountIdentifierMops "mo:account-identifier";
 // import Account "mo:account";
 
 import { now } = "mo:base/Time";
@@ -20,6 +20,7 @@ import Nat64 "mo:base/Nat64";
 import TrieMap "mo:base/TrieMap";
 import Text "mo:base/Text";
 import Debug "mo:base/Debug";
+
 import Nat "mo:base/Nat";
 import Nat8 "mo:base/Nat8";
 import Hash "mo:base/Hash";
@@ -27,6 +28,12 @@ import Buffer "mo:base/Buffer";
 import Iter "mo:base/Iter";
 import Array "mo:base/Array";
 import Blob "mo:base/Blob";
+import List "mo:base/List";
+import Random "mo:base/Random";
+import Nat32 "mo:base/Nat32";
+import Char "mo:base/Char";
+import Int64 "mo:base/Int64";
+import JSON "mo:json";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -46,1222 +53,1455 @@ import CKTypes "types/ck_types";
 import Utils "utils/utils";
 import HTTP "utils/http";
 import Hex "utils/Hex";
+// import CycleMonitor "utils/CycleMonitor";
 
 shared ({ caller }) actor class Kitchen() = this {
 
-private stable var userCanisterId : Principal = caller;
+    private stable var userCanisterId : Principal = caller;
 
-/// Backuo for the Gamebloc backend in the kitchen canister
-private stable var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
-private stable var TournamentEntries : [(Principal, Bloctypes.TournamentAccount)] = [];
-private stable var IDEntries : [(Text, Text)] = [];
-private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
-private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
-private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
-private stable var feedback_id : Nat = 0;
-private stable let day : Nat = 86_400;
-private stable let e8s : Nat = 100_000_000;
-private stable var volume : Nat64 = 0;
-private stable var SupportedGames : [Text] = [];
-private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
-private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
-private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
-private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
-private stable var DailyRewardEntries : [(Principal, Bloctypes.DailyClaim)] = [];
-private stable var LockedAssetsEntries : [(Principal, Bloctypes.LockedAsset)] = [];
+    /// Backuo for the Gamebloc backend in the kitchen canister
+    private stable var ProfileEntries : [(Principal, Bloctypes.UserProfile)] = [];
+    private stable var TournamentEntries : [(Principal, Bloctypes.TournamentAccount)] = [];
+    private stable var IDEntries : [(Text, Text)] = [];
+    private stable var FeedbackEntries : [(Nat, Bloctypes.Feedback)] = [];
+    private stable var SquadEntries : [(Text, Bloctypes.Squad)] = [];
+    private stable var UserTrackEntries : [(Principal, Bloctypes.UserTrack)] = [];
+    private stable var feedback_id : Nat = 0;
+    private stable let day : Nat = 86_400 * 1_000_000_000;
+    private stable let e8s : Nat = 100_000_000;
+
+    // * Local params
+    //   let gbc_admin : Principal = Principal.fromText("4fqkb-lpdun-6hyso-fhk4m-qwfym-5tubs-f56mc-7ucb2-uczuk-epx5a-gae"); // * Demo here
+    // ! Production params @Deonorla
+    let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
+    let ic : HTTP.IC = actor ("aaaaa-aa");
+    private stable var volume : Nat64 = 0;
+    private stable var SupportedGames : [Text] = [];
+    private stable var PasswordEntries : [(Principal, Bloctypes.Access)] = [];
+    private stable var NotificationEntries : [(Principal, Bloctypes.Notifications)] = [];
+    private stable var PayEntries : [(Nat, Bloctypes.Pay)] = [];
+    private stable var BalanceEntries : [(Principal, Bloctypes.UserBalance)] = [];
+    private stable var DailyRewardEntries : [(Principal, Bloctypes.DailyClaim)] = [];
+    private stable var LockedAssetsEntries : [(Principal, Bloctypes.LockedAsset)] = [];
+    private stable var UpdatedUsersEntries : [(Principal, User)] = [];
+    private stable var messageID : Nat = 0;
+    private stable var messageEntries : [(Nat, MessageEntry)] = [];
+    private stable var ReferralMapEntries : [(Principal, Text)] = [];
+    private stable var CodeToPrincipalMapEntries : [(Text, Principal)] = [];
+    private stable var ReferrerMapEntries : [(Principal, Principal)] = [];
+    private stable var ReferralsMapEntries : [(Principal, [Principal])] = [];
+
+    // private stable var RewardsMap
+
+    var ReferralsMap : HashMap.HashMap<Principal, [Principal]> = HashMap.fromIter<Principal, [Principal]>(ReferralsMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var ReferrerMap : HashMap.HashMap<Principal, Principal> = HashMap.fromIter<Principal, Principal>(ReferrerMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var ReferralMap : HashMap.HashMap<Principal, Text> = HashMap.fromIter<Principal, Text>(ReferralMapEntries.vals(), 10, Principal.equal, Principal.hash);
+    var CodeToPrincipalMap : HashMap.HashMap<Text, Principal> = HashMap.fromIter<Text, Principal>(CodeToPrincipalMapEntries.vals(), 10, Text.equal, Text.hash);
+    var MessageHashMap : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+    var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
+    var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
+    var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+    var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
+    var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
+    var DailyRewardHashMap : HashMap.HashMap<Principal, Bloctypes.DailyClaim> = HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
+    var LockedAssetsHashMap : HashMap.HashMap<Principal, Bloctypes.LockedAsset> = HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
+    var UpdatedUsersHashMap : HashMap.HashMap<Principal, User> = HashMap.fromIter<Principal, User>(UpdatedUsersEntries.vals(), 10, Principal.equal, Principal.hash);
+
+    private let accountIdentifiers = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+    private let emails = HashMap.HashMap<Text, Principal>(0, Text.equal, Text.hash);
+
+    var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
+    var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
+    var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
+    var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
+    var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
+
+    // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+    private var logData = Buffer.Buffer<Text>(0);
+    // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
+
+    /// stabilizing the motoko backup
+    system func preupgrade() {
+        ProfileEntries := Iter.toArray(ProfileHashMap.entries());
+        TournamentEntries := Iter.toArray(TournamentHashMap.entries());
+        IDEntries := Iter.toArray(ID_STORE.entries());
+        UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
+        SquadEntries := Iter.toArray(SQUAD_STORE.entries());
+        FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
+        NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
+        DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
+        LockedAssetsEntries := Iter.toArray(LockedAssetsHashMap.entries());
+        UpdatedUsersEntries := Iter.toArray(UpdatedUsersHashMap.entries());
+
+        messageEntries := Iter.toArray(MessageHashMap.entries());
+        BalanceEntries := Iter.toArray(BalanceHashMap.entries());
+
+        // Passwords
+        PasswordEntries := Iter.toArray(PASSWORD_STORE.entries());
+
+        ReferralMapEntries := Iter.toArray(ReferralMap.entries());
+        CodeToPrincipalMapEntries := Iter.toArray(CodeToPrincipalMap.entries());
+        ReferrerMapEntries := Iter.toArray(ReferrerMap.entries());
+        ReferralsMapEntries := Iter.toArray(ReferralsMap.entries());
+    };
+
+    private stable var latestTransactionIndex : Nat = 0;
+
+    system func postupgrade() {
+        TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
+        ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
+        MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
+        BalanceHashMap := HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
+        NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
+        DailyRewardHashMap := HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
+        LockedAssetsHashMap := HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
+        UpdatedUsersHashMap := HashMap.fromIter<Principal, User>(UpdatedUsersEntries.vals(), 10, Principal.equal, Principal.hash);
+
+        ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
+        SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
+        USER_TRACK_STORE := TrieMap.fromEntries<Principal, Bloctypes.UserTrack>(UserTrackEntries.vals(), Principal.equal, Principal.hash);
+        FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
+        PASSWORD_STORE := TrieMap.fromEntries<Principal, Bloctypes.Access>(PasswordEntries.vals(), Principal.equal, Principal.hash);
+
+        ReferralMap := HashMap.fromIter<Principal, Text>(ReferralMapEntries.vals(), 10, Principal.equal, Principal.hash);
+        CodeToPrincipalMap := HashMap.fromIter<Text, Principal>(CodeToPrincipalMapEntries.vals(), 10, Text.equal, Text.hash);
+        ReferrerMap := HashMap.fromIter<Principal, Principal>(ReferrerMapEntries.vals(), 10, Principal.equal, Principal.hash);
+        ReferralsMap := HashMap.fromIter<Principal, [Principal]>(ReferralsMapEntries.vals(), 10, Principal.equal, Principal.hash);
+
+        // clear the states
+        ProfileEntries := [];
+        UserTrackEntries := [];
+        TournamentEntries := [];
+        IDEntries := [];
+        SquadEntries := [];
+        FeedbackEntries := [];
+        PasswordEntries := [];
+        messageEntries := [];
+        NotificationEntries := [];
+        UpdatedUsersEntries := [];
+        DailyRewardEntries := [];
+        ReferralMapEntries := [];
+        CodeToPrincipalMapEntries := [];
+        ReferrerMapEntries := [];
+        ReferralsMapEntries := [];  
 
 
-var TournamentHashMap : HashMap.HashMap<Principal, Bloctypes.TournamentAccount> = HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
-var PayHashMap : HashMap.HashMap<Nat, Bloctypes.Pay> = HashMap.fromIter<Nat, Bloctypes.Pay>(PayEntries.vals(), 10, Nat.equal, Hash.hash);
-var ProfileHashMap : HashMap.HashMap<Principal, Bloctypes.UserProfile> = HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
-var NOTIFICATION_STORE : HashMap.HashMap<Principal, Bloctypes.Notifications> = HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
-var BalanceHashMap : HashMap.HashMap<Principal, Bloctypes.UserBalance> = HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
-var DailyRewardHashMap : HashMap.HashMap<Principal, Bloctypes.DailyClaim> = HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
-var LockedAssetsHashMap : HashMap.HashMap<Principal, Bloctypes.LockedAsset> = HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
+        latestTransactionIndex := 1
+    };
 
-var ID_STORE = TrieMap.TrieMap<Text, Text>(Text.equal, Text.hash);
-var PASSWORD_STORE = TrieMap.TrieMap<Principal, Bloctypes.Access>(Principal.equal, Principal.hash);
-var FEED_BACK_STORE = TrieMap.TrieMap<Nat, Bloctypes.Feedback>(Nat.equal, Hash.hash);
-var SQUAD_STORE = TrieMap.TrieMap<Text, Bloctypes.Squad>(Text.equal, Text.hash);
-var USER_TRACK_STORE = TrieMap.TrieMap<Principal, Bloctypes.UserTrack>(Principal.equal, Principal.hash);
+                                                  ////////////////////////////
+                                                 /// Notification Feature ///
+                                                ////////////////////////////
+                                                
+    type User = {
+        email : Text;
+        username : Text;
+        principal : Principal
+    };
 
-// var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
+    func makeNotification(id : Nat, body : Text, title : Text, user : Principal, username : Text, date : Text, read : Bool) : Bloctypes.Notification {
+        { id; title; body; user; username; date; read }
+    };
 
-// var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
+    func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
+        let notification : Bloctypes.Notification = {
+            id = 0;
+            title = "Welcome to Game Bloc";
+            body = "Hi " # _username # ", you have successfully created an account with Game Bloc!";
+            user = caller;
+            username = _username;
+            date = _date;
+            read = false
+        };
+        let notifications : Bloctypes.Notifications = {
+            notifications = [notification];
+            user = caller
+        };
+        NOTIFICATION_STORE.put(
+            caller,
+            notifications,
+        )
+    };
 
-/// stabilizing the motoko backup
-system func preupgrade() {
-    ProfileEntries := Iter.toArray(ProfileHashMap.entries());
-    TournamentEntries := Iter.toArray(TournamentHashMap.entries());
-    IDEntries := Iter.toArray(ID_STORE.entries());
-    UserTrackEntries := Iter.toArray(USER_TRACK_STORE.entries());
-    SquadEntries := Iter.toArray(SQUAD_STORE.entries());
-    FeedbackEntries := Iter.toArray(FEED_BACK_STORE.entries());
-    NotificationEntries := Iter.toArray(NOTIFICATION_STORE.entries());
-    DailyRewardEntries := Iter.toArray(DailyRewardHashMap.entries());
-    LockedAssetsEntries := Iter.toArray(LockedAssetsHashMap.entries());
-
-    messageEntries := Iter.toArray(MessageHashMap.entries());
-    BalanceEntries := Iter.toArray(BalanceHashMap.entries());
-
-    // Passwords
-    PasswordEntries := Iter.toArray(PASSWORD_STORE.entries())
-};
-
-system func heartbeat() : async () {
-
-};
-
-system func postupgrade() {
-    TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
-    ProfileHashMap := HashMap.fromIter<Principal, Bloctypes.UserProfile>(ProfileEntries.vals(), 10, Principal.equal, Principal.hash);
-    MessageHashMap := HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
-    BalanceHashMap := HashMap.fromIter<Principal, Bloctypes.UserBalance>(BalanceEntries.vals(), 10, Principal.equal, Principal.hash);
-    NOTIFICATION_STORE := HashMap.fromIter<Principal, Bloctypes.Notifications>(NotificationEntries.vals(), 10, Principal.equal, Principal.hash);
-    DailyRewardHashMap := HashMap.fromIter<Principal, Bloctypes.DailyClaim>(DailyRewardEntries.vals(), 10, Principal.equal, Principal.hash);
-    LockedAssetsHashMap := HashMap.fromIter<Principal, Bloctypes.LockedAsset>(LockedAssetsEntries.vals(), 10, Principal.equal, Principal.hash);
-
-    ID_STORE := TrieMap.fromEntries<Text, Text>(IDEntries.vals(), Text.equal, Text.hash);
-    SQUAD_STORE := TrieMap.fromEntries<Text, Bloctypes.Squad>(SquadEntries.vals(), Text.equal, Text.hash);
-    USER_TRACK_STORE := TrieMap.fromEntries<Principal, Bloctypes.UserTrack>(UserTrackEntries.vals(), Principal.equal, Principal.hash);
-    FEED_BACK_STORE := TrieMap.fromEntries<Nat, Bloctypes.Feedback>(FeedbackEntries.vals(), Nat.equal, Hash.hash);
-
-    PASSWORD_STORE := TrieMap.fromEntries<Principal, Bloctypes.Access>(PasswordEntries.vals(), Principal.equal, Principal.hash);
-
-    // clear the states
-    ProfileEntries := [];
-    UserTrackEntries := [];
-    TournamentEntries := [];
-    IDEntries := [];
-    SquadEntries := [];
-    FeedbackEntries := [];
-    PasswordEntries := [];
-    messageEntries := [];
-    NotificationEntries := []
-};
-
-//
-// Ledger Canister
-//
-
-
-// TODO: Test functions
-
-func floatNum(num : Float) : Float {
-    num * 2;
-};
-
-func floatNum2(num : Float) : Int {
-    let result = num * 2;
-    return Float.toInt(result)
-};
-
-func natNum(num : Nat) : Text {
-    Nat.toText(num)
-};
-
-func natNumText(num : Text) : ?Nat {
-    Nat.fromText(num)
-};
-
-// ! ENd of the todo.
-
-// * @param pays The parameter for this method
-
-public shared ({ caller }) func payUsers(pays : [Bloctypes.Pay]) : async () {
-    // var mod = await is_mod(caller);
-    try {
-        if (await is_mod(caller)) {
-            for (pay in Iter.fromArray(pays)) {
-                // var _account = pay.account;
-                var block = await ICPLedger.send_dfx({
-                    // might have ton use transfer_From()
-                    to = pay.account;
-                    fee = { e8s = 10_000 }; //0.0001 ICP
-                    memo = 0;
-                    from_subaccount = null;
-                    created_at_time = ?{
-                        timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
+    public shared ({ caller }) func read_notification(caller : Principal, id : Nat) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var updatedNotifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        switch (notification) {
+            case (null) { null };
+            case (?notfication) {
+                // var newNotification = makeNotification(1, body, caller, "user", date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    for (_notification in Iter.fromArray(array)) {
+                        if (_notification.id == id) {
+                            let updatedNotif = {
+                                id = _notification.id;
+                                title = _notification.title;
+                                body = _notification.body;
+                                user = _notification.user;
+                                username = _notification.username;
+                                date = _notification.date;
+                                read = true
+                            };
+                            updatedNotifications.add(updatedNotif)
+                        };
+                        if (_notification.id != id) {
+                            updatedNotifications.add(_notification)
+                        }
                     };
-                    amount = pay.amount
-                })
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications = updatedNotifications.toArray();
+                        user = caller
+                    };
+                    var updateNotification = NOTIFICATION_STORE.replace(caller, _notifications)
+                }
             }
         }
-    } catch err {
-        throw (err)
-    }
-};
+        // switch(notfication)
+    };
 
-func checkThis() : async Principal {
-    Principal.fromActor(this);
-};
+    public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var unread_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()) {
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)) {
+                    if (notification.read == false) {
+                        unread_notifications.add(notification)
+                    }
+                }
+            }
+        };
+        return unread_notifications.toArray()
+    };
 
-func checkThisText() : async Text {
-    Principal.toText(Principal.fromActor(this));
-};
+    public query func get_read_notifications(caller : Principal) : async [Bloctypes.Notification] {
+        var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        var read_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()) {
+            if (principal == caller) {
+                var _notifications : [Bloctypes.Notification] = notification.notifications;
+                // notifications.add(notification.notifications);
+                for (notification in Iter.fromArray(_notifications)) {
+                    if (notification.read == true) {
+                        read_notifications.add(notification)
+                    }
+                }
+            }
+        };
+        return read_notifications.toArray()
+    };
 
-// Check 2
-public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
-    // Tournamnet Id
-    // var mod = await is_mod(caller);
-    var tournament = await get_tournament(id);
 
-    // * Required variables for the switch cases
-    var winners = tournament.winners;
-    var ended = tournament.ended;
+    public query func get_my_notifications(caller : Principal) : async [Bloctypes.Notifications] {
+        var notifications = Buffer.Buffer<Bloctypes.Notifications>(0);
+        for ((principal, notification) in NOTIFICATION_STORE.entries()) {
+            if (principal == caller) {
+                notifications.add(notification)
+            }
+        };
+        notifications.toArray()
+    };
 
-    Debug.print(debug_show("Checking tournamnet Status...."));
-
-    // * Check if tournamnet has ended
-    switch (ended) {
-        case (null) {};
-        case (?(ended)) {
-            if (ended == false) {
-                throw Error.reject("Warning! Tournament has to end before the payment can be initiated!")
+    public query func get_notification_id(caller : Principal) : async Nat {
+        var notification = NOTIFICATION_STORE.get(caller);
+        var length = 0;
+        switch (notification) {
+            case (null) { 0 };
+            case (?notification) {
+                var array = notification.notifications;
+                length := Array.size(array);
+                return length
             }
         }
     };
 
-    Debug.print(debug_show("Tournament Status checked...."));
+    public func notify(title : Text, body : Text, caller : Principal, date : Text, id : Nat, user : Text) : async ?() {
+        var notification = NOTIFICATION_STORE.get(caller);
+        switch (notification) {
+            case (null) { null };
+            case (?notfication) {
+                var id = await get_notification_id(caller);
+                var newNotification = makeNotification(id + 1, title, body, caller, user, date, false);
+                do ? {
+                    var array = notfication.notifications;
+                    var _notifications : Bloctypes.Notifications = {
+                        notifications = Array.append(array, [newNotification]);
+                        user = caller
+                    };
+                    var temp = NOTIFICATION_STORE.replace(caller, _notifications)
+                }
+            }
+        }
+    };
 
-    // func fail() : async () {
-    //     Debug.trap("Something is happening here");
-    // };
-
-    // ? OR should i use the transfer_From feature.
-    // * That would probably require series of approvals, mendokseee
-    // TODO: Test this function's automated feat
-
-    try {
-        if (await is_mod(caller)) {
-
-            switch (winners) {
-                case (null) {
-                    throw Error.reject("You cannot initiate payment to winners that has not been set!")
-                };
-                case (?(winners)) {
-                    for (winner in Iter.fromArray(winners)) {
-
-                        // ? var account = tournament.winners.
-                        Debug.print(debug_show("Starting the transfer...."));
-                        // var _account = pay.account;
-                        var block = await ICPLedger.icrc2_transfer_from({
-                            to = {
-                                owner = Principal.fromText(winner.user_account);
-                                subaccount = null
-                            };
-                            fee = null;
-                            spender_subaccount = null;
-                            from = {
-                                owner = gbc_admin;
-                                subaccount = null
-                            };
-                            memo = null;
-                            created_at_time = ?Nat64.fromIntWrap(Time.now());
-                            amount = (winner.amount * 10_000_000_000)/icp_price;
-                        });
-                        Debug.print(debug_show(block));
-                        Debug.print(debug_show("Ending the transfer...."));
+    // Function to register a new user with their email
+    // * This function is used to register a new user with their email
+    // * @param email The email of the user
+    // * @return The principal of the user
+    public shared ({ caller }) func updateUser(email : Text) : async Result.Result<(), Text> {
+        switch (emails.get(email)) {
+            case (?existingPrincipal) {
+                return #err("Email is already in use \n If your email was stolen you can reach out to the admins or tribunal to resolve disputes")
+            };
+            case (null) {
+                // * Email is probably unique
+                switch (UpdatedUsersHashMap.get(caller)) {
+                    case (?profile) {
+                        return #err("Your profile is already up to date")
+                    };
+                    case (null) {
+                        let user : User = {
+                            email = email;
+                            username = await get_username(caller);
+                            principal = caller
+                        };
+                        // let subaccount = AccountIdentifierMops.defaultSubaccount();
+                        // let accountIdentifier = AccountIdentifierMops.accountIdentifier(caller, subaccount);
+                        emails.put(email, caller);
+                        accountIdentifiers.put(
+                            AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)),
+                            caller,
+                        );
+                        UpdatedUsersHashMap.put(caller, user);
+                        return #ok(())
                     }
                 }
             }
         }
-    } catch err {
-        throw (err)
-    }
-};
+    };
 
-public func share(recipient : Principal, _amount : Nat, code : Text) : async LedgerTypes.Result {
-    if (code == "deonatricksototo"){
-        Debug.print(debug_show("Starting the transfer...."));
-        let transfer = await ICPLedger.icrc1_transfer({
-            to = {
-                owner = recipient;
-                subaccount = null
-            };
-            fee = null;
-            memo = null;
-            from_subaccount = null;
-            created_at_time = ?Nat64.fromIntWrap(Time.now());
-            amount = _amount * e8s;
-        }); 
-        Debug.print(debug_show("Ending the transfer...."));
-        return transfer;
-    } else {
-        return #Err(#TemporarilyUnavailable);
-    }
-};
-
-private func share4(recipient : Principal, _amount : Nat) : async LedgerTypes.Result {
-    await ICPLedger.icrc1_transfer({
-        to = {
-            owner = recipient;
-            subaccount = null
-        };
-        fee = null;
-        memo = null;
-        from_subaccount = null;
-        created_at_time = ?Nat64.fromIntWrap(Time.now());
-        amount = _amount * 10_000_000_000;
-    }); 
-};
-
-func isAnonymous(p : Principal) : Bool {
-    Blob.equal(Principal.toBlob(p), Blob.fromArray([0x04]))
-};
-
-private func share2(recipient : Principal, _amount : Nat) : async Nat64 {
-    await ICPLedger.send_dfx({
-        to = await getAccountIdentifier(recipient);
-        fee = { e8s = 10_000};
-        memo = 1234;
-        from_subaccount = null;
-        created_at_time = ?{ timestamp_nanos = Nat64.fromIntWrap(Time.now())};
-        amount = { e8s = Nat64.fromNat(_amount) * Nat64.fromNat(e8s)};
-    }); 
-};
-
-public func share3(recipient : Principal, _amount : Nat) : async Nat64 {
-    await ICPLedger.send_dfx({
-        to = await getAccountIdentifier(recipient);
-        fee = { e8s = 10_000};
-        memo = 1234;
-        from_subaccount = null;
-        created_at_time = ?{ timestamp_nanos = Nat64.fromIntWrap(Time.now())};
-        amount = { e8s = Nat64.fromNat(_amount) * Nat64.fromNat(10_000_000_000)};
-    }); 
-};
-
-// Using the caller
-public shared ({ caller }) func getLedgerBalance() : async Result.Result<Nat, Text> {
-    try {
-        let balance : Nat = await ICPLedger.icrc1_balance_of({
-            owner = caller;
-            subaccount = null
-        });
-        return #ok(balance)
-    } catch (err) {
-        return #err(Error.message(err))
-    }
-};
-
-// using the canister
-public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
-    try {
-        let balance : Nat = await ICPLedger.icrc1_balance_of({
-            owner = userCanisterId;
-            subaccount = null
-        });
-        return #ok(balance)
-    } catch (err) {
-        return #err(Error.message(err))
-    }
-};
-
-// Required to be parsed as an argument
-public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
-    try {
-        let balance : Nat = await ICPLedger.icrc1_balance_of({
-            owner = Principal.fromText(user);
-            subaccount = null
-        });
-        return #ok(balance)
-    } catch (err) {
-        return #err(Error.message(err))
-    }
-};
-
-// get icp balance of user
-public shared ({ caller }) func icp_balance() : async ICP {
-    await ICPLedger.account_balance_dfx({
-        account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
-    })
-};
-
-public shared ({ caller }) func getKitchenBalance() : async ICP {
-    await ICPLedger.account_balance_dfx({
-        account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromActor(this), null))
-    })
-};
-
-public func icp_balance2(account : Principal) : async ICP {
-    await ICPLedger.account_balance_dfx({
-        account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(account, null))
-    })
-};
-
-public func icp_balance_icrc1(account : Principal) : async Nat {
-    await ICPLedger.icrc1_balance_of({
-        owner = account;
-        subaccount = null
-    })
-};
-
-
-public shared ({ caller }) func get_icp_balance_icrc1() : async Nat {
-    await ICPLedger.icrc1_balance_of({
-        owner = caller;
-        subaccount = null
-    })
-};
-
-
-// Transfers ICP from the caller to receipient
-public func transferICP(to : Text, amount : LedgerTypes.Tokens, created_at_time : LedgerTypes.TimeStamp) : async Nat64 {
-    await ICPLedger.send_dfx({
-        to = to;
-        fee = { e8s = 10_000 }; //0.0001 ICP
-        memo = 0;
-        from_subaccount = null;
-        created_at_time = ?{
-            timestamp_nanos = Nat64.fromNat(Int.abs(Time.now()))
-        };
-        amount = amount
-    })
-};
-
-/// Ledger Canister Ends
-
-//  --------------------------
-// /                        /
-// /    Index Canister      /
-// /                        /
-// --------------------------
-
-// public func getAccountTransactions(caller : Principal, max_results : Nat64, start : ?Nat64) : async IndexTypes.GetAccountIdentifierTransactionsResult {
-//     return await ICPIndex.get_account_identifier_transactions({
-//         max_results = max_results;
-//         start = start;
-//         account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null));
-//     });
-// };
-
-public func get_account_identifier_balance(aid : Text) : async Nat64 {
-    await ICPIndex.get_account_identifier_balance(aid)
-};
-
-public func index_status() : async IndexTypes.Status {
-    await ICPIndex.status()
-};
-
-public func ledger_id() : async Principal {
-    await ICPIndex.ledger_id()
-};
-
-type ICP = {
-    e8s : Nat64
-};
-
-type TimeStamp = { timestamp_nanos : Nat64 };
-
-type Memo = Nat64;
-
-public func transferWinnerReward(recipient : Text, amount : Nat) : async Result.Result<(), Text> {
-    try {
-        let transferLog = await ICPLedger.icrc1_transfer({
-            from_subaccount = null;
-            to = {
-                owner = Principal.fromText(recipient);
-                subaccount = null
-            };
-            amount = amount;
-            fee = null;
-            memo = null;
-            created_at_time = null
-        });
-        switch (transferLog) {
-            case (#Ok(trabsferLog)) {
-                #ok()
-            };
-            case (#Err(error)) {
-                return #err("An error occured!")
-            }
-        }
-    } catch (err) {
-        return #err(Error.message(err))
-    }
-};
-
-// ! Deprecated function
-
-public func transferICP2(amount : Nat) : async Result.Result<(), Text> {
-    let recipient = "rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe";
-    try {
-        let transferLog = await ICPLedger.icrc1_transfer({
-            from_subaccount = null;
-            to = {
-                owner = Principal.fromText(recipient);
-                subaccount = null
-            };
-            amount = amount;
-            fee = null;
-            memo = null;
-            created_at_time = null
-        });
-        switch (transferLog) {
-            case (#Ok(trabsferLog)) {
-                #ok()
-            };
-            case (#Err(error)) {
-                return #err("An error occured!")
-            }
-        }
-    } catch (err) {
-        return #err(Error.message(err))
-    }
-};
-
-// * Transfer tests
-public func transferFrom(_from : Principal, _to : Principal, _amount : Nat) : async LedgerTypes.Result_2 {
-    await ICPLedger.icrc2_transfer_from({
-        to = {
-            owner = _to;
-            subaccount = null
-        };
-        fee = null;
-        spender_subaccount = null;
-        from = {
-            owner = _from;
-            subaccount = null
-        };
-        memo = null;
-        created_at_time = null;
-        amount = _amount
-    })
-};
-
-public func getPrincipal() : async Principal {
-    Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
-};
-
-
-func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
-    // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
-    ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
-};
-
-
-
-public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
-    // call the balnce function to get and set the balance of newly registered users
-    let balance = 10;
-    let checkUsername = usernameChecker(username);
-
-    if (checkUsername == false) {
-        #err("This username exist! Please enter another")
-    } else {
-        createOneProfile(id_hash, age, username, ?0, ?0, referral_id, caller, points, role);
-        #ok("You have successfully created an account")
-    }
-};
-
-func usernameChecker(username : Text) : Bool {
-    var unique = true;
-    for ((i, j) in ProfileHashMap.entries()) {
-        if (j.username == username) {
-            unique := false
+    // Function to get user's mail
+    // * This function is used to get the email of a user
+    // * @param userPrincipal The principal of the user
+    // * @return The email of the user
+    public query func getUserEmail(userPrincipal : Principal) : async ?Text {
+        let user = UpdatedUsersHashMap.get(userPrincipal);
+        switch (user) {
+            case (?u) { ?u.email };
+            case (null) { null }
         }
     };
-    unique
-};
 
-public shared ({ caller }) func updateBalance(_amount : Nat, deposit : Bool) : async Bool {
-    var _balance = BalanceHashMap.get(caller);
-    if (deposit) {
-        switch (_balance) {
-            case null {
-                return false
-            };
-            case (?(_balance)) {
-                var newBalance : Bloctypes.UserBalance = {
-                    user = _balance.user;
-                    balance = _balance.balance + _amount
-                };
-                var updated = BalanceHashMap.replace(caller, newBalance);
-                return true
-            }
+    // Function to get user's mail
+    // * This function is used to get the email of a user
+    // * @param userPrincipal The principal of the user
+    // * @return The email of the user
+    public query func getUserMail(_caller : Principal) : async ?User {
+        return UpdatedUsersHashMap.get(_caller)
+    };
+
+    // Function to get user's mail
+    // * This function is used to get the email of a user
+    // * @param userPrincipal The principal of the user
+    // * @return The email of the user
+    public query func isEmailRegistered(email : Text) : async Bool {
+        switch (emails.get(email)) {
+            case (?principal) { true };
+            case (null) { false }
         }
-    } else {
-        switch (_balance) {
-            case null {
-                return false
-            };
-            case (?(_balance)) {
-                var newBalance : Bloctypes.UserBalance = {
-                    user = _balance.user;
-                    balance = _balance.balance - _amount
-                };
-                var updated = BalanceHashMap.replace(caller, newBalance);
-                return true
-            }
+    };
+
+    // Function to get user's mail
+    // * This function is used to get the email of a user
+    // * @param userPrincipal The principal of the user
+    // * @return The email of the user
+    public query ({ caller }) func isUserUpdated() : async Bool {
+        switch (UpdatedUsersHashMap.get(caller)) {
+            case (?user) true;
+            case (null) false
         }
-    }
+    };
 
-};
 
-public shared ({ caller }) func checkLastBalance() : async Nat {
-    var _balance = BalanceHashMap.get(caller);
-    switch (_balance) {
-        case null {
-            return 0
+                                                  ////////////////////////////
+                                                 ///     DEPOSIT ICP      ///
+                                                ////////////////////////////
+
+    type DepositDetails = {
+        accountNumber : Text;
+        bankName : Text;
+        currency : Text;
+        amount : Nat;
+        narration : Text;
+        notice : Text
+    };
+
+    public query ({ caller }) func iWantToDeposit(_amount : Nat) : async DepositDetails {
+        return {
+            accountNumber = "0494721886";
+            bankName = "GTBank";
+            currency = "Naira";
+            amount = _amount;
+            narration = Principal.toText(caller);
+            notice = "Please, make sure that the details are as writen above. Especially the narration or reference. Please copy and paste the right narration"
+        }
+    };
+
+    public shared ({ caller }) func confirmDeposit(amount : Nat, time : Text) : async Text {
+        await sendNotification(
+            "New ICP Deposit Confirmation",
+            "User with Principal: " # Principal.toText(caller) # " has initiated a deposit of " # Nat.toText(amount) # " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time,
+            "successaje7@gmail.com",
+        );
+
+        return "Deposit confirmation sent to admin. Please await deposit"
+    };
+
+    public shared ({ caller }) func confirmDepositViaVariables(amount : Nat, time : Text) : async Text {
+        let subject : Text = "New ICP Deposit Confirmation";
+        let body : Text = "User with Principal: " # Principal.toText(caller) #
+        " has initiated a deposit of " # Nat.toText(amount) #
+        " Naira.\nPlease verify the payment and fund their wallet.\n\nTimestamp: " # time;
+        let receiver_email : Text = "successaje7@gmail.com";
+        await sendNotification(
+            subject,
+            body,
+            receiver_email,
+        );
+
+        return "Deposit confirmation sent to admin. Please await deposit"
+    };
+
+
+    public shared ({ caller }) func confirmDepositViaParams(_subject : Text, _body : Text, _receiver_email : Text) : async () {
+        try {
+            await sendNotification(
+                _subject,
+                _body,
+                _receiver_email,
+            )
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public query func getAllUsers() : async [(Principal, User)] {
+        Iter.toArray(UpdatedUsersHashMap.entries())
+    };
+
+    //
+    // Ledger Canister
+    //
+
+    // Check 2
+    public shared ({ caller }) func disbursePayment(id : Text, icp_price : Nat) : async () {
+        // Tournamnet Id
+        // var mod = await is_mod(caller);
+        var tournament = await get_tournament(id);
+
+        // * Required variables for the switch cases
+        var winners = tournament.winners;
+        var ended = tournament.ended;
+
+        Debug.print(debug_show ("Checking tournamnet Status...."));
+
+        // * Check if tournamnet has ended
+        switch (ended) {
+            case (null) {};
+            case (?(ended)) {
+                if (ended == false) {
+                    throw Error.reject("Warning! Tournament has to end before the payment can be initiated!")
+                }
+            }
         };
-        case (?(_balance)) {
-            return _balance.balance
-        }
-    }
-};
 
-func checkUserLastBalance(caller : Principal) : async Nat {
-    var _balance = BalanceHashMap.get(caller);
-    var icp_balance = await ICPLedger.icrc1_balance_of({
-        owner = caller; subaccount = null
-    });
+        Debug.print(debug_show ("Tournament Status checked...."));
+
+        // func fail() : async () {
+        //     Debug.trap("Something is happening here");
+        // };
+
+        // ? OR should i use the transfer_From feature.
+        // * That would probably require series of approvals, mendokseee
+        // TODO: Test this function's automated feat
+        try {
+            if (await is_mod(caller)) {
+
+                switch (winners) {
+                    case (null) {
+                        throw Error.reject("You cannot initiate payment to winners that has not been set!")
+                    };
+                    case (?(winners)) {
+                        for (winner in Iter.fromArray(winners)) {
+
+                            // ? var account = tournament.winners.
+                            Debug.print(debug_show ("Starting the transfer...."));
+                            // var _account = pay.account;
+                            var block = await ICPLedger.icrc2_transfer_from({
+                                to = {
+                                    owner = Principal.fromText(winner.user_account);
+                                    subaccount = null
+                                };
+                                fee = null;
+                                spender_subaccount = null;
+                                from = {
+                                    owner = gbc_admin;
+                                    subaccount = null
+                                };
+                                memo = null;
+                                created_at_time = ?Nat64.fromIntWrap(Time.now());
+                                amount = (winner.amount * 10_000_000_000) / icp_price
+                            });
+                            Debug.print(debug_show (block));
+                            Debug.print(debug_show ("Ending the transfer...."))
+                        }
+                    }
+                }
+            }
+        } catch err {
+            throw (err)
+        }
+    };
+
     
-    switch (_balance) {
-        case null {
-            return 0
-        };
-        case (?(_balance)) {
-            if (_balance.balance == icp_balance){
-                
-            };
-            return _balance.balance
-        }
-    }
-    // return _balance.balance;
-};
 
-// public shared ({ caller }) func checkStatus() : async Bool {
-//     var balance = checkUserLastBalance(caller);
-//     var token = await icp_balance2(caller);
-//     if (balance != token.e8s){
-//         if (balance < token.e8s) {
-//             await notify("Deposit Successful", "You have successfully deposited " # Nat64.toText(token.e8s - balance) # "ICP into your account.", caller, Time.now(), 1, AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller)))
-//         }
-//         return true;
-//     }
-// };
-
-public func logIn(caller : Principal) : async Bool {
-    var result = ProfileHashMap.get(caller);
-
-    switch (result) {
-        case null {
-            return false
-        };
-        case (?(_)) {
-            return true
-        }
-    }
-};
-
-public shared ({ caller }) func createUser(user : Principal) : async Principal {
-    assert (caller == userCanisterId);
-    userCanisterId := user;
-    await getOwner()
-};
-
-func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, attendance : ?Nat8, referral_id : ?Text, losses : ?Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : Bloctypes.UserProfile {
-    {
-        id_hash;
-        age;
-        date;
-        status;
-        wins;
-        attendance;
-        losses;
-        tournaments_created;
-        username;
-        is_mod;
-        role;
-        principal_id;
-        account_id;
-        canister_id;
-        squad_badge;
-        points;
-        referral_id
-    }
-};
-
-public func getUser(caller : Principal) : async ?Bloctypes.UserProfile {
-    ProfileHashMap.get(caller)
-};
-
-type TournamentAccount = Bloctypes.TournamentAccount;
-
-// private let ic : IC.Self = actor "aaaaa-aa";
-
-public query func getOwnerCanister() : async Principal {
-    userCanisterId
-};
-
-public query ({ caller }) func getOwner() : async Principal {
-    caller
-};
-
-// Notify icp deposits
-// public shared ({ caller }) func newTransactions(_length : Nat64) : async () {
-//     let newTransactions = await ICPLedger.query_blocks({
-//         start = lastCheckedBlock;
-//         length = _length;
-//     });
-
-// };
-
-stable var lastCheckedBlock : Nat64 = 0;
-
-// Conversions
-
-public func convert() : async Principal {
-    Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
-};
-
-public query ({ caller }) func convertAID() : async Text {
-    AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
-};
-
-public query ({ caller }) func getMyAccountIdentifier() : async Text {
-    AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
-};
-
-public func getAccountIdentifier(caller : Principal) : async Text {
-    return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
-};
-
-public func getCanisterAccountIdentifier() : async Text {
-    return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null))
-};
-
-public type AccountIdentifier = [Nat8];
-
-public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
-    AccountIdentifier.fromText(caller)
-};
-
-public func passwordChecker(_password : Text) : async () {
-
-};
-
-/// Messaging Feature
-
-public type MessageEntry = {
-    f_id : Text;
-    id : Nat;
-    sender : Principal;
-    username : Text;
-    body : Text;
-    time : Text
-};
-
-private stable var messageID : Nat = 0;
-
-// private stable var conversationEntries : [(Text, Conversation)] = [];
-private stable var messageEntries : [(Nat, MessageEntry)] = [];
-
-// var ConnectionHashMap : HashMap.HashMap<Nat, ConnectionEntry> = HashMap.fromIter<Nat, ConnectionEntry>(connectionEntries.vals(), 10, Nat.equal, Hash.hash);
-var MessageHashMap : HashMap.HashMap<Nat, MessageEntry> = HashMap.fromIter<Nat, MessageEntry>(messageEntries.vals(), 10, Nat.equal, Hash.hash);
-
-type Message = {
-    f_id : Text;
-    id : ?Nat;
-    sender : Principal;
-    username : Text;
-    body : Text;
-    time : Text
-};
-
-var messages : [Message] = [];
-
-public shared ({ caller }) func sendMessage2(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
-    var sent : Bool = false;
-    var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    MessageHashMap.put(messageID, newMessage);
-    messageID := messageID + 1;
-    await update_messages_sent(caller);
-
-    sent := true;
-    return newMessage
-};
-
-public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async () {
-    var sent : Bool = false;
-    var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
-    MessageHashMap.put(messageID, newMessage);
-    messageID := messageID + 1;
-    await update_messages_sent(caller);
-
-    sent := true;
-    return ()
-};
-
-func createMessage(id : Nat, f_id : Text, username : Text, sender : Principal, body : Text, time : Text) : MessageEntry {
-    {
-        id;
-        f_id;
-        username;
-        sender;
-        body;
-        time
-    }
-};
-
-public query func getMessage(id : Nat) : async ?MessageEntry {
-    MessageHashMap.get(id)
-};
-
-public query func getMessages(from : Nat, to : Nat) : async [MessageEntry] {
-    // var checkForConnection = await checkConnection(account, caller);
-    //  if (checkForConnection == true) {
-    var msgs = Buffer.Buffer<MessageEntry>(0);
-    for ((i, j) in MessageHashMap.entries()) {
-        if ((j.id >= from) and (j.id <= to)) {
-            msgs.add(j)
+    // Using the caller
+    public shared ({ caller }) func getLedgerBalance() : async Result.Result<Nat, Text> {
+        try {
+            let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = caller;
+                subaccount = null
+            });
+            return #ok(balance)
+        } catch (err) {
+            return #err(Error.message(err))
         }
     };
-    msgs.toArray();
-    //  }
-};
 
-public query func getAllMessages() : async [(Nat, MessageEntry)] {
-    Iter.toArray(MessageHashMap.entries())
-};
+    // using the canister
+    public func getCanisterLedgerBalance() : async Result.Result<Nat, Text> {
+        try {
+            let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = userCanisterId;
+                subaccount = null
+            });
+            return #ok(balance)
+        } catch (err) {
+            return #err(Error.message(err))
+        }
+    };
 
-// public func getSortedMessages() : async [MessageEntry] {
-//     let entries = Iter.toArray(MessageHashMap.entries());
-//     let sortedEntries: [(Key, Value)] = Array.sort(entries, func(a: (Key, Value), b: (Key, Value)) -> Bool {
-//         a.0 < b.0
-//     });
-// };
+    type ICP = {
+        e8s : Nat64
+    };
 
-public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
-    // var checkForConnection = await checkConnection(account, caller);
-    //  if (checkForConnection == true) {
-    var msgs = Buffer.Buffer<MessageEntry>(0);
-    var len = MessageHashMap.size();
-    var pip : Int = len - check;
-    if (pip < 0) {
+    public shared ({ caller }) func icp_balance() : async ICP {
+        await ICPLedger.account_balance_dfx({
+            account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+        })
+    };
+
+    public shared ({ caller }) func getKitchenBalance() : async ICP {
+        await ICPLedger.account_balance_dfx({
+            account = AccountIdentifier.toText(AccountIdentifier.fromPrincipal(Principal.fromActor(this), null))
+        })
+    };
+
+    // Required to be parsed as an argument
+    public func getAccountLedgerBalance(user : Text) : async Result.Result<Nat, Text> {
+        try {
+            let balance : Nat = await ICPLedger.icrc1_balance_of({
+                owner = Principal.fromText(user);
+                subaccount = null
+            });
+            return #ok(balance)
+        } catch (err) {
+            return #err(Error.message(err))
+        }
+    };
+
+
+      
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
+
+
+
+                                                  ////////////////////////////
+                                                 ///    Profile Feature   ///
+                                                ////////////////////////////
+
+
+    func createOneProfile(id_hash : Text, age : Nat8, username : Text, attendance : ?Nat8, losses : ?Nat8, referral_id : ?Text, caller : Principal, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) {
+        // let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, 0, false, #Online,  username,  Principal.toText(caller), Principal.toText(userCanisterId));
+        ProfileHashMap.put(caller, makeProfile(id_hash, age, Int.toText(Time.now()), 0, attendance, referral_id, losses, 0, false, #Online, username, Principal.toText(caller), AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null)), Principal.toText(userCanisterId), "", points, role))
+    };
+
+    public shared ({ caller }) func createprofile(id_hash : Text, age : Nat8, username : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Result.Result<Text, Text> {
+        // call the balnce function to get and set the balance of newly registered users
+        let balance = 10;
+        let checkUsername = usernameChecker(username);
+
+        if (checkUsername == false) {
+            #err("This username exist! Please enter another")
+        } else {
+            createOneProfile(id_hash, age, username, ?0, ?0, referral_id, caller, points, role);
+            #ok("You have successfully created an account")
+        }
+    };
+
+    func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, ?0, referral_id, ?0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
+        await RustBloc.create_profile(profile, caller)
+    };
+
+    public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text, email : Text) : async Bloctypes.Result {
+        let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, ?0, referral_id, ?0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
+        try {
+            await create_usertrack(caller);
+            await create_notification_panel(caller, username, time);
+            ProfileHashMap.put(caller, profile);
+            // Call sendNotification function after successful profile creation
+
+            let subject : Text = "Welcome to GameBloc!";
+            let body : Text = "Hello " # username # ",\n\nYour GameBloc profile has been successfully created. Enjoy your gaming journey!";
+
+            // await sendNotification(subject, body, email);
+            let user : User = {
+                email = email;
+                username = await get_username(caller);
+                principal = caller
+            };
+            UpdatedUsersHashMap.put(caller, user);
+
+            return await RustBloc.create_profile(profile, caller)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    func usernameChecker(username : Text) : Bool {
+        var unique = true;
+        for ((i, j) in ProfileHashMap.entries()) {
+            if (j.username == username) {
+                unique := false
+            }
+        };
+        unique
+    };
+
+
+
+    public func logIn(caller : Principal) : async Bool {
+        var result = ProfileHashMap.get(caller);
+        switch (result) {
+            case null {
+                return false
+            };
+            case (?(_)) {
+                return true
+            }
+        }
+    };
+
+    public shared ({ caller }) func createUser(user : Principal) : async Principal {
+        assert (caller == userCanisterId);
+        userCanisterId := user;
+        await getOwner()
+    };
+
+    func makeProfile(id_hash : Text, age : Nat8, date : Text, wins : Nat8, attendance : ?Nat8, referral_id : ?Text, losses : ?Nat8, tournaments_created : Nat8, is_mod : Bool, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role) : Bloctypes.UserProfile {
+        {
+            id_hash;
+            age;
+            date;
+            status;
+            wins;
+            attendance;
+            losses;
+            tournaments_created;
+            username;
+            is_mod;
+            role;
+            principal_id;
+            account_id;
+            canister_id;
+            squad_badge;
+            points;
+            referral_id
+        }
+    };
+
+    public func getUser(caller : Principal) : async ?Bloctypes.UserProfile {
+        ProfileHashMap.get(caller)
+    };
+
+    public query func get_username(caller : Principal) : async Text {
+        let profile = ProfileHashMap.get(caller);
+        switch (profile) {
+            case (null) {
+                return "Anonymous user"
+            };
+            case (?profile) {
+                return profile.username
+            }
+        }
+    };
+
+    type TournamentAccount = Bloctypes.TournamentAccount;
+
+    // private let ic : IC.Self = actor "aaaaa-aa";
+
+    public query func getOwnerCanister() : async Principal {
+        userCanisterId
+    };
+
+    public query ({ caller }) func getOwner() : async Principal {
+        caller
+    };
+
+    // Notify icp deposits
+    // public shared ({ caller }) func newTransactions(_length : Nat64) : async () {
+    //     let newTransactions = await ICPLedger.query_blocks({
+    //         start = lastCheckedBlock;
+    //         length = _length;
+    //     });
+
+    // };
+
+    stable var lastCheckedBlock : Nat64 = 0;
+
+    // Conversions
+
+    public func convert() : async Principal {
+        Principal.fromText("rnyh2-lbh6y-upwtx-3wazz-vafac-2hkqs-bxz2t-bo45m-nio7n-wsqy7-dqe")
+    };
+
+    public query ({ caller }) func convertAID() : async Text {
+        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+    };
+
+    public query ({ caller }) func getMyAccountIdentifier() : async Text {
+        AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+    };
+
+    public func getAccountIdentifier(caller : Principal) : async Text {
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(caller, null))
+    };
+
+    public func getCanisterAccountIdentifier() : async Text {
+        return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(userCanisterId, null))
+    };
+
+    public type AccountIdentifier = [Nat8];
+
+    public func getRealAccountIdentifier(caller : Text) : async Result.Result<AccountIdentifier, Text> {
+        AccountIdentifier.fromText(caller)
+    };
+
+
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
+
+
+                                                  /////////////////////////////
+                                                 ///   Messaging Feature   ///
+                                                /////////////////////////////
+
+    public type MessageEntry = {
+        f_id : Text;
+        id : Nat;
+        sender : Principal;
+        username : Text;
+        body : Text;
+        time : Text
+    };
+
+    type Message = {
+        f_id : Text;
+        id : ?Nat;
+        sender : Principal;
+        username : Text;
+        body : Text;
+        time : Text
+    };
+
+    var messages : [Message] = [];
+
+    public shared ({ caller }) func sendMessage2(body : Text, time : Text, username : Text, f_id : Text) : async MessageEntry {
+        var sent : Bool = false;
+        var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
+        MessageHashMap.put(messageID, newMessage);
+        messageID := messageID + 1;
+        await update_messages_sent(caller);
+
+        sent := true;
+        return newMessage
+    };
+
+    public shared ({ caller }) func sendMessage(body : Text, time : Text, username : Text, f_id : Text) : async () {
+        var sent : Bool = false;
+        var newMessage : MessageEntry = createMessage(messageID, f_id, username, caller, body, time);
+        MessageHashMap.put(messageID, newMessage);
+        messageID := messageID + 1;
+        await update_messages_sent(caller);
+
+        sent := true;
+        return ()
+    };
+
+    func createMessage(id : Nat, f_id : Text, username : Text, sender : Principal, body : Text, time : Text) : MessageEntry {
+        {
+            id;
+            f_id;
+            username;
+            sender;
+            body;
+            time
+        }
+    };
+
+    public query func getMessage(id : Nat) : async ?MessageEntry {
+        MessageHashMap.get(id)
+    };
+
+    public query func getMessages(from : Nat, to : Nat) : async [MessageEntry] {
+        // var checkForConnection = await checkConnection(account, caller);
+        //  if (checkForConnection == true) {
         var msgs = Buffer.Buffer<MessageEntry>(0);
         for ((i, j) in MessageHashMap.entries()) {
-            msgs.add(j)
-        };
-        return msgs.toArray()
-    } else {
-        for ((i, j) in MessageHashMap.entries()) {
-            if ((j.id >= pip) and (j.id <= len)) {
+            if ((j.id >= from) and (j.id <= to)) {
                 msgs.add(j)
             }
         };
-        return msgs.toArray()
-    }
-};
-
-/// Notifications Panel
-
-func makeNotification(id : Nat, body : Text, title : Text, user : Principal, username : Text, date : Text, read : Bool) : Bloctypes.Notification {
-    {
-        id;
-        title;
-        body;
-        user;
-        username;
-        date;
-        read
-    }
-};
-
-func create_notification_panel(caller : Principal, _username : Text, _date : Text) : async () {
-    let notification : Bloctypes.Notification = {
-        id = 0;
-        title = "Welcome to Game Bloc";
-        body = "Hi " # _username # ", you have successfully created an account with Game Bloc!";
-        user = caller;
-        username = _username;
-        date = _date;
-        read = false
+        msgs.toArray();
+        //  }
     };
-    let notifications : Bloctypes.Notifications = {
-        notifications = [notification];
-        user = caller
+
+    public query func getAllMessages() : async [(Nat, MessageEntry)] {
+        Iter.toArray(MessageHashMap.entries())
     };
-    NOTIFICATION_STORE.put(
-        caller,
-        notifications,
-    )
-};
 
-public query func get_my_notifications(caller : Principal) : async [Bloctypes.Notifications] {
-    var notifications = Buffer.Buffer<Bloctypes.Notifications>(0);
-    for ((principal, notification) in NOTIFICATION_STORE.entries()) {
-        if (principal == caller) {
-            notifications.add(notification)
-        }
-    };
-    notifications.toArray()
-};
-
-public query func get_notification_id(caller : Principal) : async Nat {
-    var notification = NOTIFICATION_STORE.get(caller);
-    var length = 0;
-    switch (notification) {
-        case (null) { 0 };
-        case (?notification) {
-            var array = notification.notifications;
-            length := Array.size(array);
-            return length
-        }
-    }
-};
-
-public func notify(title : Text, body : Text, caller : Principal, date : Text, id : Nat, user : Text) : async ?() {
-    var notification = NOTIFICATION_STORE.get(caller);
-    switch (notification) {
-        case (null) { null };
-        case (?notfication) {
-            var id = await get_notification_id(caller);
-            var newNotification = makeNotification(id +1, title, body, caller, user, date, false);
-            do ? {
-                var array = notfication.notifications;
-                var _notifications : Bloctypes.Notifications = {
-                    notifications = Array.append(array, [newNotification]);
-                    user = caller
-                };
-                var temp = NOTIFICATION_STORE.replace(caller, _notifications)
-            }
-        }
-    }
-};
-
-public func whoami() : async Principal {
-    Principal.fromActor(this)
-};
-public shared ({ caller }) func read_notification(caller : Principal, id : Nat) : async ?() {
-    var notification = NOTIFICATION_STORE.get(caller);
-    var updatedNotifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    switch (notification) {
-        case (null) { null };
-        case (?notfication) {
-            // var newNotification = makeNotification(1, body, caller, "user", date, false);
-            do ? {
-                var array = notfication.notifications;
-                for (_notification in Iter.fromArray(array)) {
-                    if (_notification.id == id) {
-                        let updatedNotif = {
-                            id = _notification.id;
-                            title = _notification.title;
-                            body = _notification.body;
-                            user = _notification.user;
-                            username = _notification.username;
-                            date = _notification.date;
-                            read = true
-                        };
-                        updatedNotifications.add(updatedNotif)
-                    };
-                    if (_notification.id != id) {
-                        updatedNotifications.add(_notification)
-                    }
-                };
-                var _notifications : Bloctypes.Notifications = {
-                    notifications = updatedNotifications.toArray();
-                    user = caller
-                };
-                var updateNotification = NOTIFICATION_STORE.replace(caller, _notifications)
-            }
-        }
-    }
-    // switch(notfication)
-};
-
-public query func get_unread_notifications(caller : Principal) : async [Bloctypes.Notification] {
-    var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    var unread_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    for ((principal, notification) in NOTIFICATION_STORE.entries()) {
-        if (principal == caller) {
-            var _notifications : [Bloctypes.Notification] = notification.notifications;
-            // notifications.add(notification.notifications);
-            for (notification in Iter.fromArray(_notifications)) {
-                if (notification.read == false) {
-                    unread_notifications.add(notification)
+    public query func getUpdatedMessages(check : Nat) : async [MessageEntry] {
+        // var checkForConnection = await checkConnection(account, caller);
+        //  if (checkForConnection == true) {
+        var msgs = Buffer.Buffer<MessageEntry>(0);
+        var len = MessageHashMap.size();
+        var pip : Int = len - check;
+        if (pip < 0) {
+            var msgs = Buffer.Buffer<MessageEntry>(0);
+            for ((i, j) in MessageHashMap.entries()) {
+                msgs.add(j)
+            };
+            return msgs.toArray()
+        } else {
+            for ((i, j) in MessageHashMap.entries()) {
+                if ((j.id >= pip) and (j.id <= len)) {
+                    msgs.add(j)
                 }
-            }
+            };
+            return msgs.toArray()
         }
     };
-    return unread_notifications.toArray()
-};
 
-public query func get_read_notifications(caller : Principal) : async [Bloctypes.Notification] {
-    var notifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    var read_notifications = Buffer.Buffer<Bloctypes.Notification>(0);
-    for ((principal, notification) in NOTIFICATION_STORE.entries()) {
-        if (principal == caller) {
-            var _notifications : [Bloctypes.Notification] = notification.notifications;
-            // notifications.add(notification.notifications);
-            for (notification in Iter.fromArray(_notifications)) {
-                if (notification.read == true) {
-                    read_notifications.add(notification)
-                }
+
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
+
+
+                                                  /////////////////////////////
+                                                 ///   Helper functions    ///
+                                                /////////////////////////////
+
+     public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
+        let transformed : HTTP.CanisterHttpResponsePayload = {
+            status = raw.response.status;
+            body = raw.response.body;
+            headers = [
+                {
+                    name = "Content-Security-Policy";
+                    value = "default-src 'self'"
+                },
+                { name = "Referrer-Policy"; value = "strict-origin" },
+                { name = "Permissions-Policy"; value = "geolocation=(self)" },
+                {
+                    name = "Strict-Transport-Security";
+                    value = "max-age=63072000"
+                },
+                { name = "X-Frame-Options"; value = "DENY" },
+                { name = "X-Content-Type-Options"; value = "nosniff" },
+            ]
+        };
+        transformed
+    };
+
+    func cleaner(text : Text) : Text {
+        let replacements = [
+            ("\\", "\\\\"),
+            ("\"", "\\\""),
+            ("\n", "\\n"),
+            ("\t", "\\t"),
+            ("\r", "\\r"),
+        ];
+        var result = text;
+        for ((search, replace) in replacements.vals()) {
+            result := Text.replace(result, #text search, replace)
+        };
+        return result
+    };
+
+    func merge(left : [(Principal, Nat, Text)], right : [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
+        var result : [(Principal, Nat, Text)] = [];
+        var i = 0;
+        var j = 0;
+        while (i < left.size() and j < right.size()) {
+            if (left[i].1 >= right[j].1) {
+                result := Array.append(result, [left[i]]);
+                i += 1
+            } else {
+                result := Array.append(result, [right[j]]);
+                j += 1
             }
+        };
+        while (i < left.size()) {
+            result := Array.append(result, [left[i]]);
+            i += 1
+        };
+        while (j < right.size()) {
+            result := Array.append(result, [right[j]]);
+            j += 1
+        };
+        result
+    };
+
+    func mergeSort(arr : [(Principal, Nat, Text)]) : [(Principal, Nat, Text)] {
+        if (arr.size() <= 1) return arr;
+        let mid = arr.size() / 2;
+        let left = mergeSort(Array.subArray(arr, 0, mid));
+        let right = mergeSort(Array.subArray(arr, mid, arr.size() - mid));
+        merge(left, right)
+    };
+
+
+
+                                                  /////////////////////////////
+                                                 ///     HTTP OUTCALLS     ///
+                                                /////////////////////////////
+
+   
+
+    let external_url = "https://notifier-4l85.onrender.com/send-email";
+
+    // function to get User data from Clash Royale
+    public func getUserFromClashRoyale(ingameUserName : Text) : async Result.Result<Text, Text> {
+
+        let requestBodyJson : Text = "{ \"ingameUserName\": \"" # ingameUserName # "\"}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/players/" # ingameUserName;
+            max_response_bytes = null;
+            headers = [
+                { name = "Content-Type"; value = "application/json" },
+            ];
+            body = null; //requestBodyAsNat8;
+            method = #get;
+            transform = ?transform_context
+        };
+
+        Cycles.add(1_703_096_680);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y }
+        };
+        let json = switch (JSON.parse(decoded_text)) {
+            case (#ok(parsed)) { parsed };
+            case (#err(_)) { throw Error.reject("Error parsing JSON: ") }
+        };
+
+        return #ok(JSON.stringify(json, null))
+    };
+
+    // function to get User data from Clash Royale
+    public func getPlayerUpcomingChests(playerTag : Text) : async Result.Result<Text, Text> {
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
+        let http_request = {
+            url = "https://api.clashroyale.com/v1/players/" # playerTag # "/upcomingchests";
+            headers = [{ name = "Content-Type"; value = "application/json" }];
+            max_response_bytes = null;
+            body = null;
+            method = #get;
+            transform = ?transform_context
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y }
+        };
+
+        let json = switch (JSON.parse(decoded_text)) {
+            case (#ok(parsed)) { parsed };
+            case (#err(_)) { throw Error.reject("Error parsing JSON: ") }
+        };
+
+        return #ok(JSON.stringify(json, null));
+
+    };
+
+    // function to get User tournaments from Clash Royale
+    public func searchForClashRoyaleTournaments(name : ?Text, limit : ?Nat, after : ?Text, before : ?Text) : async Result.Result<Text, Text> {
+
+        var requestBodyJson : Text = "{";
+        switch (name) {
+            case (null) {};
+            case (?name) {
+                requestBodyJson := requestBodyJson # "\"name\": \"" # name # "\","
+            }
+        };
+        switch (limit) {
+            case (null) {};
+            case (?limit) {
+                requestBodyJson := requestBodyJson # "\"limit\": " # Nat.toText(limit) # ","
+            }
+        };
+        switch (after) {
+            case (null) {};
+            case (?after) {
+                requestBodyJson := requestBodyJson # "\"after\": \"" # after # "\","
+            }
+        };
+        switch (before) {
+            case (null) {};
+            case (?before) {
+                requestBodyJson := requestBodyJson # "\"before\": \"" # before # "\","
+            }
+        };
+        requestBodyJson := requestBodyJson # "}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let http_request = {
+            url = "https://notifier-4l85.onrender.com/tournaments";
+            headers = [{ name = "Content-Type"; value = "application/json" }];
+            body = ?requestBodyAsNat8;
+            max_response_bytes = ?Nat64.fromNat(10000);
+            method = #get;
+            transform = ?{
+                function = transform;
+                context = Blob.fromArray([])
+            }
+        };
+
+        Cycles.add(80_000_000);
+
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(http_request);
+
+        let decoded_text : Text = switch (Text.decodeUtf8(Blob.fromArray(httpResponse.body))) {
+            case (null) { "No value returned" };
+            case (?y) { y }
+        };
+
+        let json = switch (JSON.parse(decoded_text)) {
+            case (#ok(parsed)) { parsed };
+            case (#err(_)) { throw Error.reject("Error parsing JSON: ") }
+        };
+
+        return #ok(JSON.stringify(json, null))
+    };
+
+    // function to send email notifications
+    public func sendNotification(subject : Text, body : Text, receiver_email : Text) : async () {
+        let ic : HTTP.IC = actor ("aaaaa-aa");
+
+        let cleanSubject = cleaner(subject);
+        let cleanBody = cleaner(body);
+        let cleanEmail = cleaner(receiver_email);
+
+        let requestBodyJson : Text = "{ \"to\": \"" # cleanEmail # "\", \"subject\": \"" # cleanSubject # "\", \"body\": \"" # cleanBody # "\"}";
+        let requestBodyAsBlob : Blob = Text.encodeUtf8(requestBodyJson);
+        let requestBodyAsNat8 : [Nat8] = Blob.toArray(requestBodyAsBlob);
+
+        let transform_context : HTTP.TransformContext = {
+            function = transform;
+            context = Blob.fromArray([])
+        };
+
+        // Setup request
+        let httpRequest : HTTP.HttpRequestArgs = {
+            url = "https://notifier-4l85.onrender.com/send-email";
+            max_response_bytes = ?Nat64.fromNat(1000);
+            headers = [
+                { name = "Content-Type"; value = "application/json" },
+            ];
+            body = ?requestBodyAsNat8;
+            method = #post;
+            transform = ?transform_context
+        };
+
+        Cycles.add(80_000_000);
+
+        // Send the request
+        let httpResponse : HTTP.HttpResponsePayload = await ic.http_request(httpRequest);
+
+        // Check the response
+        if (httpResponse.status > 299) {
+            let response_body : Blob = Blob.fromArray(httpResponse.body);
+            let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
+                case (null) { "No value returned" };
+                case (?y) { y }
+            };
+            throw Error.reject("Error sending notification: " # decoded_text)
+        } else {
+            Debug.print("Notification sent")
         }
     };
-    return read_notifications.toArray()
-};
+    
 
-// public func broadcast(users : [Principal], title : Text, body : Text, date : Text) : async ?() {
-//     for (user in Iter.fromArray(users)){
-//         await notify(title, body, user, date, await get_notification_id(caller), getUsername(user));
-//     }
+    public func testNotification() : async () {
+        await sendNotification("Local Testing", "This is just local testing \n Lets see how this is shown or displayed \n \n \n \n Yours", "successaje7@gmail.com")
+    };
 
-// };
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
 
-/// Notfications Panel Ends
 
-public shared ({ caller }) func createPassword(_password : Text, _confirm_password : Text) : async Result.Result<Text, Text> {
-    var time : Int = Time.now();
-    if (_password == _confirm_password) {
-        PASSWORD_STORE.put(
+
+    public func whoami() : async Principal {
+        Principal.fromActor(this)
+    };
+
+
+                                                  /////////////////////////////
+                                                 ///    REWARD FEATURES    ///
+                                                /////////////////////////////
+    
+
+    private func activateDailyClaims(caller : Principal) : async () {
+        let initialPoint = 1;
+        DailyRewardHashMap.put(
             caller,
             {
-                _user = caller;
-                _password;
-                _confirm_password;
-                _updatedTime = time
+                user = caller;
+                streakTime = Int.abs(Time.now());
+                streakCount = 1;
+                highestStreak = 1;
+                pointBalance = initialPoint
             },
         );
-        return #ok("You have successfully set password")
-    } else {
-        return #err("Password must be the same")
-    }
-
-};
-
-public shared ({ caller }) func updatePassword() : () {
-
-};
-
-public shared ({ caller }) func recoveryPassword() : () {
-
-};
-
-public shared ({ caller }) func checkPassword(_password : Text) : async Bool {
-    return true
-};
-
-func createProfile(id_hash : Text, age : Nat8, status : Bloctypes.Status, username : Text, principal_id : Text, account_id : Text, canister_id : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
-    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, Int.toText(Time.now()), 0, ?0, referral_id, ?0, 0, false, status, username, principal_id, account_id, canister_id, squad_badge, points, role);
-    await RustBloc.create_profile(profile, caller)
-};
-
-public shared ({ caller }) func createUserProfile(id_hash : Text, age : Nat8, username : Text, time : Text, squad_badge : Text, points : ?[(Text, Text, Bloctypes.Point)], role : ?Bloctypes.Role, referral_id : ?Text) : async Bloctypes.Result {
-    let profile : Bloctypes.UserProfile = makeProfile(id_hash, age, time, 0, ?0, referral_id, ?0, 0, false, #Online, username, Principal.toText(caller), await getAccountIdentifier(caller), Principal.toText(userCanisterId), squad_badge, points, role);
-    try {
-        await create_usertrack(caller);
-        await create_notification_panel(caller, username, time);
-        ProfileHashMap.put(caller, profile);
-        return await RustBloc.create_profile(profile, caller)
-    } catch err {
-        throw (err)
-    }
-};
-
-//
-// User activities
-// * epoch value of 24 hours should be 86400
-
-private func activateDailyClaims(caller : Principal) : async () {
-
-    DailyRewardHashMap.put(caller, {
-        user = caller;
-        streakTime = Int.abs(Time.now()); 
-        streakCount = 1;
-        highestStreak = 1;
-        pointBalance = 1;
-    });
-    await update_point(caller, 1);
-};
-
-public shared ({ caller }) func claimToday() : async () {
-    var today = DailyRewardHashMap.get(caller);
-    switch(today) {
-        case(null){
-            await create_usertrack(caller);
-            await activateDailyClaims(caller); 
+        let tracker = USER_TRACK_STORE.get(caller);
+        if (tracker == null) {
+            await create_usertrack(caller)
         };
-        case(?today){
-            // Checks if countdown is complete
-            if ((today.streakTime + day) >= Int.abs(Time.now())) {
-                if ((today.streakTime + (2*day)) >= Int.abs(Time.now())){
+        await update_point(caller, initialPoint)
+    };
+
+    public shared ({ caller }) func claimToday() : async () {
+        var today = DailyRewardHashMap.get(caller);
+        switch (today) {
+            case (null) {
+                // await create_usertrack(caller);
+                await activateDailyClaims(caller)
+            };
+            case (?today) {
+                // Checks if countdown is complete
+                if (((today.streakTime + day) <= Int.abs(Time.now())) and (Int.abs(Time.now()) < (today.streakTime + (2 * day)))) {
+                    var point = today.streakCount + 1;
+                    var claimed = {
+                        user = today.user;
+                        streakTime = Int.abs(Time.now());
+                        streakCount = point;
+                        highestStreak = if (point > today.highestStreak) {
+                            point
+                        } else { today.highestStreak };
+                        pointBalance = today.pointBalance + point
+                    };
+                    ignore DailyRewardHashMap.replace(caller, claimed);
+                    Debug.print("Updating point..");
+                    await update_point(caller, point);
+                    Debug.print(debug_show ("Updated point.."))
+                } else if (Int.abs(Time.now()) >= (today.streakTime + (2 * day))) {
                     await resetClaims(caller);
-                };
-                var point = today.streakCount + 1;
-                await update_point(caller, point);
-                var claimed = {
-                    user = today.user;
-                    streakTime = Int.abs(Time.now()); 
-                    streakCount = today.streakCount + 1;
-                    highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance + point;
-                };
-                let updated = DailyRewardHashMap.replace(caller, claimed);
-
-            } else {
-
+                    Debug.print(debug_show ("Lost streak, streak count resetted"))
+                } else {
+                    Debug.print("Claim already made today. Try again tomorrow!");
+                    throw Error.reject("You have already claimed today, try again later")
+                }
             }
         }
-    }
-};
+    };
 
-func resetClaims(caller : Principal) : async () {
-    var today = DailyRewardHashMap.get(caller);
-    switch(today) {
-        case(null){};
-        case(?today){
+    func resetClaims(caller : Principal) : async () {
+        var today = DailyRewardHashMap.get(caller);
+        switch (today) {
+            case (null) {};
+            case (?today) {
                 var claimed = {
                     user = today.user;
-                    streakTime = Int.abs(Time.now()); 
+                    streakTime = Int.abs(Time.now());
                     streakCount = 1;
                     highestStreak = today.highestStreak;
-                    pointBalance = today.pointBalance;
-            };
-            let updated = DailyRewardHashMap.replace(caller, claimed);
+                    pointBalance = today.pointBalance + 1; // Add 1 point for the day after reset
+                };
+                await update_point(caller, 1);
+                ignore DailyRewardHashMap.replace(caller, claimed)
+            }
         }
-    }
-};
+    };
 
-public shared ({ caller }) func getMyPoints() : async Nat {
-    var activity = DailyRewardHashMap.get(caller);
-    switch(activity){
-        case (null) {
-            return 0;
+    private func update_point(caller : Principal, point : Nat) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {
+                USER_TRACK_STORE.put(
+                    caller,
+                    {
+                        user = caller;
+                        tournaments_created = 0;
+                        wager_participated = 0;
+                        tournaments_joined = 0;
+                        tournaments_won = 0;
+                        messages_sent = 0;
+                        feedbacks_sent = 0;
+                        total_point = point
+                    },
+                )
+            };
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + point
+                };
+                ignore USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    public shared ({ caller }) func getMyPoints() : async Nat {
+        var activity = DailyRewardHashMap.get(caller);
+        switch (activity) {
+            case (null) {
+                return 0
+            };
+            case (?activity) {
+                return activity.pointBalance
+            }
+        }
+    };
+
+    public shared ({ caller }) func getStreakTime() : async Nat {
+        var activity = DailyRewardHashMap.get(caller);
+        switch (activity) {
+            case (null) {
+                return 0
+            };
+            case (?activity) {
+                return activity.streakTime; // In epoch time
+            }
+        }
+    };
+
+    public shared ({ caller }) func getMyStreakCount() : async Nat {
+        var activity = DailyRewardHashMap.get(caller);
+        switch (activity) {
+            case (null) {
+                return 0
+            };
+            case (?activity) {
+                return activity.streakCount
+            }
+        }
+    };
+
+    func create_usertrack(caller : Principal) : async () {
+        USER_TRACK_STORE.put(
+            caller,
+            {
+                user = caller;
+                tournaments_created = 0;
+                wager_participated = 0;
+                tournaments_joined = 0;
+                tournaments_won = 0;
+                messages_sent = 0;
+                feedbacks_sent = 0;
+                total_point = 1
+            },
+        )
+    };
+
+    private func update_tournaments_created(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created + 10;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + 10
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    public func update_wagers_participated(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    wager_participated = tracker.wager_participated + 10;
+                    tournaments_joined = tracker.tournaments_joined;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + 10
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    private func update_tournaments_joined(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined + 2;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + 2
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    private func update_feedbacks_sent(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent + 1;
+                    total_point = tracker.total_point + 1
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    private func update_tournaments_won(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won + 2;
+                    messages_sent = tracker.messages_sent;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + 2
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    private func update_messages_sent(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                var update = {
+                    user = tracker.user;
+                    tournaments_created = tracker.tournaments_created;
+                    tournaments_joined = tracker.tournaments_joined;
+                    wager_participated = tracker.wager_participated;
+                    tournaments_won = tracker.tournaments_won;
+                    messages_sent = tracker.messages_sent + 1;
+                    feedbacks_sent = tracker.feedbacks_sent;
+                    total_point = tracker.total_point + 1
+                };
+                var updated = USER_TRACK_STORE.replace(caller, update)
+            }
+        }
+    };
+
+    public query func get_point_track(caller : Principal) : async Nat {
+        var tracker = USER_TRACK_STORE.get(caller);
+        var temporary_point = 0;
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
+                temporary_point := tracker.total_point
+            }
         };
-        case(?activity){
-            return activity.pointBalance;
+        return temporary_point
+    };
+
+    public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
+        if (await is_mod(caller)) {
+            var tracker = USER_TRACK_STORE.get(recipient);
+            switch (tracker) {
+                case (null) {};
+                case (?tracker) {
+                    var update = {
+                        user = tracker.user;
+                        tournaments_created = tracker.tournaments_created;
+                        tournaments_joined = tracker.tournaments_joined;
+                        wager_participated = tracker.wager_participated;
+                        tournaments_won = tracker.tournaments_won;
+                        messages_sent = tracker.messages_sent;
+                        feedbacks_sent = tracker.feedbacks_sent;
+                        total_point = tracker.total_point + _point
+                    };
+                    var updated = USER_TRACK_STORE.replace(recipient, update)
+                }
+            }
+        } else {
+            throw Error.reject(
+                "You are not authorised to make this action!\n
+            You imposter, you dissappoint me! tueh!"
+            )
         }
-    } 
-};
+    };
 
-public shared ({ caller }) func getStreakTime() : async Nat {
-    var activity = DailyRewardHashMap.get(caller);
-    switch(activity){
-        case (null) {
-            return 0;
-        };
-        case(?activity){
-            return activity.streakTime; // In epoch time
-        }
-    } 
-};
-
-public shared ({ caller }) func getMyStreakCount() : async Nat {
-    var activity = DailyRewardHashMap.get(caller);
-    switch(activity){
-        case (null) {
-            return 0;
-        };
-        case(?activity){
-            return activity.streakCount;
-        }
-    } 
-};
-
-
-func create_usertrack(caller : Principal) : async () {
-    USER_TRACK_STORE.put(
-        caller,
-        {
-            user = caller;
-            tournaments_created = 0;
-            wager_participated = 0;
-            tournaments_joined = 0;
-            tournaments_won = 0;
-            messages_sent = 0;
-            feedbacks_sent = 0;
-            total_point = 0
-        },
-    )
-};
-
-private func update_tournaments_created(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created + 10;
-                wager_participated = tracker.wager_participated;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + 10;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-public func update_wagers_participated(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                wager_participated = tracker.wager_participated + 10;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + 10;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-private func update_tournaments_joined(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined + 2;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + 2;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-private func update_feedbacks_sent(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent + 1;
-                total_point = tracker.total_point + 1;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Nat) : async () {
-    if (await is_mod(caller)){
-        var tracker = USER_TRACK_STORE.get(recipient);
+    private func reset_point_tracker(caller : Principal) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
         switch (tracker) {
             case (null) {};
             case (?tracker) {
@@ -1273,534 +1513,475 @@ public shared ({ caller }) func allocatePoint(recipient : Principal, _point : Na
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.total_point + _point;
+                    total_point = 0
                 };
-                var updated = USER_TRACK_STORE.replace(recipient, update)
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
         }
-    } else {
-        throw Error.reject("You are not authorised to make this action! You imposter, you dissappoint me! tueh!")
-    }
-};
-
-private func update_tournaments_won(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won + 2;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + 2;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-private func update_messages_sent(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent + 1;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + 1;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-public query func get_point_track(caller : Principal) : async Nat {
-    var tracker = USER_TRACK_STORE.get(caller);
-    var temporary_point = 0;
-    switch(tracker) {
-        case(null){};
-        case(?tracker){
-            temporary_point := tracker.total_point;
-        }
     };
-    return temporary_point;
-};
 
-
-
-private func reset_point_tracker(caller : Principal) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                tournaments_joined = tracker.tournaments_joined;
-                wager_participated = tracker.wager_participated;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = 0
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-private func update_point(caller : Principal, point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                wager_participated = tracker.wager_participated;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + point;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-private func allocateUserPoint(caller : Principal, point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            var update = {
-                user = tracker.user;
-                tournaments_created = tracker.tournaments_created;
-                wager_participated = tracker.wager_participated;
-                tournaments_joined = tracker.tournaments_joined;
-                tournaments_won = tracker.tournaments_won;
-                messages_sent = tracker.messages_sent;
-                feedbacks_sent = tracker.feedbacks_sent;
-                total_point = tracker.total_point + point;
-            };
-            var updated = USER_TRACK_STORE.replace(caller, update)
-        }
-    }
-};
-
-
-public query func get_user_point(caller : Principal) : async Nat {
-    var tracker = USER_TRACK_STORE.get(caller);
-    var point = 0;
-    for ((i, j) in USER_TRACK_STORE.entries()) {
-        if (i == caller) {
-            point := j.total_point;
-        }
-    };
-    return point
-};
-
-
-//
-// Feedbacks
-//
-
-private func burn_user_point(caller : Principal, _point : Nat) : async () {
-    var tracker = USER_TRACK_STORE.get(caller);
-    switch (tracker) {
-        case (null) {};
-        case (?tracker) {
-            if (tracker.total_point > _point) {
+    func allocateUserPoint(caller : Principal, point : Nat) : async () {
+        var tracker = USER_TRACK_STORE.get(caller);
+        switch (tracker) {
+            case (null) {};
+            case (?tracker) {
                 var update = {
                     user = tracker.user;
                     tournaments_created = tracker.tournaments_created;
-                    tournaments_joined = tracker.tournaments_joined;
                     wager_participated = tracker.wager_participated;
+                    tournaments_joined = tracker.tournaments_joined;
                     tournaments_won = tracker.tournaments_won;
                     messages_sent = tracker.messages_sent;
                     feedbacks_sent = tracker.feedbacks_sent;
-                    total_point = tracker.total_point - _point;
+                    total_point = tracker.total_point + point
                 };
-                var updated = USER_TRACK_STORE.replace(caller, update);
-            };
-        }
-    }
-};
-
-public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
-    await update_feedbacks_sent(caller);
-    FEED_BACK_STORE.put(
-        feedback_id,
-        {
-            id = feedback_id;
-            title = title;
-            user = caller;
-            content = content;
-            time = time;
-            read = false
-        },
-    );
-    feedback_id := feedback_id + 1
-};
-
-public query func get_feedback(id : Nat) : async ?Bloctypes.Feedback {
-    FEED_BACK_STORE.get(id)
-};
-
-public query func get_unread_feedbacks() : async ?[Bloctypes.Feedback] {
-    do ? {
-        var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
-        for ((i, j) in FEED_BACK_STORE.entries()) {
-            if (j.read == true) {
-                buffer.add(j)
+                var updated = USER_TRACK_STORE.replace(caller, update)
             }
-        };
-        buffer.toArray()
-    }
-};
-
-// public func mark_feedback_read() : async Bool {
-
-// };
-
-public query func get_all_feedback() : async [Bloctypes.Feedback] {
-    var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
-    for ((i, j) in FEED_BACK_STORE.entries()) {
-        buffer.add(j)
-    };
-    buffer.toArray()
-};
-    // * Local params
-     let gbc_admin : Principal = Principal.fromText("6jvvx-vkfin-q3qbr-wlgsz-pfnmm-jgtnk-eze4p-lhpam-ey34o-742hy-yqe"); // * Demo here
-    // ! Production params @Deonorla
-    // let gbc_admin : Principal = Principal.fromText("ls34l-2mn3r-6r5sv-m5z46-wdwe2-waihi-6er6x-5lvzy-5fhlm-wzg2m-pqe"); 
-
-//
-// * Tournaments Features
-//
-
-// public type Subaccount = [Nat8];
-// public type Account = { owner : Principal; subaccount : ?Subaccount };
-
-public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
-    if (icp_price == 0) {
-        throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
-    } else {
-        try {
-
-            await update_tournaments_created(caller);
-            TournamentHashMap.put(caller, tournamentAccount);
-            var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
-
-            var toAccount : LedgerTypes.Account = {
-                owner = gbc_admin;
-                subaccount = null
-            };
-
-            var fromAccount : LedgerTypes.Account = {
-                owner = fromPrincipal;
-                subaccount = null
-            };
-
-            var multiplier = 1;
-            var _amount = 0;
-
-            if (Text.toUppercase(tournamentAccount.game_type) == "SQUAD"){
-                multiplier := 4;
-            } else if (Text.toUppercase(tournamentAccount.game_type) == "DUO"){
-                multiplier := 2;
-            };
-
-            if (tournamentAccount.tournament_type == #Crowdfunded) {
-
-                var entry = tournamentAccount.entry_fee;
-
-                switch (entry) {
-                    case (null) {
-                        throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
-                    };
-                    case (?entry) {
-                        try {
-                            // var actual_price = amount / icp_price;
-                            var result = await ICPLedger.icrc2_transfer_from({
-                                to = {
-                                    owner = gbc_admin;
-                                    subaccount = null
-                                };
-                                fee = null;
-                                spender_subaccount = null;
-                                from = {
-                                    owner = fromPrincipal;
-                                    subaccount = null
-                                };
-                                memo = null;
-                                created_at_time = ?Nat64.fromIntWrap(Time.now());
-                                // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * multiplier * 10_000_000_000) / (icp_price); //In USD
-                            });
-                            // await notify("Tournament created successfully", "Your crowdfunded tournament has been successfully created", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
-                            _amount := (entry * multiplier * 10_000_000_000) / (icp_price);
-                            
-
-                        } catch (err) {
-                            throw Error.reject("There is an issue wih the transfer")
-                        }
-                    }
-                }
-            } else {
-                //Should be #prepaid
-                var result = await ICPLedger.icrc2_transfer_from({
-                    to = {
-                        owner = gbc_admin;
-                        subaccount = null
-                    };
-                    fee = null;
-                    spender_subaccount = null;
-                    from = {
-                        owner = fromPrincipal;
-                        subaccount = null
-                    };
-                    memo = null;
-                    created_at_time = ?Nat64.fromIntWrap(Time.now());
-                    // * since the price is in hundreds to bypass the datatype restrictions
-                    amount = ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
-                });
-                _amount := ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
-            };
-
-            var result = await RustBloc.create_tournament(tournamentAccount);
-            // TODO: Notify the users, fix date, notify deposit and withdrawals
-            // ? Is approval notifications really necessary though
-            // await notify("ICP Withdrawal Request Processed", "Dear " # tournamentAccount.creator # ",\n 
-            //     Your request to withdraw "# Nat.toText(_amount) # " ICP from your Gamebloc account has been successfully processed. The funds should now be available in the destination wallet.\n
-            //     If you encounter any issues or have any questions, please contact our support team.\n
-            //     Thank you for using Gamebloc, and we look forward to seeing you in future tournaments!\n
-            //     Best regards,\n
-            //     Gamebloc Team", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
-            // let depositNotification = await notify("Successful ICP Deposit to Your Gamebloc Account");
-            let tournamentNotification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title #  " has been successfully created. 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
-            result;
-
-            // return result
-        } catch err {
-            throw (err)
         }
-    }
-};
+    };
 
-public func count_all_squad() : async Nat {
-    await RustBloc.count_all_squad()
-};
+    public func burn_user_point(caller : Principal, _point : Nat, access : Text) : async () {
 
-public func count_all_users() : async Nat {
-    await RustBloc.count_all_users()
-};
-
-public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
-    try {
-        // Checks the role and other conditions before actually ending the tournament
-        await RustBloc.end_tournament(id, caller, no_of_winners, winner)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
-    // assert(caller == userCanisterId);
-    try {
-        return let result = await RustBloc.get_all_tournament()
-    } catch err {
-        throw (err)
-    }
-};
-
-public func get_all_user() : async [Bloctypes.UserProfile] {
-    // assert(caller == userCanisterId);
-    try {
-        return let result = await RustBloc.get_all_user()
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func get_profile(name : Text) : async Bloctypes.UserProfile {
-    // assert(caller == userCanisterId);
-    try {
-        return let result = await RustBloc.get_profile(name)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared func getUserPrincipal(name : Text) : async Principal {
-    var result = await RustBloc.get_profile(name);
-    return Principal.fromText(result.principal_id)
-};
-
-// public func getUsername(caller : Principal) : async Text {
-//     var result = await RustBloc.get_profile(await getUserPrincipal(ca));
-//     return result.username
-// };
-
-public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
-    try {
-        await RustBloc.get_tournament(id)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func create_squad(squad : Bloctypes.Squad) : async Bloctypes.Result {
-    try {
-        SQUAD_STORE.put(Principal.toText(caller), squad);
-        return await RustBloc.create_squad(squad, caller)
-    } catch err {
-        throw (err)
-    }
-};
-
-// *
-public shared ({ caller }) func add_to_squad(member : Bloctypes.Member, id : Text) : async () {
-    try {
-        return await RustBloc.add_to_squad(member, caller, id)
-    } catch err {
-        throw (err)
-    }
-};
-
-// *
-public shared ({ caller }) func close_squad(names : [Text], id : Text) : async () {
-    try {
-        return await RustBloc.close_squad(id, caller)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func open_squad(names : [Text], id : Text) : async () {
-    try {
-        return await RustBloc.open_squad(id, caller)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func join_squad(member : Bloctypes.Member, id : Text) : async () {
-    try {
-        return await RustBloc.join_squad(member, caller, id)
-    } catch err {
-        throw (err)
-    }
-};
-
-public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text, Text)], new_member_ign : ?[(Text, Text, Text)], icp_price : Nat) : async () {if (icp_price == 0) {
-    throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
-} else {
-    try {
-
-        var _to : LedgerTypes.Account = {
-            owner = gbc_admin;
-            subaccount = null
-        };
-
-        var _from : LedgerTypes.Account = {
-            owner = caller;
-            subaccount = null
-        };
-
-        var tournament = await get_tournament(id);
-
-        // Checks for squad
-        if (Text.toUppercase(tournament.game_type) == "SQUAD") {
-
-            if (tournament.tournament_type != #Prepaid) {
-
-                var entry = tournament.entry_fee;
-
-                switch (entry) {
-                    case (null) {
-                        throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
-                    };
-                    case (?entry) {
-                        try {
-                            // var actual_price = amount / icp_price;
-                            var result = await ICPLedger.icrc2_transfer_from({
-                                to = {
-                                    owner = gbc_admin;
-                                    subaccount = null
-                                };
-                                fee = null;
-                                spender_subaccount = null;
-                                from = {
-                                    owner = caller;
-                                    subaccount = null
-                                };
-                                memo = null;
-                                created_at_time = ?Nat64.fromIntWrap(Time.now());
-                                // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * 40_000_000_000) / (icp_price); //In USD
-                            });
-
-                        } catch (err) {
-                            throw Error.reject("There is an issue wih the transfer")
-                        }
+        if (access == "operator may trap for inferred type") {
+            var tracker = USER_TRACK_STORE.get(caller);
+            switch (tracker) {
+                case (null) {};
+                case (?tracker) {
+                    if (tracker.total_point > _point) {
+                        var update = {
+                            user = tracker.user;
+                            tournaments_created = tracker.tournaments_created;
+                            tournaments_joined = tracker.tournaments_joined;
+                            wager_participated = tracker.wager_participated;
+                            tournaments_won = tracker.tournaments_won;
+                            messages_sent = tracker.messages_sent;
+                            feedbacks_sent = tracker.feedbacks_sent;
+                            total_point = tracker.total_point - _point
+                        };
+                        var updated = USER_TRACK_STORE.replace(caller, update)
+                    } else {
+                        throw Error.reject("Not enough balance to perform action!")
                     }
                 }
             }
         } else {
-            // Duo Squad
+            throw Error.reject("You are not allowed to perform this operation")
+        }
+    };
 
-            if (tournament.tournament_type != #Prepaid) {
-
-                var entry = tournament.entry_fee;
-
-                switch (entry) {
-                    case (null) {
-                        throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
-                    };
-                    case (?entry) {
-                        try {
-                            // var actual_price = amount / icp_price;
-                            var result = await ICPLedger.icrc2_transfer_from({
-                                to = {
-                                    owner = gbc_admin;
-                                    subaccount = null
-                                };
-                                fee = null;
-                                spender_subaccount = null;
-                                from = {
-                                    owner = caller;
-                                    subaccount = null
-                                };
-                                memo = null;
-                                created_at_time = ?Nat64.fromIntWrap(Time.now());
-                                // * since the price is in hundreds to bypass the datatype restrictions
-                                amount = (entry * 20_000_000_000) / (icp_price); //In USD
-                            })
-                        } catch (err) {
-                            throw Error.reject("There is an issue wih the transfer, please check your balance , try again or contact admin")
-                        }
-
-                    }
-                };
+    public query func get_user_point(caller : Principal) : async Nat {
+        var tracker = USER_TRACK_STORE.get(caller);
+        var point = 0;
+        for ((i, j) in USER_TRACK_STORE.entries()) {
+            if (i == caller) {
+                point := j.total_point
             }
         };
+        return point
+    };
 
-        await update_tournaments_joined(caller);
-        return await RustBloc.join_tournament_with_squad(squad_id, id, ign, new_member_ign)
-    } catch err {
-        throw (err)
-    }
-    }
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
+
+
+
+                                                  /////////////////////////////
+                                                 ///     LEADERBOARDS      ///
+                                                /////////////////////////////
+
+
+    public func get_point_leadersboard() : async [(Principal, Nat, Text)] {
+        var leaderboard : [(Principal, Nat, Text)] = []; //Array.init<[(Principal, Nat)]>();
+        for ((key, value) in USER_TRACK_STORE.entries()) {
+            leaderboard := Array.append(leaderboard, [(key, value.total_point, await getUsername(key))])
+        };
+        return mergeSort(leaderboard)
+    };
+
+    public query func get_point_leadersboard_fast() : async [(Principal, Nat, Text)] {
+        var leaderboard : [(Principal, Nat, Text)] = []; //Array.init<[(Principal, Nat)]>();
+        for ((key, value) in USER_TRACK_STORE.entries()) {
+            var profile = ProfileHashMap.get(key);
+            switch (profile) {
+                case (null) {
+                    leaderboard := Array.append(leaderboard, [(key, value.total_point, "Anonymous User GBC")])
+                };
+                case (?profile) {
+                    leaderboard := Array.append(leaderboard, [(key, value.total_point, profile.username)])
+                }
+            }
+        };
+        return mergeSort(leaderboard)
+    };
+
+
+///-------      -------     -------     -------     -------     -------     -------     -------     -------///
+
+    
+
+                                                  /////////////////////////////
+                                                 ///    FEEDBACK FEATURES  ///
+                                                /////////////////////////////
+
+    
+
+    public shared ({ caller }) func send_feedback(content : Text, title : Text, time : Text) : async () {
+        await update_feedbacks_sent(caller);
+        FEED_BACK_STORE.put(
+            feedback_id,
+            {
+                id = feedback_id;
+                title = title;
+                user = caller;
+                content = content;
+                time = time;
+                read = false
+            },
+        );
+        feedback_id := feedback_id + 1
+    };
+
+    public query func get_feedback(id : Nat) : async ?Bloctypes.Feedback {
+        FEED_BACK_STORE.get(id)
+    };
+
+    public query func get_unread_feedbacks() : async ?[Bloctypes.Feedback] {
+        do ? {
+            var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
+            for ((i, j) in FEED_BACK_STORE.entries()) {
+                if (j.read == true) {
+                    buffer.add(j)
+                }
+            };
+            buffer.toArray()
+        }
+    };
+
+    public query func get_all_feedback() : async [Bloctypes.Feedback] {
+        var buffer = Buffer.Buffer<Bloctypes.Feedback>(0);
+        for ((i, j) in FEED_BACK_STORE.entries()) {
+            buffer.add(j)
+        };
+        buffer.toArray()
+    };
+
+
+                                                  //////////////////////////////////
+                                                 ///    TOURNAMENT MANAGEMENT    ///
+                                                ///////////////////////////////////
+
+    // public type Subaccount = [Nat8];
+    // public type Account = { owner : Principal; subaccount : ?Subaccount };
+
+    public shared ({ caller }) func create_tournament(tournamentAccount : Bloctypes.TournamentAccount, icp_price : Nat) : async Bloctypes.Result {
+        if (icp_price == 0) {
+            throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
+        } else {
+            try {
+
+                await update_tournaments_created(caller);
+                TournamentHashMap.put(caller, tournamentAccount);
+                var fromPrincipal = await getUserPrincipal(tournamentAccount.creator);
+
+                var toAccount : LedgerTypes.Account = {
+                    owner = gbc_admin;
+                    subaccount = null
+                };
+
+                var fromAccount : LedgerTypes.Account = {
+                    owner = fromPrincipal;
+                    subaccount = null
+                };
+
+                var multiplier = 1;
+                var _amount = 0;
+
+                if (Text.toUppercase(tournamentAccount.game_type) == "SQUAD") {
+                    multiplier := 4
+                } else if (Text.toUppercase(tournamentAccount.game_type) == "DUO") {
+                    multiplier := 2
+                };
+
+                if (tournamentAccount.tournament_type == #Crowdfunded) {
+
+                    var entry = tournamentAccount.entry_fee;
+
+                    switch (entry) {
+                        case (null) {
+                            throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
+                        };
+                        case (?entry) {
+                            try {
+                                // var actual_price = amount / icp_price;
+                                var result = await ICPLedger.icrc2_transfer_from({
+                                    to = {
+                                        owner = gbc_admin;
+                                        subaccount = null
+                                    };
+                                    fee = null;
+                                    spender_subaccount = null;
+                                    from = {
+                                        owner = fromPrincipal;
+                                        subaccount = null
+                                    };
+                                    memo = null;
+                                    created_at_time = ?Nat64.fromIntWrap(Time.now());
+                                    // * since the price is in hundreds to bypass the datatype restrictions
+                                    amount = (entry * multiplier * 10_000_000_000) / (icp_price); //In USD
+                                });
+                                // await notify("Tournament created successfully", "Your crowdfunded tournament has been successfully created", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
+                                _amount := (entry * multiplier * 10_000_000_000) / (icp_price);
+
+                            } catch (err) {
+                                throw Error.reject("There is an issue wih the transfer")
+                            }
+                        }
+                    }
+                } else {
+                    //Should be #prepaid
+                    var result = await ICPLedger.icrc2_transfer_from({
+                        to = {
+                            owner = gbc_admin;
+                            subaccount = null
+                        };
+                        fee = null;
+                        spender_subaccount = null;
+                        from = {
+                            owner = fromPrincipal;
+                            subaccount = null
+                        };
+                        memo = null;
+                        created_at_time = ?Nat64.fromIntWrap(Time.now());
+                        // * since the price is in hundreds to bypass the datatype restrictions
+                        amount = ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
+                    });
+                    _amount := ((tournamentAccount.total_prize * 10_000_000_000) / icp_price)
+                };
+
+                var result = await RustBloc.create_tournament(tournamentAccount);
+                // TODO: Notify the users, fix date, notify deposit and withdrawals
+                // ? Is approval notifications really necessary though
+                // await notify("ICP Withdrawal Request Processed", "Dear " # tournamentAccount.creator # ",\n
+                //     Your request to withdraw "# Nat.toText(_amount) # " ICP from your Gamebloc account has been successfully processed. The funds should now be available in the destination wallet.\n
+                //     If you encounter any issues or have any questions, please contact our support team.\n
+                //     Thank you for using Gamebloc, and we look forward to seeing you in future tournaments!\n
+                //     Best regards,\n
+                //     Gamebloc Team", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
+                // let depositNotification = await notify("Successful ICP Deposit to Your Gamebloc Account");
+                let tournamentNotification = await notify("🎉 Tournament Created Successfully! 🎉", "Congratulations, " # tournamentAccount.creator # "! Your tournament " # tournamentAccount.title # " has been successfully created. 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), tournamentAccount.creator);
+                result;
+
+                // return result
+            } catch err {
+                throw (err)
+            }
+        }
+    };
+
+    public func count_all_squad() : async Nat {
+        await RustBloc.count_all_squad()
+    };
+
+    public func count_all_users() : async Nat {
+        await RustBloc.count_all_users()
+    };
+
+    public shared ({ caller }) func end_tournament(id : Text, no_of_winners : Nat8, winner : [Bloctypes.Winner]) : async Bool {
+        try {
+            // Checks the role and other conditions before actually ending the tournament
+            await RustBloc.end_tournament(id, caller, no_of_winners, winner)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func get_all_tournament() : async [Bloctypes.TournamentAccount] {
+        // assert(caller == userCanisterId);
+        try {
+            return let result = await RustBloc.get_all_tournament()
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public func get_all_user() : async [Bloctypes.UserProfile] {
+        // assert(caller == userCanisterId);
+        try {
+            return let result = await RustBloc.get_all_user()
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func get_profile(name : Text) : async Bloctypes.UserProfile {
+        // assert(caller == userCanisterId);
+        try {
+            return let result = await RustBloc.get_profile(name)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared func getUserPrincipal(name : Text) : async Principal {
+        var result = await RustBloc.get_profile(name);
+        return Principal.fromText(result.principal_id)
+    };
+
+    public func getUsername(caller : Principal) : async Text {
+        var result = await RustBloc.get_profile_by_principal(caller);
+        return result.username
+    };
+
+    public func get_tournament(id : Text) : async Bloctypes.TournamentAccount {
+        try {
+            await RustBloc.get_tournament(id)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func create_squad(squad : Bloctypes.Squad) : async Bloctypes.Result {
+        try {
+            SQUAD_STORE.put(Principal.toText(caller), squad);
+            return await RustBloc.create_squad(squad, caller)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    // *
+    public shared ({ caller }) func add_to_squad(member : Bloctypes.Member, id : Text) : async () {
+        try {
+            return await RustBloc.add_to_squad(member, caller, id)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    // *
+    public shared ({ caller }) func close_squad(names : [Text], id : Text) : async () {
+        try {
+            return await RustBloc.close_squad(id, caller)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func open_squad(names : [Text], id : Text) : async () {
+        try {
+            return await RustBloc.open_squad(id, caller)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func join_squad(member : Bloctypes.Member, id : Text) : async () {
+        try {
+            return await RustBloc.join_squad(member, caller, id)
+        } catch err {
+            throw (err)
+        }
+    };
+
+    public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id : Text, ign : [(Text, Text, Text)], new_member_ign : ?[(Text, Text, Text)], icp_price : Nat) : async () {
+        if (icp_price == 0) {
+            throw Error.reject("Cannnot fetch ICP price at the moment, please check app later....")
+        } else {
+            try {
+
+                var _to : LedgerTypes.Account = {
+                    owner = gbc_admin;
+                    subaccount = null
+                };
+
+                var _from : LedgerTypes.Account = {
+                    owner = caller;
+                    subaccount = null
+                };
+
+                var tournament = await get_tournament(id);
+
+                // Checks for squad
+                if (Text.toUppercase(tournament.game_type) == "SQUAD") {
+
+                    if (tournament.tournament_type != #Prepaid) {
+
+                        var entry = tournament.entry_fee;
+
+                        switch (entry) {
+                            case (null) {
+                                throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
+                            };
+                            case (?entry) {
+                                try {
+                                    // var actual_price = amount / icp_price;
+                                    var result = await ICPLedger.icrc2_transfer_from({
+                                        to = {
+                                            owner = gbc_admin;
+                                            subaccount = null
+                                        };
+                                        fee = null;
+                                        spender_subaccount = null;
+                                        from = {
+                                            owner = caller;
+                                            subaccount = null
+                                        };
+                                        memo = null;
+                                        created_at_time = ?Nat64.fromIntWrap(Time.now());
+                                        // * since the price is in hundreds to bypass the datatype restrictions
+                                        amount = (entry * 40_000_000_000) / (icp_price); //In USD
+                                    });
+
+                                } catch (err) {
+                                    throw Error.reject("There is an issue wih the transfer")
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // Duo Squad
+
+                    if (tournament.tournament_type != #Prepaid) {
+
+                        var entry = tournament.entry_fee;
+
+                        switch (entry) {
+                            case (null) {
+                                throw Error.reject("The entry fee for a Crowdfunding tournament cannot be empty!")
+                            };
+                            case (?entry) {
+                                try {
+                                    // var actual_price = amount / icp_price;
+                                    var result = await ICPLedger.icrc2_transfer_from({
+                                        to = {
+                                            owner = gbc_admin;
+                                            subaccount = null
+                                        };
+                                        fee = null;
+                                        spender_subaccount = null;
+                                        from = {
+                                            owner = caller;
+                                            subaccount = null
+                                        };
+                                        memo = null;
+                                        created_at_time = ?Nat64.fromIntWrap(Time.now());
+                                        // * since the price is in hundreds to bypass the datatype restrictions
+                                        amount = (entry * 20_000_000_000) / (icp_price); //In USD
+                                    })
+                                } catch (err) {
+                                    throw Error.reject("There is an issue wih the transfer, please check your balance , try again or contact admin")
+                                }
+
+                            }
+                        }
+                    }
+                };
+
+                await update_tournaments_joined(caller);
+                return await RustBloc.join_tournament_with_squad(squad_id, id, ign, new_member_ign)
+            } catch err {
+                throw (err)
+            }
+        }
     };
 
     public shared ({ caller }) func join_tournament(name : Text, id : Text, ign : (Text, Text, Text), icp_price : Nat) : async () {
@@ -1859,7 +2040,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                 await update_tournaments_joined(caller);
                 // var _caller : Text = caller.toText();
                 // await notify("🎉 Tournament Joined Successfully! 🎉", "Congratulations, " # getUsername(caller) # "! You have successfully joined the tournament " # tournamentAccount.title #  ". 🎮🎯", caller, Nat64.toText(Nat64.fromIntWrap(Time.now())), await get_notification_id(caller), getUsername(caller));
-                return await RustBloc.join_tournament(name, id, ign);
+                return await RustBloc.join_tournament(name, id, ign)
             } catch err {
                 throw (err)
             }
@@ -1923,96 +2104,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         }
     };
 
-    //
-    //  * HTTP outcalls
-    //
 
-    public query func transform(raw : HTTP.TransformArgs) : async HTTP.CanisterHttpResponsePayload {
-        let transformed : HTTP.CanisterHttpResponsePayload = {
-            status = raw.response.status;
-            body = raw.response.body;
-            headers = [
-                {
-                    name = "Content-Security-Policy";
-                    value = "default-src 'self'"
-                },
-                {
-                    name = "Referrer-Policy";
-                    value = "strict-origin"
-                },
-                {
-                    name = "Permissions-Policy";
-                    value = "geolocation=(self)"
-                },
-                {
-                    name = "Strict-Transport-Security";
-                    value = "max-age=63072000"
-                },
-                {
-                    name = "X-Frame-Options";
-                    value = "DENY"
-                },
-                {
-                    name = "X-Content-Type-Options";
-                    value = "nosniff"
-                },
-            ]
-        };
-        transformed
-    };
-
-    public func send_http_get_request(url_ : Text, player_tag : Text) : async Text {
-
-        let ic : HTTP.IC = actor ("aaaa-aa");
-
-        // let host : Text = "";
-        let url = "https://api.clashroyale.com/v1/players/" # player_tag;
-        let api_key = "ey-xxx";
-
-        let transform_context : HTTP.TransformContext = {
-            function = transform;
-            context = Blob.fromArray([])
-        };
-
-        // let idempotency_key: Text = generateUUID();
-        let request_headers = [
-            { name = "Authorization"; value = "Bearer " # api_key },
-            { name = "User-Agent"; value = "gamebloc_canister" },
-            { name = "Content-Type"; value = "application/json" },
-            // { name = "x-api-key"; value = "" },
-        ];
-        Debug.print("Loading......." # url);
-
-        let http_request : HTTP.HttpRequestArgs = {
-            url = url;
-            max_response_bytes = null; //optional for request
-            headers = request_headers;
-            body = null; //optional styll
-            method = #get;
-            transform = ?transform_context
-        };
-
-        Cycles.add(230_850_258_000);
-
-        let http_response : HTTP.HttpResponsePayload = await ic.http_request(http_request);
-
-        let response_body : Blob = Blob.fromArray(http_response.body);
-        let decoded_text : Text = switch (Text.decodeUtf8(response_body)) {
-            case (null) { "No value returned" };
-            case (?y) { y }
-        };
-
-        //6. RETURN RESPONSE OF THE BODY
-        let result : Text = decoded_text # ". See more info of the request sent at: " # url # "/inspect";
-        return result
-    };
-
-    // automated payment and receiving
-    //
-
-    // public func start_tournament(id : Text) : (){
-
-    // };
 
     public query func get_number_of_squads() : async Nat {
         ID_STORE.size()
@@ -2035,6 +2127,10 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
     // * Rustbloc will handle that.
 
     // Password for Wallet
+
+                                                  /////////////////////////////
+                                                 ///      VETKD SYSTEM     ///
+                                                /////////////////////////////
 
     type VETKD_SYSTEM_API = actor {
         vetkd_public_key : ({
@@ -2125,7 +2221,10 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         Hex.encode(Blob.toArray(encrypted_key))
     };
 
-    /// *  Websockets
+
+                                                  /////////////////////////////
+                                                 ///     WEBSOCKET IMPL    ///
+                                                /////////////////////////////
 
     let connected_clients = Buffer.Buffer<IcWebSocketCdk.ClientPrincipal>(0);
 
@@ -2168,7 +2267,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                     }
                 }
             }
-        };
+        }
     };
 
     func on_open(args : IcWebSocketCdk.OnOpenCallbackArgs) : async () {
@@ -2267,13 +2366,16 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
         var lockable : Bloctypes.Lockable = {
             amount = 0;
             timestamp = Int.abs(Time.now());
-            user = caller;
+            user = caller
         };
-        LockedAssetsHashMap.put(caller, {
-            icpBalance = 0;
-            user = caller;
-            assets = [lockable];
-        });
+        LockedAssetsHashMap.put(
+            caller,
+            {
+                icpBalance = 0;
+                user = caller;
+                assets = [lockable]
+            },
+        )
     };
 
     type Result_22 = {
@@ -2283,9 +2385,9 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
 
     public shared ({ caller }) func lockICP(_amount : Nat, icp_price : Nat) : async () {
         var vault = LockedAssetsHashMap.get(caller);
-        switch(vault) {
-            case null {
-            }; case (?(vault)) {
+        switch (vault) {
+            case null {};
+            case (?(vault)) {
                 var transfer = await ICPLedger.icrc2_transfer_from({
                     to = {
                         owner = Principal.fromActor(this);
@@ -2299,7 +2401,7 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
                     };
                     memo = null;
                     created_at_time = ?Nat64.fromIntWrap(Time.now());
-                    amount = (_amount * e8s)/icp_price;
+                    amount = (_amount * e8s) / icp_price
                 });
                 // if(Result.isOk(transfer)){
                 //     var lockedAsset = {
@@ -2312,33 +2414,183 @@ public shared ({ caller }) func join_tournament_with_squad(squad_id : Text, id :
             }
         }
     };
-    // Call this method to check the balance.
-    // public query func checkBalance(accountId: Text): async Nat {
-    //     // Use the ICP ledger to query the account balance.
-    //     return Ledger.get_balance(accountId);
-    // }
 
-    // public shared func recordTransaction(accountId: Text, amount: Nat, txType: Text) : async () {
-    //     let transaction = {
-    //         accountId = accountId;
-    //         amount = amount;
-    //         txType = txType;
-    //         timestamp = Time.now();
+                                                ///////////////////////////////////
+                                                 ///    REFERRAL MANAGEMENT    ///
+                                                ///////////////////////////////////
+
+
+    // Character set for code generation
+    private let chars = [
+        '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+        'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    ];
+
+    // Initialize on upgrade
+    // system func preupgrade() {
+    //     codesEntries := Iter.toArray(ReferralMap.entries());
+    // };
+
+    // system func postupgrade() {
+    //     for ((p, c) in codesEntries.vals()) {
+    //         ReferralMap.put(p, c);
+    //         CodeToPrincipalMap.put(c, p);
     //     };
-    //     transactionHistory := transactionHistory # [transaction];  // Append to history
-    // }
+    //     codesEntries := [];
+    // };
 
-    type DepositDetails = {
-        accountNumber : Text;
-        bankName : Text;
-        amount : Nat; // ! In chosen local currency
-        currency : Text;
-        narration : Text;
-        rate : Text;
+    public type ReferralStats = {
+        totalReferrals : Nat;
+        activeReferrals : Nat;
+        totalRewards : Nat;
     };
 
-    // public query func depositDetails() : async DepositDetails {
+    // Generate a random 5-character code
+    // private func generateCode() : Text {
+    //     let size = chars.size();
+    //     var code = "";
+    //     var i = 0;
+        
+    //     while (i < 5) {
+    //         // Using the byte-based random generator
+    //         let rand = switch (Random.byte()) {
+    //             case (?b) { Nat8.toNat(b) };
+    //             case null { 0 }; // Fallback if random fails
+    //         };
+    //         let index = rand % size;
+    //         code #= Char.toText(chars[index]);
+    //         i += 1;
+    //     };
+        
+    //     // Ensure uniqueness
+    //     if (CodeToPrincipalMap.get(code) != null) {
+    //         return generateCode(); // Recursively retry if collision
+    //     };
+    //     code
+    // };
 
-    // }
- 
+    // private func generateCode() : async Text {
+    //     let size = chars.size();
+    //     var code = "";
+    //     var i = 0;
+        
+    //     // Get random bytes (async)
+    //     let randBlob = switch (await Random.blob()) {
+    //         case (?blob) { blob };
+    //         case null { return await generateCode() }; // Retry if failed
+    //     };
+        
+    //     while (i < CODE_LENGTH) {
+    //         let byte = switch (Random.byteFrom(randBlob)) {
+    //             case (?b) { Nat8.toNat(b) };
+    //             case null { 0 };
+    //         };
+    //         let index = byte % size;
+    //         code #= Char.toText(chars[index]);
+    //         i += 1;
+    //     };
+        
+    //     if (CodeToPrincipalMap.get(code) != null) {
+    //         return await generateCode();
+    //     };
+    //     code
+    // };
+
+    // private func generateCode2() : Text {
+    //     let size = chars.size();
+    //     var code = "";
+    //     var i = 0;
+
+    //     let randRand = Random.Finite(await Random.blob());
+        
+    //     // Get enough random bytes for our needs
+    //     let randBytes = switch (randRand) {
+    //         case (blob) { blob };
+    //         case null { return generateCode() }; // Retry if failed
+    //     };
+        
+    //     while (i < CODE_LENGTH) {
+    //         let byte = switch (Random.byteFrom(randBytes)) {
+    //             case (?b) { Nat8.toNat(b) };
+    //             case null { 0 };
+    //         };
+    //         let index = byte % size;
+    //         code #= Char.toText(chars[index]);
+    //         i += 1;
+    //     };
+        
+    //     if (CodeToPrincipalMap.get(code) != null) {
+    //         return generateCode();
+    //     };
+    //     code
+    // };
+
+    // Get or create referral code for caller
+    // public shared ({ caller }) func getMyReferralCode(code : Text) : async Text {
+    //     switch (ReferralMap.get(caller)) {
+    //         case (?code) { code };
+    //         case null {
+    //             // let code = generateCode();
+    //             ReferralMap.put(caller, code);
+    //             CodeToPrincipalMap.put(code, caller);
+    //             return code
+    //         }
+    //     }
+    // };
+
+    public shared ({ caller}) func setCode(code : Text) : async Bool {
+        switch (ReferralMap.get(caller)) {
+            case (?code) { false };
+            case null {
+                ReferralMap.put(caller, code);
+                CodeToPrincipalMap.put(code, caller);
+                return true
+            }
+        }
+    };
+
+    // Get referral code for a given principal
+    public shared query func getReferralCode(principal : Principal) : async ?Text {
+        ReferralMap.get(principal)
+    };
+
+    // Lookup principal by referral code
+    public shared query func getPrincipalByCode(code : Text) : async ?Principal {
+        CodeToPrincipalMap.get(code)
+    };
+
+    // Validate a referral code
+    // public shared query func isValidReferralCode(code : Text) : async Bool {
+    //     if (code.size() != 5) return false;
+    //     for (c in code.chars()) {
+    //         if (not Array.contains<Char>(chars, c, Char.equal)) {
+    //             return false;
+    //         }
+    //     };
+    //     CodeToPrincipalMap.get(code) != null
+    // };
+
+    private func arrayContains<T>(array : [T], item : T, equal : (T, T) -> Bool) : Bool {
+        for (x in array.vals()) {
+            if (equal(x, item)) {
+                return true;
+            }
+        };
+        false
+    };
+
+    let CODE_LENGTH = 5;
+
+     public shared query func validateReferralCode(code : Text) : async Bool {
+        if (code.size() != CODE_LENGTH) return false;
+        for (c in code.chars()) {
+            if (not arrayContains<Char>(chars, c, Char.equal)) {
+                return false;
+            }
+        };
+        CodeToPrincipalMap.get(code) != null
+    };
+
 }

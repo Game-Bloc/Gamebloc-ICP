@@ -38,8 +38,7 @@ const CreateTournament = () => {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
   const { id } = useParams<{ id: string }>()
-  // const game_name = new URLSearchParams(location.search).get("title") || ""
-  const game_name = "Call of Duty Mobile"
+  const [game_name, setGame_Name] = useState<string | null>(null)
   const [color, setColor] = useState("#ffffff")
   const [poolPrize, setPoolPrize] = useState("")
   const [entryPrice, setEntryPrize] = useState("")
@@ -91,6 +90,11 @@ const CreateTournament = () => {
   }
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setGame_Name(params.get("title"))
+  }, [])
+
+  useEffect(() => {
     generateULID()
     getICPBalance()
     getProfile()
@@ -99,7 +103,7 @@ const CreateTournament = () => {
       setStartingDate(value)
     }
 
-    if (tourVariation === "Capped" || gameType === "1 v 1") {
+    if (tourVariation === "Capped" || gameType === "TeamvTeam") {
       setTournamentVariation({ Capped: null })
     } else {
       setTournamentVariation({ Infinite: null })
@@ -270,7 +274,7 @@ const CreateTournament = () => {
       : value === "BR Squad"
       ? setGameType("Squad")
       : value === "1 v 1"
-      ? setGameType("1 v 1")
+      ? setGameType("TeamvTeam")
       : setGameType("Single")
   }
 
@@ -356,13 +360,13 @@ const CreateTournament = () => {
       BigInt(+poolPrize),
       tournamentRules,
       startingDate,
-      gameType === "1 v 1" ? { Crowdfunded: null } : variantType,
+      gameType === "TeamvTeam" ? { Crowdfunded: null } : variantType,
       +entryPrice,
       +entryPrice,
-      gameType === "1 v 1" ? 1 : noOfWinners,
+      gameType === "TeamvTeam" ? 1 : noOfWinners,
       tourVariation === "infinite"
         ? BigInt(1000)
-        : gameType === "1 v 1"
+        : gameType === "TeamvTeam"
         ? BigInt(2)
         : BigInt(noOfUsers),
       gameType,
@@ -442,11 +446,11 @@ const CreateTournament = () => {
                               id == "1"
                                 ? `category1.png`
                                 : id == "2"
-                                ? loader1
+                                ? `cat2.png`
                                 : id == "3"
-                                ? loader2
+                                ? `cat3.png`
                                 : id == "4"
-                                ? loader3
+                                ? `cat4.png`
                                 : `gamepad.png`
                             }
                             alt=""
@@ -460,7 +464,7 @@ const CreateTournament = () => {
                         <p className=" text-[0.7rem] font-semibold sm:text-base  text-white ">
                           Host Tournament
                         </p>
-                        <div className="flex flex-wrap justify-end items-center gap-4">
+                        {/* <div className="flex flex-wrap justify-end items-center gap-4">
                           <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
                             <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                               Action
@@ -476,7 +480,7 @@ const CreateTournament = () => {
                               Shooting
                             </p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
 
@@ -559,7 +563,7 @@ const CreateTournament = () => {
                             />
                           </ConfigProvider>
                         </div>
-                        {gameType !== "1 v 1" && (
+                        {gameType !== "TeamvTeam" && (
                           <div className="flex mt-4 flex-col">
                             <p className=" mb-4 text-sm sm:text-base font-normal text-white">
                               Select Tournament Variation
@@ -601,7 +605,8 @@ const CreateTournament = () => {
                           </div>
                         )}
                       </div>
-                      {tourVariation === "Capped" && gameType !== "1 v 1" ? (
+                      {tourVariation === "Capped" &&
+                      gameType !== "TeamvTeam" ? (
                         <div className="flex-col  flex m-4 ">
                           <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">
                             Number of Participant
@@ -657,7 +662,7 @@ const CreateTournament = () => {
                         </p>
                       </div>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-                      {gameType !== "1 v 1" && (
+                      {gameType !== "TeamvTeam" && (
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
                           <div className="flex mt-4 flex-col">
                             <p className=" mb-4 text-sm sm:text-base font-normal text-white">
@@ -901,7 +906,7 @@ const CreateTournament = () => {
                       {tourType != "Prepaid" && (
                         <>
                           {tourVariation === "Infinite" &&
-                          gameType !== "1 v 1" ? (
+                          gameType !== "TeamvTeam" ? (
                             <div>
                               <div className="flex-col flex m-4 ">
                                 <p className="text-sm sm:text-base mt-[.8rem] font-normal text-white">

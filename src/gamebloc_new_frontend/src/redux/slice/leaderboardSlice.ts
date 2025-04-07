@@ -2,10 +2,9 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface LeaderboardState {
-  losses: number | null
+  principal: string | null
+  points: number | null
   name: string | null
-  point: number | null
-  wins: number | null
 }
 
 const initialState: LeaderboardState[] = []
@@ -14,8 +13,20 @@ export const leaderboardSlice = createSlice({
   name: "leaderboard",
   initialState,
   reducers: {
-    updateLeaderboard: (state, { payload }) => {
-      state.push(payload)
+    updateLeaderboard: (
+      state,
+      { payload }: PayloadAction<LeaderboardState>,
+    ) => {
+      // Find the index of the player with the same 'principal'
+      const existingPlayerIndex = state.findIndex(
+        (player) => player.principal === payload.principal,
+      )
+
+      if (existingPlayerIndex !== -1) {
+        state[existingPlayerIndex] = payload
+      } else {
+        state.push(payload)
+      }
     },
     clearBoard: () => {
       return initialState

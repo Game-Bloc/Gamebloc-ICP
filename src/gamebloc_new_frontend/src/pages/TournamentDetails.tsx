@@ -46,6 +46,11 @@ const TournamentDetail = () => {
     ? Object.keys(currentTournament.status)[0].toUpperCase() === "ARCHIVED"
     : false
 
+  useEffect(() => {
+    updateTournament()
+  }, [isAuthenticated])
+
+  // console.log("data", tournamentData)
   const items: TabsProps["items"] = [
     {
       key: "1",
@@ -101,15 +106,9 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     const img = new Image()
-    if (gameImage) {
-      setImageLoaded(true)
-    }
-    img.src = gameImage
+    img.src = `category1.png` // Using string literal
+    img.onload = () => setImageLoaded(true)
   }, [gameImage])
-
-  useEffect(() => {
-    updateTournament()
-  }, [isAuthenticated])
 
   if (status) {
     return (
@@ -188,16 +187,19 @@ const TournamentDetail = () => {
                             <div className="relative border-solid border border-[#2E3438] w-fit rounded-[0.625rem]">
                               <img
                                 src={
-                                  //   id == "1"
-                                  //     ? `category1.png`
-                                  //     : id == "2"
-                                  //     ? `category2.png`
-                                  //     : id == "3"
-                                  //     ? `category3.png`
-                                  //     : id == "4"
-                                  //     ? `category4.png`
-                                  //                                           :
-                                  `category1.png`
+                                  currentTournament.game.toUpperCase() ===
+                                  "CALL OF DUTY MOBILE"
+                                    ? `cat1.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "APEX LEGENDS MOBILE"
+                                    ? `cat2.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "FORTNITE"
+                                    ? `cat3.png`
+                                    : currentTournament.game.toUpperCase() ===
+                                      "CHESS"
+                                    ? `cat4.png`
+                                    : `cat1.png`
                                 }
                                 alt=""
                                 className="rounded-[0.625rem]"
@@ -233,7 +235,7 @@ const TournamentDetail = () => {
                                 />
                               </div>
                               <div className="flex absolute right-4 bottom-4 flex-wrap justify-end items-center gap-2 sm:gap-4">
-                                <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
+                                {/* <div className="rounded-[9999px] pt-[0.1rem] px-[.75rem] pb-[0.1rem] sm:px-[1.2rem] sm:pb-[0.4rem] sm:pt-[.3rem]  bg-[#FEE4E2] border-none">
                                   <p className=" text-[#D92D20] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                                     Action
                                   </p>
@@ -247,7 +249,7 @@ const TournamentDetail = () => {
                                   <p className=" text-[#039855] text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
                                     Shooting
                                   </p>
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           )}
@@ -369,8 +371,12 @@ const TournamentDetail = () => {
                                   alt=""
                                 />
                                 <p className=" text-white ml-2 sm:ml-4 text-[0.5rem] sm:text-[0.8rem] cursor-pointer font-medium">
-                                  {currentTournament.no_of_participants} Team
-                                  Slots
+                                  {Object.keys(
+                                    currentTournament.tournament_variation,
+                                  )[0].toUpperCase() == "INFINITE"
+                                    ? "Infinite"
+                                    : currentTournament.no_of_participants}{" "}
+                                  Team Slots
                                 </p>
                               </div>
                             </div>
