@@ -664,7 +664,9 @@ shared ({ caller }) actor class Kitchen() = this {
                 username = await get_username(caller);
                 principal = caller
             };
+            await setCode(caller);
             UpdatedUsersHashMap.put(caller, user);
+
 
             return await RustBloc.create_profile(profile, caller)
         } catch err {
@@ -2441,114 +2443,78 @@ shared ({ caller }) actor class Kitchen() = this {
     //     codesEntries := [];
     // };
 
+     // Store the current state of the random number generator
+    var state: Nat = 1;
+
+    let a: Nat = 1664525;  // multiplier
+    let c: Nat = 1013904223;  // increment
+    let m: Nat = 2**32;  // modulus
+
+    let charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    func nextRand() : Nat {
+        state := (a * state + c) % m;
+        return state;
+    };
+
+    func getRandomChar() : Char {
+        let rand = nextRand();
+        let index = rand % chars.size();
+        return chars[index];
+    };
+
+    public func generateCode() : async Text {
+        var code : [Char] = [];
+        for (_ in Iter.range(0, 4)) {
+            code := Array.append<Char>(code, [getRandomChar()]);
+        };
+        return Text.fromIter(Array.vals(code));
+    };
+
+    // generateCode for all users
+    public func generate_code_for_all_users() : async () {
+        var principals : [Principal] = await RustBloc.get_all_principals();
+        for (principal in principals.vals()) {
+            let code = await generateCode();
+            if (CodeToPrincipalMap.get(code) != null) {
+                await generate_code_for_all_users();
+            };
+            CodeToPrincipalMap.put(code, principal);
+            ReferralMap.put(principal, code);
+        };
+    };
+
+
+
+    // Update the state and generate a new random number
+    public query func generateRandomNumber() : async Nat {
+        // A simple LCG formula: state = (a * state + c) % m
+        state := (a * state + c) % m;
+        return state;
+    };
+
+
+
+    // Generate a random number within a given range (min, max)
+    public func generateRandomInRange(min: Nat, max: Nat) :  async Nat {
+        let randomNum = await generateRandomNumber();
+        return min + (randomNum % (max - min + 1));
+    };
+
     public type ReferralStats = {
         totalReferrals : Nat;
         activeReferrals : Nat;
         totalRewards : Nat;
     };
 
-    // Generate a random 5-character code
-    // private func generateCode() : Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
-        
-    //     while (i < 5) {
-    //         // Using the byte-based random generator
-    //         let rand = switch (Random.byte()) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 }; // Fallback if random fails
-    //         };
-    //         let index = rand % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     // Ensure uniqueness
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return generateCode(); // Recursively retry if collision
-    //     };
-    //     code
-    // };
 
-    // private func generateCode() : async Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
-        
-    //     // Get random bytes (async)
-    //     let randBlob = switch (await Random.blob()) {
-    //         case (?blob) { blob };
-    //         case null { return await generateCode() }; // Retry if failed
-    //     };
-        
-    //     while (i < CODE_LENGTH) {
-    //         let byte = switch (Random.byteFrom(randBlob)) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 };
-    //         };
-    //         let index = byte % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return await generateCode();
-    //     };
-    //     code
-    // };
-
-    // private func generateCode2() : Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
-
-    //     let randRand = Random.Finite(await Random.blob());
-        
-    //     // Get enough random bytes for our needs
-    //     let randBytes = switch (randRand) {
-    //         case (blob) { blob };
-    //         case null { return generateCode() }; // Retry if failed
-    //     };
-        
-    //     while (i < CODE_LENGTH) {
-    //         let byte = switch (Random.byteFrom(randBytes)) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 };
-    //         };
-    //         let index = byte % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return generateCode();
-    //     };
-    //     code
-    // };
-
-    // Get or create referral code for caller
-    // public shared ({ caller }) func getMyReferralCode(code : Text) : async Text {
-    //     switch (ReferralMap.get(caller)) {
-    //         case (?code) { code };
-    //         case null {
-    //             // let code = generateCode();
-    //             ReferralMap.put(caller, code);
-    //             CodeToPrincipalMap.put(code, caller);
-    //             return code
-    //         }
-    //     }
-    // };
-
-    public shared ({ caller}) func setCode(code : Text) : async Bool {
-        switch (ReferralMap.get(caller)) {
-            case (?code) { false };
-            case null {
-                ReferralMap.put(caller, code);
-                CodeToPrincipalMap.put(code, caller);
-                return true
-            }
-        }
+    public func setCode(caller : Principal) : async () {
+            var code = await generateCode();
+            while (CodeToPrincipalMap.get(code) != null) {
+                code := await generateCode(); // Regenerate code if it already exists
+            };
+            ReferralMap.put(caller, code);
+            CodeToPrincipalMap.put(code, caller);
     };
 
     // Get referral code for a given principal
@@ -2560,6 +2526,62 @@ shared ({ caller }) actor class Kitchen() = this {
     public shared query func getPrincipalByCode(code : Text) : async ?Principal {
         CodeToPrincipalMap.get(code)
     };
+
+    public query func get_my_referrals(caller : Principal) : async [Principal] {
+        let referrals = ReferralsMap.get(caller);
+        switch (referrals) {
+            case null {
+                return [];
+            };
+            case (?referrals) {
+                return referrals;
+            }
+        }
+    };
+
+    public func add_referral(caller : Principal, referral : Principal) : async () {
+        let referrals = ReferralsMap.get(referral);
+        switch (referrals) {
+            case null {
+                ReferralsMap.put(referral, [caller]);
+            };
+            case (?referrals) {
+                ReferralsMap.put(referral, Array.append<Principal>(referrals, [caller]));
+            }
+        }
+    };
+
+    public query func get_referral_code(caller : Principal) : async Text {
+        let code = ReferralMap.get(caller);
+        switch (code) {
+            case null {
+                return "";
+            };
+            case (?code) {
+                return code;
+            }
+        }
+    };
+
+    // public func get_referral_stats(caller : Principal) : async ReferralStats {
+    //     let stats = ReferralStatsMap.get(caller);
+    //     switch (stats) {
+    //         case null {
+    //             return {
+    //                 totalReferrals = 0;
+    //                 activeReferrals = 0;
+    //                 totalRewards = 0
+    //             };
+    //         };
+    //         case (?stats) {
+    //             return stats;
+    //         }
+    //     }
+    // };
+
+    // public func update_referral_stats(caller : Principal, stats : ReferralStats) : async () {
+    //     ReferralStatsMap.put(caller, stats);
+    // };
 
     // Validate a referral code
     // public shared query func isValidReferralCode(code : Text) : async Bool {
@@ -2585,14 +2607,14 @@ shared ({ caller }) actor class Kitchen() = this {
 
     let CODE_LENGTH = 5;
 
-     public shared query func validateReferralCode(code : Text) : async Bool {
-        if (code.size() != CODE_LENGTH) return false;
-        for (c in code.chars()) {
-            if (not arrayContains<Char>(chars, c, Char.equal)) {
-                return false;
-            }
-        };
-        CodeToPrincipalMap.get(code) != null
-    };
+    //  public shared query func validateReferralCode(code : Text) : async Bool {
+    //     if (code.size() != CODE_LENGTH) return false;
+    //     for (c in code.chars()) {
+    //         if (not arrayContains<Char>(chars, c, Char.equal)) {
+    //             return false;
+    //         }
+    //     };
+    //     CodeToPrincipalMap.get(code) != null
+    // };
 
 }
