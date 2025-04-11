@@ -2527,7 +2527,7 @@ shared ({ caller }) actor class Kitchen() = this {
         CodeToPrincipalMap.get(code)
     };
 
-    public shared query func get_AccountIdentifier_by_code(code : Text) : async ?Text {
+    public shared query func get_AccountIdentifier_by_code(code : Text) : async Text {
         let principal = CodeToPrincipalMap.get(code);
         switch (principal) {
             case null {
