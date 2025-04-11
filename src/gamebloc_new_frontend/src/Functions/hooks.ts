@@ -12,7 +12,11 @@ import {
 } from "../redux/slice/dailyStreak"
 import { updateBet } from "../redux/slice/wagerSlice"
 import { updateAdminProfile } from "../redux/slice/adminProfileSlice"
-import { updateKitchenBalance, updateNGN } from "../redux/slice/icpBalanceSlice"
+import {
+  updateKitchenBalance,
+  updateNGN,
+  updateReferralCode,
+} from "../redux/slice/icpBalanceSlice"
 import {
   addAdminTransactions,
   clearTransaction,
@@ -44,6 +48,7 @@ export const hooks = () => {
   const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
+  const [gettingCode, setGettingCode] = useState<boolean>(false)
   const admin_id = useAppSelector((state) => state.adminProfile.account_id)
 
   const popUp = (successMsg: string, route: any) => {
@@ -437,6 +442,22 @@ export const hooks = () => {
       dispatch(updateNGN(ngn))
     } catch (err) {}
   }
+  // REFERRAL CODE
+
+  const getReferralCode = async (principal: Principal, code: string) => {
+    try {
+      setGettingCode(true)
+      await whoamiActor.setCode(code)
+      const _code: any = await whoamiActor.getReferralCode(principal)
+
+      console.log("R-Code:", _code[0])
+      dispatch(updateReferralCode(_code[0]))
+      setGettingCode(false)
+    } catch (err) {
+      setGettingCode(false)
+      console.log("Error getting referral code:", err)
+    }
+  }
 
   return {
     bet,
@@ -448,6 +469,7 @@ export const hooks = () => {
     claimloading,
     activateloading,
     reward,
+    gettingCode,
     setAdmin,
     getAdminAccID,
     setTribunal,
@@ -466,6 +488,7 @@ export const hooks = () => {
     getAdminTransaction,
     getNairaExchangeRate,
     iWantToDeposit,
+    getReferralCode,
   }
 }
 
