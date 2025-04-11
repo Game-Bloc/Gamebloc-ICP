@@ -2508,7 +2508,7 @@ shared ({ caller }) actor class Kitchen() = this {
     };
 
 
-    public func setCode(caller : Principal) : async () {
+    func setCode(caller : Principal) : async () {
             var code = await generateCode();
             while (CodeToPrincipalMap.get(code) != null) {
                 code := await generateCode(); // Regenerate code if it already exists
@@ -2525,6 +2525,18 @@ shared ({ caller }) actor class Kitchen() = this {
     // Lookup principal by referral code
     public shared query func getPrincipalByCode(code : Text) : async ?Principal {
         CodeToPrincipalMap.get(code)
+    };
+
+    public shared query func get_AccountIdentifier_by_code(code : Text) : async ?Text {
+        let principal = CodeToPrincipalMap.get(code);
+        switch (principal) {
+            case null {
+                return null;
+            };
+            case (?principal) {
+                return AccountIdentifier.toText(AccountIdentifier.fromPrincipal(principal, null));
+            }
+        }
     };
 
     public query func get_my_referrals(caller : Principal) : async [Principal] {
