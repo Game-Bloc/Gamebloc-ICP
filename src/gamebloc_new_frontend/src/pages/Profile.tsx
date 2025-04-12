@@ -19,7 +19,6 @@ import { Principal } from "@dfinity/principal"
 import Stats from "../components/profileComp/stats/Stats"
 import MyPointCard from "../components/profileComp/MyPointCard"
 import hooks from "../Functions/hooks"
-import { nanoid } from "nanoid"
 import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
 import QrModal from "../components/Modals/Deposit/QrModal"
 import NairaDepositModal from "../components/Modals/Deposit/NairaDepositModal"
@@ -131,9 +130,7 @@ const Profile = () => {
   }
 
   const code = () => {
-    const code = nanoid(6)
-    console.log("code", code)
-    getReferralCode(_principal, code)
+    getReferralCode(_principal)
   }
 
   useEffect(() => {

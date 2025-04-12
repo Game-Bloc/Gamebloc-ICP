@@ -444,12 +444,10 @@ export const hooks = () => {
   }
   // REFERRAL CODE
 
-  const getReferralCode = async (principal: Principal, code: string) => {
+  const getReferralCode = async (principal: Principal) => {
     try {
       setGettingCode(true)
-      await whoamiActor.setCode(code)
       const _code: any = await whoamiActor.getReferralCode(principal)
-
       console.log("R-Code:", _code[0])
       dispatch(updateReferralCode(_code[0]))
       setGettingCode(false)
