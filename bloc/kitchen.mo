@@ -2423,12 +2423,7 @@ shared ({ caller }) actor class Kitchen() = this {
 
 
     // Character set for code generation
-    private let chars = [
-        '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-        'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-    ];
+    
 
     // Initialize on upgrade
     // system func preupgrade() {
@@ -2442,6 +2437,12 @@ shared ({ caller }) actor class Kitchen() = this {
     //     };
     //     codesEntries := [];
     // };
+    private let chars = [
+        '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+        'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    ];
 
      // Store the current state of the random number generator
     var state: Nat = 1;
