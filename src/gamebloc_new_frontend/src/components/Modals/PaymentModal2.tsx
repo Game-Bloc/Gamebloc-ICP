@@ -278,6 +278,7 @@ const PaymentModal2 = ({
                           onClick={() =>
                             done === true ? setActive("third") : create_tour()
                           }
+                          disabled={updating}
                           className="flex mt-8 text-black text-[.9rem] font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full bg-primary-second"
                         >
                           {updating ? (

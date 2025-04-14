@@ -315,27 +315,33 @@ const Profile = () => {
                             </div>
                           </div>
                         ) : (
-                          <div
+                          <button
                             onClick={() => {
                               code()
                             }}
+                            disabled={gettingCode}
                             className="pt-1 pb-[.15rem]  px-[.6rem] w-full  lg:w-[15rem] sm:px-4 text-[.85rem] sm:text-base text-black justify-center mt-8 sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3 "
                           >
                             {gettingCode ? (
-                              <ClipLoader
-                                color={color}
-                                loading={gettingCode}
-                                cssOverride={override}
-                                size={20}
-                                aria-label="Loading Spinner"
-                                data-testid="loader"
-                              />
+                              <div className="flex items-center  gap-2">
+                                <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                                  Wait
+                                </p>
+                                <ClipLoader
+                                  color={color}
+                                  loading={gettingCode}
+                                  cssOverride={override}
+                                  size={10}
+                                  aria-label="Loading Spinner"
+                                  data-testid="loader"
+                                />
+                              </div>
                             ) : (
                               <p className="font-semibold">
                                 Get Referral/Unique Code
                               </p>
                             )}
-                          </div>
+                          </button>
                         )}
                       </div>
                     </div>
