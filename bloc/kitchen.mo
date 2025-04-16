@@ -2691,36 +2691,6 @@ shared ({ caller }) actor class Kitchen() = this {
         ReferralMap.get(principal);  
     };
 
-    // public func get_referral_stats(caller : Principal) : async ReferralStats {
-    //     let stats = ReferralStatsMap.get(caller);
-    //     switch (stats) {
-    //         case null {
-    //             return {
-    //                 totalReferrals = 0;
-    //                 activeReferrals = 0;
-    //                 totalRewards = 0
-    //             };
-    //         };
-    //         case (?stats) {
-    //             return stats;
-    //         }
-    //     }
-    // };
-
-    // public func update_referral_stats(caller : Principal, stats : ReferralStats) : async () {
-    //     ReferralStatsMap.put(caller, stats);
-    // };
-
-    // Validate a referral code
-    // public shared query func isValidReferralCode(code : Text) : async Bool {
-    //     if (code.size() != 5) return false;
-    //     for (c in code.chars()) {
-    //         if (not Array.contains<Char>(chars, c, Char.equal)) {
-    //             return false;
-    //         }
-    //     };
-    //     CodeToPrincipalMap.get(code) != null
-    // };
 
     /// * @dev This function checks if an array contains a specific item using a custom equality function.
     private func arrayContains<T>(array : [T], item : T, equal : (T, T) -> Bool) : Bool {
@@ -2744,5 +2714,142 @@ shared ({ caller }) actor class Kitchen() = this {
     //     };
     //     CodeToPrincipalMap.get(code) != null
     // };
+
+    // Content
+    // var posts = HashMap.HashMap<Nat, Post>(0, Nat.equal, Hash.hash);
+    // var comments = HashMap.HashMap<Nat, [Comment]>(0, Nat.equal, Hash.hash);
+    // var reactions = HashMap.HashMap<Nat, ReactionStats>(0, Nat.equal, Hash.hash);
+    // var views = HashMap.HashMap<Nat, Nat>(0, Nat.equal, Hash.hash);
+
+    var profiles = HashMap.HashMap<Principal, Profile>(0, Principal.equal, Principal.hash);
+    
+    type Profile = {
+        username: Text;
+        bio: ?Text;
+        avatar: ?Blob;
+    };
+
+    // Social Graph
+    var followers = HashMap.HashMap<Principal, [Principal]>(0, Principal.equal, Principal.hash);
+    var following = HashMap.HashMap<Principal, [Principal]>(0, Principal.equal, Principal.hash);
+
+    var posters = HashMap.HashMap<Nat, Post>(0, Nat.equal, Hash.hash);
+    var comments = HashMap.HashMap<Nat, [Comment]>(0, Nat.equal, Hash.hash);
+    var reactions = HashMap.HashMap<Nat, ReactionStats>(0, Nat.equal, Hash.hash);
+    var views = HashMap.HashMap<Nat, Nat>(0, Nat.equal, Hash.hash);
+
+    type Post = {
+        author: Principal;
+        content: Text;
+        media: ?Blob;
+        timestamp: Int;
+    };
+
+    type Comment = {
+        author: Principal;
+        text: Text;
+        timestamp: Int;
+    };
+
+    type ReactionStats = {
+        likes: Nat;
+        dislikes: Nat;
+        reactors: [Principal]; // Track who reacted
+    };
+
+        // Follow a user
+    public shared({ caller }) func follow(target: Principal) : async () {
+        assert(caller != target);
+        
+        // Update follower list
+        let currentFollowers = switch(followers.get(target)); 
+        //orelse [];
+        switch(currentFollowers){
+            case(null){
+                followers.put(target, Array.append(currentFollowers, [caller]));
+        
+            // Update following list
+            let currentFollowing = following.get(caller); // orelse [];
+            following.put(caller, Array.append(currentFollowing, [target]));
+            }; case _ {
+                followers.put(target, Array.append(currentFollowers, [caller]));
+        
+                // Update following list
+                let currentFollowing = following.get(caller); // orelse [];
+                following.put(caller, Array.append(currentFollowing, [target]))
+            }
+        }
+        
+    };
+
+    // Unfollow 
+    public shared({ caller }) func unfollow(target: Principal) : async () {
+        let removePrincipal = func (p: Principal) : Bool { p != target };
+        
+        // Update both directions
+        followers.put(target, Array.filter(followers.get(target) , removePrincipal));
+        following.put(caller, Array.filter(following.get(caller) , removePrincipal));
+    };
+
+    stable var nextPostId : Nat = 0;
+
+    public shared({ caller }) func createPost(content: Text, media: ?Blob) : async Nat {
+        let postId = nextPostId;
+        posters.put(postId, {
+            author = caller;
+            content;
+            media;
+            timestamp = Time.now();
+        });
+        nextPostId += 1;
+        postId
+    };
+
+    public query func getPost(postId: Nat) : async ?Post {
+        posters.get(postId)
+    };
+
+    public shared({ caller }) func addComment(postId: Nat, text: Text) : async () {
+        let newComment = {
+            author = caller;
+            text;
+            timestamp = Time.now();
+        };
+        
+        comments.put(postId, 
+            Array.append(comments.get(postId), [newComment])
+        );
+    };
+
+    public shared({ caller }) func react(postId: Nat, isLike: Bool) : async () {
+        let stats = reactions.get(postId) orelse { likes = 0; dislikes = 0; reactors = [] };
+        
+        // Prevent duplicate reactions
+        if (Array.find(stats.reactors, func (p: Principal) : Bool { p == caller }) != null) return;
+        
+        reactions.put(postId, {
+            likes = if isLike stats.likes + 1 else stats.likes;
+            dislikes = if (isLike==false) {stats.dislikes + 1} else {stats.dislikes};
+            reactors = Array.append(stats.reactors, [caller]);
+        });
+    };
+
+    public shared({ caller }) func trackView(postId: Nat) : async () {
+        if (posters.get(postId) != null) {
+            views.put(postId, (views.get(postId) orelse 0) + 1);
+        };
+    };
+
+    public query func getFollowers(user: Principal) : async [Principal] {
+        followers.get(user);
+    };
+
+    public query func getFollowing(user: Principal) : async [Principal] {
+        following.get(user)
+    };
+
+    public query func getPostReactions(postId: Nat) : async ReactionStats {
+        reactions.get(postId) orelse { likes = 0; dislikes = 0; reactors = [] }
+    };
 
 }
