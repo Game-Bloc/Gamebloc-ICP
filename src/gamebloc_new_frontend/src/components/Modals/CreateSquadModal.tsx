@@ -66,15 +66,15 @@ const CreateSquadModal = ({ modal }: Props) => {
       "/dashboard",
     )
   }
-  const test = () => {
-    console.log("id_hash", idHash)
-    console.log("captain", captain)
-    console.log("status", { Open: null })
-    console.log("squadName", squadName)
-    console.log("tagName", tagName)
-    console.log("members", [captain])
-    console.log("requests", [])
-  }
+  // const test = () => {
+  //   console.log("id_hash", idHash)
+  //   console.log("captain", captain)
+  //   console.log("status", { Open: null })
+  //   console.log("squadName", squadName)
+  //   console.log("tagName", tagName)
+  //   console.log("members", [captain])
+  //   console.log("requests", [])
+  // }
 
   return (
     <div>
