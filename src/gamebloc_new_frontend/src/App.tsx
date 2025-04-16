@@ -22,7 +22,7 @@ import Leaderboard from "./pages/Leaderboard"
 import Series from "./pages/Series"
 import Blitzkrieg from "./pages/Blitzkrieg"
 import AdminHub from "./Admin/AdminPages/AdminHub"
-import NewPage from "./pages/NewPage"
+import Landing3 from "./pages/Landing3"
 import HowTo from "./pages/HowTo"
 import Wager from "./pages/Wager"
 import AdminProfile from "./Admin/AdminPages/AdminProfile"
@@ -33,7 +33,7 @@ const App = () => {
     <div>
       <React.Suspense fallback={<FallBackLoader />}>
         <Routes>
-          <Route path="/" element={<NewPage />} />
+          <Route path="/" element={<Landing3 />} />
           <Route element={<ProtectedRoutes userAuthState={isAuthenticated} />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/howto" element={<HowTo />} />
