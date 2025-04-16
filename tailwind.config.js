@@ -20,6 +20,9 @@ module.exports = {
         white: "#ffffff",
         black: "#000000",
         gray: "#808080",
+        button: "#F9CDFD",
+        lgradient: "#F8D0FF",
+        dgradient: "#735BD1",
         tremor: {
           brand: {
             faint: "#0B1229",
