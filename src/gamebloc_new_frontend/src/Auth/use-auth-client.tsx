@@ -32,6 +32,7 @@ import { useNavigate } from "react-router-dom"
 
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
+  notAuthenticated: boolean
   login: any
   loginNFID: any
   logout: any
@@ -45,6 +46,7 @@ const AuthContext = React.createContext<{
   indexActor: ActorSubclass<_SERVICE4> | null
 }>({
   isAuthenticated: false,
+  notAuthenticated: true,
   login: null,
   loginNFID: null,
   logout: null,
@@ -110,6 +112,7 @@ const defaultOptions = {
  */
 export const useAuthClient = (options = defaultOptions) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [notAuthenticated, setNotAuthenticated] = useState(true)
   const [authClient, setAuthClient] = useState(null)
   const [identity, setIdentity] = useState(null)
   const [principal, setPrincipal] = useState(null)
@@ -162,10 +165,12 @@ export const useAuthClient = (options = defaultOptions) => {
     try {
       const isAuthenticated = await client.isAuthenticated()
       setIsAuthenticated(isAuthenticated)
+      if (isAuthenticated == false) {
+        setNotAuthenticated(false)
+      }
 
       const identity = client.getIdentity()
       setIdentity(identity)
-      // console.log("identity", identity)
       const principal = identity.getPrincipal()
 
       setPrincipal(principal)
@@ -243,6 +248,7 @@ export const useAuthClient = (options = defaultOptions) => {
 
   return {
     isAuthenticated,
+    notAuthenticated,
     login,
     loginNFID,
     logout,

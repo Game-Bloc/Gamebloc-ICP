@@ -86,9 +86,13 @@ const SoloModal = ({
       <div className="flex w-full mt-4 justify-center items-center">
         <button
           onClick={() =>
-            done === true ? setActive("third") : joinAsSoloPlayer()
+            !isLoading &&
+            (done === true ? setActive("third") : joinAsSoloPlayer())
           }
-          className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
+          disabled={isLoading}
+          className={`pt-1 pb-[.15rem] ml-4 px-[1rem] sm:px-4 text-[.85rem] sm:text-sm text-black justify-center flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
           {isLoading ? (
             <div className="flex items-center  gap-2">

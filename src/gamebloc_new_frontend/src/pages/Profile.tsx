@@ -71,6 +71,7 @@ const Profile = () => {
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const squadId = useAppSelector((state) => state.userProfile.squad_badge)
   const initials = username!.substring(0, 2).toUpperCase()
+  const referralCode = useAppSelector((state) => state.IcpBalance.referralCode)
   const principalID = principal
   const {
     getProfile,
@@ -81,7 +82,13 @@ const Profile = () => {
     getTransactions,
     getNotificationId,
   } = useGameblocHooks()
-  const { kitchenBalance, getUserMail, getNairaExchangeRate } = hooks()
+  const {
+    gettingCode,
+    kitchenBalance,
+    getUserMail,
+    getNairaExchangeRate,
+    getReferralCode,
+  } = hooks()
   const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
 
@@ -104,7 +111,8 @@ const Profile = () => {
     getICPBalance()
     kitchenBalance()
     getTransactions(accountId)
-    console.log("ngn", ngn)
+    // console.log("ngn", ngn)
+    // console.log("Referral state:", referralCode)
   }, [isAuthenticated])
 
   // console.log("icp_price", _icp2Usd)
@@ -121,7 +129,17 @@ const Profile = () => {
     setFiatModal(!fiatModal)
   }
 
-  if (!isAuthenticated || isLoadingProfile) {
+  const code = () => {
+    getReferralCode(_principal)
+  }
+
+  useEffect(() => {
+    if (referralCode == " " || referralCode == undefined) {
+      code()
+    }
+  }, [isAuthenticated])
+
+  if (isLoadingProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <FallbackLoading />
@@ -143,9 +161,9 @@ const Profile = () => {
                   <h1 className="text-primary-second font-bold mt-4 text-base md:text-[1.5rem] 2xl:text-[2rem]">
                     Your profile
                   </h1>
-                  <div className="flex flex-col  lg:flex-row justify-around items-center ">
+                  <div className="flex flex-col  lg:flex-row justify-around items-center  ">
                     <div className=" flex flex-col w-full sm:w-fit justify-center  md:items-start md:justify-start  mt-8 bg-[#030C15]  p-4 rounded-[1.6rem]">
-                      <div className="flex">
+                      <div className="flex ">
                         <div className="mr-4 lg:mr-[3rem]">
                           <Avatar
                             style={{
@@ -233,12 +251,12 @@ const Profile = () => {
 
                       <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
-                      <div className="mt-[.5rem]  gap-6 flex flex-col  md:flex-row md:flex-wrap ">
+                      <div className="mt-[.5rem]  gap-6 flex flex-col lg:items-center   md:flex-row md:flex-wrap ">
                         <div className="flex flex-col justify-start">
                           <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                             Principal I.D{" "}
                           </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-[12rem] md:w-[15rem] rounded-md">
+                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-full md:w-[15rem] rounded-md">
                             <Copy textToCopy={principalID} />
                             <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
                               {principal
@@ -253,7 +271,7 @@ const Profile = () => {
                           <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                             Wallet Address{" "}
                           </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
+                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
                             <Copy textToCopy={accountId} />
                             <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                               {accountId
@@ -270,7 +288,7 @@ const Profile = () => {
                             <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
                               Squad I.D{" "}
                             </p>
-                            <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-[12rem] md:w-[15rem]">
+                            <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
                               <Copy textToCopy={squadId} />
                               <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                                 {squadId
@@ -281,6 +299,49 @@ const Profile = () => {
                               </h2>
                             </div>
                           </div>
+                        )}
+                      </div>
+                      <div className="w-full justify-center items-center">
+                        {referralCode != "" ? (
+                          <div className="flex flex-col justify-start mt-[1.5rem]">
+                            <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                              Referral/Unique I.D{" "}
+                            </p>
+                            <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
+                              <Copy textToCopy={referralCode} />
+                              <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                                {referralCode}
+                              </h2>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              code()
+                            }}
+                            disabled={gettingCode}
+                            className="pt-1 pb-[.15rem]  px-[.6rem] w-full  lg:w-[15rem] sm:px-4 text-[.85rem] sm:text-base text-black justify-center mt-8 sm:mt-[1.5rem] flex bg-primary-second rounded-md items-center cursor-pointer sm:py-3 "
+                          >
+                            {gettingCode ? (
+                              <div className="flex items-center  gap-2">
+                                <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                                  Wait
+                                </p>
+                                <ClipLoader
+                                  color={color}
+                                  loading={gettingCode}
+                                  cssOverride={override}
+                                  size={10}
+                                  aria-label="Loading Spinner"
+                                  data-testid="loader"
+                                />
+                              </div>
+                            ) : (
+                              <p className="font-semibold">
+                                Get Referral/Unique Code
+                              </p>
+                            )}
+                          </button>
                         )}
                       </div>
                     </div>

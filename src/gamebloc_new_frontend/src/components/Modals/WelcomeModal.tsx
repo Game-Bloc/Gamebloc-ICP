@@ -209,6 +209,7 @@ const WelcomeModal = ({ modal }: Props) => {
                   <div className="mt-8">
                     <button
                       onClick={() => submit()}
+                      disabled={isLoading}
                       className="justify-center h-[2rem] w-full px-6 text-[.6rem] sm:text-base text-black mt-[0.8rem]  sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[12px] items-center cursor-pointer py-3"
                     >
                       <div className="text-[0.65rem] font-bold sm:text-[.85rem]">
