@@ -104,7 +104,7 @@ const OngoingTournamentTable = () => {
       ),
     },
     {
-      title: "Game Mode",
+      title: "Mode",
       dataIndex: "game_type",
       key: "game_type",
       render: (text: any, record: any) => (
@@ -177,7 +177,7 @@ const OngoingTournamentTable = () => {
   return (
     <div className="">
       <div className="flex justify-between items-center my-8">
-        <div className="flex items-center">
+        <div className="flex  flex-wrap gap-4 items-center">
           <ConfigProvider
             theme={{
               algorithm: theme.defaultAlgorithm,
@@ -265,7 +265,7 @@ const OngoingTournamentTable = () => {
           </div>
         </div>
         <div className="flex justify-center items-center ">
-          <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
+          {/* <button className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] ">
             <IoMdAdd className="text-white text-[1.1rem] mr-5" />
             <p
               onClick={handleTournamenteModal}
@@ -273,7 +273,7 @@ const OngoingTournamentTable = () => {
             >
               New Tournament
             </p>
-          </button>
+          </button> */}
           {/* <button
             onClick={handleDelete}
             disabled={selectedRowKeys.length === 0}
@@ -301,6 +301,7 @@ const OngoingTournamentTable = () => {
           columns={columns}
           dataSource={dataSearch}
           rowKey={"id_hash"}
+          scroll={{ x: true }}
         />
       </ConfigProvider>
       {openTournamentModal && (
