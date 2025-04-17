@@ -515,9 +515,9 @@ const AdminViewTournamentDetails = () => {
           <AdminSidebar />
           <div className="flex flex-col w-full">
             <div className="m-4 ">
-              <div className="ml-[17rem]">
+              <div className="lg:ml-[17rem]">
                 <div className="mt-[4rem]">
-                  <h1 className="text-primary-second font-[600] text-[2rem]">
+                  <h1 className="text-primary-second font-[600] text-base lg:text-[2rem]">
                     Tournaments
                   </h1>
                   {data
@@ -530,16 +530,16 @@ const AdminViewTournamentDetails = () => {
                               <img
                                 src={`gamelogo.png`}
                                 alt=""
-                                className="w-[6.75rem] h-[6.375rem] m-0 object-fill"
+                                className="hidden lg:block w-[6.75rem] h-[6.375rem] m-0 object-fill"
                               />
                               <div className="flex flex-col ">
-                                <p className="text-[1.2rem]  font-semibold text-white">
+                                <p className="text-[0.9rem] lg:text-[1.2rem]  font-semibold text-white">
                                   {list.title}
                                 </p>
-                                <p className="text-[0.9rem] mb-[.7rem] text-[#E49A83]">
+                                <p className="text-[0.7rem] lg:text-[0.9rem] mb-[.7rem] text-[#E49A83]">
                                   {list.creator}
                                 </p>
-                                <div className="flex gap-4">
+                                <div className="flex flex-wrap gap-4">
                                   <div className="flex px-[12px] justify-center items-center bg-[#297FFF]/15 w-fit">
                                     <p className="text-[.7rem] text-[#ABCCFF]">
                                       {Object.keys(list.tournament_type)[0]}
@@ -652,7 +652,7 @@ const AdminViewTournamentDetails = () => {
                             </div>
                           </div>
                           {/* Row */}
-                          <div className="flex h-[12rem] flex-col">
+                          <div className="hidden lg:flex h-[12rem] flex-col">
                             <div className="w-full flex justify-end">
                               <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
                                 <img
@@ -794,7 +794,147 @@ const AdminViewTournamentDetails = () => {
                               ))}
                           </div>
                         </div>
-
+                        {/* MOBILE */}
+                        <div className=" flex lg:hidden p-4 flex-col">
+                          <div className="w-full flex mb-4 justify-end">
+                            <div className=" w-fit flex justify-end gap-4 items-center py-[.1rem] px-3 border border-[#BCBCBC] border-solid rounded-[6px]">
+                              <img
+                                src={
+                                  Object.keys(list.status)[0].toUpperCase() ===
+                                  "ACCEPTINGPLAYERS"
+                                    ? `ongoing-status.png`
+                                    : Object.keys(
+                                        list.status,
+                                      )[0].toUpperCase() === "GAMEINPROGRESS"
+                                    ? `ongoing-status.png`
+                                    : `ended.png`
+                                }
+                                className="m-0"
+                                alt=""
+                              />
+                              <p className="text-[#BCBCBC] text-[.8rem]">
+                                {Object.keys(list.status)[0].toUpperCase() ===
+                                "ACCEPTINGPLAYERS"
+                                  ? `Ongoing`
+                                  : Object.keys(
+                                      list.status,
+                                    )[0].toUpperCase() === "GAMEINPROGRESS"
+                                  ? `Ongoing`
+                                  : `Completed`}
+                              </p>
+                            </div>
+                          </div>
+                          {Object.keys(isMod[0])[0] === "Mod" &&
+                            (Object.keys(list.status)[0].toUpperCase() ===
+                            "GAMECOMPLETED" ? (
+                              <div className="flex h-full items-end">
+                                <button
+                                  onClick={() => setOpenPaymentModal(true)}
+                                  className="bg-[#039855] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                >
+                                  {sending ? (
+                                    <div className="flex items-center  gap-2">
+                                      <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                        Wait
+                                      </p>
+                                      <ClipLoader
+                                        color={color}
+                                        loading={sending}
+                                        cssOverride={override}
+                                        size={10}
+                                        aria-label="Loading Spinner"
+                                        data-testid="loader"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <>
+                                      <p className="ml-[.4rem] text-white text-[.8rem]">
+                                        {" "}
+                                        Pay Winners
+                                      </p>
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex h-full items-end">
+                                <div className="flex justify-between  gap-4 items-center ">
+                                  <button
+                                    onClick={() => setEndModal(true)}
+                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                  >
+                                    {isEnding ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={isEnding}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                        <p className="ml-[.4rem] text-white text-[.8rem]">
+                                          {" "}
+                                          End Tournament
+                                        </p>
+                                      </>
+                                    )}
+                                  </button>
+                                  <button
+                                    onClick={() => setOpenModal(true)}
+                                    className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer"
+                                  >
+                                    {updating ? (
+                                      <div className="flex items-center  gap-2">
+                                        <p className="text-[0.65rem] mr-2 text-white font-bold sm:text-[.85rem]">
+                                          Wait
+                                        </p>
+                                        <ClipLoader
+                                          color={color}
+                                          loading={updating}
+                                          cssOverride={override}
+                                          size={10}
+                                          aria-label="Loading Spinner"
+                                          data-testid="loader"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <>
+                                        {/* <PiPowerBold className="text-white text-[1.5rem] rotate-180" /> */}
+                                        <p className="ml-[.4rem] text-white text-[.8rem]">
+                                          {" "}
+                                          Archive Tournament
+                                        </p>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+                                {/* <div className="flex justify-between  gap-4 items-center ">
+                              <button className="bg-[#303B9C] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
+                                <GiMoneyStack className="text-white text-[1.5rem]" />
+                                <p className="ml-[.4rem]  text-white text-[.8rem]">
+                                  {" "}
+                                  Pay
+                                </p>
+                              </button>
+                              <button className="bg-[#BB1E10] flex justify-center items-center rounded-[7px] py-[.5rem] px-[1rem] h-[2.5rem] cursor-pointer">
+                                <PiPowerBold className="text-white text-[1.5rem] rotate-180" />
+                                <p className="ml-[.4rem] text-white text-[.8rem]">
+                                  {" "}
+                                  End
+                                </p>
+                              </button>
+                            </div> */}
+                              </div>
+                            ))}
+                        </div>
                         {Object.keys(list.tournament_type)[0].toUpperCase() !==
                           "BLITZKRIEG" && <WinnersBoard />}
 

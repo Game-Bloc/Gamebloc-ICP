@@ -230,6 +230,7 @@ const SquadListView = ({
           columns={columnsWithActions}
           dataSource={dataSource}
           rowKey="key"
+          scroll={{ x: true }}
         />
       </ConfigProvider>
 

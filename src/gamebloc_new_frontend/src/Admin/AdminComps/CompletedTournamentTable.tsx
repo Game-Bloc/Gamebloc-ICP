@@ -118,7 +118,7 @@ const CompletedTournamentTable = () => {
       key: "no_of_participants",
     },
     {
-      title: "",
+      title: "Action",
       key: "operation",
       render: (text: any, record: any) => (
         <div key={record.id_hash} className="flex items-center cursor-pointer">
