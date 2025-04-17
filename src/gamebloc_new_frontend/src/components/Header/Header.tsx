@@ -52,7 +52,7 @@ const Header = () => {
 
   const menus = [
     {
-      name: "Overview",
+      name: "Dashboard",
       action: () => {},
       link: "/dashboard",
       icon: MdDashboard,

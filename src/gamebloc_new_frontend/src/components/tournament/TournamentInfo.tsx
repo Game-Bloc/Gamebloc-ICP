@@ -18,6 +18,7 @@ import { hasDateReached, inProgress } from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
 import WagerModal from "../Modals/WagerModal"
 import hooks from "../../Functions/hooks"
+import Loader from "../Modals/Loader"
 interface Props {
   data: any
 }
@@ -246,7 +247,7 @@ const TournamentInfo = ({ data }: Props) => {
   if (updating) {
     return (
       <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
-        <FallbackLoading />
+        <Loader />
       </div>
     )
   } else {

@@ -108,7 +108,7 @@ const Admin = () => {
           <AdminSidebar />
           <div className="flex flex-col w-full">
             <div className="m-4 mt-[4rem]">
-              <div className="ml-[17rem]">
+              <div className="lg:ml-[17rem]">
                 <div className="flex justify-between items-center w-full">
                   <h1 className="text-primary-second font-[600] mt-4  text-[2rem]">
                     Dashboard

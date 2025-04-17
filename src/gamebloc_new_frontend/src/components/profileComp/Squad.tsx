@@ -6,6 +6,7 @@ import ViewSquadModal from "./ViewSquadModal"
 import { useGetAllSquad, useUpdateAllSquad } from "../../Functions/blochooks"
 import { useAppSelector } from "../../redux/hooks"
 import FallbackLoading from "../Modals/FallBackLoader"
+import Loader from "../Modals/Loader"
 
 const Squad = () => {
   const [modal, setModal] = useState<boolean>(false)
@@ -39,7 +40,7 @@ const Squad = () => {
   if (updating) {
     return (
       <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
-        <FallbackLoading />
+        <Loader />
       </div>
     )
   } else {

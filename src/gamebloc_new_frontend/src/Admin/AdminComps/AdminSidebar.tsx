@@ -31,7 +31,7 @@ const AdminSidebar = () => {
 
   return (
     <div
-      className={`  bg-[#050A11] min-h-screen fixed ${
+      className={` hidden lg:block  bg-[#050A11] min-h-screen fixed ${
         open ? "w-[13rem]" : "w-[4.5rem]"
       } duration-500 px-4 mt-[5rem] `}
     >

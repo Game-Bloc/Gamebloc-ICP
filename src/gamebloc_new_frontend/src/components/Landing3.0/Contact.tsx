@@ -30,11 +30,11 @@ function Contact() {
     })
   }
 
-  const errorPopUp = () => {
+  const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
       position: "center",
       icon: "error",
-      text: "Failed",
+      text: errorMsg,
       showConfirmButton: true,
       background: "#01070E",
       color: "#fff",
@@ -53,6 +53,9 @@ function Contact() {
   }
 
   const handleSubmit = () => {
+    if (email.trim() == "") {
+      return errorPopUp("Email address field is Empty")
+    }
     if (email) {
       setLoading(true)
       fetch(`/api/memberAdd?email=${email}`)
@@ -77,7 +80,7 @@ function Contact() {
         })
         .catch((err) => {
           setLoading(false)
-          errorPopUp() // Show error popup
+          errorPopUp("Something went wrong") // Show error popup
           console.error("Error:", err)
         })
     }
@@ -104,7 +107,7 @@ function Contact() {
           <input
             type="text"
             placeholder="Enter your email address"
-            className="bg-[#3B3A3A] border-y border-l border-white text-white text-[10px] md:text-base p-2 rounded-l-sm w-2/3 md:w-1/2 outline-none focus:ring-0 border-r-0"
+            className="bg-[#3B3A3A] bg-[transparent]  border-y border-l border-white/20 text-white text-[10px] md:text-base p-2 rounded-l-sm w-2/3 md:w-1/2 outline-none focus:ring-0 border-r-0"
             onChange={onChange}
             value={email}
           />
@@ -113,14 +116,19 @@ function Contact() {
               <button
                 className={` h-full bg-button px-3 py-2 md:px-10 md:py-3 rounded-sm font-opsans text-[10px] md:text-xs hover:bg-gradient-to-r from-[#F6B8FC] to-[#E875FC] transition-all`}
               >
-                <ClipLoader
-                  color={color}
-                  loading={loading}
-                  cssOverride={override}
-                  size={20}
-                  aria-label="Loading Spinner"
-                  data-testid="loader"
-                />
+                <div className="flex items-center gap-2">
+                  <p className="text-[0.65rem] mr-2 font-bold sm:text-[.85rem]">
+                    Wait
+                  </p>
+                  <ClipLoader
+                    color={color}
+                    loading={loading}
+                    cssOverride={override}
+                    size={10}
+                    aria-label="Loading Spinner"
+                    data-testid="loader"
+                  />
+                </div>
               </button>
             ) : (
               <Button

@@ -155,28 +155,28 @@ function WelcomeModal2() {
       className={`w-screen h-screen bg-[#222226] py-5 fixed lg:inset-0 top-0 left-0 z-50 flex justify-center items-center bg-opacity-80 backdrop-blur-sm $`}
     >
       <div className="flex flex-col gap-3 lg:gap-6 py-8 px-8 w-max max-w-[90%] bg-[#151718] rounded-md ">
-        <h1 className="font-valorant text-center text-2xl gradient-text text-transparent bg-gradient-to-r from-[#F6B8FC] to-[#E875FC]">
+        <h1 className="font-valorant text-center text-lg lg:text-2xl gradient-text text-transparent bg-gradient-to-r from-[#F6B8FC] to-[#E875FC]">
           SET UP YOUR GAMEBLOC PROFILE
         </h1>
         <div className="flex justify-between flex-col lg:flex-row gap-5">
           {((mobile && page === "user details") || !mobile) && (
             <div className="w-full lg:border-b-0  border-[#D0D0D5] lg:pb-10 flex flex-col gap-2">
-              <h1 className="font-body text-xl mb-5 text-[#FBFBFC] font-semibold text-center">
+              <h1 className="font-body text-base lg:text-xl mb-5 text-[#FBFBFC] font-semibold text-center">
                 User Details
               </h1>
               <form action="" className="flex flex-col gap-3">
                 <div className="flex flex-col gap-1">
                   <label
                     htmlFor="username"
-                    className="text-[#FBFBFC] text-lg font-body font-semibold"
+                    className="text-[#FBFBFC] text-[0.9rem] font-body font-semibold"
                   >
                     Username
                   </label>
                   <input
                     type="text"
                     name="username"
-                    className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
-                    placeholder="Enter your username. You cannot change this in the future"
+                    className="bg-transparent px-3 py-5 h-[2rem] border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
+                    placeholder="Username"
                     onChange={onChangeUsername}
                     value={userName}
                   />
@@ -184,31 +184,36 @@ function WelcomeModal2() {
                 <div className="flex flex-col gap-1">
                   <label
                     htmlFor="email"
-                    className="text-[#FBFBFC] text-lg font-semibold font-body"
+                    className="text-[#FBFBFC] text-[0.9rem] font-semibold font-body"
                   >
                     Email
                   </label>
                   <input
                     type="text"
                     name="email"
-                    className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
-                    placeholder="Enter your email address"
+                    className="bg-transparent px-3 py-5 h-[2rem] border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
+                    placeholder="Email address"
                     onChange={onChangeMail}
                     value={mail}
                   />
                 </div>
+                {emailError && (
+                  <p className="text-red-500 text-center text-xs mt-2">
+                    {emailError}
+                  </p>
+                )}
                 <div className="flex flex-col gap-1">
                   <label
                     htmlFor="dob"
-                    className="text-[#FBFBFC] text-lg font-semibold font-body"
+                    className="text-[#FBFBFC] text-[0.9rem] font-semibold font-body"
                   >
                     Age
                   </label>
                   <input
                     type="number"
                     name="email"
-                    className="bg-transparent px-3 py-5 border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
-                    placeholder="Enter your age"
+                    className="bg-transparent px-3 py-5 h-[2rem] border border-[#D0D0D5] w-full focus:outline-none rounded-sm text-sm text-white font-body"
+                    placeholder="Age"
                     value={age}
                     onChange={onChangeAge}
                   />
@@ -221,17 +226,23 @@ function WelcomeModal2() {
               </form>
               <button
                 onClick={() => submit()}
+                disabled={isLoading}
                 className=" w-max ml-auto mt-3 font-body px-5 md:px-8 py-3 md:py-3 bg-[#F9CDFD] font-semibold text-xs md:text-sm rounded-sm  hover:bg-gradient-to-r hover:from-[#F9CDFD] hover:to-[#E875FC]  transition-all duration-200 ease-in-out"
               >
                 {isLoading ? (
-                  <ClipLoader
-                    color={color}
-                    loading={isLoading}
-                    cssOverride={override}
-                    size={10}
-                    aria-label="Loading Spinner"
-                    data-testid="loader"
-                  />
+                  <div className="flex items-center gap-2">
+                    <p className="text-[0.65rem] mr-2 font-bold sm:text-[.85rem]">
+                      Wait
+                    </p>
+                    <ClipLoader
+                      color={color}
+                      loading={isLoading}
+                      cssOverride={override}
+                      size={10}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  </div>
                 ) : (
                   "Enter Gamebloc"
                 )}
