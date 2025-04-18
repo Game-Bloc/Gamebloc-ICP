@@ -2762,33 +2762,47 @@ shared ({ caller }) actor class Kitchen() = this {
         assert(caller != target);
         
         // Update follower list
-        let currentFollowers = switch(followers.get(target)); 
+        let currentFollowers = followers.get(target); 
         //orelse [];
         switch(currentFollowers){
             case(null){
-                followers.put(target, Array.append(currentFollowers, [caller]));
+                followers.put(target, Array.append([], [caller]));
         
             // Update following list
             let currentFollowing = following.get(caller); // orelse [];
-            following.put(caller, Array.append(currentFollowing, [target]));
-            }; case _ {
+            following.put(caller, Array.append([], [target]));
+            }; case (?currentFollowers) {
                 followers.put(target, Array.append(currentFollowers, [caller]));
         
                 // Update following list
                 let currentFollowing = following.get(caller); // orelse [];
-                following.put(caller, Array.append(currentFollowing, [target]))
+                switch(currentFollowing){
+                    case(null) {
+                        following.put(caller, Array.append([], [target]));
+                    }; case (?currentFollowing) {
+                        following.put(caller, Array.append(currentFollowing, [target]));
+                    };
+                }
+                // following.put(caller, Array.append(currentFollowing, [target]))
             }
         }
-        
     };
 
     // Unfollow 
     public shared({ caller }) func unfollow(target: Principal) : async () {
         let removePrincipal = func (p: Principal) : Bool { p != target };
-        
-        // Update both directions
-        followers.put(target, Array.filter(followers.get(target) , removePrincipal));
-        following.put(caller, Array.filter(following.get(caller) , removePrincipal));
+        var _target = followers.get(target);
+        var _caller = followers.get(caller);
+        switch(_target){
+            case(?_target){
+                followers.put(target, Array.filter(_target , removePrincipal));
+            }; case _ {};
+        };
+        switch(_caller){
+            case(?_caller){
+                followers.put(caller, Array.filter(_caller, removePrincipal));
+            }; case _ {};
+        };
     };
 
     stable var nextPostId : Nat = 0;
@@ -2815,41 +2829,73 @@ shared ({ caller }) actor class Kitchen() = this {
             text;
             timestamp = Time.now();
         };
+        var _comment = comments.get(postId);
+        switch(_comment){
+            case(?_comment){
+                comments.put(postId, 
+                    Array.append(_comment, [newComment])
+                );
+            }; case _ {};
+        }
         
-        comments.put(postId, 
-            Array.append(comments.get(postId), [newComment])
-        );
     };
 
     public shared({ caller }) func react(postId: Nat, isLike: Bool) : async () {
-        let stats = reactions.get(postId) orelse { likes = 0; dislikes = 0; reactors = [] };
-        
+        // let _stats = reactions.get(postId);
+
+        let stats = reactions.get(postId); //orelse { likes = 0; dislikes = 0; reactors = [] };
+        switch(stats){
+            case(?stats){
+                if (Array.find(stats.reactors, func (p: Principal) : Bool { p == caller }) != null) return;
+                
+                reactions.put(postId, {
+                    likes = if isLike stats.likes + 1 else stats.likes;
+                    dislikes = if (isLike==false) {stats.dislikes + 1} else {stats.dislikes};
+                    reactors = Array.append(stats.reactors, [caller]);
+                });
+            }; case _ {
+                
+            }
+        }
         // Prevent duplicate reactions
-        if (Array.find(stats.reactors, func (p: Principal) : Bool { p == caller }) != null) return;
         
-        reactions.put(postId, {
-            likes = if isLike stats.likes + 1 else stats.likes;
-            dislikes = if (isLike==false) {stats.dislikes + 1} else {stats.dislikes};
-            reactors = Array.append(stats.reactors, [caller]);
-        });
     };
 
     public shared({ caller }) func trackView(postId: Nat) : async () {
-        if (posters.get(postId) != null) {
-            views.put(postId, (views.get(postId) orelse 0) + 1);
-        };
+        let _view = views.get(postId);
+        switch(_view){
+            case(?_view){
+                if (posters.get(postId) != null) {
+                    views.put(postId, (_view) + 1);
+                };
+            }; case(null){
+                if (posters.get(postId) != null) {
+                    views.put(postId, (0) + 1);
+                };
+            }
+        }
+       
     };
 
-    public query func getFollowers(user: Principal) : async [Principal] {
+    public query func getFollowers(user: Principal) : async ?[Principal] {
         followers.get(user);
     };
 
-    public query func getFollowing(user: Principal) : async [Principal] {
+    public query func getFollowing(user: Principal) : async ?[Principal] {
         following.get(user)
     };
 
     public query func getPostReactions(postId: Nat) : async ReactionStats {
-        reactions.get(postId) orelse { likes = 0; dislikes = 0; reactors = [] }
+        let _reaction = reactions.get(postId);
+        switch(_reaction){
+            case(?_reaction){
+                return _reaction;
+            }; case _ {
+                return {
+                    likes = 0; dislikes = 0; reactors = []
+                }
+            }
+        }
     };
 
 }
