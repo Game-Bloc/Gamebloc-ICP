@@ -119,6 +119,7 @@ shared ({ caller }) actor class Kitchen() = this {
 
     // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
     private var logData = Buffer.Buffer<Text>(0);
+    private var accountData = Buffer.Buffer<AccountIdentifier>(0);
     // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
     /// stabilizing the motoko backup
@@ -2423,12 +2424,11 @@ shared ({ caller }) actor class Kitchen() = this {
 
     let chars = [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-        'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'O',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-        'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-        'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
-        'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+        'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'O', 'S', 'T', 
+        'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 
+        'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
+        'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
         'y', 'z'
     ];
 
@@ -2452,7 +2452,7 @@ shared ({ caller }) actor class Kitchen() = this {
         let input = Principal.toText(principal) # Nat.toText(nonce);
         let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
         
-        // Convert hash to your code format
+        // Convert hash to code format
         var code = "";
         for (i in Iter.range(0, 4)) {
             let byte = hash[i % hash.size()];
@@ -2524,8 +2524,7 @@ shared ({ caller }) actor class Kitchen() = this {
 
 
     // func setCode(caller : Principal) : async () {
-    //         var code = await updateReferralCode(caller);
-            
+    //     var code = await updateReferralCode(caller)    
     // };
 
     // Get referral code for a given principal
@@ -2836,8 +2835,7 @@ shared ({ caller }) actor class Kitchen() = this {
                     Array.append(_comment, [newComment])
                 );
             }; case _ {};
-        }
-        
+        }  
     };
 
     public shared({ caller }) func react(postId: Nat, isLike: Bool) : async () {
@@ -2857,8 +2855,7 @@ shared ({ caller }) actor class Kitchen() = this {
                 
             }
         }
-        // Prevent duplicate reactions
-        
+        // Prevent duplicate reactions   
     };
 
     public shared({ caller }) func trackView(postId: Nat) : async () {
@@ -2873,8 +2870,7 @@ shared ({ caller }) actor class Kitchen() = this {
                     views.put(postId, (0) + 1);
                 };
             }
-        }
-       
+        } 
     };
 
     public query func getFollowers(user: Principal) : async ?[Principal] {

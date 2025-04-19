@@ -19,3 +19,11 @@ actor class LedgerClient(ledgerCanisterId : Principal) = this {
 
 
 }
+
+// todo: 
+// - get all accountidentifiers
+// - loop through the identifiers
+// - for each, check the account transactions
+// - have nonce for each user to determine the start, and max result.(To reduce cycles burnt and latency in calling the function in the future)
+// - add the sum for a period.
+// - Check for transfer() and transferFrom()
