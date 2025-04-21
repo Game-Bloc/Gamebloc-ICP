@@ -25,6 +25,7 @@ import Prepaid from "../components/dashboardComps/Prepaid"
 import hooks from "../Functions/hooks"
 import { IoIosCreate } from "react-icons/io"
 import { MdOutlineCreate } from "react-icons/md"
+import WelcomeModal2 from "../components/Modals/WelcomeModal2"
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -157,7 +158,8 @@ const Dashboard = () => {
         </ConfigProvider>
         {openModal && <FeedbackModal modal={handleModal} />}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
-        {accountModal && <WelcomeModal modal={handleAccModal} />}
+        {accountModal && <WelcomeModal2 />}
+        {/* {accountModal && <WelcomeModal modal={handleAccModal} />} */}
       </div>
     )
   }

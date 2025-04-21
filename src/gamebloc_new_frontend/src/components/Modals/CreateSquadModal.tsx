@@ -4,6 +4,7 @@ import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
 import { ulid } from "ulid"
 import ClipLoader from "react-spinners/ClipLoader"
+import { errorPopUp } from "../utils/ErrorModal"
 interface Props {
   modal: () => void
 }
@@ -47,6 +48,10 @@ const CreateSquadModal = ({ modal }: Props) => {
   }, [])
 
   const addSquad = () => {
+    if (squadName.trim() === "" || tagName.trim() === "") {
+      return errorPopUp("Please fill in all fields")
+    }
+
     createSquad(
       idHash,
       captain,
@@ -61,15 +66,15 @@ const CreateSquadModal = ({ modal }: Props) => {
       "/dashboard",
     )
   }
-  const test = () => {
-    console.log("id_hash", idHash)
-    console.log("captain", captain)
-    console.log("status", { Open: null })
-    console.log("squadName", squadName)
-    console.log("tagName", tagName)
-    console.log("members", [captain])
-    console.log("requests", [])
-  }
+  // const test = () => {
+  //   console.log("id_hash", idHash)
+  //   console.log("captain", captain)
+  //   console.log("status", { Open: null })
+  //   console.log("squadName", squadName)
+  //   console.log("tagName", tagName)
+  //   console.log("members", [captain])
+  //   console.log("requests", [])
+  // }
 
   return (
     <div>
@@ -123,20 +128,26 @@ const CreateSquadModal = ({ modal }: Props) => {
                   </div>
                   <div className="flex w-full mt-4 justify-end">
                     <button
+                      disabled={isLoading}
                       onClick={() => addSquad()}
                       className="pt-1 pb-[.15rem] ml-4  px-[.6rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-lg items-center cursor-pointer sm:py-2"
                     >
                       {isLoading ? (
-                        <ClipLoader
-                          color={color}
-                          loading={isLoading}
-                          cssOverride={override}
-                          size={10}
-                          aria-label="Loading Spinner"
-                          data-testid="loader"
-                        />
+                        <div className="flex items-center  gap-2">
+                          <p className="text-[0.65rem] mr-2  font-bold sm:text-[.85rem]">
+                            Wait
+                          </p>
+                          <ClipLoader
+                            color={color}
+                            loading={isLoading}
+                            cssOverride={override}
+                            size={10}
+                            aria-label="Loading Spinner"
+                            data-testid="loader"
+                          />
+                        </div>
                       ) : (
-                        <p className="font-semibold">Create</p>
+                        <p className="font-semibold">create</p>
                       )}
                     </button>
                   </div>
