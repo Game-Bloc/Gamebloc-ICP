@@ -95,6 +95,14 @@ const CreateTournament = () => {
   }, [])
 
   useEffect(() => {
+    if (game_name === "Chess") {
+      setGameType("TeamvTeam")
+      setTournamentVariation({ Capped: null })
+      setVariantType({ Crowdfunded: null })
+    }
+  }, [game_name])
+
+  useEffect(() => {
     generateULID()
     getICPBalance()
     getProfile()
@@ -514,59 +522,13 @@ const CreateTournament = () => {
                         Game Details
                       </p>
                       <div className="my-4 border border-solid border-[#2E3438] w-full" />
-
-                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
-                        <div className="flex mt-4 flex-col">
-                          <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                            Game Type
-                          </p>
-                          <ConfigProvider
-                            theme={{
-                              algorithm: theme.defaultAlgorithm,
-                              token: {
-                                colorPrimaryActive: "#F6B8FC",
-                                colorPrimary: "#F6B8FC",
-                                colorPrimaryHover: "#F6B8FC",
-                                colorText: "#fff",
-                                colorBorder: "#595959",
-                                colorBgContainer: "#01070E",
-                                colorBgElevated: "#01070E",
-                                controlOutline: "transparent",
-                                colorTextBase: "#ffffff",
-                                controlItemBgActive: "#f6b8fc86",
-                              },
-                            }}
-                          >
-                            <Select
-                              placeholder="Select game play mode"
-                              optionFilterProp="children"
-                              onChange={handleGameTYpe}
-                              filterOption={filterOption}
-                              options={[
-                                {
-                                  value: "1 v 1",
-                                  label: "1 v 1",
-                                },
-                                {
-                                  value: "MP/BR Single",
-                                  label: "MP/BR Single",
-                                },
-                                {
-                                  value: "BR Duo",
-                                  label: "BR Duo",
-                                },
-                                {
-                                  value: "BR Squad",
-                                  label: "BR Squad",
-                                },
-                              ]}
-                            />
-                          </ConfigProvider>
-                        </div>
-                        {gameType !== "TeamvTeam" && (
+                      {game_name === "Chess" ? (
+                        <></>
+                      ) : (
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center m-4 ">
                           <div className="flex mt-4 flex-col">
                             <p className=" mb-4 text-sm sm:text-base font-normal text-white">
-                              Select Tournament Variation
+                              Game Type
                             </p>
                             <ConfigProvider
                               theme={{
@@ -586,25 +548,74 @@ const CreateTournament = () => {
                               }}
                             >
                               <Select
-                                placeholder="Tournament Variation"
+                                placeholder="Select game play mode"
                                 optionFilterProp="children"
-                                onChange={handleTournamentVariationChange}
-                                filterOption={filterOption1}
+                                onChange={handleGameTYpe}
+                                filterOption={filterOption}
                                 options={[
                                   {
-                                    value: "Capped",
-                                    label: "Capped",
+                                    value: "1 v 1",
+                                    label: "1 v 1",
                                   },
                                   {
-                                    value: "Infinite",
-                                    label: "Infinite",
+                                    value: "MP/BR Single",
+                                    label: "MP/BR Single",
+                                  },
+                                  {
+                                    value: "BR Duo",
+                                    label: "BR Duo",
+                                  },
+                                  {
+                                    value: "BR Squad",
+                                    label: "BR Squad",
                                   },
                                 ]}
                               />
                             </ConfigProvider>
                           </div>
-                        )}
-                      </div>
+                          {gameType !== "TeamvTeam" && (
+                            <div className="flex mt-4 flex-col">
+                              <p className=" mb-4 text-sm sm:text-base font-normal text-white">
+                                Select Tournament Variation
+                              </p>
+                              <ConfigProvider
+                                theme={{
+                                  algorithm: theme.defaultAlgorithm,
+                                  token: {
+                                    colorPrimaryActive: "#F6B8FC",
+                                    colorPrimary: "#F6B8FC",
+                                    colorPrimaryHover: "#F6B8FC",
+                                    colorText: "#fff",
+                                    colorBorder: "#595959",
+                                    colorBgContainer: "#01070E",
+                                    colorBgElevated: "#01070E",
+                                    controlOutline: "transparent",
+                                    colorTextBase: "#ffffff",
+                                    controlItemBgActive: "#f6b8fc86",
+                                  },
+                                }}
+                              >
+                                <Select
+                                  placeholder="Tournament Variation"
+                                  optionFilterProp="children"
+                                  onChange={handleTournamentVariationChange}
+                                  filterOption={filterOption1}
+                                  options={[
+                                    {
+                                      value: "Capped",
+                                      label: "Capped",
+                                    },
+                                    {
+                                      value: "Infinite",
+                                      label: "Infinite",
+                                    },
+                                  ]}
+                                />
+                              </ConfigProvider>
+                            </div>
+                          )}
+                        </div>
+                      )}
                       {tourVariation === "Capped" &&
                       gameType !== "TeamvTeam" ? (
                         <div className="flex-col  flex m-4 ">

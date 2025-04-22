@@ -22,7 +22,7 @@ const NewPage = () => {
   const { getProfile, getProfile2, isLoadingProfile, isAccount } =
     useGameblocHooks()
   const state = useAppSelector((state) => state.userProfile.initializeState)
-  const userSession = sessionStorage.getItem("userSession")
+  const userSession = localStorage.getItem("userSession")
 
   const handleModal = () => {
     setOpenModal(!openModal)
@@ -34,7 +34,6 @@ const NewPage = () => {
   console.log("state", state)
 
   useEffect(() => {
-    localStorage.setItem("userSession", "false")
     if (isAuthenticated) {
       getProfile()
       if (state) {
