@@ -11,7 +11,6 @@ const LOCAL_II_CANISTER = "http://bkyz2-fmaaa-aaaaa-qaaaq-cai.localhost:4943"
 // const LOCAL_II_CANISTER = "http://bd3sg-teaaa-aaaaa-qaaba-cai.localhost:4943"
 // const LOCAL_II_CANISTER = "http://bw4dl-smaaa-aaaaa-qaacq-cai.localhost:4943"
 // const LOCAL_II_CANISTER = "http://by6od-j4aaa-aaaaa-qaadq-cai.localhost:4943"
-
 const network =
   process.env.DFX_NETWORK ||
   (process.env.NODE_ENV === "production" ? "ic" : "local")

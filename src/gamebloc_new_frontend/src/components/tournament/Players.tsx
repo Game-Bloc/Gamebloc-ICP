@@ -38,6 +38,9 @@ const Players = ({ data }: Props) => {
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
+  const players = squad.filter((player: any) =>
+    player.members.some((member: any) => member.name === owner),
+  )
 
   const override = {
     display: "block",
@@ -143,7 +146,13 @@ const Players = ({ data }: Props) => {
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#FFA500] rounded-md items-center sm:py-2">
                   <p className="font-semibold">In progress</p>
                 </button>
-              ) : principal !== "" ? (
+              ) : principal !== "" &&
+                players.map((squad: any) => squad.captain)[0] === owner &&
+                data.game_type.toUpperCase() === "TEAMVTEAM" ? (
+                <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#63aa88] rounded-md items-center sm:py-2">
+                  <p className="font-semibold">Add more squad players</p>
+                </button>
+              ) : players !== "" ? (
                 <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#63aa88] rounded-md items-center sm:py-2">
                   <p className="font-semibold">Joined</p>
                 </button>
