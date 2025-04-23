@@ -1,3 +1,50 @@
+## Tournament-as-a-service(TAAS)
+- Users should be able to toggle from a `base user` to `creator` mode.
+    Something like - 
+    ```javascript
+        UserMode {
+            #Creator;
+            #Base;
+            #Moderator
+        }
+        UserStruct {
+            ...
+            usermode : UserMode;
+        }
+    ```
+- Tournaments should be able to take certain fields like 
+    - Moderators(creator is automatically one and can add others)
+    - To be private or public
+    - set entry fee
+
+Note - When a user tries to create a tournament, it automatically toggles to creator mode.
+
+- Users should be able to:
+    - get their tournaments
+    - Revenue, like a statistics of their earnings
+
+A model around entry fee - For example a tournamnet is being created and entry fee is 10 dollars, it would be set that the winners - 60%, creator - 30%, platform- 10%. It depends. This can be refined or better ideas are adviced.
+
+
+## Flow for a Squad Tournament (e.g. COD Mobile):
+- Tournament Creator sets:
+	•	isTeamBased = true
+	•	teamSize = 4
+	•	allowSoloPlayers = true
+	•	allowAutoMatch = true
+- Users can:
+	•	Create or join a team (invite friends or match with strangers)
+	•	Register their team into the tournament
+- Backend verifies:
+	•	Team is complete (i.e. has exactly 4 members)
+	•	Players haven’t joined multiple teams
+- Gameplay proceeds:
+	•	Match scheduling is done per team
+	•	Stats and win records are logged per team
+	•	Winning team gets the prize, revenue split can be done across team members
+
+
+## Others
 - Free creation and entry tournamnet to rack up points
 - Inclusion of the deposit feature 
 - User should be able max out withdrawal
