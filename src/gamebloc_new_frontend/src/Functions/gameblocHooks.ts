@@ -628,8 +628,8 @@ export const useGameblocHooks = () => {
     errorMsg: string,
     route: string,
   ) => {
-    const _account = {
-      owner: _principal,
+    const _account = { // Kitchen's account
+      owner: _principal, // kitchen canister principal
       subaccount: [],
     }
     function getApproxNanoTimestamp(): number {
@@ -658,7 +658,7 @@ export const useGameblocHooks = () => {
       amount: BigInt(Math.round(token * 100000000 + 10000)),
       expected_allowance: [],
       expires_at: [],
-      spender: _account,
+      spender: _account, // Kitchen is spender - okay
     }
     try {
       setIsLoading(true)

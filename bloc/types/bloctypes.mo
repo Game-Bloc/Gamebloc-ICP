@@ -103,6 +103,8 @@ module {
         username : Text;
         wins : Nat8;
         referral_id : ?Text
+        // bio : ?Text;
+        // avatar : ?Blob;
     };
 
     public type Point = {
