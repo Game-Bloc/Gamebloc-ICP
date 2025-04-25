@@ -50,6 +50,12 @@ module {
 
     public type TournamentId = Text;
 
+    public type Points =  {
+        #Win;
+        #Loss;
+        #Draw;
+    };
+
     public type UserProfile = {
         id_hash: Text;
         age: Nat8;
@@ -113,6 +119,7 @@ module {
         entry_fee: ?Nat;
         total_prize: Nat;
         creator: Text;
+        creatorPrincipal : Principal;
         tournament_type: TournamentType;
         isPrivate : Bool; // defaults
         maxPlayers : ?Nat; // defaults
@@ -121,7 +128,7 @@ module {
         externalLink : ?Text; 
 
         players : [Principal];
-        tournamnentStatus : TournamentStatus;
+        tournamentStatus : TournamentStatus;
         metadata : TournamentMeta;
 
         isTeamBased : Bool;
@@ -130,12 +137,12 @@ module {
         maxTeams : ?Nat;
         allowSoloPlayers : Bool;
         allowAutoMatch : Bool;
-
     };
 
     public type TeamType = {
         #Duo;
         #Squad;
+        #Solo;
     };
 
     public type Team = {

@@ -1,6 +1,9 @@
 import Principal "mo:base/Principal";
 import HashMap "mo:base/HashMap";
 import Buffer "mo:base/Buffer";
+import Char "mo:base/Char";
+import Blob "mo:base/Blob";
+import Int "mo:base/Int";
 import Text "mo:base/Text";
 import Time "mo:base/Time";
 import Nat "mo:base/Nat";
@@ -12,7 +15,7 @@ import Array "mo:base/Array";
 import Types "../types";
 import Profiles "../profiles";
 import Notifications "../notifications";
-import Int "mo:base/Int";
+import SHA256 "../utils/SHA256";
 
 module {
     public actor class Tournaments() {
@@ -20,18 +23,41 @@ module {
         private var TournamentHashMap : HashMap.HashMap<Text, Types.TournamentAccount> = HashMap.fromIter<Text, Types.TournamentAccount>(TournamentEntries.vals(), 10, Text.equal, Text.hash);
         private var ParticipantHashMap : HashMap.HashMap<Text, [Principal]> = HashMap.HashMap<Text, [Principal]>(10, Text.equal, Text.hash);
         private var TournamentResults : HashMap.HashMap<Text, [Types.Winner]> = HashMap.HashMap<Text, [Types.Winner]>(10, Text.equal, Text.hash);
+        private var TeamHashMap : HashMap.HashMap<Text, Types.Team> = HashMap.HashMap<Text, Types.Team>(10, Text.equal, Text.hash);
+        private var TournamentTeams : HashMap.HashMap<Text, [Text]> = HashMap.HashMap<Text, [Text]>(10, Text.equal, Text.hash);
         
         // private let profiles = Profiles.Profiles();
         private let notifications = Notifications.Notifications();
 
+        // Types
+        type GameType = Types.GameType;
+        type PayoutDistribution = Types.PayoutDistribution;
+        type TournamentStatus = Types.TournamentStatus;
+        type TournamentMeta = Types.TournamentMeta;
+        type Team = Types.Team;
+        type TeamType = Types.TeamType;
+        type TournamentType = Types.TournamentType;
+        type Winner = Types.Winner;
+
         // Create a new tournament
+        // ! We should have cards for different games to make the creation somewhat cool
         public shared ({ caller }) func create_tournament(
             title : Text,
             description : Text,
-            game_type : Text,
-            tournament_type : Types.TournamentType,
+            game_type : GameType,
+            tournament_type : TournamentType,
             entry_fee : ?Nat,
-            total_prize : Nat
+            total_prize : Nat,
+            _isPrivate : Bool,
+            _maxPlayers : ?Nat,
+            _payoutDistribution : ?PayoutDistribution,
+            _externalLink : ?Text,
+            _tournamentMeta : TournamentMeta,
+            _isTeamBased  : Bool, // ?default
+            _teamSize : TeamType, // ?default
+            _maxTeams : ?Nat, // ?default
+            _allowSoloPlayers : Bool, // ?default
+            _allowAutoMatch : Bool // ? default
         ) : async Result.Result<Text, Text> {
             // Profiles Instance Init
             let profiles = await Profiles.Profiles();
@@ -49,6 +75,21 @@ module {
                 creator = username;
                 ended = ?false;
                 winners = null;
+                creatorPrincipal = caller;
+                isPrivate = _isPrivate;
+                maxPlayers = _maxPlayers;
+                moderators = [];
+                payoutDistribution = _payoutDistribution;
+                externalLink = _externalLink;
+                players = [];
+                tournamentStatus = #Upcoming;
+                metadata = _tournamentMeta;
+                isTeamBased = _isTeamBased;
+                teamSize = _teamSize;
+                teams = [];
+                maxTeams = _maxTeams;
+                allowSoloPlayers = _allowSoloPlayers;
+                allowAutoMatch = _allowAutoMatch;
             };
 
             TournamentHashMap.put(tournament_id, tournament);
@@ -85,7 +126,7 @@ module {
         // End tournament and declare winners
         public shared ({ caller }) func end_tournament(
             tournament_id : Text,
-            winners : [Types.Winner]
+            winners : [Winner]
         ) : async Result.Result<Text, Text> {
             let profiles = await Profiles.Profiles();
             switch (TournamentHashMap.get(tournament_id)) {
@@ -129,7 +170,7 @@ module {
         };
 
         // Get tournament details
-        public query func get_tournament(tournament_id : Text) : async ?Types.TournamentAccount {
+        public composite query func get_tournament(tournament_id : Text) : async ?Types.TournamentAccount {
             TournamentHashMap.get(tournament_id)
         };
 
@@ -144,7 +185,7 @@ module {
         };
 
         // Get tournament results
-        public query func get_tournament_results(tournament_id : Text) : async ?[Types.Winner] {
+        public query func get_tournament_results(tournament_id : Text) : async ?[Winner] {
             TournamentResults.get(tournament_id)
         };
 
@@ -160,7 +201,7 @@ module {
         };
 
         // Get user's tournaments
-        public composite query func get_user_tournaments(user : Principal) : async [Types.TournamentAccount] {
+        public query func get_user_tournaments(user : Principal) : async [Types.TournamentAccount] {
             let profiles = Profiles.Profiles();
 
             let user_tournaments = Buffer.Buffer<Types.TournamentAccount>(0);
@@ -170,6 +211,62 @@ module {
                 }
             };
             user_tournaments.toArray()
+        };
+
+        let chars = [
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+            'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'O', 'S', 'T', 
+            'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 
+            'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
+            'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+            'y', 'z'
+        ];
+
+        public query func generateTournamentIds(principal : Principal, name : Text) : async Text {
+        
+            var nonce = 1;
+
+            let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+            let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+            
+            var code = "T-" # name # "-";
+            for (i in Iter.range(0, 3)) {
+                let byte = hash[i % hash.size()];
+                let index : Nat = Nat8.toNat(byte) % chars.size();
+                code #= Char.toText(chars[index]);
+            };
+
+            // var code = await generateDeterministicCode(principal, 0);
+            if (TournamentHashMap.get(code) != null) {
+                let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                
+                code #= "";
+                for (i in Iter.range(0, 3)) {
+                    let byte = hash[i % hash.size()];
+                    let index : Nat = Nat8.toNat(byte) % chars.size();
+                    code #= Char.toText(chars[index]);
+                };
+
+                // code := await generateDeterministicCode(principal, nonce);
+                nonce += 1;
+                while (TournamentHashMap.get(code) != null) {
+
+                    let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                    let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                    
+                    code #= "";
+                    for (i in Iter.range(0, 3)) {
+                        let byte = hash[i % hash.size()];
+                        let index : Nat = Nat8.toNat(byte) % chars.size();
+                        code #= Char.toText(chars[index]);
+                    };
+                    // code := await generateDeterministicCode(principal, nonce);
+                    nonce += 1;
+                };
+            };
+            return code;
         };
 
         // Helper function to generate unique tournament ID

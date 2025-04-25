@@ -2873,6 +2873,54 @@ shared ({ caller }) actor class Kitchen() = this {
         } 
     };
 
+    private var TournamentResults : HashMap.HashMap<Text, Text> = HashMap.HashMap<Text, Text>(10, Text.equal, Text.hash);
+
+    public query func generateTournamentIds(principal : Principal, name : Text) : async Text {
+        
+            var nonce = 1;
+
+            let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+            let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+            
+            var code = "T-" # name # "-";
+            for (i in Iter.range(0, 3)) {
+                let byte = hash[i % hash.size()];
+                let index : Nat = Nat8.toNat(byte) % chars.size();
+                code #= Char.toText(chars[index]);
+            };
+
+            // var code = await generateDeterministicCode(principal, 0);
+            if (TournamentResults.get(code) != null) {
+                let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                
+                code #= "";
+                for (i in Iter.range(0, 3)) {
+                    let byte = hash[i % hash.size()];
+                    let index : Nat = Nat8.toNat(byte) % chars.size();
+                    code #= Char.toText(chars[index]);
+                };
+
+                // code := await generateDeterministicCode(principal, nonce);
+                nonce += 1;
+                while (TournamentResults.get(code) != null) {
+
+                    let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                    let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                    
+                    code #= "";
+                    for (i in Iter.range(0, 3)) {
+                        let byte = hash[i % hash.size()];
+                        let index : Nat = Nat8.toNat(byte) % chars.size();
+                        code #= Char.toText(chars[index]);
+                    };
+                    // code := await generateDeterministicCode(principal, nonce);
+                    nonce += 1;
+                };
+            };
+            return code;
+        };
+
     public query func getFollowers(user: Principal) : async ?[Principal] {
         followers.get(user);
     };

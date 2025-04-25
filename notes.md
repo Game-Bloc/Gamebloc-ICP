@@ -261,3 +261,8 @@ public query func depositNairaDetails(_amount : Nat) : async DepositDetails {
 ```
 
 
+
+
+## Games 
+- 8 ball pool
+- efootball
