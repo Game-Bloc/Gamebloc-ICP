@@ -26,11 +26,11 @@ const Sidebar = () => {
         { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
-    {
-      name: "World Chat",
-      link: isAuthenticated ? "/world-chat" : "",
-      icon: HiChatBubbleOvalLeft,
-    },
+    // {
+    //   name: "World Chat",
+    //   link: isAuthenticated ? "/world-chat" : "",
+    //   icon: HiChatBubbleOvalLeft,
+    // },
     {
       name: "Leaderboard",
       action: () => {},
