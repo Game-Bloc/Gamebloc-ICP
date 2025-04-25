@@ -112,7 +112,7 @@ const Dashboard = () => {
               <Blitz />
               <Funded />
               <Prepaid />
-              <Tutorials />
+              {/*<Tutorials />*/}
               {/* <GameblocTournaments loading={isLoadingProfile} /> */}
             </div>
           </div>
