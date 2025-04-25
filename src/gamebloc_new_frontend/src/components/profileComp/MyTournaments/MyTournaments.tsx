@@ -9,6 +9,7 @@ import {
 import TournamentCard from "../../../components/dashboardComps/Recommended/TournamentCard"
 import ReactPaginate from "react-paginate"
 import { MdChevronLeft, MdChevronRight } from "react-icons/md"
+import Loader from "../../../components/Modals/Loader"
 
 const MyTournaments = () => {
   const creatorHash = useAppSelector((state) => state.userProfile.id_hash)
@@ -35,7 +36,7 @@ const MyTournaments = () => {
 
   if (updating) {
     ;<div className="w-full mt-8 h-[10vh] flex justify-center items-center">
-      <FallbackLoading />
+      <Loader />
     </div>
   } else {
     return (

@@ -44,9 +44,9 @@ export const useGameblocHooks = () => {
   } = useAuth()
 
   // * Local dev
-  // const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
+  const _principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
   // ! Production params
-  const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
+  // const _principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
   const [noData, setNoData] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
@@ -628,8 +628,8 @@ export const useGameblocHooks = () => {
     errorMsg: string,
     route: string,
   ) => {
-    const _account = {
-      owner: _principal,
+    const _account = { // Kitchen's account
+      owner: _principal, // kitchen canister principal
       subaccount: [],
     }
     function getApproxNanoTimestamp(): number {
@@ -658,7 +658,7 @@ export const useGameblocHooks = () => {
       amount: BigInt(Math.round(token * 100000000 + 10000)),
       expected_allowance: [],
       expires_at: [],
-      spender: _account,
+      spender: _account, // Kitchen is spender - okay
     }
     try {
       setIsLoading(true)

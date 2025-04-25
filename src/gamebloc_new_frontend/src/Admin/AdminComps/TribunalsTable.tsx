@@ -99,7 +99,7 @@ const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
         <div> </div>
       )}
       <div className="mt-4">
-        <p className="text-[1.2rem]  font-semibold text-white">
+        <p className="text-[.8rem] lg:text-[1.2rem]  font-semibold text-white">
           Tribunal Mod 1
         </p>
         {game_type[0] === true ? (
@@ -113,7 +113,7 @@ const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
         )}
       </div>
       <div className="mt-4">
-        <p className="text-[1.2rem]  font-semibold text-white">
+        <p className="text-[.8rem] lg:text-[1.2rem]  font-semibold text-white">
           Tribunal Mod 2
         </p>
         {game_type[0] === true ? (
@@ -127,7 +127,7 @@ const TribunalsTable = ({ tourData, game_type, setState, _point }: Props) => {
         )}
       </div>
       <div className="mt-4">
-        <p className="text-[1.2rem]  font-semibold text-white">
+        <p className="text-[.8rem] lg:text-[1.2rem]  font-semibold text-white">
           Tribunal Mod 3
         </p>
         {game_type[0] === true ? (

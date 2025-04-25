@@ -79,6 +79,7 @@ const Result_2 = ({ tourData, solo_mode }: prop) => {
             rowClassName={() => "rowClassName1"}
             dataSource={resultWithPosition}
             rowKey={"position"}
+            scroll={{ x: true }}
           />
         </ConfigProvider>
       </div>

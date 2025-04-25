@@ -71,6 +71,20 @@ pub fn get_all_user() -> Vec<UserProfile> {
     })
 }
 
+// get all users principal
+#[query]
+pub fn get_all_principals() -> Vec<Principal> {
+    PROFILE_STORE.with(|profile_store| {
+        profile_store
+            .borrow()
+            .iter()
+            .filter_map(|(principal_text, _profile)| {
+                Principal::from_text(principal_text).ok()
+            })
+            .collect()
+    })
+}
+
 #[query]
 pub fn count_all_users() -> u128 {
     PROFILE_STORE.with(|profile_store| {

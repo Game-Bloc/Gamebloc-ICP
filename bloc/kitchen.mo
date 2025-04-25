@@ -34,6 +34,7 @@ import Nat32 "mo:base/Nat32";
 import Char "mo:base/Char";
 import Int64 "mo:base/Int64";
 import JSON "mo:json";
+import SHA256 "utils/SHA256";
 
 import AccountIdentifier "utils/utils";
 // import AccountID "mo:principal/blob/AccountIdentifier";
@@ -71,9 +72,9 @@ shared ({ caller }) actor class Kitchen() = this {
     private stable let e8s : Nat = 100_000_000;
 
     // * Local params
-    //   let gbc_admin : Principal = Principal.fromText("4fqkb-lpdun-6hyso-fhk4m-qwfym-5tubs-f56mc-7ucb2-uczuk-epx5a-gae"); // * Demo here
+      let gbc_admin : Principal = Principal.fromText("22gut-hqv7w-7ejrz-kidig-w6gs5-hddhp-nxfje-iwfzq-wmu6s-6gr5s-tae"); // * Demo here
     // ! Production params @Deonorla
-    let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
+    // let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
     let ic : HTTP.IC = actor ("aaaaa-aa");
     private stable var volume : Nat64 = 0;
     private stable var SupportedGames : [Text] = [];
@@ -118,6 +119,7 @@ shared ({ caller }) actor class Kitchen() = this {
 
     // var PAY_STORE = Buffer.Buffer<Bloctypes.PayrollHistory>(0);
     private var logData = Buffer.Buffer<Text>(0);
+    private var accountData = Buffer.Buffer<AccountIdentifier>(0);
     // var NOTIFICATION_STOREs = Buffer.Buffer<Bloctypes.Notifications>(0);
 
     /// stabilizing the motoko backup
@@ -145,7 +147,7 @@ shared ({ caller }) actor class Kitchen() = this {
         ReferralsMapEntries := Iter.toArray(ReferralsMap.entries());
     };
 
-    private stable var latestTransactionIndex : Nat = 0;
+    // private stable var latestTransactionIndex : Nat = 0;
 
     system func postupgrade() {
         TournamentHashMap := HashMap.fromIter<Principal, Bloctypes.TournamentAccount>(TournamentEntries.vals(), 10, Principal.equal, Principal.hash);
@@ -185,8 +187,6 @@ shared ({ caller }) actor class Kitchen() = this {
         ReferrerMapEntries := [];
         ReferralsMapEntries := [];  
 
-
-        latestTransactionIndex := 1
     };
 
                                                   ////////////////////////////
@@ -664,7 +664,9 @@ shared ({ caller }) actor class Kitchen() = this {
                 username = await get_username(caller);
                 principal = caller
             };
+            ignore await updateReferralCode(caller);
             UpdatedUsersHashMap.put(caller, user);
+
 
             return await RustBloc.create_profile(profile, caller)
         } catch err {
@@ -1520,7 +1522,7 @@ shared ({ caller }) actor class Kitchen() = this {
         }
     };
 
-    func allocateUserPoint(caller : Principal, point : Nat) : async () {
+    public func allocateUserPoint(caller : Principal, point : Nat) : async () {
         var tracker = USER_TRACK_STORE.get(caller);
         switch (tracker) {
             case (null) {};
@@ -2420,26 +2422,99 @@ shared ({ caller }) actor class Kitchen() = this {
                                                 ///////////////////////////////////
 
 
-    // Character set for code generation
-    private let chars = [
-        '2', '3', '4', '5', '6', '7', '8', '9',
-        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-        'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R',
-        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    let chars = [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 
+        'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'O', 'S', 'T', 
+        'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 
+        'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
+        'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x',
+        'y', 'z'
     ];
 
-    // Initialize on upgrade
-    // system func preupgrade() {
-    //     codesEntries := Iter.toArray(ReferralMap.entries());
+     // Store the current state of the random number generator
+    var state: Nat = Int.abs(Time.now()) % (2**32 - 1);
+    var reseedCounter = 0;
+
+    func nextRand() : Nat {
+        state := (a * state + c) % m;
+        reseedCounter += 1;
+        
+        // Reseed every 1M numbers to avoid cycles
+        if (reseedCounter > 1_000_000) {
+            state := (state + Int.abs(Time.now())) % m;
+            reseedCounter := 0;
+        };
+        return state;
+    };
+
+    public shared query func generateDeterministicCode(principal: Principal, nonce: Nat) : async Text {
+        let input = Principal.toText(principal) # Nat.toText(nonce);
+        let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+        
+        // Convert hash to code format
+        var code = "";
+        for (i in Iter.range(0, 4)) {
+            let byte = hash[i % hash.size()];
+            let index : Nat = Nat8.toNat(byte) % chars.size();
+            code #= Char.toText(chars[index]);
+        };
+        return code;
+    };
+
+
+    let a: Nat = 1664525;  // multiplier
+    let c: Nat = 1013904223;  // increment
+    let m: Nat = 2**32;  // modulus
+
+    let charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    // func nextRand() : Nat {
+    //     state := (a * state + c) % m;
+    //     return state;
     // };
 
-    // system func postupgrade() {
-    //     for ((p, c) in codesEntries.vals()) {
-    //         ReferralMap.put(p, c);
-    //         CodeToPrincipalMap.put(c, p);
-    //     };
-    //     codesEntries := [];
-    // };
+    func getRandomChar() : Char {
+        let rand = nextRand();
+        let index = rand % chars.size();
+        return chars[index];
+    };
+
+    public query func generateCode() : async Text {
+        var code : [Char] = [];
+        for (_ in Iter.range(0, 4)) {
+            code := Array.append<Char>(code, [getRandomChar()]);
+        };
+        return Text.fromIter(Array.vals(code));
+    };
+
+    let MAX_DETERMINISTIC_ATTEMPTS = 10_000; 
+    let MAX_FALLBACK_ATTEMPTS = 20;
+
+    public func check_codeToPrincipal_size() : async Nat {    
+        return CodeToPrincipalMap.size();
+    };
+
+    public func check_referralMap_size() : async Nat {
+        return ReferralMap.size();
+    };
+
+    // Update the state and generate a new random number
+    public query func generateRandomNumber() : async Nat {
+        // A simple LCG formula: state = (a * state + c) % m
+        state := (a * state + c) % m;
+        return state;
+    };
+
+    // public query func get_r
+
+
+
+    // Generate a random number within a given range (min, max)
+    public func generateRandomInRange(min: Nat, max: Nat) :  async Nat {
+        let randomNum = await generateRandomNumber();
+        return min + (randomNum % (max - min + 1));
+    };
 
     public type ReferralStats = {
         totalReferrals : Nat;
@@ -2447,131 +2522,176 @@ shared ({ caller }) actor class Kitchen() = this {
         totalRewards : Nat;
     };
 
-    // Generate a random 5-character code
-    // private func generateCode() : Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
-        
-    //     while (i < 5) {
-    //         // Using the byte-based random generator
-    //         let rand = switch (Random.byte()) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 }; // Fallback if random fails
-    //         };
-    //         let index = rand % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     // Ensure uniqueness
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return generateCode(); // Recursively retry if collision
-    //     };
-    //     code
+
+    // func setCode(caller : Principal) : async () {
+    //     var code = await updateReferralCode(caller)    
     // };
 
-    // private func generateCode() : async Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
-        
-    //     // Get random bytes (async)
-    //     let randBlob = switch (await Random.blob()) {
-    //         case (?blob) { blob };
-    //         case null { return await generateCode() }; // Retry if failed
-    //     };
-        
-    //     while (i < CODE_LENGTH) {
-    //         let byte = switch (Random.byteFrom(randBlob)) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 };
-    //         };
-    //         let index = byte % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return await generateCode();
-    //     };
-    //     code
-    // };
+    // Get referral code for a given principal
+    // This function is probably weird and I know it. I will come check it later
+    // But for now, its necessary for production and you have no idea how much other functions Ive written and chose to go with this for now
+    // Trust me, you have no idea.
+    public func updateReferralCode(principal : Principal) : async ?Text {
+        if (ReferralMap.get(principal) == null) {
+            var nonce = 1;
 
-    // private func generateCode2() : Text {
-    //     let size = chars.size();
-    //     var code = "";
-    //     var i = 0;
+            let input = Principal.toText(principal) # Nat.toText(nonce);
+            let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+            
+            var code = "";
+            for (i in Iter.range(0, 4)) {
+                let byte = hash[i % hash.size()];
+                let index : Nat = Nat8.toNat(byte) % chars.size();
+                code #= Char.toText(chars[index]);
+            };
 
-    //     let randRand = Random.Finite(await Random.blob());
-        
-    //     // Get enough random bytes for our needs
-    //     let randBytes = switch (randRand) {
-    //         case (blob) { blob };
-    //         case null { return generateCode() }; // Retry if failed
-    //     };
-        
-    //     while (i < CODE_LENGTH) {
-    //         let byte = switch (Random.byteFrom(randBytes)) {
-    //             case (?b) { Nat8.toNat(b) };
-    //             case null { 0 };
-    //         };
-    //         let index = byte % size;
-    //         code #= Char.toText(chars[index]);
-    //         i += 1;
-    //     };
-        
-    //     if (CodeToPrincipalMap.get(code) != null) {
-    //         return generateCode();
-    //     };
-    //     code
-    // };
 
-    // Get or create referral code for caller
-    // public shared ({ caller }) func getMyReferralCode(code : Text) : async Text {
-    //     switch (ReferralMap.get(caller)) {
-    //         case (?code) { code };
-    //         case null {
-    //             // let code = generateCode();
-    //             ReferralMap.put(caller, code);
-    //             CodeToPrincipalMap.put(code, caller);
-    //             return code
-    //         }
-    //     }
-    // };
+            // var code = await generateDeterministicCode(principal, 0);
+            if (CodeToPrincipalMap.get(code) != null) {
+                let input = Principal.toText(principal) # Nat.toText(nonce);
+                let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                
+                code #= "";
+                for (i in Iter.range(0, 4)) {
+                    let byte = hash[i % hash.size()];
+                    let index : Nat = Nat8.toNat(byte) % chars.size();
+                    code #= Char.toText(chars[index]);
+                };
 
-    public shared ({ caller}) func setCode(code : Text) : async Bool {
-        switch (ReferralMap.get(caller)) {
-            case (?code) { false };
+                // code := await generateDeterministicCode(principal, nonce);
+                nonce += 1;
+                while (CodeToPrincipalMap.get(code) != null) {
+
+                    let input = Principal.toText(principal) # Nat.toText(nonce);
+                    let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                    
+                    code #= "";
+                    for (i in Iter.range(0, 4)) {
+                        let byte = hash[i % hash.size()];
+                        let index : Nat = Nat8.toNat(byte) % chars.size();
+                        code #= Char.toText(chars[index]);
+                    };
+                    // code := await generateDeterministicCode(principal, nonce);
+                    nonce += 1;
+                };
+            };
+            ReferralMap.put(principal, code);
+            CodeToPrincipalMap.put(code, principal);
+        };
+        ReferralMap.get(principal)
+    };
+
+    public func generate_code_for_all_users() : async () {
+        var principals : [Principal] = await RustBloc.get_all_principals();
+        for (principal in principals.vals()) {
+            if (ReferralMap.get(principal) == null) {
+                ignore await updateReferralCode(principal);
+            };
+        };
+    };
+
+    public query func getReferralCode1(principal : Principal) : async ?Text {
+        if (ReferralMap.get(principal) == null) {
+            var nonce = 1;
+
+            // Initial code generation
+            let input = Principal.toText(principal) # Nat.toText(nonce);
+            let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+            
+            var code = "";
+            for (i in Iter.range(0, 4)) {
+                let byte = hash[i % hash.size()];
+                let index : Nat = Nat8.toNat(byte) % chars.size();
+                code #= Char.toText(chars[index]);
+            };
+
+            // Check for collision and regenerate if needed
+            if (CodeToPrincipalMap.get(code) != null) {
+                var foundUnique = false;
+                while (not foundUnique) {
+                    nonce += 1;
+                    let newInput = Principal.toText(principal) # Nat.toText(nonce);
+                    let newHash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(newInput)));
+                    
+                    code := ""; // Reset the code
+                    for (i in Iter.range(0, 4)) {
+                        let byte = newHash[i % newHash.size()];
+                        let index : Nat = Nat8.toNat(byte) % chars.size();
+                        code #= Char.toText(chars[index]);
+                    };
+
+                    foundUnique := CodeToPrincipalMap.get(code) == null;
+                };
+            };
+            
+            // Update both maps
+            ReferralMap.put(principal, code);
+            CodeToPrincipalMap.put(code, principal);
+        };
+        ReferralMap.get(principal)
+    };
+
+
+    public query func do_i_have_referral_code(caller : Principal) : async Bool {
+        let code = ReferralMap.get(caller);
+        switch (code) {
             case null {
-                ReferralMap.put(caller, code);
-                CodeToPrincipalMap.put(code, caller);
-                return true
+                return false;
+            };
+            case (?code) {
+                return true;
             }
         }
     };
 
-    // Get referral code for a given principal
-    public shared query func getReferralCode(principal : Principal) : async ?Text {
-        ReferralMap.get(principal)
-    };
 
     // Lookup principal by referral code
     public shared query func getPrincipalByCode(code : Text) : async ?Principal {
         CodeToPrincipalMap.get(code)
     };
 
-    // Validate a referral code
-    // public shared query func isValidReferralCode(code : Text) : async Bool {
-    //     if (code.size() != 5) return false;
-    //     for (c in code.chars()) {
-    //         if (not Array.contains<Char>(chars, c, Char.equal)) {
-    //             return false;
-    //         }
-    //     };
-    //     CodeToPrincipalMap.get(code) != null
-    // };
+    public shared query func get_AccountIdentifier_by_code(code : Text) : async ?Text {
+        let principal = CodeToPrincipalMap.get(code);
+        switch (principal) {
+            case null {
+                return null;
+            };
+            case (?principal) {
+                return ?AccountIdentifier.toText(AccountIdentifier.fromPrincipal(principal, null));
+            }
+        }
+    };
 
+    public query func get_my_referrals(caller : Principal) : async [Principal] {
+        let referrals = ReferralsMap.get(caller);
+        switch (referrals) {
+            case null {
+                return [];
+            };
+            case (?referrals) {
+                return referrals;
+            }
+        }
+    };
+
+    public func add_referral(caller : Principal, referral : Principal) : async () {
+        let referrals = ReferralsMap.get(referral);
+        switch (referrals) {
+            case null {
+                ReferralsMap.put(referral, [caller]);
+            };
+            case (?referrals) {
+                ReferralsMap.put(referral, Array.append<Principal>(referrals, [caller]));
+            }
+        }
+    };
+
+    public query func getReferralCode(principal : Principal) : async ?Text {
+        ReferralMap.get(principal);  
+    };
+
+
+    /// * @dev This function checks if an array contains a specific item using a custom equality function.
     private func arrayContains<T>(array : [T], item : T, equal : (T, T) -> Bool) : Bool {
         for (x in array.vals()) {
             if (equal(x, item)) {
@@ -2581,16 +2701,245 @@ shared ({ caller }) actor class Kitchen() = this {
         false
     };
 
+
     let CODE_LENGTH = 5;
 
-     public shared query func validateReferralCode(code : Text) : async Bool {
-        if (code.size() != CODE_LENGTH) return false;
-        for (c in code.chars()) {
-            if (not arrayContains<Char>(chars, c, Char.equal)) {
-                return false;
+    //  public shared query func validateReferralCode(code : Text) : async Bool {
+    //     if (code.size() != CODE_LENGTH) return false;
+    //     for (c in code.chars()) {
+    //         if (not arrayContains<Char>(chars, c, Char.equal)) {
+    //             return false;
+    //         }
+    //     };
+    //     CodeToPrincipalMap.get(code) != null
+    // };
+
+    // Content
+    // var posts = HashMap.HashMap<Nat, Post>(0, Nat.equal, Hash.hash);
+    // var comments = HashMap.HashMap<Nat, [Comment]>(0, Nat.equal, Hash.hash);
+    // var reactions = HashMap.HashMap<Nat, ReactionStats>(0, Nat.equal, Hash.hash);
+    // var views = HashMap.HashMap<Nat, Nat>(0, Nat.equal, Hash.hash);
+
+    var profiles = HashMap.HashMap<Principal, Profile>(0, Principal.equal, Principal.hash);
+    
+    type Profile = {
+        username: Text;
+        bio: ?Text;
+        avatar: ?Blob;
+    };
+
+    // Social Graph
+    var followers = HashMap.HashMap<Principal, [Principal]>(0, Principal.equal, Principal.hash);
+    var following = HashMap.HashMap<Principal, [Principal]>(0, Principal.equal, Principal.hash);
+
+    var posters = HashMap.HashMap<Nat, Post>(0, Nat.equal, Hash.hash);
+    var comments = HashMap.HashMap<Nat, [Comment]>(0, Nat.equal, Hash.hash);
+    var reactions = HashMap.HashMap<Nat, ReactionStats>(0, Nat.equal, Hash.hash);
+    var views = HashMap.HashMap<Nat, Nat>(0, Nat.equal, Hash.hash);
+
+    type Post = {
+        author: Principal;
+        content: Text;
+        media: ?Blob;
+        timestamp: Int;
+    };
+
+    type Comment = {
+        author: Principal;
+        text: Text;
+        timestamp: Int;
+    };
+
+    type ReactionStats = {
+        likes: Nat;
+        dislikes: Nat;
+        reactors: [Principal]; // Track who reacted
+    };
+
+        // Follow a user
+    public shared({ caller }) func follow(target: Principal) : async () {
+        assert(caller != target);
+        
+        // Update follower list
+        let currentFollowers = followers.get(target); 
+        //orelse [];
+        switch(currentFollowers){
+            case(null){
+                followers.put(target, Array.append([], [caller]));
+        
+            // Update following list
+            let currentFollowing = following.get(caller); // orelse [];
+            following.put(caller, Array.append([], [target]));
+            }; case (?currentFollowers) {
+                followers.put(target, Array.append(currentFollowers, [caller]));
+        
+                // Update following list
+                let currentFollowing = following.get(caller); // orelse [];
+                switch(currentFollowing){
+                    case(null) {
+                        following.put(caller, Array.append([], [target]));
+                    }; case (?currentFollowing) {
+                        following.put(caller, Array.append(currentFollowing, [target]));
+                    };
+                }
+                // following.put(caller, Array.append(currentFollowing, [target]))
             }
+        }
+    };
+
+    // Unfollow 
+    public shared({ caller }) func unfollow(target: Principal) : async () {
+        let removePrincipal = func (p: Principal) : Bool { p != target };
+        var _target = followers.get(target);
+        var _caller = followers.get(caller);
+        switch(_target){
+            case(?_target){
+                followers.put(target, Array.filter(_target , removePrincipal));
+            }; case _ {};
         };
-        CodeToPrincipalMap.get(code) != null
+        switch(_caller){
+            case(?_caller){
+                followers.put(caller, Array.filter(_caller, removePrincipal));
+            }; case _ {};
+        };
+    };
+
+    stable var nextPostId : Nat = 0;
+
+    public shared({ caller }) func createPost(content: Text, media: ?Blob) : async Nat {
+        let postId = nextPostId;
+        posters.put(postId, {
+            author = caller;
+            content;
+            media;
+            timestamp = Time.now();
+        });
+        nextPostId += 1;
+        postId
+    };
+
+    public query func getPost(postId: Nat) : async ?Post {
+        posters.get(postId)
+    };
+
+    public shared({ caller }) func addComment(postId: Nat, text: Text) : async () {
+        let newComment = {
+            author = caller;
+            text;
+            timestamp = Time.now();
+        };
+        var _comment = comments.get(postId);
+        switch(_comment){
+            case(?_comment){
+                comments.put(postId, 
+                    Array.append(_comment, [newComment])
+                );
+            }; case _ {};
+        }  
+    };
+
+    public shared({ caller }) func react(postId: Nat, isLike: Bool) : async () {
+        // let _stats = reactions.get(postId);
+
+        let stats = reactions.get(postId); //orelse { likes = 0; dislikes = 0; reactors = [] };
+        switch(stats){
+            case(?stats){
+                if (Array.find(stats.reactors, func (p: Principal) : Bool { p == caller }) != null) return;
+                
+                reactions.put(postId, {
+                    likes = if isLike stats.likes + 1 else stats.likes;
+                    dislikes = if (isLike==false) {stats.dislikes + 1} else {stats.dislikes};
+                    reactors = Array.append(stats.reactors, [caller]);
+                });
+            }; case _ {
+                
+            }
+        }
+        // Prevent duplicate reactions   
+    };
+
+    public shared({ caller }) func trackView(postId: Nat) : async () {
+        let _view = views.get(postId);
+        switch(_view){
+            case(?_view){
+                if (posters.get(postId) != null) {
+                    views.put(postId, (_view) + 1);
+                };
+            }; case(null){
+                if (posters.get(postId) != null) {
+                    views.put(postId, (0) + 1);
+                };
+            }
+        } 
+    };
+
+    private var TournamentResults : HashMap.HashMap<Text, Text> = HashMap.HashMap<Text, Text>(10, Text.equal, Text.hash);
+
+    public query func generateTournamentIds(principal : Principal, name : Text) : async Text {
+        
+            var nonce = 1;
+
+            let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+            let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+            
+            var code = "T-" # name # "-";
+            for (i in Iter.range(0, 3)) {
+                let byte = hash[i % hash.size()];
+                let index : Nat = Nat8.toNat(byte) % chars.size();
+                code #= Char.toText(chars[index]);
+            };
+
+            // var code = await generateDeterministicCode(principal, 0);
+            if (TournamentResults.get(code) != null) {
+                let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                
+                code #= "";
+                for (i in Iter.range(0, 3)) {
+                    let byte = hash[i % hash.size()];
+                    let index : Nat = Nat8.toNat(byte) % chars.size();
+                    code #= Char.toText(chars[index]);
+                };
+
+                // code := await generateDeterministicCode(principal, nonce);
+                nonce += 1;
+                while (TournamentResults.get(code) != null) {
+
+                    let input = Principal.toText(principal) # Nat.toText(nonce) # name;
+                    let hash = SHA256.sha256(Blob.toArray(Text.encodeUtf8(input)));
+                    
+                    code #= "";
+                    for (i in Iter.range(0, 3)) {
+                        let byte = hash[i % hash.size()];
+                        let index : Nat = Nat8.toNat(byte) % chars.size();
+                        code #= Char.toText(chars[index]);
+                    };
+                    // code := await generateDeterministicCode(principal, nonce);
+                    nonce += 1;
+                };
+            };
+            return code;
+        };
+
+    public query func getFollowers(user: Principal) : async ?[Principal] {
+        followers.get(user);
+    };
+
+    public query func getFollowing(user: Principal) : async ?[Principal] {
+        following.get(user)
+    };
+
+    public query func getPostReactions(postId: Nat) : async ReactionStats {
+        let _reaction = reactions.get(postId);
+        switch(_reaction){
+            case(?_reaction){
+                return _reaction;
+            }; case _ {
+                return {
+                    likes = 0; dislikes = 0; reactors = []
+                }
+            }
+        }
     };
 
 }

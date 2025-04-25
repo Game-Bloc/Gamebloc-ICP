@@ -7,6 +7,8 @@ export interface IcpBalanceState {
   currentICPrice: number
   ngnRate: number
   id: number
+  referralCode: any
+  address: any
 }
 
 const initialState: IcpBalanceState = {
@@ -15,6 +17,8 @@ const initialState: IcpBalanceState = {
   currentICPrice: 0.0,
   ngnRate: 0.0,
   id: 0,
+  referralCode: "",
+  address: "",
 }
 
 export const icpBalanceSlice = createSlice({
@@ -31,7 +35,6 @@ export const icpBalanceSlice = createSlice({
       state: IcpBalanceState,
       { payload }: PayloadAction<IcpBalanceState>,
     ) => {
-      console.log("payload", payload)
       state.kitchenBalance = payload
     },
     updateICP: (
@@ -52,6 +55,20 @@ export const icpBalanceSlice = createSlice({
     ) => {
       state.id = payload.id
     },
+    updateReferralCode: (
+      state: IcpBalanceState,
+      { payload }: PayloadAction<IcpBalanceState>,
+    ) => {
+      state.referralCode = payload
+      console.log("payload", payload)
+    },
+    updateWalletAddress: (
+      state: IcpBalanceState,
+      { payload }: PayloadAction<IcpBalanceState>,
+    ) => {
+      state.address = payload[0]
+      console.log("payload", payload[0])
+    },
   },
 })
 
@@ -61,5 +78,7 @@ export const {
   updateId,
   updateKitchenBalance,
   updateNGN,
+  updateReferralCode,
+  updateWalletAddress,
 } = icpBalanceSlice.actions
 export default icpBalanceSlice.reducer

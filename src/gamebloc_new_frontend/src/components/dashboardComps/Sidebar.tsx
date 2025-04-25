@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
 
   const menus = [
-    { name: "Overview", link: "/dashboard", icon: MdDashboard },
+    { name: "Dashboard", link: "/dashboard", icon: MdDashboard },
     {
       name: "Tournament",
       link: "",

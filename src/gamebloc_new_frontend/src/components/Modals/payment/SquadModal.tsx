@@ -273,16 +273,20 @@ const SquadModal = ({
             ) : (
               <div className="flex w-full mt-4 justify-center items-center">
                 <button
-                  onClick={
-                    players.map((squad: any) => squad.captain)[0] === username
-                      ? () =>
-                          done === true ? setActive("third") : joinTournament()
-                      : () =>
-                          errorPopUp(
-                            "Only a squad captain can join on your behalf",
-                          )
-                  }
-                  className="pt-1 pb-[.15rem] ml-4  px-[1rem]  sm:px-4 text-[.85rem] sm:text-sm text-black justify-center  flex bg-primary-second rounded-md items-center cursor-pointer sm:py-2"
+                  onClick={() => {
+                    if (isLoading) return // Prevent any action if loading
+                    if (
+                      players.map((squad: any) => squad.captain)[0] === username
+                    ) {
+                      done === true ? setActive("third") : joinTournament()
+                    } else {
+                      errorPopUp("Only a squad captain can join on your behalf")
+                    }
+                  }}
+                  disabled={isLoading}
+                  className={`pt-1 pb-[.15rem] ml-4 px-[1rem] sm:px-4 text-[.85rem] sm:text-sm text-black justify-center flex bg-primary-second rounded-md items-center sm:py-2 ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                 >
                   {isLoading ? (
                     <div className="flex items-center  gap-2">

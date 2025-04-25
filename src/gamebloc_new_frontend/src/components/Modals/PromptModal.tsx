@@ -44,6 +44,7 @@ const PromptModal = ({ modal, handleRemove, isLoading }: Prop) => {
                         Cancel
                       </button>
                       <button
+                        disabled={isLoading}
                         className="py-2 px-8 ml-4 bg-[#EF4444] text-[#ffffff] w-full flex justify-center items-center text-xs sm:text-sm "
                         onClick={() => handleRemove()}
                       >

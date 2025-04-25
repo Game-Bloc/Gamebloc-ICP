@@ -22,6 +22,13 @@
   img {
     max-height: fit-content;
   }
+
+  .containerr {
+    @apply w-[90%] my-0 mx-auto;
+  }
+  .sectionn {
+    @apply mt-16;
+  }
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -269,4 +276,8 @@ body.no-scroll {
   border: none;
   border-top: 3px solid #999999;
   margin: 2rem 0;
+}
+.gradient-text {
+  -webkit-background-clip: text;
+  background-clip: text;
 }

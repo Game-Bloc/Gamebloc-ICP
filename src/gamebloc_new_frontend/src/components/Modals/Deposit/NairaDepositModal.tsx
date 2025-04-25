@@ -1,7 +1,11 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { RiCloseFill } from "react-icons/ri"
 import { useAppSelector } from "../../../redux/hooks"
 import hooks from "../../../Functions/hooks"
+import copy from "clipboard-copy"
+import { errorPopUp, SuccessPopUp } from "../../../components/utils/ErrorModal"
+import Copy from "../../../components/utils/Copy"
+
 type Prop = {
   handlePromptModal: any
   handleFiatModal: any
@@ -9,6 +13,7 @@ type Prop = {
 
 const NairaDepositModal = ({ handleFiatModal }: Prop) => {
   const [ngnAmount, setNGNAmount] = useState("")
+  const textRef = useRef()
   const [dollar, setDollar] = useState<string>("")
   const [icpValue, setIcpValue] = useState<number>(0)
   const [position, setPosition] = useState<string>("first")
@@ -16,11 +21,41 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
   const ngn = useAppSelector((state) => state.IcpBalance.ngnRate)
   const balance = useAppSelector((state) => state.IcpBalance.balance)
   const _icp2Usd = useAppSelector((state) => state.IcpBalance.currentICPrice)
+  const referralCode = useAppSelector((state) => state.IcpBalance.referralCode)
+  const accountId = "0494721886"
 
   const nairaChange = (e: any) => {
     e.preventDefault()
     const value = e.target.value
     setNGNAmount(value)
+  }
+
+  const handleCopyClick = async () => {
+    try {
+      await copy(accountId)
+      SuccessPopUp("Copied to clipboard")
+      console.log("Text copied to clipboard:", accountId)
+    } catch (err) {
+      console.error("Copy to clipboard failed:", err)
+    }
+  }
+
+  const handleID = async () => {
+    try {
+      await copy(referralCode)
+      SuccessPopUp("Copied to clipboard")
+      console.log("Text copied to clipboard:", referralCode)
+    } catch (err) {
+      console.error("Copy to clipboard failed:", err)
+    }
+  }
+
+  const verifyAmount = () => {
+    if (ngnAmount.trim() === "") {
+      errorPopUp("Please enter an amount")
+      return
+    }
+    setPosition("second")
   }
 
   useEffect(() => {
@@ -48,7 +83,7 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
         <div className="fixed inset-0 bg-[#fff]/30 bg-opacity-75 transition-opacity">
           <div className="fixed z-10 inset-0 overflow-y-auto">
             <div className="flex items-center justify-center min-h-full p-4 text-center sm:p-0">
-              <div className="relative  bg-primary-first rounded-2xl text-center overflow-hidden shadow-xl transform transition-all w-[80vw] sm:my-8 sm:max-w-lg sm:w-full">
+              <div className="relative  bg-primary-first rounded-2xl text-center overflow-hidden shadow-xl transform transition-all w-[100vw] sm:my-8 sm:max-w-lg sm:w-full">
                 <div className=" bg-primary-first px-4 pt-5 shadow-md  sm:p-6 mb-4 ">
                   <RiCloseFill
                     onClick={handleFiatModal}
@@ -58,9 +93,10 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
                     <p className=" text-[1rem] text-start text-primary-second font-bold">
                       BUY ICP
                     </p>
-                    <div className="flex mt-6">
+                    <div className="flex mt-4">
                       <p className="font-bold text-[.85rem] text-[#A1A1AA]">
-                        Dollar - Naira rate: ₦{ngn}
+                        Dollar - Naira rate: ₦
+                        {ngn.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       </p>
                     </div>
                     {/*  */}
@@ -99,9 +135,9 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
                         </div>
                         <button
                           onClick={() => {
-                            setPosition("second")
+                            verifyAmount()
                           }}
-                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md "
+                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full  h-8 lg:h-[3rem] rounded-md "
                         >
                           Confirm amoumt
                         </button>
@@ -112,9 +148,166 @@ const NairaDepositModal = ({ handleFiatModal }: Prop) => {
                         </p>
                       </div>
                     ) : position === "second" ? (
-                      <div className="flex flex-col w-[100%] md:w-[80%] mt-4"></div>
+                      <div className="flex flex-col w-[100%] md:w-[80%] lg:w-[90%] mt-4">
+                        <div className="flex flex-col justify-center items-center">
+                          <p className="text-[4rem] text-center">📌📌</p>
+                          <div className="w-full mt-4 flex flex-col justify-center items-center">
+                            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
+                              Your Unique ID
+                            </p>
+                            <div className="flex items-center mb-4">
+                              <h2 className=" text-white p-[.5rem] text-bold text-[.72rem] sm:text-[1rem] ">
+                                {referralCode}
+                              </h2>
+                              <Copy textToCopy={referralCode} />
+                            </div>
+                            <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
+                              Copy your unique ID and use it as a reference /
+                              narration / description when making a transfer to
+                              us. This is important for us to credit your
+                              wallet. If you do not use your unique ID, we will
+                              not be able to credit your wallet.
+                            </p>
+                            <button
+                              onClick={() => {
+                                setPosition("third")
+                              }}
+                              className="bg-primary-second text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md mt-4"
+                            >
+                              I understand
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : position === "third" ? (
+                      <div className="flex flex-col w-[100%] md:w-[80%] lg:w-[90%] mt-4">
+                        <div className=" flex flex-col justify-center items-center">
+                          <p className="flex text-white text-[0.85rem] mb-3 lg:text-[1rem]">
+                            Transfer{" "}
+                            <span className="font-black ml-2">
+                              {" "}
+                              ₦
+                              {ngnAmount
+                                .toString()
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            </span>
+                          </p>
+                          <div className="flex flex-col cursor-pointer  justify-between items-center py-6 border border-solid border-primary-second bg-primary-second/10  px-4 w-full  rounded-md">
+                            <div className="flex  items-center justify-between lg:justify-around w-full">
+                              <div className="flex justify-center items-center">
+                                <div className="flex flex-col ">
+                                  <p className="text-white text-[0.65rem] lg:text-[0.8rem]">
+                                    Bank name
+                                  </p>
+                                  <p className=" text-white font-bold mt-4 text-[0.8rem] lg:text-[0.9rem]">
+                                    GUARANTY TRUST{" "}
+                                    <br className="block sm:hidden" />
+                                    BANK
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex  justify-center mt-[-1.5rem] sm:mt-0 items-center">
+                                <div className="flex flex-col ">
+                                  <p className="text-white text-[0.65rem] lg:text-[0.8rem]">
+                                    Account name
+                                  </p>
+                                  <p className=" text-white font-bold mt-4 text-[0.8rem] lg:text-[0.9rem]">
+                                    OLULEYE EMMANUEL
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex mt-6 items-center justify-between lg:justify-around w-full">
+                              <div className="flex justify-center ml-[1.5rem] items-center">
+                                <div className="flex flex-col ">
+                                  <p className="text-white text-[0.65rem] lg:text-[0.8rem]">
+                                    Account number
+                                  </p>
+                                  <div
+                                    ref={textRef}
+                                    onClick={() => {
+                                      handleCopyClick()
+                                    }}
+                                    className="flex mt-4  items-center"
+                                  >
+                                    <p className=" mr-1 lg:mr-3 text-white font-bold text-[0.8rem] lg:text-[0.9rem]">
+                                      0494721886
+                                    </p>
+                                    <img src={`solar_copy-bold.png`} alt="" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex  mr-[2.5rem] justify-center  items-center">
+                                <div className="flex flex-col ">
+                                  <p className="text-white text-[0.65rem] lg:text-[0.8rem]">
+                                    Amount
+                                  </p>
+                                  <p className=" text-white font-bold mt-4 text-[0.8rem] lg:text-[0.9rem]">
+                                    ₦
+                                    {ngnAmount
+                                      .toString()
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex mt-6 items-center justify-center ">
+                              <div className="flex flex-col ">
+                                <p className="text-white text-[0.65rem] lg:text-[0.8rem]">
+                                  Unique ID
+                                </p>
+                                <div
+                                  ref={textRef}
+                                  onClick={() => {
+                                    handleID()
+                                  }}
+                                  className="flex mt-4  items-center"
+                                >
+                                  <p className=" mr-1 lg:mr-3 text-white font-bold text-[0.8rem] lg:text-[0.9rem]">
+                                    {referralCode}
+                                  </p>
+                                  <img src={`solar_copy-bold.png`} alt="" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <p className="mt-2 mb-3 text-white/80 text-center text-[.65rem]">
+                            Note: Kindly transfer the exact amount to the
+                            account details above
+                          </p>
+                          <button
+                            onClick={() => {
+                              setPosition("fourth")
+                            }}
+                            className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md "
+                          >
+                            I’ve sent the money
+                          </button>
+                        </div>
+                      </div>
                     ) : (
-                      <></>
+                      <div className=" flex flex-col justify-center items-center">
+                        <p className="text-[4rem] text-center">✅</p>
+                        <p className="text-[0.85rem] text-white mt-4">
+                          You’ve successfully transferred ₦
+                          {ngnAmount
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                          .
+                        </p>
+                        <p className="text-[.65rem] text-white/70 mt-4">
+                          Your wallet will be funded with the equivalent amount
+                          of ICP shortly. The process may take 3-10 minutes, so
+                          please be patient and refresh your profile page
+                          periodically.
+                        </p>
+                        <button
+                          onClick={handleFiatModal}
+                          className="bg-primary-second mt-8 text-black text-[.8rem] py-2 lg:py-4 px-6 w-full lg:w-[80%] h-8 lg:h-[3rem] rounded-md "
+                        >
+                          Return to profile
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

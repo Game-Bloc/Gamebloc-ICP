@@ -108,9 +108,9 @@ const Admin = () => {
           <AdminSidebar />
           <div className="flex flex-col w-full">
             <div className="m-4 mt-[4rem]">
-              <div className="ml-[17rem]">
+              <div className="lg:ml-[17rem]">
                 <div className="flex justify-between items-center w-full">
-                  <h1 className="text-primary-second font-[600] mt-4  text-[2rem]">
+                  <h1 className="text-primary-second font-[600] mt-4 text-base lg:text-[2rem]">
                     Dashboard
                   </h1>
                   {/* <button
@@ -124,10 +124,10 @@ const Admin = () => {
                 </div>
 
                 <div className="flex flex-col w-full mt-[2.5rem]">
-                  <h2 className="text-white mb-[1.5rem] text-semibold text-[1.5rem]">
+                  <h2 className="text-white mb-[1.5rem] text-semibold text-[0.9rem] lg:text-[1.5rem]">
                     Overview
                   </h2>
-                  <div className="grid grid-cols-3 gap-4 2xl:grid-cols-4 2xl:gap-8">
+                  <div className="grid grid-flow-col-1 lg:grid-cols-3 gap-4 2xl:grid-cols-4 2xl:gap-8">
                     <div className="border flex justify-between   bg-[#070C12] rounded-2xl p-[1rem] w-[18rem] h-[7rem] ">
                       <div className="flex flex-col  items-start">
                         <p className="text-white font-[Open Sans] text-[1rem]">
@@ -183,10 +183,10 @@ const Admin = () => {
                   </div>
 
                   <div className="mt-[5rem]">
-                    <h2 className="text-white mb-[2rem] text-semibold text-[1.7rem]">
+                    <h2 className="text-white mb-[2rem] text-semibold text-base lg:text-[1.7rem]">
                       Game Analysis
                     </h2>
-                    <div className="flex gap-16">
+                    <div className="flex flex-col lg:flex-row gap-16">
                       <AdminChart tournament={tournament} />
                       <div className="bg-[#070C12] p-8 rounded-lg">
                         <p className="text-white/70 font-[Open Sans] mb-[2rem] text-[.8rem]">
