@@ -26,6 +26,7 @@ import hooks from "../Functions/hooks"
 import { IoIosCreate } from "react-icons/io"
 import { MdOutlineCreate } from "react-icons/md"
 import WelcomeModal2 from "../components/Modals/WelcomeModal2"
+import Footer from "../components/Landing3.0/Footer"
 
 const Dashboard = () => {
   const navigate = useNavigate()
@@ -112,10 +113,12 @@ const Dashboard = () => {
               <Blitz />
               <Funded />
               <Prepaid />
+              <Footer />
               {/*<Tutorials />*/}
               {/* <GameblocTournaments loading={isLoadingProfile} /> */}
             </div>
           </div>
+
         </section>
         <ConfigProvider
           theme={{
