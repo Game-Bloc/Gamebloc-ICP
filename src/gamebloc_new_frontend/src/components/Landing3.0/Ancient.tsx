@@ -10,7 +10,7 @@ function Ancient({ setVisible }: props) {
       initial={{ y: 100, opacity: 0 }}
       whileInView={{ y: 0, opacity: 1 }}
       transition={{ delay: 0.25, duration: 0.5, ease: "easeOut" }}
-      className="containerr sectionn flex flex-col gap-8 relative"
+      className="containerr sectionn flex flex-col gap-8 relative overflow-hidden"
     >
       <img
         src={`blur.png`}

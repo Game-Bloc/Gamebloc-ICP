@@ -6,7 +6,7 @@ interface props {
 }
 function Games({ setVisible }: props) {
   return (
-    <div className="flex flex-col gap-5 containerr sectionn relative">
+    <div className="flex flex-col gap-5 containerr sectionn relative overflow-hidden">
       <img
         src={`blur2.png`}
         alt=""
