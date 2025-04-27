@@ -18,6 +18,7 @@ import { hasDateReached, inProgress } from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
 import WagerModal from "../Modals/WagerModal"
 import hooks from "../../Functions/hooks"
+import TourneyButton from "./TourneyButton"
 interface Props {
   data: any
 }
@@ -27,7 +28,6 @@ const TournamentInfo = ({ data }: Props) => {
   const { isAuthenticated } = useAuth()
   const [count, setCount] = useState(0)
   const MySwal = withReactContent(Swal)
-  const [color, setColor] = useState("#ffffff")
   const [forceClose, setForceClose] = useState(false)
   const bet = useAppSelector((state) => state.userWager)
   const [days, hours, minutes, seconds] = useCountdown(count)
@@ -36,7 +36,7 @@ const TournamentInfo = ({ data }: Props) => {
   const { updateAllSquads } = useUpdateAllSquad()
   const principal = useAppSelector((state) => state.userProfile.principal_id)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
-  const { isLoading, getProfile, start_tournament } = useGameblocHooks()
+  const { getProfile, start_tournament } = useGameblocHooks()
   const squad = useAppSelector((state) => state.squad)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
@@ -44,14 +44,12 @@ const TournamentInfo = ({ data }: Props) => {
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const [openWager, setOpenWager] = useState<boolean>(false)
   const { getExpectedReward, getUserBet } = hooks()
+  const players = squad.filter((player: any) =>
+    player.members.some((member: any) => member.name === owner),
+  )
   const option =
     Object.keys(data.tournament_type)[0].toUpperCase() == "BLITZKRIEG" &&
     data.creator == owner
-  const override = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "white",
-  }
 
   const per_kill =
     Object.keys(data.tournament_variation)[0].toUpperCase() == "INFINITE" &&
@@ -651,7 +649,16 @@ const TournamentInfo = ({ data }: Props) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-full justify-center items-center">
+        <TourneyButton
+          data={data}
+          owner={owner}
+          principal={principal}
+          players={players}
+          handleLoginModal={handleLoginModal}
+          setOpenPaymentModal={setOpenPaymentModal}
+          count={count}
+        />
+        {/* <div className="flex flex-col w-full justify-center items-center">
           {Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
             <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
               <p className="font-semibold">Ended</p>
@@ -725,7 +732,7 @@ const TournamentInfo = ({ data }: Props) => {
               )}
             </>
           )}
-        </div>
+        </div> */}
         {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
         {/* {openSoloModal && (
           <JoinAsSolo

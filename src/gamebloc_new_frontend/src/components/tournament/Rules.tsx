@@ -16,7 +16,7 @@ import {
   inProgress,
 } from "../utils/utills"
 import PaymentModal from "../Modals/PaymentModal"
-import { useCountdown } from "../utils/CountDown"
+import TourneyButton from "./TourneyButton"
 interface Props {
   data: any
 }
@@ -25,13 +25,11 @@ const Rules = ({ data }: Props) => {
   const { id } = useParams()
   const { isAuthenticated } = useAuth()
   const [count, setCount] = useState(0)
-  const [days, hours, minutes, seconds] = useCountdown(count)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-  const [color, setColor] = useState("#ffffff")
   const MySwal = withReactContent(Swal)
   const owner = useAppSelector((state) => state.userProfile.username)
   const gamerName = useAppSelector((state) => state.userProfile.username)
-  const { isLoading, joinTournament, joinTournamentSqaud } = useGameblocHooks()
+  const { joinTournament, joinTournamentSqaud } = useGameblocHooks()
   const squad_data = useAppSelector((state) => state.squad)
   const squad_id = useAppSelector((state) => state.userProfile.squad_badge)
   const squad = useAppSelector((state) => state.squad)
@@ -39,12 +37,9 @@ const Rules = ({ data }: Props) => {
   const [openSoloModal, setOpenSoloModal] = useState<boolean>(false)
   const [openSquadModal, setOpenSquadModal] = useState<boolean>(false)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
-
-  const override = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "white",
-  }
+  const players = squad.filter((player: any) =>
+    player.members.some((member: any) => member.name === owner),
+  )
 
   const errorPopUp = (errorMsg: string) => {
     MySwal.fire({
@@ -86,7 +81,16 @@ const Rules = ({ data }: Props) => {
           dangerouslySetInnerHTML={{ __html: data.tournament_rules }}
         />
       </div>
-      <div className="flex flex-col w-full justify-center items-center">
+      <TourneyButton
+        data={data}
+        owner={owner}
+        principal={principal}
+        players={players}
+        handleLoginModal={handleLoginModal}
+        setOpenPaymentModal={setOpenPaymentModal}
+        count={count}
+      />
+      {/* <div className="flex flex-col w-full justify-center items-center">
         {Object.keys(data.status)[0].toUpperCase() === "GAMECOMPLETED" ? (
           <button className="pt-1 pb-[.15rem]  px-[.6rem] w-full lg:w-[13rem] sm:px-4 text-[.7rem] sm:text-base text-white justify-center mt-[0.7rem] sm:mt-[1.5rem] flex bg-[#f55d2f] rounded-md items-center sm:py-2">
             <p className="font-semibold">Ended</p>
@@ -157,7 +161,7 @@ const Rules = ({ data }: Props) => {
             )}
           </>
         )}
-      </div>
+      </div> */}
       {openLoginModal && <LoginModal2 modal={handleLoginModal} />}
       {/* {openSoloModal && (
         <JoinAsSolo
