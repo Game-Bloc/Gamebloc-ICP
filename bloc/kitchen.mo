@@ -72,9 +72,9 @@ shared ({ caller }) actor class Kitchen() = this {
     private stable let e8s : Nat = 100_000_000;
 
     // * Local params
-      let gbc_admin : Principal = Principal.fromText("22gut-hqv7w-7ejrz-kidig-w6gs5-hddhp-nxfje-iwfzq-wmu6s-6gr5s-tae"); // * Demo here
+    //   let gbc_admin : Principal = Principal.fromText("22gut-hqv7w-7ejrz-kidig-w6gs5-hddhp-nxfje-iwfzq-wmu6s-6gr5s-tae"); // * Demo here
     // ! Production params @Deonorla
-    // let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
+    let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
     let ic : HTTP.IC = actor ("aaaaa-aa");
     private stable var volume : Nat64 = 0;
     private stable var SupportedGames : [Text] = [];

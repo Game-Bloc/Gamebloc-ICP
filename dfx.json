@@ -5,6 +5,11 @@
       "package": "game_bloc_backend",
       "type": "rust"
     },
+    "cert_assets_canister" : {
+      "main": "certs/main.mo",
+      "type": "motoko",
+      "optimize": "cycles"
+    },
 
     "kitchen": {
       "main": "bloc/kitchen.mo",
