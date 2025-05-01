@@ -70,7 +70,6 @@ type TournamentAccount = record {
   squad : vec Squad;
   accepts_wagers : opt bool;
   no_of_participants_at_bump : opt nat;
-  referal_ids : vec text;
   lobbies : opt vec LobbyAccount;
   game_type : text;
   user_details : opt vec UserProfile;
@@ -100,12 +99,7 @@ type TournamentStatus = variant {
   Archived;
   GameCompleted;
 };
-type TournamentType = variant {
-  Prepaid;
-  Crowdfunded;
-  Blitzkrieg;
-  SquadTraining;
-};
+type TournamentType = variant { Prepaid; Crowdfunded; Blitzkrieg };
 type UserProfile = record {
   age : nat8;
   account_id : text;
@@ -164,6 +158,7 @@ service : () -> {
   end_tournament : (text, principal, nat8, vec Winner) -> (bool);
   expected_wager_reward : (text, text) -> (vec nat) query;
   getSelf : () -> (UserProfile) query;
+  get_all_principals : () -> (vec principal) query;
   get_all_squad : () -> (vec Squad) query;
   get_all_tournament : () -> (vec TournamentAccount) query;
   get_all_tournament_lobbies : (text) -> (vec LobbyAccount) query;
