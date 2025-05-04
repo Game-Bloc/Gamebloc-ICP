@@ -15,7 +15,7 @@ const Sidebar = () => {
   const [openSubMenu, setOpenSubMenu] = useState<boolean>(false)
 
   const menus = [
-    { name: "Overview", link: "/dashboard", icon: MdDashboard },
+    { name: "Dashboard", link: "/dashboard", icon: MdDashboard },
     {
       name: "Tournament",
       link: "",
@@ -26,11 +26,11 @@ const Sidebar = () => {
         { name: "CrowdFunded", link: "/active-tournament" },
       ],
     },
-    {
-      name: "World Chat",
-      link: isAuthenticated ? "/world-chat" : "",
-      icon: HiChatBubbleOvalLeft,
-    },
+    // {
+    //   name: "World Chat",
+    //   link: isAuthenticated ? "/world-chat" : "",
+    //   icon: HiChatBubbleOvalLeft,
+    // },
     {
       name: "Leaderboard",
       action: () => {},

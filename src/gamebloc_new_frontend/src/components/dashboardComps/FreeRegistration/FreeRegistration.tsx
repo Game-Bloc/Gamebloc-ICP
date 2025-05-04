@@ -11,7 +11,7 @@ import {
   useUpdateTournament,
 } from "../../../Functions/blochooks"
 import { useAppSelector } from "../../../redux/hooks"
-import FallbackLoading from "../../../components/Modals/FallBackLoader"
+import Loader from "../../../components/Modals/Loader"
 import { useAuth } from "../../../Auth/use-auth-client"
 import LoginModal from "../../../components/Modals/LoginModal"
 import WelcomeModal from "../../../components/Modals/WelcomeModal"
@@ -72,7 +72,7 @@ const FreeRegistration = () => {
   if (loading) {
     return (
       <div className="w-full mt-8 h-[10vh] flex justify-center items-center">
-        <FallbackLoading />
+        <Loader />
       </div>
     )
   } else {

@@ -16,6 +16,7 @@ import {
   updateKitchenBalance,
   updateNGN,
   updateReferralCode,
+  updateWalletAddress,
 } from "../redux/slice/icpBalanceSlice"
 import {
   addAdminTransactions,
@@ -457,6 +458,19 @@ export const hooks = () => {
     }
   }
 
+  const getUserWalletAddress = async (code: string) => {
+    try {
+      setIsSending(true)
+      const wallet_address: any =
+        await whoamiActor.get_AccountIdentifier_by_code(code)
+      dispatch(updateWalletAddress(wallet_address))
+      setIsSending(false)
+    } catch (err) {
+      setIsSending(false)
+      console.log("Error getting wallet address:", err)
+    }
+  }
+
   return {
     bet,
     done,
@@ -487,6 +501,7 @@ export const hooks = () => {
     getNairaExchangeRate,
     iWantToDeposit,
     getReferralCode,
+    getUserWalletAddress,
   }
 }
 

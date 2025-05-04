@@ -52,14 +52,14 @@ const TableLogic = ({
   const [color, setColor] = useState("#ffffff")
 
   return (
-    <div className="flex mt-8 bg-[#070C12] p-4 flex-col ">
+    <div className="flex mt-8 bg-[#070C12] lg:p-4 flex-col ">
       <div className="flex mr-8 justify-between items-center">
         {_point ? (
-          <p className="text-[1.2rem] ml-8 font-semibold text-white">
+          <p className="text-[0.8rem] lg:text-[1.2rem]  ml-3 lg:ml-8 font-semibold text-white">
             Assign points
           </p>
         ) : (
-          <p className="text-[1.2rem]  font-semibold text-white">
+          <p className="text-[0.8rem] lg:text-[1.2rem]  font-semibold text-white">
             Collated Result
           </p>
         )}
@@ -69,7 +69,7 @@ const TableLogic = ({
             {game_type[0] === true ? (
               <button
                 onClick={() => saveChanges()}
-                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center lg:mr-[2rem] "
               >
                 {isLoading ? (
                   <div className="flex items-center  gap-2">
@@ -92,7 +92,7 @@ const TableLogic = ({
             ) : (
               <button
                 onClick={() => saveChanges()}
-                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center mr-[2rem] "
+                className="bg-[#303B9C] py-2 px-3 flex justify-around items-center lg:mr-[2rem] "
               >
                 {isAssigningPoints ? (
                   <div className="flex items-center  gap-2">

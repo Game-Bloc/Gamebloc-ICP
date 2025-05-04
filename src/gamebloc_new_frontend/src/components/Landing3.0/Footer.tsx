@@ -4,8 +4,10 @@ function Footer() {
   return (
     <div className="relative overflow-y-hidden sectionn px-[5%] border-t-slate-300 border-t pt-5 flex flex-col gap-5 md:flex-row md:justify-between mb-8 md:items-center">
       <div className="flex items-center ">
-        <img src={`GBLogo.png`} alt="" className="w-[50%] md:w-28" />
-        <img src={`trademark.png`} alt="" className="w-16 h-2" />
+        <img src={`GBLogo.png`} alt="" className="w-20 md:w-28" />
+        <p className="text-[.6rem] mt-3 sm:mt-5 lg:mt-6 text-white">
+          ©{new Date().getFullYear()}
+        </p>
       </div>
       <div className="flex flex-col md:flex-row md:gap-5">
         <ul className="list-none">

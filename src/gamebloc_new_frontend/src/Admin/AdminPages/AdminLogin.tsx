@@ -60,23 +60,27 @@ const AdminLogin = () => {
   }
 
   return (
-    <div className="w-full h-fit">
-      <div className="flex ">
-        <div className="relative w-[50%]">
+    <div className="w-full lg:h-fit">
+      <div className="flex justify-center items-center">
+        <div className=" hidden lg:block relative w-[50%]">
           <img src={`style.png`} alt="" className="h-screen w-full" />
           <div className="absolute flex flex-col justify-center items-center top-0 bottom-0 right-0 left-0 m-auto">
             <img
               src={`gamelogo.png`}
               alt=""
-              className="w-[15rem] h-[15rem] m-0"
+              className=" w-[9rem] h-[9rem] lg:w-[15rem] lg:h-[15rem] m-0"
             />
             <h1 className="font-valorant mt-[2rem] text-primary-second text-[2.2rem] text-semibold">
               YOU CONTROL
             </h1>
           </div>
         </div>
-        <div className="w-[50%] flex flex-col justify-center items-center">
-          <img src={`logo.png`} alt="" className="m-0 w-[15rem]" />
+        <div className=" w-full h-screen lg:w-[50%] flex flex-col justify-center items-center">
+          <img
+            src={`logo.png`}
+            alt=""
+            className="m-0  w-[9rem] h-[9rem] lg:w-[15rem]"
+          />
           <div className="flex flex-col w-[60%] mt-4">
             <div className="flex items-center pl-[.5rem] h-[3rem] border-[#F6B8FC]/30 bg-[transparent] border border-solid rounded-[4px] w-full">
               <input

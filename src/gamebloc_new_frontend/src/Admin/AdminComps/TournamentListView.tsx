@@ -148,6 +148,7 @@ const TournamentListView = ({
           columns={columnsWithActions}
           dataSource={dataSource}
           rowKey={"position"}
+          scroll={{ x: true }}
         />
       </ConfigProvider>
 

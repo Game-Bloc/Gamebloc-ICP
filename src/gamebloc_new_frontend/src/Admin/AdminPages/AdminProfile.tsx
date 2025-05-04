@@ -123,9 +123,9 @@ const AdminProfile = () => {
         <AdminSidebar />
         <div className="flex flex-col w-full">
           <div className="m-4 ">
-            <div className="ml-[17rem]">
+            <div className="lg:ml-[17rem]">
               <div className="mt-[4rem]">
-                <h1 className="text-primary-second font-[600]  text-[2rem]">
+                <h1 className="text-primary-second font-[600]  text-base lg:text-[2rem]">
                   Kitchen Profile
                 </h1>
                 <div className="flex flex-col  lg:flex-row justify-start items-center ">

@@ -74,6 +74,7 @@ const Result_1 = ({ tourData, squad_mode }: prop) => {
             rowClassName={() => "rowClassName1"}
             dataSource={resultWithPosition}
             rowKey={"position"}
+            scroll={{ x: true }}
           />
         </ConfigProvider>
       </div>

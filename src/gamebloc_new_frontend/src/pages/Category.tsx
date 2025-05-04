@@ -27,12 +27,12 @@ const Category = () => {
       title: "Fortnite",
       hash: "L24_qa_29FIU_3_3ofD%-:%MxuRj",
     },
-    {
-      img: `cat4.png`,
-      id: 4,
-      title: "Chess",
-      hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
-    },
+    // {
+    //   img: `cat4.png`,
+    //   id: 4,
+    //   title: "Chess",
+    //   hash: "L06spiWB0JK5{ls:^5r?D$S4?HjY",
+    // },
   ]
 
   return (
