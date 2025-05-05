@@ -174,10 +174,17 @@ pub_struct!(
     attendance: Option<u8>,
     losses: Option<u8>,
     members: Vec<Member>,
+    participating_members: ParticipatingMember,
     requests: Vec<String>,
     points: Option<Vec<(String,String,Point)>>,
     created_at: Option<String>,
     created_by: Option<Principal>,
+});
+
+pub_struct!(
+    ParticipatingMember {
+    tournament_id: String,
+    participating_squad_members: Vec<Member>,
 });
 
 pub_struct!(Member {

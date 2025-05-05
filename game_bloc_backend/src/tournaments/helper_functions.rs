@@ -1,4 +1,4 @@
-use crate::model::{GameType, Member, TournamentAccount, UserProfile};
+use crate::model::{GameType, Member, ParticipatingMember, TournamentAccount, UserProfile};
 use crate::{ID_STORE, PROFILE_STORE, SQUAD_STORE};
 use std::cmp::Ordering;
 
@@ -47,6 +47,17 @@ pub fn append_squad_to_tournament(
             }
             let mut mutable_new_member_ign = new_member_ign.to_owned().unwrap();
             ign.to_owned().append(&mut mutable_new_member_ign);
+            let mut squad_participating_member_list:Vec<Member> =vec![];
+            for members in ign.to_owned() {
+                squad_participating_member_list.push(Member{
+                    name: members.0.to_string(),
+                    principal_id: members.1.to_string(),
+                })
+            }
+            squad.participating_members = ParticipatingMember{
+                tournament_id: tournament.id_hash.clone(),
+                participating_squad_members:squad_participating_member_list,
+            };
         }
         tournament.squad.push(squad);
     });
