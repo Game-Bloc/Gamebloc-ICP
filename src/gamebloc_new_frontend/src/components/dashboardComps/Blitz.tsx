@@ -7,8 +7,11 @@ import { useAppSelector } from "../../redux/hooks"
 const Blitz = () => {
   const [nodata, setNodata] = useState<boolean>(false)
   const tournament = useAppSelector((state) => state.tournamentData)
-  const blitzkriegTournament = tournament?.filter((list: any) => {
+  const blitzk = tournament?.filter((list: any) => {
     return list.tournament_type && list.tournament_type.Blitzkrieg === null
+  })
+  const blitzkriegTournament = blitzk?.filter((tour: any) => {
+    Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED"
   })
   const { loading } = useFetchAllTournaments()
 
