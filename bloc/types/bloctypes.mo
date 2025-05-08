@@ -5,6 +5,38 @@ import Ledgertypes "ledgertypes";
 // import Principal
 
 module {
+      // New structs from Rust
+    public type PayoutDistribution = {
+        winner : Nat;
+        creator : Nat;
+        platform : Nat;
+    };
+
+    public type TournamentMeta = {
+        start_time : Text;
+        end_time : Text;
+        prize_pool : Nat;
+        winning_prize : Nat;
+        stream_url : ?Text;
+        description : Text;
+        tournament_banner : ?Text;
+        tags : [Text];
+    };
+
+    public type TeamType = { #Duo; #Squad; #Solo };
+
+    public type Team = {
+        id : Text;
+        name : Text;
+        members : [Principal];
+        captain : Principal;
+        created_at : Text;
+        metadata : ?Text;
+    };
+
+     public type UserMode = { #Base; #Creator; #Moderator };
+
+    public type OperationResult = { #Ok : Text; #Err : Text };
 
     public type UserTrack = {
         user : Principal;
@@ -96,6 +128,9 @@ module {
         losses : ?Nat8;
         points : ?[(Text, Text, Point)];
         principal_id : Text;
+        tournaments : ?[Text];
+        usermode : ?UserMode;
+        earnings : ?Nat;
         role : ?Role;
         squad_badge : Text;
         status : Status;
@@ -104,6 +139,7 @@ module {
         wins : Nat8;
         referral_id : ?Text
     };
+    
 
     public type Point = {
         position_points : Nat;
@@ -126,6 +162,9 @@ module {
         captain : Text;
         status : SquadType;
         name : Text;
+        created_at : ?Text;
+        created_by : ?Principal;
+        participating_members : ParticipatingMember;
         wins : ?Nat8;
         losses : ?Nat8;
         attendance : ?Nat8;
@@ -140,6 +179,11 @@ module {
         point : Nat;
         wins : Nat8;
         losses : Nat8;
+    };
+
+    public type ParticipatingMember = {
+        tournament_id: Text;
+        members : [Member];
     };
 
     public type Role = {
@@ -185,6 +229,18 @@ module {
         tournament_rules : Text;
         tournament_type : TournamentType;
         // mods : [Text];
+        creator_principal : ?Principal;
+        is_private : ?Bool;
+        moderators : ?[Principal];
+        payout_distribution : ?PayoutDistribution;
+        external_link : ?Text;
+        metadata : ?TournamentMeta;
+        is_team_based : ?Bool;
+        team_size : ?TeamType;
+        teams : ?[Team];
+        allow_solo_players : ?Bool;
+        allow_auto_match : ?Bool;
+        referral_ids : ?[Text];
         game : Text;
         squad : [Squad];
         squad_points : ?[(Text, Text, Point)];
@@ -263,7 +319,13 @@ module {
         no_of_winners : ?Nat8;
         no_of_participants : Nat;
         game_type : GameType;
-        name : ?Text
+        name : ?Text;
+        creators_principal : ?Principal;
+        is_private : ?Bool;
+        moderators : ?[Principal];
+        payout_distribution : ?PayoutDistribution;
+        external_link : ?Text;
+        metadata : ?TournamentMeta;
     };
 
     public type LobbyStatus = {

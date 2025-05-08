@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use crate::*;
 
 use candid::{CandidType, Decode, Deserialize, Encode};
 use ic_stable_structures::{storable::Bound, Storable};
@@ -336,25 +337,6 @@ impl Storable for UserProfile {
 }
 
 
-/// A placeholder for Internet Computer Principal IDs
-pub type Principal = String;
-
-/// Basic result type
-// #[derive(Debug, Serialize, Deserialize)]
-// pub enum Result<T, E> {
-//     Ok(T),
-//     Err(E),
-// }
-
-/// Points outcome
-// #[derive(Debug, Serialize, Deserialize)]
-// pub enum Point {
-//     Win,
-//     Loss,
-//     Draw,
-// }
-
-
 /// Error messages
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ErrorMessage {
@@ -481,7 +463,7 @@ pub enum TeamType {
 
 /// Team model
 #[derive(
-    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+    Clone, Debug, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
 )]
 pub struct Team {
     pub id: String,
