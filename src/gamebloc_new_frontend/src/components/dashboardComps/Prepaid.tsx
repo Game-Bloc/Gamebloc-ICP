@@ -7,8 +7,12 @@ import { useAppSelector } from "../../redux/hooks"
 const Prepaid = () => {
   const [nodata, setNodata] = useState<boolean>(false)
   const tournament = useAppSelector((state) => state.tournamentData)
-  const prepaidTournament = tournament?.filter((list: any) => {
+  const _prepaidTournament = tournament?.filter((list: any) => {
     return list.tournament_type && list.tournament_type.Prepaid === null
+  })
+
+  const prepaidTournament = _prepaidTournament?.filter((tour: any) => {
+    Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED"
   })
   const { loading } = useFetchAllTournaments()
 

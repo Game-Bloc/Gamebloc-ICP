@@ -55,7 +55,7 @@ function Landing() {
     )
   } else {
     return (
-      <div className="App">
+      <div className="App overflow-hidden">
         <img
           src={`blur.png`}
           alt=""

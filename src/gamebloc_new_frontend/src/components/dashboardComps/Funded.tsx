@@ -7,8 +7,11 @@ import { useAppSelector } from "../../redux/hooks"
 const Funded = () => {
   const [nodata, setNodata] = useState<boolean>(false)
   const tournament = useAppSelector((state) => state.tournamentData)
-  const crowdfundedTournament = tournament?.filter((list: any) => {
+  const _crowdfundedTournament = tournament?.filter((list: any) => {
     return list.tournament_type && list.tournament_type.Crowdfunded === null
+  })
+  const crowdfundedTournament = _crowdfundedTournament?.filter((tour: any) => {
+    Object.keys(tour.status)[0].toUpperCase() === "GAMECOMPLETED"
   })
   const { loading } = useFetchAllTournaments()
 

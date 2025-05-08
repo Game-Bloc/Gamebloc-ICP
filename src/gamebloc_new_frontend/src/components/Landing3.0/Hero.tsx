@@ -6,7 +6,7 @@ interface props {
 }
 function Hero({ setVisible }: props) {
   return (
-    <div className="flex flex-col gap-5 md:gap-0 md:flex-row md:justify-between md:items-center containerr sectionn">
+    <div className="flex flex-col gap-5 md:gap-0 md:flex-row md:justify-between md:items-center containerr sectionn overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
