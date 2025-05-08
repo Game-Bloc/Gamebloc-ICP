@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use crate::*;
 
 use candid::{CandidType, Decode, Deserialize, Encode};
 use ic_stable_structures::{storable::Bound, Storable};
@@ -27,8 +28,11 @@ pub_struct!(UserProfile {
      tournaments_created:u8,
      points: Option<Vec<(String,String,Point)>>,
      username: String,
+     tournaments: Option<Vec<String>>,
     //deprecated
      is_mod: bool,
+     usermode: Option<UserMode>,
+     earnings: Option<u128>,
      role: Option<Role>,
      principal_id: String,
      account_id : String,
@@ -37,6 +41,8 @@ pub_struct!(UserProfile {
      referral_id: Option<String>,
 });
 
+
+
 pub_struct!(
     TournamentAccount {
      id_hash: String,
@@ -44,6 +50,20 @@ pub_struct!(
      creator_id: Option<String>,
      status: TournamentStatus,
      idx: u8,
+     creator_principal: Option<Principal>,
+
+     is_private: Option<bool>,
+     moderators: Option<Vec<Principal>>,
+     payout_distribution: Option<PayoutDistribution>,
+     external_link: Option<String>,
+     metadata: Option<TournamentMeta>,
+     is_team_based: Option<bool>,
+     team_size: Option<TeamType>,
+     teams: Option<Vec<Team>>,
+     max_teams: Option<u64>,
+     allow_solo_players: Option<bool>,
+     allow_auto_match: Option<bool>,
+
      starting_date: String,
      tournament_rules: String,
      tournament_type: TournamentType,
@@ -52,6 +72,7 @@ pub_struct!(
      squad_in_game_names:Option<Vec<Vec<(String, String, String)>>>,
      messages: Option<Vec<Chat>>,
      user: Vec<String>,
+     referal_ids: Option<Vec<String>>,
      user_details: Option<Vec<UserProfile>>,
      winers: Vec<String>,
     //deprecated
@@ -142,6 +163,7 @@ pub_struct!(Point {
     total_points: u128,
 });
 
+
 pub_struct!(
     Squad {
     id_hash: String,
@@ -153,8 +175,17 @@ pub_struct!(
     attendance: Option<u8>,
     losses: Option<u8>,
     members: Vec<Member>,
+    participating_members: ParticipatingMember,
     requests: Vec<String>,
     points: Option<Vec<(String,String,Point)>>,
+    created_at: Option<String>,
+    created_by: Option<Principal>,
+});
+
+pub_struct!(
+    ParticipatingMember {
+    tournament_id: String,
+    participating_squad_members: Vec<Member>,
 });
 
 pub_struct!(Member {
@@ -188,6 +219,7 @@ pub enum Status {
     #[default]
     Online,
     Offline,
+    Away,
 }
 
 #[derive(Clone, Debug, Default, CandidType, Deserialize, Serialize)]
@@ -195,6 +227,7 @@ pub enum Role {
     #[default]
     Player,
     Mod,
+    // Admin,
     TribunalMod(ModTag),
 }
 
@@ -301,4 +334,157 @@ impl Storable for UserProfile {
         max_size: MAX_VALUE_SIZE,
         is_fixed_size: false,
     };
+}
+
+
+/// Error messages
+#[derive(Debug, Serialize, Deserialize)]
+pub enum ErrorMessage {
+    NotAuthorized,
+    DoesNotExist,
+    Expired,
+    WrongCredentials,
+    NotAllowed,
+    NotEnoughBalance,
+    NotEligible,
+}
+
+/// Notification model
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Notification {
+    pub id: u64,
+    pub title: String,
+    pub body: String,
+    pub user: Principal,
+    pub username: String,
+    pub date: String,
+    pub read: bool,
+}
+
+/// Container for multiple notifications
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Notifications {
+    pub notifications: Vec<Notification>,
+    pub user: Principal,
+}
+
+/// User modes
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub enum UserMode {
+    #[default]
+    Base,
+    Creator,
+    Moderator,
+}
+
+/// Tournament identifier
+pub type TournamentId = String;
+
+/// Payout distribution among parties
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub struct PayoutDistribution {
+    pub winner: u64,
+    pub creator: u64,
+    pub platform: u64,
+}
+
+/// Various game types
+// #[derive(Debug, Serialize, Deserialize)]
+// pub enum GameType {
+//     Board,
+//     Card,
+//     Shooter,
+//     MOBA,
+//     Sports,
+//     Trivia,
+//     Arcade,
+//     Custom(String),
+// }
+
+/// Different game modes
+// #[derive(Debug, Serialize, Deserialize)]
+// pub enum GameMode {
+//     OnevOne,
+//     FreeForAll,
+//     BracketElimination,
+//     League,
+//     TimedScore,
+//     LastManStanding,
+//     GroupToFinals,
+//     Custom(String),
+// }
+
+/// Metadata for tournaments
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub struct TournamentMeta {
+    pub start_time: String,
+    pub end_time: String,
+    pub prize_pool: u64,
+    pub winning_prize: u64,
+    pub stream_url: Option<String>,
+    pub description: String,
+    pub tournament_banner: Option<String>,
+    pub tags: Vec<String>,
+}
+
+/// Status of a tournament
+// #[derive(Debug, Serialize, Deserialize)]
+// pub enum TournamentStatus {
+//     Upcoming,
+//     Ongoing,
+//     Completed,
+//     Cancelled,
+//     Archived,
+// }
+
+/// Type of tournament funding
+// #[derive(Debug, Serialize, Deserialize)]
+// pub enum TournamentType {
+//     Prepaid,
+//     Crowdfunded,
+// }
+
+/// Team size options
+#[derive(
+    Clone, Debug, PartialEq, Default, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub enum TeamType {
+    Duo,
+    Squad,
+    #[default]
+    Solo,
+}
+
+/// Team model
+#[derive(
+    Clone, Debug, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub struct Team {
+    pub id: String,
+    pub name: String,
+    pub members: Vec<Principal>,
+    pub captain: Principal,
+    pub created_at: String,
+    pub metadata: Option<String>,
+}
+
+
+
+
+
+
+
+/// Generic result type for Motoko-style unions
+#[derive(
+    Clone, Debug, PartialEq, Ord, Eq, PartialOrd, CandidType, Deserialize, Serialize,
+)]
+pub enum OperationResult {
+    Ok(String),
+    Err(String),
 }
