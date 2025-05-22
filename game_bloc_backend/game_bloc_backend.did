@@ -26,6 +26,15 @@ type LobbyAccount = record {
 type LobbyStatus = variant { GameInProgress; ReadyToStart; GameCompleted };
 type Member = record { name : text; principal_id : text };
 type ModTag = variant { Mod1; Mod2; Mod3 };
+type ParticipatingMember = record {
+  participating_squad_members : vec Member;
+  tournament_id : text;
+};
+type PayoutDistribution = record {
+  creator : nat64;
+  winner : nat64;
+  platform : nat64;
+};
 type Point = record {
   kill_points : nat;
   total_points : nat;
@@ -37,39 +46,61 @@ type Squad = record {
   tag : text;
   id_hash : text;
   status : SquadType;
+  participating_members : ParticipatingMember;
   members : vec Member;
   name : text;
   wins : opt nat8;
   losses : opt nat8;
+  created_at : opt text;
+  created_by : opt principal;
   attendance : opt nat8;
   captain : text;
   requests : vec text;
   points : opt vec record { text; text; Point };
 };
 type SquadType = variant { Open; Closed };
-type Status = variant { Online; Offline };
+type Status = variant { Away; Online; Offline };
+type Team = record {
+  id : text;
+  members : vec principal;
+  metadata : opt text;
+  name : text;
+  created_at : text;
+  captain : principal;
+};
+type TeamType = variant { Duo; Squad; Solo };
 type TournamentAccount = record {
   idx : nat8;
   id_hash : text;
+  max_teams : opt nat64;
   status : TournamentStatus;
+  external_link : opt text;
+  teams : opt vec Team;
   title : text;
   creator : text;
   entry_fee : opt nat;
   messages : opt vec Chat;
   creator_id : opt text;
+  metadata : opt TournamentMeta;
   game : text;
+  allow_auto_match : opt bool;
   user : vec text;
   in_game_names : opt vec record { text; text; text };
   tournament_variation : opt Variation;
   winers : vec text;
   total_prize : nat;
+  is_team_based : opt bool;
   end_date : text;
+  is_private : opt bool;
   tournament_rules : text;
   ended : opt bool;
   squad_in_game_names : opt vec vec record { text; text; text };
+  team_size : opt TeamType;
   squad : vec Squad;
+  payout_distribution : opt PayoutDistribution;
   accepts_wagers : opt bool;
   no_of_participants_at_bump : opt nat;
+  referal_ids : opt vec text;
   lobbies : opt vec LobbyAccount;
   game_type : text;
   user_details : opt vec UserProfile;
@@ -82,6 +113,8 @@ type TournamentAccount = record {
   points_vector_mod_1 : opt vec record { text; text; Point };
   points_vector_mod_2 : opt vec record { text; text; Point };
   points_vector_mod_3 : opt vec record { text; text; Point };
+  creator_principal : opt principal;
+  moderators : opt vec principal;
   no_of_winners : nat8;
   squad_vector_mod_1 : opt vec record { text; text; Point };
   squad_vector_mod_2 : opt vec record { text; text; Point };
@@ -91,8 +124,19 @@ type TournamentAccount = record {
   entry_prize : nat8;
   points : opt vec record { text; text; Point };
   squad_points : opt vec record { text; text; Point };
+  allow_solo_players : opt bool;
 };
 type TournamentLobbyType = variant { MultiLobby; SingleLobby };
+type TournamentMeta = record {
+  tags : vec text;
+  description : text;
+  tournament_banner : opt text;
+  end_time : text;
+  start_time : text;
+  stream_url : opt text;
+  prize_pool : nat64;
+  winning_prize : nat64;
+};
 type TournamentStatus = variant {
   AcceptingPlayers;
   GameInProgress;
@@ -100,19 +144,23 @@ type TournamentStatus = variant {
   GameCompleted;
 };
 type TournamentType = variant { Prepaid; Crowdfunded; Blitzkrieg };
+type UserMode = variant { Base; Moderator; Creator };
 type UserProfile = record {
   age : nat8;
   account_id : text;
   id_hash : text;
   status : Status;
   referral_id : opt text;
+  usermode : opt UserMode;
   username : text;
   date : text;
   role : opt Role;
   canister_id : text;
   wins : nat8;
+  tournaments : opt vec text;
   losses : opt nat8;
   is_mod : bool;
+  earnings : opt nat;
   attendance : opt nat8;
   principal_id : text;
   squad_badge : text;

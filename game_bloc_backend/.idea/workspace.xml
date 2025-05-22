@@ -8,10 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4444ed6-0e89-43aa-aefd-d7c1232cba07" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/wager_mutations.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bloc/types/bloctypes.mo" beforeDir="false" afterPath="$PROJECT_DIR$/../bloc/types/bloctypes.mo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_bloc_backend.did" beforeDir="false" afterPath="$PROJECT_DIR$/game_bloc_backend.did" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tournament_mutations.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tournament_mutations.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,10 +32,14 @@
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Game-Bloc/Gamebloc-ICP.git&quot;,
     &quot;accountId&quot;: &quot;0db38581-3150-4288-8add-0ffb714607b6&quot;
-  }
+  },
+  &quot;editorReviewEnabled&quot;: false
 }</component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="8ydno8PE" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -51,7 +55,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.rust.reset.selective.auto.import&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;crowdfunded-to-wagr&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#37 on backend-calls-optimization&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/ola/Documents/Github/Gamebloc-ICP/game_bloc_backend&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -97,6 +101,13 @@
       <workItem from="1735828911948" duration="1896000" />
       <workItem from="1736113633238" duration="598000" />
       <workItem from="1736152787619" duration="190000" />
+      <workItem from="1746112853955" duration="1074000" />
+      <workItem from="1746132490204" duration="637000" />
+      <workItem from="1746434399351" duration="7630000" />
+      <workItem from="1746514910913" duration="122000" />
+      <workItem from="1746515066410" duration="2936000" />
+      <workItem from="1746617103587" duration="605000" />
+      <workItem from="1746622827940" duration="197000" />
     </task>
     <servers />
   </component>
