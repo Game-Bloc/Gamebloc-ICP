@@ -5,51 +5,60 @@ module {
         headers : [HttpHeader];
         body : ?[Nat8];
         method : HttpMethod;
-        transform : ?TransformRawResponseFunction;
+        transform : ?TransformRawResponseFunction
     };
 
     public type HttpHeader = {
         name : Text;
-        value : Text;
+        value : Text
     };
 
     public type HttpMethod = {
         #get;
         #post;
-        #head;
+        #head
     };
 
     public type HttpResponsePayload = {
         status : Nat;
         headers : [HttpHeader];
-        body : [Nat8];
+        body : [Nat8]
     };
 
     public type TransformRawResponseFunction = {
         function : shared query TransformArgs -> async HttpResponsePayload;
-        context : Blob;
+        context : Blob
     };
 
     //2.2 This type describes the arguments the transform function needs
     public type TransformArgs = {
         response : HttpResponsePayload;
-        context : Blob;
+        context : Blob
     };
 
     public type CanisterHttpResponsePayload = {
         status : Nat;
         headers : [HttpHeader];
-        body : [Nat8];
+        body : [Nat8]
     };
 
     public type TransformContext = {
         function : shared query TransformArgs -> async HttpResponsePayload;
-        context : Blob;
+        context : Blob
     };
-
 
     //3. Declaring the IC management canister which we use to make the HTTPS outcall
     public type IC = actor {
         http_request : HttpRequestArgs -> async HttpResponsePayload;
-    };
+        ecdsa_public_key : ({
+            canister_id : ?Principal;
+            derivation_path : [Blob];
+            key_id : { curve : { #secp256k1 }; name : Text }
+        }) -> async ({ public_key : Blob; chain_code : Blob });
+        sign_with_ecdsa : ({
+            message_hash : Blob;
+            derivation_path : [Blob];
+            key_id : { curve : { #secp256k1 }; name : Text }
+        }) -> async ({ signature : Blob })
+    }
 }

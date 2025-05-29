@@ -5,16 +5,23 @@
       "package": "game_bloc_backend",
       "type": "rust"
     },
-    "evm_rpc": {
-      "type": "pull",
-      "id": "7hfb6-caaaa-aaaar-qadga-cai"
-    },
 
+    "evm_rpc": {
+      "type": "custom",
+      "candid": "https://github.com/internet-computer-protocol/evm-rpc-canister/releases/latest/download/evm_rpc.did",
+      "wasm": "https://github.com/internet-computer-protocol/evm-rpc-canister/releases/latest/download/evm_rpc.wasm.gz",
+      "remote": {
+        "id": {
+          "ic": "7hfb6-caaaa-aaaar-qadga-cai"
+        }
+      }
+    },
+    
     "kitchen": {
       "main": "bloc/kitchen.mo",
       "type": "motoko",
       "optimize": "cycles",
-      "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index"]
+      "dependencies": ["game_bloc_backend", "icp_ledger", "icp_index", "evm_rpc"]
     },
 
     "icp_ledger": {

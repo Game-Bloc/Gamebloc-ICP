@@ -2955,45 +2955,169 @@ shared ({ caller }) actor class Kitchen() = this {
 
     // EVM transactions 
     public func get_evm_block(height : Nat) : async EVM.Block {
-    // Ethereum Mainnet RPC providers
-    // Read more here: https://internetcomputer.org/docs/current/developer-docs/multi-chain/ethereum/evm-rpc/overview#supported-json-rpc-providers
-    // let services : EVM.RpcServices = #EthMainnet(
-    //   ?[
-    //     #Llama,
-    //     // #Alchemy,
-    //     // #Cloudflare
-    //   ]
-    // );
+        // Ethereum Mainnet RPC providers
+        // Read more here: https://internetcomputer.org/docs/current/developer-docs/multi-chain/ethereum/evm-rpc/overview#supported-json-rpc-providers
+        // let services : EVM.RpcServices = #EthMainnet(
+        //   ?[
+        //     #Llama,
+        //     // #Alchemy,
+        //     // #Cloudflare
+        //   ]
+        // );
 
-    // Base Sepolia Testnet RPC providers
-    // Get chain ID and RPC providers from https://chainlist.org/
-    let services : EVM.RpcServices = #Custom {
-      chainId = 84532;
-      services = [
-        {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
-        {url = "https://sepolia.base.org"; headers = null}
-      ];
+        // Base Sepolia Testnet RPC providers
+        // Get chain ID and RPC providers from https://chainlist.org/
+        let services : EVM.RpcServices = #Custom {
+            chainId = 84532;
+            services = [
+                {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
+                {url = "https://sepolia.base.org"; headers = null}
+            ];
+        };
+
+        // Call `eth_getBlockByNumber` RPC method (unused cycles will be refunded)
+        Cycles.add(10_000_000_000);
+        let result = await EVM.eth_getBlockByNumber(services, null, #Number(height));
+
+        switch result {
+        // Consistent, successful results.
+        case (#Consistent(#Ok block)) {
+            block;
+        };
+        // All RPC providers return the same error.
+        case (#Consistent(#Err error)) {
+            Debug.trap("Error: " # debug_show error);
+        };
+        // Inconsistent results between RPC providers. Should not happen if a single RPC provider is used.
+        case (#Inconsistent(results)) {
+            Debug.trap("Inconsistent results" # debug_show results);
+        };
+        };
     };
 
-    // Call `eth_getBlockByNumber` RPC method (unused cycles will be refunded)
-    Cycles.add(10_000_000_000);
-    let result = await EVM.eth_getBlockByNumber(services, null, #Number(height));
+    public func getTransactionCount() : async ?Nat {
 
-    switch result {
-      // Consistent, successful results.
-      case (#Consistent(#Ok block)) {
-        block;
-      };
-      // All RPC providers return the same error.
-      case (#Consistent(#Err error)) {
-        Debug.trap("Error: " # debug_show error);
-      };
-      // Inconsistent results between RPC providers. Should not happen if a single RPC provider is used.
-      case (#Inconsistent(results)) {
-        Debug.trap("Inconsistent results" # debug_show results);
-      };
+        // Configure RPC request
+        let services : EVM.RpcServices = #Custom {
+            chainId = 84532;
+            services = [
+                {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
+                {url = "https://sepolia.base.org"; headers = null}
+            ];
+        };
+        let config = null;
+
+        // Add cycles to next call
+        Cycles.add(2000000000);
+
+        // Call an RPC method
+        let result = await EVM.eth_getTransactionCount(
+        services,
+        config,
+        {
+            address = junaAddress;
+            block = #Latest;
+        },
+        );
+
+        // Process results
+        switch result {
+        // Consistent, successful results
+        case (#Consistent(#Ok count)) {
+            Debug.print("Success: " # debug_show count);
+            ?count
+        };
+        // Consistent error message
+        case (#Consistent(#Err error)) {
+            Debug.trap("Error: " # debug_show error);
+            null
+        };
+        // Inconsistent results between RPC providers
+        case (#Inconsistent(_results)) {
+            Debug.trap("Inconsistent results");
+            null
+        };
+        };
     };
-  };
 
+    public func sendRawTransaction() : async ?EVM.SendRawTransactionStatus {
+
+        // Configure RPC request
+        let services : EVM.RpcServices = #Custom {
+                chainId = 84532;
+                services = [
+                    {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
+                    {url = "https://sepolia.base.org"; headers = null}
+                ];
+            };
+        let config = null;
+
+        // Add cycles to next call
+        Cycles.add(2000000000);
+
+        // Call an RPC method
+        let result = await EVM.eth_sendRawTransaction(
+            services,
+            config,
+            "0xf86c098504a817c800825208943535353535353535353535353535353535353535880de0b6b3a76400008025a028ef61340bd939bc2195fe537567866003e1a15d3c71ff63e1590620aa636276a067cbe9d8997f761aecb703304b3800ccf555c9f3dc64214b297fb1966a3b6d83",
+        );
+
+        switch result {
+        // Consistent, successful results
+        case (#Consistent(#Ok status)) {
+            Debug.print("Status: " # debug_show status);
+            ?status
+        };
+        // Consistent error message
+        case (#Consistent(#Err error)) {
+            Debug.trap("Error: " # debug_show error);
+            null
+        };
+        // Inconsistent results between RPC providers
+        case (#Inconsistent(_results)) {
+            Debug.trap("Inconsistent results");
+            null
+        };
+        };
+    };
+
+    // public func getEvmTransactionByHash(hash : Text) : async ?EVM.Transaction {
+    //     // Configure RPC request
+    //     let services : EVM.RpcServices = #Custom {
+    //         chainId = 84532;
+    //         services = [
+    //             {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
+    //             {url = "https://sepolia.base.org"; headers = null}
+    //         ];
+    //     };
+    //     let config = null;
+
+    //     // Add cycles to next call
+    //     Cycles.add(2000000000);
+
+    //     // Call an RPC method
+    //     let result = await EVM.eth_getTransactionByHash(
+    //         services,
+    //         config,
+    //         hash
+    //     );
+
+    //     switch result {
+    //         // Consistent, successful results
+    //         case (#Consistent(#Ok transaction)) {
+    //             ?transaction;
+    //         };
+    //         // Consistent error message
+    //         case (#Consistent(#Err error)) {
+    //             Debug.trap("Error: " # debug_show error);
+    //             null
+    //         };
+    //         // Inconsistent results between RPC providers
+    //         case (#Inconsistent(_results)) {
+    //             Debug.trap("Inconsistent results");
+    //             null
+    //         };
+    //     };
+    // };
 
 }
