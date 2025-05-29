@@ -42,6 +42,7 @@ import AccountIdentifier "utils/utils";
 import ICPLedger "canister:icp_ledger";
 import ICPIndex "canister:icp_index";
 import RustBloc "canister:game_bloc_backend";
+import EVM "canister:evm_rpc";
 // import Env ""
 // import
 // import ICRC1 "canister:icrc1_ledger";
@@ -75,6 +76,14 @@ shared ({ caller }) actor class Kitchen() = this {
       let gbc_admin : Principal = Principal.fromText("22gut-hqv7w-7ejrz-kidig-w6gs5-hddhp-nxfje-iwfzq-wmu6s-6gr5s-tae"); // * Demo here
     // ! Production params @Deonorla
     // let gbc_admin : Principal = Principal.fromText("mspyp-nemw2-mm543-dmcmw-b22ma-xe4jd-siecq-4awtq-ni6zj-lekqg-cqe");
+    let junaAddress = "0xf8Aea85fb8c1B3b13e8727d225475449b8Ca0ab3";
+    let baseRpc : EVM.RpcServices = #BaseMainnet(
+        ?[
+            #Llama,
+            #Alchemy
+        ]
+    );
+
     let ic : HTTP.IC = actor ("aaaaa-aa");
     private stable var volume : Nat64 = 0;
     private stable var SupportedGames : [Text] = [];
@@ -2941,5 +2950,50 @@ shared ({ caller }) actor class Kitchen() = this {
             }
         }
     };
+
+
+
+    // EVM transactions 
+    public func get_evm_block(height : Nat) : async EVM.Block {
+    // Ethereum Mainnet RPC providers
+    // Read more here: https://internetcomputer.org/docs/current/developer-docs/multi-chain/ethereum/evm-rpc/overview#supported-json-rpc-providers
+    // let services : EVM.RpcServices = #EthMainnet(
+    //   ?[
+    //     #Llama,
+    //     // #Alchemy,
+    //     // #Cloudflare
+    //   ]
+    // );
+
+    // Base Sepolia Testnet RPC providers
+    // Get chain ID and RPC providers from https://chainlist.org/
+    let services : EVM.RpcServices = #Custom {
+      chainId = 84532;
+      services = [
+        {url = "https://base-sepolia-rpc.publicnode.com"; headers = null},
+        {url = "https://sepolia.base.org"; headers = null}
+      ];
+    };
+
+    // Call `eth_getBlockByNumber` RPC method (unused cycles will be refunded)
+    Cycles.add(10_000_000_000);
+    let result = await EVM.eth_getBlockByNumber(services, null, #Number(height));
+
+    switch result {
+      // Consistent, successful results.
+      case (#Consistent(#Ok block)) {
+        block;
+      };
+      // All RPC providers return the same error.
+      case (#Consistent(#Err error)) {
+        Debug.trap("Error: " # debug_show error);
+      };
+      // Inconsistent results between RPC providers. Should not happen if a single RPC provider is used.
+      case (#Inconsistent(results)) {
+        Debug.trap("Inconsistent results" # debug_show results);
+      };
+    };
+  };
+
 
 }

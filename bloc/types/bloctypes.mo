@@ -220,7 +220,7 @@ module {
         no_of_participants_at_bump: ?Nat;
         wagers : ?[Wager];
         user_details : ?[UserProfile];
-        
+
         // paid : Bool;
     };
 

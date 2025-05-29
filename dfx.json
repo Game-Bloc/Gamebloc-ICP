@@ -5,6 +5,10 @@
       "package": "game_bloc_backend",
       "type": "rust"
     },
+    "evm_rpc": {
+      "type": "pull",
+      "id": "7hfb6-caaaa-aaaar-qadga-cai"
+    },
 
     "kitchen": {
       "main": "bloc/kitchen.mo",
