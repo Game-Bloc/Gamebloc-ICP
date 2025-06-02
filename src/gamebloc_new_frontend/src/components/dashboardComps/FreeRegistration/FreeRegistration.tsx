@@ -132,12 +132,12 @@ const FreeRegistration = () => {
                   />
                 )}
 
-                <div
+                {/* <div
                   onClick={() => navigate("/active-tournament")}
                   className="py-[0.4rem] h-fit px-[1rem] bg-primary-first hover:bg-primary-second hover:text-primary-first text-primary-second justify-center rounded-md text-sm  items-center cursor-pointer border-primary-second border-solid border-[1px]"
                 >
                   See All
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7">

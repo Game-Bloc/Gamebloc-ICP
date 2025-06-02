@@ -30,11 +30,21 @@ import {
 } from "../../../declarations/icp_index"
 import { useNavigate } from "react-router-dom"
 
+import {
+  clearAuthClientStorage,
+  deriveKeysFromSeedPhrase,
+  createIdentityFromKeyPair,
+  validateAndFixSeedPhrase,
+  generateSeedPhrase,
+} from "../Utils/CryptoUtils"
+import MetaMaskService from "../services/MetaMaskService"
+
 const AuthContext = React.createContext<{
   isAuthenticated: boolean
   notAuthenticated: boolean
   login: any
   loginNFID: any
+  loginWithMetaMask: any
   logout: any
   authClient: any
   identity: any
@@ -49,6 +59,7 @@ const AuthContext = React.createContext<{
   notAuthenticated: true,
   login: null,
   loginNFID: null,
+  loginWithMetaMask: null,
   logout: null,
   authClient: null,
   identity: null,
@@ -126,8 +137,8 @@ export const useAuthClient = (options = defaultOptions) => {
 
   useEffect(() => {
     // Initialize AuthClient
-    AuthClient.create(options.createOptions).then(async (client) => {
-      updateClient(client)
+    AuthClient.create().then((client) => {
+      setAuthClient(client)
     })
   }, [])
 
@@ -159,6 +170,72 @@ export const useAuthClient = (options = defaultOptions) => {
         navigate("/dashboard")
       },
     })
+  }
+
+  const loginWithMetaMask = async () => {
+    try {
+      // Unique message for signature to create deterministic seed
+      const uniqueMessage =
+        "Sign this message to log in with your Ethereum wallet"
+
+      console.log("Requesting MetaMask signature...")
+      const signature = await MetaMaskService.signMessage(uniqueMessage)
+      console.log("MetaMask Signature received")
+
+      if (!signature) {
+        throw new Error("Failed to sign with MetaMask.")
+      }
+
+      // Generate seed phrase from signature
+      console.log("Generating seed phrase from signature...")
+      const seedPhrase = await generateSeedPhrase(signature)
+
+      // Wait for this to fully complete before continuing
+      console.log("Initializing login flow with seed phrase...")
+      // await this.handleLoginFlow(seedPhrase, { source: 'metamask', retry: true });
+      // Validate and potentially fix the seed phrase
+      const validSeedPhrase = validateAndFixSeedPhrase(seedPhrase)
+      console.log(`Processing login with seed phrase `)
+      // Derive keys and create identity
+      const keyPair = deriveKeysFromSeedPhrase(validSeedPhrase)
+      const identity = createIdentityFromKeyPair(keyPair)
+      console.log("Creating identity from key pair...")
+      setIdentity(identity)
+      setIsAuthenticated(true)
+      const principal = identity.getPrincipal()
+      setPrincipal(principal)
+      console.log("Principal:", principal.toString())
+      const actor = createActor(canisterId, {
+        agentOptions: {
+          identity,
+        },
+      })
+      const actor2 = createActor2(canisterId2, {
+        agentOptions: {
+          identity,
+        },
+      })
+      const actor3 = createLedgerActor(ledgerId, {
+        agentOptions: {
+          identity,
+        },
+      })
+      const actor4 = createIndexActor(indexId, {
+        agentOptions: {
+          identity,
+        },
+      })
+      setWhoamiActor(actor)
+      setWhoamiActor2(actor2)
+      setLedgerAcor(actor3)
+      setIndexAcor(actor4)
+      console.log("Actors created successfully")
+
+      return navigate("/dashboard")
+    } catch (error) {
+      console.error("MetaMask login error:", error)
+      throw new Error(`MetaMask login failed: ${error.message}`)
+    }
   }
 
   async function updateClient(client) {
@@ -238,12 +315,46 @@ export const useAuthClient = (options = defaultOptions) => {
     }
   }
 
+  // async function logout() {
+  //   await authClient?.logout()
+  //   setIsAuthenticated(false)
+  //   setIdentity(null)
+  //   await updateClient(authClient)
+  //   sessionStorage.setItem("userState", "false")
+  // }
   async function logout() {
-    await authClient?.logout()
-    setIsAuthenticated(false)
-    setIdentity(null)
-    await updateClient(authClient)
-    sessionStorage.setItem("userState", "false")
+    try {
+      // Standard AuthClient logout
+      await authClient?.logout()
+
+      // Force clear IndexedDB storage
+      await clearAuthClientStorage()
+
+      // Reset application state
+      setIsAuthenticated(false)
+      setIdentity(null)
+      setPrincipal(null)
+      // setEthAddress(null) // If using MetaMask
+
+      // Reset actors
+      setWhoamiActor(null)
+      setWhoamiActor2(null)
+      setLedgerAcor(null)
+      setIndexAcor(null)
+
+      // Close WebSocket connection
+      ws?.close()
+
+      // Clear session markers
+      sessionStorage.removeItem("userState")
+      sessionStorage.removeItem("persist:root")
+      localStorage.removeItem("ic-session-key")
+
+      console.log("Full logout completed")
+    } catch (error) {
+      console.error("Logout failed:", error)
+      throw new Error("Failed to complete logout")
+    }
   }
 
   return {
@@ -251,6 +362,7 @@ export const useAuthClient = (options = defaultOptions) => {
     notAuthenticated,
     login,
     loginNFID,
+    loginWithMetaMask,
     logout,
     authClient,
     identity,

@@ -74,6 +74,10 @@ function LoginModal({ modal }: Props) {
 
 const options: ModalOptionsProps[] = [
   {
+    icon: `metamask.png`,
+    text: "Connect with Metamask",
+  },
+  {
     icon: `nfid.png`,
     text: "Connect with NFID(Google)",
   },

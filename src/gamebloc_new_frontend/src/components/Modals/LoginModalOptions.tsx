@@ -7,7 +7,7 @@ export interface ModalOptionsProps {
 }
 
 function LoginModalOptions({ setModal, icon, text }: ModalOptionsProps) {
-  const { login, loginNFID } = useAuth()
+  const { login, loginNFID, loginWithMetaMask } = useAuth()
   return (
     <div
       className="border border-button cursor-pointer flex gap-3 justify-start items-center pl-2 pr-7 py-2 md:pl-8 md:pr-28 md:py-5 hover:bg-[#353763] bg-[#222226] rounded-md"
@@ -17,6 +17,8 @@ function LoginModalOptions({ setModal, icon, text }: ModalOptionsProps) {
           loginNFID()
         } else if (icon === `identity.png`) {
           login()
+        } else if (icon === `metamask.png`) {
+          loginWithMetaMask()
         }
       }}
     >
