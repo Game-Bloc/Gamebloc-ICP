@@ -8,9 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4444ed6-0e89-43aa-aefd-d7c1232cba07" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../bloc/types/bloctypes.mo" beforeDir="false" afterPath="$PROJECT_DIR$/../bloc/types/bloctypes.mo" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game_bloc_backend.did" beforeDir="false" afterPath="$PROJECT_DIR$/game_bloc_backend.did" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/model.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/model.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tournaments/helper_functions.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/tournaments/helper_functions.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,13 +28,13 @@
     &quot;assignee&quot;: &quot;marvincd&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Game-Bloc/Gamebloc-ICP.git",
-    "accountId": "0db38581-3150-4288-8add-0ffb714607b6"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Game-Bloc/Gamebloc-ICP.git&quot;,
+    &quot;accountId&quot;: &quot;0db38581-3150-4288-8add-0ffb714607b6&quot;
   },
-  "editorReviewEnabled": false
-}]]></component>
+  &quot;editorReviewEnabled&quot;: false
+}</component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="8ydno8PE" />
   </component>
@@ -49,23 +50,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.rust.reset.selective.auto.import": "true",
-    "git-widget-placeholder": "#37 on backend-calls-optimization",
-    "last_opened_file_path": "/Users/ola/Documents/Github/Gamebloc-ICP/game_bloc_backend",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "org.rust.cargo.project.model.PROJECT_DISCOVERY": "true",
-    "org.rust.first.attach.projects": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.rust.reset.selective.auto.import&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;#37 on backend-calls-optimization&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/ola/Documents/Github/Gamebloc-ICP/game_bloc_backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;org.rust.cargo.project.model.PROJECT_DISCOVERY&quot;: &quot;true&quot;,
+    &quot;org.rust.first.attach.projects&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Test Gamebloc-ICP" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
       <option name="buildProfileId" value="test" />
@@ -102,7 +103,11 @@
       <workItem from="1736152787619" duration="190000" />
       <workItem from="1746112853955" duration="1074000" />
       <workItem from="1746132490204" duration="637000" />
-      <workItem from="1746434399351" duration="3582000" />
+      <workItem from="1746434399351" duration="7630000" />
+      <workItem from="1746514910913" duration="122000" />
+      <workItem from="1746515066410" duration="2936000" />
+      <workItem from="1746617103587" duration="605000" />
+      <workItem from="1746622827940" duration="197000" />
     </task>
     <servers />
   </component>

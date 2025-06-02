@@ -52,7 +52,7 @@ type Squad = record {
   wins : opt nat8;
   losses : opt nat8;
   created_at : opt text;
-  created_by : opt text;
+  created_by : opt principal;
   attendance : opt nat8;
   captain : text;
   requests : vec text;
@@ -62,11 +62,11 @@ type SquadType = variant { Open; Closed };
 type Status = variant { Away; Online; Offline };
 type Team = record {
   id : text;
-  members : vec text;
+  members : vec principal;
   metadata : opt text;
   name : text;
   created_at : text;
-  captain : text;
+  captain : principal;
 };
 type TeamType = variant { Duo; Squad; Solo };
 type TournamentAccount = record {
@@ -113,8 +113,8 @@ type TournamentAccount = record {
   points_vector_mod_1 : opt vec record { text; text; Point };
   points_vector_mod_2 : opt vec record { text; text; Point };
   points_vector_mod_3 : opt vec record { text; text; Point };
-  creator_principal : opt text;
-  moderators : opt vec text;
+  creator_principal : opt principal;
+  moderators : opt vec principal;
   no_of_winners : nat8;
   squad_vector_mod_1 : opt vec record { text; text; Point };
   squad_vector_mod_2 : opt vec record { text; text; Point };
