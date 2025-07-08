@@ -7,7 +7,7 @@ interface Props {
 }
 
 const LoginModal2 = ({ modal }: Props) => {
-  const { login, loginNFID } = useAuth()
+  const { login, loginNFID, loginWithMetaMask } = useAuth()
 
   return (
     <div>
@@ -40,22 +40,22 @@ const LoginModal2 = ({ modal }: Props) => {
                     The future of next gen Web3 gaming at your finger tips
                   </p>
 
-                  {/* <button
+                  <button
                     onClick={() => {
                       modal()
-                      login()
+                      loginWithMetaMask()
                     }}
                     className="  justify-center  w-full px-6 text-[.6rem] sm:text-base text-black  mt-[0.8rem] sm:mt-[1.5rem] flex bg-primary-second hover:bg-primary-second/70 rounded-[9999px] items-center cursor-pointer py-3"
                   >
                     <img
-                      src={`Icp.svg`}
+                      src={`metamask.png`}
                       alt=""
                       className="m-0 w-[.75rem] sm:w-6"
                     />
                     <p className="text-[0.65rem] ml-4  font-bold sm:text-[.85rem]">
-                      Sign in with Internet Identity
+                      Sign in with MetaMask
                     </p>
-                  </button> */}
+                  </button>
                   <button
                     onClick={() => {
                       modal()

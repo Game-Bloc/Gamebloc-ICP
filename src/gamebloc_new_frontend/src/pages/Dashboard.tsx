@@ -44,9 +44,9 @@ const Dashboard = () => {
   } = useGameblocHooks()
   const { getMyPoints, getMyStreakCount, whoami, getAdminAccID } = hooks()
   const principalText = useAppSelector(
-    (state) => state.userProfile.principal_id,
+    (state) => state.userProfile?.principal_id,
   )
-  const username = useAppSelector((state) => state.userProfile.username)
+  const username = useAppSelector((state) => state.userProfile?.username)
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
@@ -69,10 +69,24 @@ const Dashboard = () => {
         setAccountModal(true)
       }
     }
-  }, [isAuthenticated, userSession])
+  }, [isAuthenticated, userSession, username])
 
   useEffect(() => {
-    if (userSession === "true") {
+    const isValidPrincipal = (text: string | undefined | null) => {
+      try {
+        if (!text || text.trim() === "" || text === "aaaaa-aa") return false
+        Principal.fromText(text)
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    if (
+      userSession === "true" &&
+      isAuthenticated &&
+      isValidPrincipal(principalText)
+    ) {
       const principal = Principal.fromText(principalText)
       getAdminAccID()
       getMyNotifications(principal)
@@ -80,7 +94,7 @@ const Dashboard = () => {
       getMyPoints(principal)
       getMyStreakCount()
     }
-  }, [isAuthenticated, userSession])
+  }, [isAuthenticated, userSession, principalText])
 
   const handleLoginModal = () => {
     setOpenLoginModal(!openLoginModal)
@@ -118,7 +132,6 @@ const Dashboard = () => {
               {/* <GameblocTournaments loading={isLoadingProfile} /> */}
             </div>
           </div>
-
         </section>
         <ConfigProvider
           theme={{

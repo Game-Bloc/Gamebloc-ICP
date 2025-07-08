@@ -142,6 +142,63 @@ export const useAuthClient = (options = defaultOptions) => {
     })
   }, [])
 
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const client = await AuthClient.create()
+      setAuthClient(client)
+
+      // restore if MetaMask was used
+      const savedSig = sessionStorage.getItem("metamaskSignature")
+
+      if (savedSig) {
+        try {
+          console.log("Restoring MetaMask session...")
+
+          const seedPhrase = await generateSeedPhrase(savedSig)
+          // console.log("Generated seedPhrase:", seedPhrase, typeof seedPhrase)
+          const validSeedPhrase = validateAndFixSeedPhrase(seedPhrase)
+          const keyPair = deriveKeysFromSeedPhrase(validSeedPhrase)
+          const identity = createIdentityFromKeyPair(keyPair)
+          const principal = identity.getPrincipal()
+
+          setIdentity(identity)
+          setPrincipal(principal)
+          setIsAuthenticated(true)
+
+          // Create actors with restored identity
+          const actor = createActor(canisterId, {
+            agentOptions: { identity },
+          })
+          const actor2 = createActor2(canisterId2, {
+            agentOptions: { identity },
+          })
+          const actor3 = createLedgerActor(ledgerId, {
+            agentOptions: { identity },
+          })
+          const actor4 = createIndexActor(indexId, {
+            agentOptions: { identity },
+          })
+
+          setWhoamiActor(actor)
+          setWhoamiActor2(actor2)
+          setLedgerAcor(actor3)
+          setIndexAcor(actor4)
+          sessionStorage.setItem("userSession", "true")
+          // Optional: log restored principal
+          console.log("Restored principal:", principal.toString())
+        } catch (err) {
+          console.error("Failed to restore MetaMask identity:", err)
+          // Clean up if restoration fails
+          sessionStorage.removeItem("metamaskSignature")
+        }
+      } else {
+        console.log("No MetaMask session to restore.")
+      }
+    }
+
+    initializeAuth()
+  }, [])
+
   const login = () => {
     authClient.login({
       ...options.loginOptions,
@@ -174,67 +231,41 @@ export const useAuthClient = (options = defaultOptions) => {
 
   const loginWithMetaMask = async () => {
     try {
-      // Unique message for signature to create deterministic seed
       const uniqueMessage =
         "Sign this message to log in with your Ethereum wallet"
 
-      console.log("Requesting MetaMask signature...")
       const signature = await MetaMaskService.signMessage(uniqueMessage)
-      console.log("MetaMask Signature received")
+      if (!signature) throw new Error("Failed to sign with MetaMask")
 
-      if (!signature) {
-        throw new Error("Failed to sign with MetaMask.")
-      }
+      sessionStorage.setItem("metamaskSignature", signature)
+      // console.log("MetaMask signature saved:", signature)
+      await new Promise((res) => setTimeout(res, 100)) //Let storage persist
 
-      // Generate seed phrase from signature
-      console.log("Generating seed phrase from signature...")
       const seedPhrase = await generateSeedPhrase(signature)
-
-      // Wait for this to fully complete before continuing
-      console.log("Initializing login flow with seed phrase...")
-      // await this.handleLoginFlow(seedPhrase, { source: 'metamask', retry: true });
-      // Validate and potentially fix the seed phrase
       const validSeedPhrase = validateAndFixSeedPhrase(seedPhrase)
-      console.log(`Processing login with seed phrase `)
-      // Derive keys and create identity
       const keyPair = deriveKeysFromSeedPhrase(validSeedPhrase)
       const identity = createIdentityFromKeyPair(keyPair)
-      console.log("Creating identity from key pair...")
-      setIdentity(identity)
-      setIsAuthenticated(true)
       const principal = identity.getPrincipal()
+
+      setIdentity(identity)
       setPrincipal(principal)
-      console.log("Principal:", principal.toString())
-      const actor = createActor(canisterId, {
-        agentOptions: {
-          identity,
-        },
-      })
-      const actor2 = createActor2(canisterId2, {
-        agentOptions: {
-          identity,
-        },
-      })
-      const actor3 = createLedgerActor(ledgerId, {
-        agentOptions: {
-          identity,
-        },
-      })
-      const actor4 = createIndexActor(indexId, {
-        agentOptions: {
-          identity,
-        },
-      })
+      setIsAuthenticated(true)
+
+      // Setup actors
+      const actor = createActor(canisterId, { agentOptions: { identity } })
+      const actor2 = createActor2(canisterId2, { agentOptions: { identity } })
+      const actor3 = createLedgerActor(ledgerId, { agentOptions: { identity } })
+      const actor4 = createIndexActor(indexId, { agentOptions: { identity } })
+
       setWhoamiActor(actor)
       setWhoamiActor2(actor2)
       setLedgerAcor(actor3)
       setIndexAcor(actor4)
-      console.log("Actors created successfully")
 
-      return navigate("/dashboard")
+      console.log("MetaMask login complete. Redirecting...")
+      navigate("/dashboard")
     } catch (error) {
       console.error("MetaMask login error:", error)
-      throw new Error(`MetaMask login failed: ${error.message}`)
     }
   }
 
@@ -345,6 +376,8 @@ export const useAuthClient = (options = defaultOptions) => {
       // Close WebSocket connection
       ws?.close()
 
+      // clear metamask local state
+      localStorage.removeItem("metamaskSignature")
       // Clear session markers
       sessionStorage.removeItem("userState")
       sessionStorage.removeItem("persist:root")
