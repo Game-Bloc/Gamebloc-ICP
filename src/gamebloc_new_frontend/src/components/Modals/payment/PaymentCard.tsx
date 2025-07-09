@@ -6,6 +6,7 @@ import {
 import { Checkbox, ConfigProvider, Steps } from "antd"
 import { CheckboxChangeEvent } from "antd/es/checkbox"
 import React, { useState } from "react"
+import { FaEthereum } from "react-icons/fa6"
 
 interface prop {
   onChange: () => void
@@ -14,6 +15,8 @@ interface prop {
   selectedPayment: string | null
   handlePaymentChange: (payment: string) => void
   owner: string
+  ethAddress?: string
+  showJuna?: boolean
 }
 
 const PaymentCard = ({
@@ -23,6 +26,8 @@ const PaymentCard = ({
   selectedPayment,
   handlePaymentChange,
   owner,
+  ethAddress,
+  showJuna,
 }: prop) => {
   return (
     <div className="mt-[-1rem] mb-4 md:mt-0 p-2">
@@ -35,14 +40,25 @@ const PaymentCard = ({
         } flex cursor-pointer  justify-between items-center py-8   px-6 w-full h-[3rem] rounded-md `}
       >
         <div className="flex items-center w-full">
-          <img src={`${img}`} alt="" className="w-5 h-5 m-0" />
+          {!showJuna ? (
+            <img src={`${img}`} alt="" className="w-5 h-5 m-0" />
+          ) : (
+            <FaEthereum className="text-[#f6b8fc]" size={18} />
+          )}
+
           <div className="flex ml-8 flex-col ">
             <p className="text-white font-bold text-[1rem] mb-1">
               {paymentTitle}
             </p>
             <p className="text-white text-[.6rem] ">
-              {owner
-                ? owner.substring(0, 7) + "......" + owner.substring(58, 64)
+              {!showJuna
+                ? owner
+                  ? owner.substring(0, 7) + "......" + owner.substring(58, 64)
+                  : null
+                : ethAddress
+                ? ethAddress.substring(0, 7) +
+                  "......" +
+                  ethAddress.substring(38, 42)
                 : null}
             </p>
           </div>

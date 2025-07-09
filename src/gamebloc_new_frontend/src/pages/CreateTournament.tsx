@@ -78,7 +78,7 @@ const CreateTournament = () => {
   const creator_id = useAppSelector((state) => state.userProfile.id_hash)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-  const [showJuna, setShowJuna] = useState(false)
+  const [showJuna, setShowJuna] = useState(true)
 
   const override = {
     display: "block",
@@ -1060,20 +1060,22 @@ const CreateTournament = () => {
             </div>
           </div>
         </section>
-        {openPaymentModal && (
-          <PaymentModal2
-            done={done}
-            gameType={gameType}
-            modal={handleModal}
-            updating={updating}
-            owner={principal}
-            icp={icpValue}
-            entryPrice={entryPrice}
-            poolPrice={poolPrize}
-            tourType={tourType}
-            create_tour={_tour}
-          />
-        )}
+        {/* {openPaymentModal && ( */}
+        <PaymentModal2
+          done={done}
+          showJuna={showJuna}
+          gameType={gameType}
+          modal={handleModal}
+          updating={updating}
+          owner={principal}
+          icp={icpValue}
+          juna={junaValue}
+          entryPrice={entryPrice}
+          poolPrice={poolPrize}
+          tourType={tourType}
+          create_tour={_tour}
+        />
+        {/* )} */}
       </div>
     )
   }

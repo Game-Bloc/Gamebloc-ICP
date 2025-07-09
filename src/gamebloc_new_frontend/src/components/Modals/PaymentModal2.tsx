@@ -15,12 +15,16 @@ import { generateDate } from "../utils/utills"
 import { Principal } from "@dfinity/principal"
 import ClipLoader from "react-spinners/ClipLoader"
 import { RiCloseFill } from "react-icons/ri"
+import { FaEthereum } from "react-icons/fa6"
+import { useAuth } from "../../Auth/use-auth-client"
 
 interface Props {
   owner: string
   icp: number
+  juna: number
   gameType: string
   done: boolean
+  showJuna: boolean
   updating: boolean
   poolPrice: string
   entryPrice: string
@@ -37,6 +41,7 @@ const override = {
 const PaymentModal2 = ({
   owner,
   icp,
+  juna,
   done,
   modal,
   gameType,
@@ -45,8 +50,10 @@ const PaymentModal2 = ({
   entryPrice,
   tourType,
   create_tour,
+  showJuna,
 }: Props) => {
   const navigate = useNavigate()
+  const { ethAddress } = useAuth()
   const [active, setActive] = useState<string>("first")
   const [color, setColor] = useState("#ffffff")
   const [date, setDate] = useState<number>()
@@ -112,11 +119,15 @@ const PaymentModal2 = ({
                     <></>
                   )}
                   <div className="">
-                    <img
-                      src={`Icp.svg`}
-                      className="mt-3rem mb-[.3rem] w-[3rem] h-[3rem]"
-                      alt=""
-                    />
+                    {showJuna ? (
+                      <FaEthereum className="text-[#f6b8fc]" size={18} />
+                    ) : (
+                      <img
+                        src={`Icp.svg`}
+                        className="mt-3rem mb-[.3rem] w-[3rem] h-[3rem]"
+                        alt=""
+                      />
+                    )}
                   </div>
                   {/* <h1 className="font-valorant mt-2 text-primary-second text-[1.1rem] text-semibold">
                     Payment
@@ -195,12 +206,16 @@ const PaymentModal2 = ({
                           handlePaymentChange={handlePaymentChange}
                         /> */}
                         <PaymentCard
-                          onChange={() => handlePaymentChange("ICP")}
-                          paymentTitle="ICP"
+                          onChange={() =>
+                            handlePaymentChange(!showJuna ? "ICP" : "JUNA")
+                          }
+                          paymentTitle={!showJuna ? "ICP" : "JUNA"}
                           img="Icp.svg"
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
                           owner={owner}
+                          ethAddress={ethAddress}
+                          showJuna={showJuna}
                         />
                         <div className="flex flex-col mt-2 lg:mt-4 p-4">
                           <div className="flex flex-col lg:flex-row  justify-between items-center w-full">
@@ -208,13 +223,23 @@ const PaymentModal2 = ({
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {gameType === "Duo" && tourType === "Crowdfunded"
-                                ? +icp.toFixed(8) * 2
+                              {!showJuna
+                                ? gameType === "Duo" &&
+                                  tourType === "Crowdfunded"
+                                  ? +icp.toFixed(8) * 2
+                                  : gameType === "Squad" &&
+                                    tourType === "Crowdfunded"
+                                  ? +icp.toFixed(8) * 4
+                                  : icp.toFixed(8)
+                                : gameType === "Duo" &&
+                                  tourType === "Crowdfunded"
+                                ? +juna.toFixed(8) * 2
                                 : gameType === "Squad" &&
                                   tourType === "Crowdfunded"
-                                ? +icp.toFixed(8) * 4
-                                : icp.toFixed(8)}{" "}
-                              ICP
+                                ? +juna.toFixed(8) * 4
+                                : juna.toFixed(8)}
+
+                              {!showJuna ? " ICP" : " JUNA"}
                             </p>
                           </div>
                         </div>
@@ -222,12 +247,18 @@ const PaymentModal2 = ({
                           <p></p>
                         ) : (
                           <button
-                            disabled={selectedPayment === "ICP" ? false : true}
+                            disabled={
+                              selectedPayment === "ICP" ||
+                              selectedPayment === "JUNA"
+                                ? false
+                                : true
+                            }
                             onClick={() =>
                               paid === true ? setActive("second") : payFee()
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
-                              selectedPayment === "ICP"
+                              selectedPayment === "ICP" ||
+                              selectedPayment === "JUNA"
                                 ? "bg-primary-second"
                                 : "bg-primary-second/15"
                             } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
@@ -248,11 +279,30 @@ const PaymentModal2 = ({
                             )}
                           </button>
                         )}
-                        {_icp2Usd === 0 ? (
-                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                            Pls check back some other time, ICP price is
-                            currently unavailable
-                          </p>
+                        {!showJuna ? (
+                          _icp2Usd === 0 ? (
+                            <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                              Pls check back some other time, ICP price is
+                              currently unavailable
+                            </p>
+                          ) : (
+                            <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                              By proceeding you approve the amount of $
+                              {tourType === "Prepaid" ||
+                              tourType === "Blitzkrieg"
+                                ? poolPrice
+                                : gameType === "squad" &&
+                                  tourType !== "Prepaid" &&
+                                  tourType !== "Blitzkrieg"
+                                ? +entryPrice * 4
+                                : gameType === "Duo" &&
+                                  tourType !== "Prepaid" &&
+                                  tourType !== "Blitzkrieg"
+                                ? +entryPrice * 2
+                                : entryPrice}{" "}
+                              worth of ICP to be deducted from your wallet.
+                            </p>
+                          )
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
@@ -267,7 +317,7 @@ const PaymentModal2 = ({
                                 tourType !== "Blitzkrieg"
                               ? +entryPrice * 2
                               : entryPrice}{" "}
-                            worth of ICP to be deducted from your wallet.
+                            worth of JUNA to be deducted from your wallet.
                           </p>
                         )}
                       </>
