@@ -3,14 +3,16 @@ import type { PayloadAction } from "@reduxjs/toolkit"
 
 export interface JunaState {
   junaAddress: string
-  junaBalance: number
+  junaBalance: string
   ethAddress: string
+  ethBalance: string
 }
 
 const initialState: JunaState = {
   junaAddress: "",
-  junaBalance: 0.0,
+  junaBalance: "",
   ethAddress: "",
+  ethBalance: "",
 }
 
 export const junaSlice = createSlice({
@@ -25,7 +27,7 @@ export const junaSlice = createSlice({
     },
     updateJunaBalance: (
       state: JunaState,
-      { payload }: PayloadAction<number>,
+      { payload }: PayloadAction<string>,
     ) => {
       state.junaBalance = payload
     },
@@ -35,9 +37,19 @@ export const junaSlice = createSlice({
     ) => {
       state.ethAddress = payload
     },
+    updateEthBalance: (
+      state: JunaState,
+      { payload }: PayloadAction<string>,
+    ) => {
+      state.ethBalance = payload
+    },
   },
 })
 
-export const { updateJunaAddress, updateJunaBalance, updateEthAddress } =
-  junaSlice.actions
+export const {
+  updateJunaAddress,
+  updateJunaBalance,
+  updateEthAddress,
+  updateEthBalance,
+} = junaSlice.actions
 export default junaSlice.reducer

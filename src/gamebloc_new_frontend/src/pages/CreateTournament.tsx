@@ -74,6 +74,7 @@ const CreateTournament = () => {
   const creator_id = useAppSelector((state) => state.userProfile.id_hash)
   const [openPaymentModal, setOpenPaymentModal] = useState<boolean>(false)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
+  const [showJuna, setShowJuna] = useState(false)
 
   const override = {
     display: "block",
@@ -847,6 +848,40 @@ const CreateTournament = () => {
                             onChange={onEndDateChange}
                           />
                         </ConfigProvider>
+                      </div>
+                      <div className="flex flex-col mx-4 mt-4 mb-2">
+                        <p className=" mb-4 mt-4 lg:mt-0  text-sm sm:text-base font-normal text-white">
+                          Select Token
+                        </p>
+                        {/* Toggle for ICP/Juna */}
+                        <div className="flex items-center gap-2 mt-2 mb-2">
+                          <span
+                            className={`text-xs font-semibold ${
+                              !showJuna
+                                ? "text-primary-second"
+                                : "text-white/60"
+                            }`}
+                          >
+                            ICP
+                          </span>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={showJuna}
+                              onChange={() => setShowJuna((v) => !v)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 border border-primary-second  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-second rounded-full peer peer-checked:bg-primary-second transition-all"></div>
+                            <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all peer-checked:translate-x-5"></div>
+                          </label>
+                          <span
+                            className={`text-xs font-semibold ${
+                              showJuna ? "text-primary-second" : "text-white/60"
+                            }`}
+                          >
+                            JUNA
+                          </span>
+                        </div>
                       </div>
 
                       <div className="flex-col flex m-4 ">

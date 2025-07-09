@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { useAuth } from "../Auth/use-auth-client"
 import withReactContent from "sweetalert2-react-content"
 import Swal from "sweetalert2"
@@ -23,6 +23,7 @@ import {
   clearTransaction,
 } from "../redux/slice/adminTransaction"
 import axios from "axios"
+import { updateEthBalance, updateJunaBalance } from "../redux/slice/junaSlice"
 
 // * Local dev
 // const admin_principal = Principal.fromText("a3shf-5eaaa-aaaaa-qaafa-cai")
@@ -30,25 +31,20 @@ import axios from "axios"
 const admin_principal = Principal.fromText("6cxww-biaaa-aaaal-adebq-cai")
 
 export const hooks = () => {
-  const {
-    isAuthenticated,
-    whoamiActor,
-    whoamiActor2,
-    ledgerActor,
-    indexActor,
-    principal,
-  } = useAuth()
+  const { ethAddress, whoamiActor, whoamiActor2, indexActor } = useAuth()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const MySwal = withReactContent(Swal)
   const [reward, setReward] = useState<any>()
   const [done, setDone] = useState<boolean>(false)
+  const [isLoadingJuna, setIsLoadingJuna] = useState(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [activateloading, setActivateloading] = useState<boolean>(false)
   const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
+  const [loadingEthBalance, setLoadingEthBalance] = useState<boolean>(false)
   const [gettingCode, setGettingCode] = useState<boolean>(false)
   const admin_id = useAppSelector((state) => state.adminProfile.account_id)
 
@@ -471,6 +467,48 @@ export const hooks = () => {
     }
   }
 
+  // JUNA IMPLEMENTATION
+  // fetch ETH balance
+  const fetchEthBalance = useCallback(async () => {
+    if (!ethAddress || !window.ethereum) return
+    try {
+      setLoadingEthBalance(true)
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [ethAddress, "latest"],
+      })
+      // Convert from wei to ETH
+      const ethBalance = (parseInt(balance, 16) / Math.pow(10, 18)).toFixed(4)
+      dispatch(updateEthBalance(ethBalance))
+    } catch (error) {
+      console.error("Error fetching balance:", error)
+    } finally {
+      setLoadingEthBalance(false)
+    }
+  }, [ethAddress])
+
+  // fetch Juna balance
+  const fetchJunaBalance = async () => {
+    if (!ethAddress || !window.ethereum) return
+    setIsLoadingJuna(true)
+    try {
+      const tokenAddress = "0xdED9326E0c81A02f7D81988E2cD3a933e2e16EC2"
+      const data = "0x70a08231" + ethAddress.slice(2).padStart(64, "0")
+      const contractCall = { to: tokenAddress, data }
+      const result = await window.ethereum.request({
+        method: "eth_call",
+        params: [contractCall, "latest"],
+      })
+      const rawBalance = BigInt(result)
+      const formatted = Number(rawBalance) / 1e18
+      dispatch(updateJunaBalance(formatted.toString()))
+    } catch (err) {
+      console.error("Error fetching Juna balance:", err)
+    } finally {
+      setIsLoadingJuna(false)
+    }
+  }
+
   return {
     bet,
     done,
@@ -479,7 +517,9 @@ export const hooks = () => {
     updating,
     isLoading,
     claimloading,
+    isLoadingJuna,
     activateloading,
+    loadingEthBalance,
     reward,
     gettingCode,
     setAdmin,
@@ -502,6 +542,8 @@ export const hooks = () => {
     iWantToDeposit,
     getReferralCode,
     getUserWalletAddress,
+    fetchEthBalance,
+    fetchJunaBalance,
   }
 }
 

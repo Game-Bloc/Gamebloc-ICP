@@ -103,16 +103,16 @@ const Profile = () => {
       if (!ethAddress || !window.ethereum || !showJuna) return
       setIsLoadingJuna(true)
       try {
-        const tokenAddress = '0xdED9326E0c81A02f7D81988E2cD3a933e2e16EC2';
-        const data = '0x70a08231' + ethAddress.slice(2).padStart(64, '0');
-        const contractCall = { to: tokenAddress, data };
+        const tokenAddress = "0xdED9326E0c81A02f7D81988E2cD3a933e2e16EC2"
+        const data = "0x70a08231" + ethAddress.slice(2).padStart(64, "0")
+        const contractCall = { to: tokenAddress, data }
         const result = await window.ethereum.request({
-          method: 'eth_call',
-          params: [contractCall, 'latest']
-        });
-        const rawBalance = BigInt(result);
-        const formatted = Number(rawBalance) / 1e18;
-        setJunaBalance(formatted.toString());
+          method: "eth_call",
+          params: [contractCall, "latest"],
+        })
+        const rawBalance = BigInt(result)
+        const formatted = Number(rawBalance) / 1e18
+        setJunaBalance(formatted.toString())
       } catch (err) {
         setJunaBalance("0")
       } finally {
@@ -213,13 +213,34 @@ const Profile = () => {
                           </h2>
                           {/* Toggle for ICP/Juna */}
                           <div className="flex items-center gap-2 mt-2 mb-2">
-                            <span className={`text-xs font-semibold ${!showJuna ? 'text-primary-second' : 'text-white/60'}`}>ICP</span>
+                            <span
+                              className={`text-xs font-semibold ${
+                                !showJuna
+                                  ? "text-primary-second"
+                                  : "text-white/60"
+                              }`}
+                            >
+                              ICP
+                            </span>
                             <label className="relative inline-flex items-center cursor-pointer">
-                              <input type="checkbox" checked={showJuna} onChange={() => setShowJuna(v => !v)} className="sr-only peer" />
-                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-second rounded-full peer peer-checked:bg-primary-second transition-all"></div>
+                              <input
+                                type="checkbox"
+                                checked={showJuna}
+                                onChange={() => setShowJuna((v) => !v)}
+                                className="sr-only peer"
+                              />
+                              <div className="w-11 h-6 bg-gray-200 border border-primary-second peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-second rounded-full peer peer-checked:bg-primary-second transition-all"></div>
                               <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all peer-checked:translate-x-5"></div>
                             </label>
-                            <span className={`text-xs font-semibold ${showJuna ? 'text-primary-second' : 'text-white/60'}`}>Juna</span>
+                            <span
+                              className={`text-xs font-semibold ${
+                                showJuna
+                                  ? "text-primary-second"
+                                  : "text-white/60"
+                              }`}
+                            >
+                              Juna
+                            </span>
                           </div>
                           {/* Show balance for selected mode */}
                           {!showJuna ? (
@@ -260,8 +281,13 @@ const Profile = () => {
                             </div>
                           ) : (
                             <div className="flex items-center mt-2 gap-2">
-                              <FaEthereum className="text-[#f6b8fc]" size={18} />
-                              <span className="text-bold text-[1rem] text-[#ffffff]">{isLoadingJuna ? '...' : junaBalance} JUNA</span>
+                              <FaEthereum
+                                className="text-[#f6b8fc]"
+                                size={18}
+                              />
+                              <span className="text-bold text-[1rem] text-[#ffffff]">
+                                {isLoadingJuna ? "..." : junaBalance} JUNA
+                              </span>
                             </div>
                           )}
                           <div className="flex items-center">
@@ -340,10 +366,12 @@ const Profile = () => {
                               MetaMask Wallet Address
                             </p>
                             <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
-                              <Copy textToCopy={ethAddress || ''} />
+                              <Copy textToCopy={ethAddress || ""} />
                               <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
                                 {ethAddress
-                                  ? ethAddress.slice(0, 6) + '...' + ethAddress.slice(-4)
+                                  ? ethAddress.slice(0, 6) +
+                                    "..." +
+                                    ethAddress.slice(-4)
                                   : null}
                               </h2>
                             </div>
