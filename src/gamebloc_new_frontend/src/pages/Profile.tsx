@@ -239,7 +239,7 @@ const Profile = () => {
                                   : "text-white/60"
                               }`}
                             >
-                              Juna
+                              JUNA
                             </span>
                           </div>
                           {/* Show balance for selected mode */}

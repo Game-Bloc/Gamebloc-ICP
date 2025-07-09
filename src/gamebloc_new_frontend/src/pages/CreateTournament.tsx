@@ -27,6 +27,7 @@ import { GameType } from "../../../declarations/kitchen/kitchen.did"
 import FallbackLoading from "../components/Modals/FallBackLoader"
 import { useAuth } from "../Auth/use-auth-client"
 import Editor from "../components/Texteditor/Editor"
+import { hooks } from "../Functions/hooks"
 import PaymentModal2 from "../components/Modals/PaymentModal2"
 const loader = require("../../assets/category1.png").default
 const loader1 = require("../../assets/category2.png").default
@@ -37,6 +38,7 @@ const CreateTournament = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { isAuthenticated } = useAuth()
+  const { fetchJunaBalance } = hooks()
   const { id } = useParams<{ id: string }>()
   const [game_name, setGame_Name] = useState<string | null>(null)
   const [color, setColor] = useState("#ffffff")
@@ -50,6 +52,8 @@ const CreateTournament = () => {
   const [noOfWinners, setNoOfWinners] = useState<number>(0)
   const [tourType, setTourType] = useState<string>("")
   const [title, setTitle] = useState<string>("")
+  const [junaValue, setJunaValue] = useState<number>(null)
+  const junaBalance = useAppSelector((state) => state.juna.junaBalance)
   const [tournamentRules, setTournamentRules] = useState<string>("")
   const [initialTime, setInitialTime] = useState<string>("")
   const [initialDate, setInitialDate] = useState<string>("")
@@ -107,6 +111,7 @@ const CreateTournament = () => {
     generateULID()
     getICPBalance()
     getProfile()
+    fetchJunaBalance()
     const getTimeDate = () => {
       const value = initialTime.concat(" ", initialDate)
       setStartingDate(value)
@@ -153,8 +158,22 @@ const CreateTournament = () => {
         setIcpValue(0)
       }
     }
+    const calculateJunaValue = () => {
+      const dollarAmount =
+        tourType === "Prepaid" || tourType === "Blitzkrieg"
+          ? +poolPrize
+          : +entryPrice
+      console.log("junaBalance", junaBalance)
+      if (junaBalance > 0 && dollarAmount > 0) {
+        const junaValue = dollarAmount
+        setJunaValue(junaValue)
+      } else {
+        setJunaValue(0)
+      }
+    }
 
     calculateIcpValue()
+    calculateJunaValue()
   }, [poolPrize, entryPrice, _icp2Usd, tourType])
 
   useEffect(() => {
@@ -896,8 +915,12 @@ const CreateTournament = () => {
                           <div className="flex mt-[.8rem] flex-row">
                             <p className="text-[1rem] text-white mr-4">≈</p>
                             <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
-                              {icpValue !== null
-                                ? `${icpValue.toFixed(8)} ICP`
+                              {!showJuna
+                                ? icpValue !== null
+                                  ? `${icpValue.toFixed(8)} ICP`
+                                  : "Calculating..."
+                                : junaValue !== null
+                                ? `${junaValue.toFixed(8)} JUNA`
                                 : "Calculating..."}
                             </p>
                           </div>
