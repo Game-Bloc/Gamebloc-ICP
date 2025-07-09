@@ -54,6 +54,8 @@ const AuthContext = React.createContext<{
   whoamiActor2: ActorSubclass<_SERVICE2> | null
   ledgerActor: ActorSubclass<_SERVICE3> | null
   indexActor: ActorSubclass<_SERVICE4> | null
+  ethAddress?: string | null
+  ethNetwork?: string | null
 }>({
   isAuthenticated: false,
   notAuthenticated: true,
@@ -69,6 +71,8 @@ const AuthContext = React.createContext<{
   whoamiActor2: null,
   ledgerActor: null,
   indexActor: null,
+  ethAddress: null,
+  ethNetwork: null,
 })
 const network = process.env.DFX_NETWORK || "local"
 const APPLICATION_NAME = "GameBloc"
@@ -134,6 +138,16 @@ export const useAuthClient = (options = defaultOptions) => {
   const [whoamiActor2, setWhoamiActor2] = useState<ActorSubclass<_SERVICE2>>()
   const [ledgerActor, setLedgerAcor] = useState<ActorSubclass<_SERVICE3>>()
   const [indexActor, setIndexAcor] = useState<ActorSubclass<_SERVICE4>>()
+  const [ethAddress, setEthAddress] = useState<string | null>(null)
+  const [ethNetwork, setEthNetwork] = useState<string | null>(null)
+
+  // Restore MetaMask info from sessionStorage on mount
+  useEffect(() => {
+    const savedEthAddress = sessionStorage.getItem("ethAddress")
+    const savedEthNetwork = sessionStorage.getItem("ethNetwork")
+    if (savedEthAddress) setEthAddress(savedEthAddress)
+    if (savedEthNetwork) setEthNetwork(savedEthNetwork)
+  }, [])
 
   useEffect(() => {
     // Initialize AuthClient
@@ -234,12 +248,25 @@ export const useAuthClient = (options = defaultOptions) => {
       const uniqueMessage =
         "Sign this message to log in with your Ethereum wallet"
 
+      // Get Ethereum address and network
+      const isMetaMaskInstalled = typeof window.ethereum !== "undefined"
+      if (!isMetaMaskInstalled) throw new Error("MetaMask is not installed")
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
+      const address = accounts[0]
+      setEthAddress(address)
+      sessionStorage.setItem("ethAddress", address)
+      // Get network info
+      const chainId = await window.ethereum.request({ method: "eth_chainId" })
+      let networkName = "Unknown"
+      if (chainId === "0x14a33") networkName = "baseSepolia"
+      setEthNetwork(networkName)
+      sessionStorage.setItem("ethNetwork", networkName)
+
       const signature = await MetaMaskService.signMessage(uniqueMessage)
       if (!signature) throw new Error("Failed to sign with MetaMask")
 
       sessionStorage.setItem("metamaskSignature", signature)
-      // console.log("MetaMask signature saved:", signature)
-      await new Promise((res) => setTimeout(res, 100)) //Let storage persist
+      await new Promise((res) => setTimeout(res, 100))
 
       const seedPhrase = await generateSeedPhrase(signature)
       const validSeedPhrase = validateAndFixSeedPhrase(seedPhrase)
@@ -365,6 +392,8 @@ export const useAuthClient = (options = defaultOptions) => {
       setIsAuthenticated(false)
       setIdentity(null)
       setPrincipal(null)
+      setEthAddress(null)
+      setEthNetwork(null)
       // setEthAddress(null) // If using MetaMask
 
       // Reset actors
@@ -382,6 +411,8 @@ export const useAuthClient = (options = defaultOptions) => {
       sessionStorage.removeItem("userState")
       sessionStorage.removeItem("persist:root")
       localStorage.removeItem("ic-session-key")
+      sessionStorage.removeItem("ethAddress")
+      sessionStorage.removeItem("ethNetwork")
 
       console.log("Full logout completed")
     } catch (error) {
@@ -405,6 +436,8 @@ export const useAuthClient = (options = defaultOptions) => {
     whoamiActor2,
     ledgerActor,
     indexActor,
+    ethAddress,
+    ethNetwork,
   }
 }
 

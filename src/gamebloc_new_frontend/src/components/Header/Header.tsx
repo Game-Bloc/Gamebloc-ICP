@@ -18,10 +18,13 @@ import WelcomeModal from "../Modals/WelcomeModal"
 import SignOutModal from "../Modals/SignOutModal"
 import { FaRegBell } from "react-icons/fa"
 import MobileNoti from "../notifications/MobileNoti"
+import { FaEthereum } from "react-icons/fa6"
+import { useCallback } from "react"
+import { FaSync } from "react-icons/fa"
 
 const Header = () => {
   const navigate = useNavigate()
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, logout, ethAddress, ethNetwork } = useAuth()
   const { getProfile } = useGameblocHooks()
   const [open, setOpen] = useState<boolean>(false)
   const [openModal, setOpenModal] = useState<boolean>(false)
@@ -36,6 +39,8 @@ const Header = () => {
   const [openLoginModal, setOpenLoginModal] = useState<boolean>(false)
   const [accountModal, setAccountModal] = useState<boolean>(false)
   const [mobileNotiModal, setMobileNotiModal] = useState<boolean>(false)
+  const [ethBalance, setEthBalance] = useState<string>("0")
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false)
 
   useEffect(() => {
     if (mobileNotiModal || open) {
@@ -49,6 +54,31 @@ const Header = () => {
       document.body.classList.remove("no-scroll")
     }
   }, [mobileNotiModal, open])
+
+  // Function to fetch ETH balance
+  const fetchEthBalance = useCallback(async () => {
+    if (!ethAddress || !window.ethereum) return
+    try {
+      setIsLoadingBalance(true)
+      const balance = await window.ethereum.request({
+        method: "eth_getBalance",
+        params: [ethAddress, "latest"]
+      })
+      // Convert from wei to ETH
+      const ethBalance = (parseInt(balance, 16) / Math.pow(10, 18)).toFixed(4)
+      setEthBalance(ethBalance)
+    } catch (error) {
+      console.error("Error fetching balance:", error)
+      setEthBalance("0")
+    } finally {
+      setIsLoadingBalance(false)
+    }
+  }, [ethAddress])
+
+  // Fetch balance when address changes
+  useEffect(() => {
+    fetchEthBalance()
+  }, [fetchEthBalance])
 
   const menus = [
     {
@@ -156,6 +186,69 @@ const Header = () => {
                 )}
               </div>
             </Tooltip>
+            {/* Show MetaMask info if connected */}
+            {ethAddress && (
+              <div className="ml-4 flex items-center gap-3 px-3 py-2 rounded-lg bg-[#f6b8fc15] shadow-sm text-xs font-medium">
+                <FaEthereum className="text-[#f6b8fc]" size={16} />
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    <span className="text-primary-second font-semibold text-[0.7rem]">MetaMask</span>
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500" title="Connected" />
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-primary-second/80 text-[0.65rem]">Network:</span>
+                    <select
+                      className="bg-transparent border-none outline-none text-primary-second/80 font-semibold cursor-pointer text-[0.65rem] hover:text-primary-second transition-colors"
+                      value={ethNetwork === "baseSepolia" ? "baseSepolia" : ethNetwork || "unknown"}
+                      onChange={async (e) => {
+                        const val = e.target.value
+                        if (val === "baseSepolia") {
+                          const params = {
+                            chainId: "0x14a33",
+                            chainName: "Base Sepolia",
+                            nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+                            rpcUrls: ["https://sepolia.base.org"],
+                            blockExplorerUrls: ["https://sepolia.basescan.org"],
+                          }
+                          try {
+                            await window.ethereum.request({ method: "wallet_addEthereumChain", params: [params] })
+                          } catch (err) {
+                            alert("Failed to switch network: " + (err && err.message ? err.message : err))
+                          }
+                        } else if (val === "mainnet") {
+                          try {
+                            await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: "0x1" }] })
+                          } catch (err) {
+                            alert("Failed to switch network: " + (err && err.message ? err.message : err))
+                          }
+                        }
+                      }}
+                    >
+                      <option value="baseSepolia">Base Sepolia</option>
+                      <option value="mainnet">Ethereum Mainnet</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-primary-second/80 text-[0.65rem]">Balance:</span>
+                    <span className="text-primary-second font-semibold text-[0.65rem]">
+                      {isLoadingBalance ? "..." : `${ethBalance} ETH`}
+                    </span>
+                    <button
+                      onClick={fetchEthBalance}
+                      className="p-0.5 hover:bg-[#f6b8fc20] rounded transition-colors"
+                      title="Refresh balance"
+                    >
+                      <FaSync className={`text-[#f6b8fc] ${isLoadingBalance ? 'animate-spin' : ''}`} size={10} />
+                    </button>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span className="text-primary-second/80 text-[0.65rem]" title={ethAddress}>
+                      {ethAddress.slice(0, 6)}...{ethAddress.slice(-4)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh> */}
             <div
               onClick={() => setProfileModal(!profileModal)}
@@ -171,7 +264,6 @@ const Header = () => {
               >
                 {initials}
               </Avatar>
-
               <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-primary-second">
                 {username}
               </p>

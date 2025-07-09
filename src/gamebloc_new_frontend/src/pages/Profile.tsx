@@ -22,6 +22,7 @@ import hooks from "../Functions/hooks"
 import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
 import QrModal from "../components/Modals/Deposit/QrModal"
 import NairaDepositModal from "../components/Modals/Deposit/NairaDepositModal"
+import { FaEthereum } from "react-icons/fa6"
 
 const items: TabsProps["items"] = [
   {
@@ -91,6 +92,35 @@ const Profile = () => {
   } = hooks()
   const { updateTournament } = useUpdateTournament()
   const [_date, setDate] = useState<string>("")
+  const { ethAddress, ethNetwork } = useAuth()
+  const [showJuna, setShowJuna] = useState(false)
+  const [junaBalance, setJunaBalance] = useState<string>("0")
+  const [isLoadingJuna, setIsLoadingJuna] = useState(false)
+
+  // Fetch Juna token balance from MetaMask
+  useEffect(() => {
+    const fetchJunaBalance = async () => {
+      if (!ethAddress || !window.ethereum || !showJuna) return
+      setIsLoadingJuna(true)
+      try {
+        const tokenAddress = '0xdED9326E0c81A02f7D81988E2cD3a933e2e16EC2';
+        const data = '0x70a08231' + ethAddress.slice(2).padStart(64, '0');
+        const contractCall = { to: tokenAddress, data };
+        const result = await window.ethereum.request({
+          method: 'eth_call',
+          params: [contractCall, 'latest']
+        });
+        const rawBalance = BigInt(result);
+        const formatted = Number(rawBalance) / 1e18;
+        setJunaBalance(formatted.toString());
+      } catch (err) {
+        setJunaBalance("0")
+      } finally {
+        setIsLoadingJuna(false)
+      }
+    }
+    fetchJunaBalance()
+  }, [ethAddress, showJuna])
 
   const onChange = (key: string) => {
     console.log(key)
@@ -181,41 +211,59 @@ const Profile = () => {
                           <h2 className="text-white text-bold text-base sm:text-[1.5rem]">
                             {username}
                           </h2>
-                          <div className="flex items-center  mt-2">
-                            {fetching ? (
-                              <div>
-                                <ClipLoader
-                                  color={color}
-                                  loading={fetching}
-                                  cssOverride={override}
-                                  size={10}
-                                  aria-label="Loading Spinner"
-                                  data-testid="loader"
-                                />
-                              </div>
-                            ) : (
-                              <div className="flex flex-row gap-4">
-                                <div className="flex flex-row">
-                                  <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
-                                    {balance}
-                                  </p>
-                                  <img
-                                    src={`Icp.svg`}
-                                    className="w-6 h-6 m-0"
-                                    alt=""
+                          {/* Toggle for ICP/Juna */}
+                          <div className="flex items-center gap-2 mt-2 mb-2">
+                            <span className={`text-xs font-semibold ${!showJuna ? 'text-primary-second' : 'text-white/60'}`}>ICP</span>
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input type="checkbox" checked={showJuna} onChange={() => setShowJuna(v => !v)} className="sr-only peer" />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-second rounded-full peer peer-checked:bg-primary-second transition-all"></div>
+                              <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all peer-checked:translate-x-5"></div>
+                            </label>
+                            <span className={`text-xs font-semibold ${showJuna ? 'text-primary-second' : 'text-white/60'}`}>Juna</span>
+                          </div>
+                          {/* Show balance for selected mode */}
+                          {!showJuna ? (
+                            <div className="flex items-center  mt-2">
+                              {fetching ? (
+                                <div>
+                                  <ClipLoader
+                                    color={color}
+                                    loading={fetching}
+                                    cssOverride={override}
+                                    size={10}
+                                    aria-label="Loading Spinner"
+                                    data-testid="loader"
                                   />
                                 </div>
-                                <div className="flex flex-row">
-                                  <p className="text-[1rem] text-white mr-4">
-                                    ≈
-                                  </p>
-                                  <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
-                                    ${(balance * _icp2Usd).toFixed(2)}
-                                  </p>
+                              ) : (
+                                <div className="flex flex-row gap-4">
+                                  <div className="flex flex-row">
+                                    <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
+                                      {balance}
+                                    </p>
+                                    <img
+                                      src={`Icp.svg`}
+                                      className="w-6 h-6 m-0"
+                                      alt=""
+                                    />
+                                  </div>
+                                  <div className="flex flex-row">
+                                    <p className="text-[1rem] text-white mr-4">
+                                      ≈
+                                    </p>
+                                    <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
+                                      ${(balance * _icp2Usd).toFixed(2)}
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                          </div>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flex items-center mt-2 gap-2">
+                              <FaEthereum className="text-[#f6b8fc]" size={18} />
+                              <span className="text-bold text-[1rem] text-[#ffffff]">{isLoadingJuna ? '...' : junaBalance} JUNA</span>
+                            </div>
+                          )}
                           <div className="flex items-center">
                             <img src={`calender.svg`} className="m-0" alt="" />
                             <p className="text-bold text-[.7rem] p-[.65rem]  sm:text-[.8rem] sm:p-[.8rem] text-[#9B9B9B]">
@@ -252,36 +300,55 @@ const Profile = () => {
                       <div className="border border-primary-second border-solid w-full mt-[1.5rem] mb-4" />
 
                       <div className="mt-[.5rem]  gap-6 flex flex-col lg:items-center   md:flex-row md:flex-wrap ">
-                        <div className="flex flex-col justify-start">
-                          <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                            Principal I.D{" "}
-                          </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-full md:w-[15rem] rounded-md">
-                            <Copy textToCopy={principalID} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
-                              {principal
-                                ? principal.substring(0, 7) +
-                                  "......" +
-                                  principal.substring(58, 64)
-                                : null}
-                            </h2>
+                        {/* Only show principal/accountId if ICP, else show MetaMask address */}
+                        {!showJuna ? (
+                          <>
+                            <div className="flex flex-col justify-start">
+                              <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                                Principal I.D{" "}
+                              </p>
+                              <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border  w-full md:w-[15rem] rounded-md">
+                                <Copy textToCopy={principalID} />
+                                <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem] ">
+                                  {principal
+                                    ? principal.substring(0, 7) +
+                                      "......" +
+                                      principal.substring(58, 64)
+                                    : null}
+                                </h2>
+                              </div>
+                            </div>
+                            <div className="flex flex-col justify-start">
+                              <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                                Wallet Address{" "}
+                              </p>
+                              <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
+                                <Copy textToCopy={accountId} />
+                                <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                                  {accountId
+                                    ? accountId.substring(0, 7) +
+                                      "......" +
+                                      accountId.substring(58, 64)
+                                    : null}
+                                </h2>
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex flex-col justify-start">
+                            <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
+                              MetaMask Wallet Address
+                            </p>
+                            <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
+                              <Copy textToCopy={ethAddress || ''} />
+                              <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
+                                {ethAddress
+                                  ? ethAddress.slice(0, 6) + '...' + ethAddress.slice(-4)
+                                  : null}
+                              </h2>
+                            </div>
                           </div>
-                        </div>
-                        <div className="flex flex-col justify-start">
-                          <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                            Wallet Address{" "}
-                          </p>
-                          <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
-                            <Copy textToCopy={accountId} />
-                            <h2 className="text-white p-[.5rem] ml-4 text-bold text-[.8rem] sm:text-[1rem]  whitespace-nowrap overflow-hidden text-ellipsis">
-                              {accountId
-                                ? accountId.substring(0, 7) +
-                                  "......" +
-                                  accountId.substring(58, 64)
-                                : null}
-                            </h2>
-                          </div>
-                        </div>
+                        )}
 
                         {squadId !== "" && (
                           <div className="flex flex-col justify-start">

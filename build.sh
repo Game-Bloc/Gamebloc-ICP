@@ -40,7 +40,7 @@ dfx deploy icp_index --specified-id qhbym-qaaaa-aaaaa-aaafq-cai --argument '(rec
 #         amount=500_000_000
 #     })'
 
-# dfx ledger transfer --amount 500_000 --memo 123 476653ac80a51b906bcc24f5ce59c1c6b4290d8dddc7ac6fae4a4b5070cf5abd
+# dfx ledger transfer --amount 500 --memo 123 7e0940c92f11a9816fc1fa5ef6e451c7df660ea6bb35bba80eaa834a9c9d9964
 
 # dfx identity use DevJourney
 # dfx canister call icp_ledger icrc1_transfer "(record { to = record { owner = principal \"b77ix-eeaaa-aaaaa-qaada-cai\";};  amount = 1_000_000;})"
