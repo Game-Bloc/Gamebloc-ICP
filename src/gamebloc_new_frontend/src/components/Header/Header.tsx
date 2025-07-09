@@ -161,31 +161,7 @@ const Header = () => {
           </div>
         ) : (
           <div className="flex relative items-center">
-            <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
-              <div
-                onClick={
-                  isAuthenticated
-                    ? () => setMobileNotiModal(true)
-                    : () => handleLoginModal()
-                }
-                className="relative hidden lg:inline-block cursor-pointer mr-8"
-              >
-                <FaRegBell className="text-primary-second" />
-                {unreadmessages.length !== 0 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      right: 0,
-                      width: "10px",
-                      height: "10px",
-                      backgroundColor: "red",
-                      borderRadius: "50%",
-                    }}
-                  />
-                )}
-              </div>
-            </Tooltip>
+            
             {/* Show MetaMask info if connected */}
             {ethAddress && (
               <div className="ml-4 flex items-center gap-3 px-3 py-2 rounded-lg bg-[#f6b8fc15] shadow-sm text-xs font-medium">
@@ -248,7 +224,32 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-            )}
+              )}
+              <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
+              <div
+                onClick={
+                  isAuthenticated
+                    ? () => setMobileNotiModal(true)
+                    : () => handleLoginModal()
+                }
+                className="relative hidden lg:inline-block cursor-pointer mr-8"
+              >
+                <FaRegBell className="text-primary-second" />
+                {unreadmessages.length !== 0 && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "10px",
+                      height: "10px",
+                      backgroundColor: "red",
+                      borderRadius: "50%",
+                    }}
+                  />
+                )}
+              </div>
+            </Tooltip>
             {/* <Tooltip placement="bottom" title="Profile" color="#bfa9c27e" fresh> */}
             <div
               onClick={() => setProfileModal(!profileModal)}

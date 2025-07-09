@@ -24,6 +24,7 @@ import dailyStreakReducer from "./slice/dailyStreak"
 import wagerReducer from "./slice/wagerSlice"
 import adminTransactionReducer from "./slice/adminTransaction"
 import adminProfileReducer from "./slice/adminProfileSlice"
+import JunaReducer from "./slice/junaSlice"
 
 const persistConfig = {
   key: "root",
@@ -47,6 +48,7 @@ const reducer = combineReducers({
   dailyStreak: dailyStreakReducer,
   userWager: wagerReducer,
   adminTransaction: adminTransactionReducer,
+  juna: JunaReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, reducer)
