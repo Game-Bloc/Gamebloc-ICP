@@ -122,26 +122,53 @@ const PaymentModal = ({
 
   const payFee = () => {
     if (data.game_type === "Duo") {
-      approveFee(
-        +icp.toFixed(8) * 2,
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
+      {
+        !showJuna
+          ? approveFee(
+              +icp.toFixed(8) * 2,
+              "Payment Approved",
+              "Something went wrong",
+              "",
+            )
+          : approveJuna(
+              +junaValue.toFixed(8) * 2,
+              "Payment Successful",
+              "Something went wrong",
+              "",
+            )
+      }
     } else if (data.game_type === "Squad") {
-      approveFee(
-        +icp.toFixed(8) * 4,
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
+      {
+        !showJuna
+          ? approveFee(
+              +icp.toFixed(8) * 4,
+              "Payment Approved",
+              "Something went wrong",
+              "",
+            )
+          : approveJuna(
+              +junaValue.toFixed(8) * 4,
+              "Payment Successful",
+              "Something went wrong",
+              "",
+            )
+      }
     } else {
-      approveFee(
-        +icp.toFixed(8),
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
+      {
+        !showJuna
+          ? approveFee(
+              +icp.toFixed(8),
+              "Payment Approved",
+              "Something went wrong",
+              "",
+            )
+          : approveJuna(
+              +junaValue.toFixed(8),
+              "Payment Successful",
+              "Something went wrong",
+              "",
+            )
+      }
     }
   }
 
