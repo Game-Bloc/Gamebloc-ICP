@@ -1060,22 +1060,22 @@ const CreateTournament = () => {
             </div>
           </div>
         </section>
-        {/* {openPaymentModal && ( */}
-        <PaymentModal2
-          done={done}
-          showJuna={showJuna}
-          gameType={gameType}
-          modal={handleModal}
-          updating={updating}
-          owner={principal}
-          icp={icpValue}
-          juna={junaValue}
-          entryPrice={entryPrice}
-          poolPrice={poolPrize}
-          tourType={tourType}
-          create_tour={_tour}
-        />
-        {/* )} */}
+        {openPaymentModal && (
+          <PaymentModal2
+            done={done}
+            showJuna={showJuna}
+            gameType={gameType}
+            modal={handleModal}
+            updating={updating}
+            owner={principal}
+            icp={icpValue}
+            juna={junaValue}
+            entryPrice={entryPrice}
+            poolPrice={poolPrize}
+            tourType={tourType}
+            create_tour={_tour}
+          />
+        )}
       </div>
     )
   }

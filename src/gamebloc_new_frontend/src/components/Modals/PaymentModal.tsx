@@ -18,6 +18,9 @@ import { Principal } from "@dfinity/principal"
 import { RiCloseFill } from "react-icons/ri"
 import ClipLoader from "react-spinners/ClipLoader"
 import { errorPopUp } from "../utils/ErrorModal"
+import { hooks } from "../../Functions/hooks"
+import { FaEthereum } from "react-icons/fa6"
+import { useAuth } from "../../Auth/use-auth-client"
 
 interface Props {
   owner: string
@@ -46,6 +49,7 @@ const PaymentModal = ({
   squad_id,
 }: Props) => {
   const navigate = useNavigate()
+  const { ethAddress } = useAuth()
   const [active, setActive] = useState<string>("first")
   const [color, setColor] = useState("#ffffff")
   const [date, setDate] = useState<number>()
@@ -61,16 +65,17 @@ const PaymentModal = ({
     joinTournamentSqaud,
     joinTournament,
   } = useGameblocHooks()
+  const [showJuna, setShowJuna] = useState(true)
+  const [junaValue, setJunaValue] = useState<number>(null)
+  const { junaTxnHash, junaFeePaid, approveJuna } = hooks()
+  const junaBalance = useAppSelector((state) => state.juna.junaBalance)
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const notification_id = useAppSelector((state) => state.IcpBalance.id)
   const username = useAppSelector((state) => state.userProfile.username)
-  const balance = useAppSelector((state) => state.IcpBalance.balance)
   const game_type =
     data.game_type.toUpperCase() === "SINGLE" ||
     data.game_type.toUpperCase() == "TEAMVTEAM"
   const principal = useAppSelector((state) => state.userProfile.principal_id)
-  const icp_price = useAppSelector((state) => state.IcpBalance.currentICPrice)
-  const _principal = Principal.fromText(principal)
   const tourType =
     Object.keys(data.tournament_type)[0].toUpperCase() === "PREPAID"
   const players = squad.filter((player: any) =>
@@ -89,6 +94,8 @@ const PaymentModal = ({
   }, [])
 
   useEffect(() => {
+    console.log("junaValue-----", junaValue)
+    console.log("JunaBalance-----", junaBalance)
     const calculateIcpValue = () => {
       const dollarAmount = tourType ? +data.total_prize : +data.entry_prize
       if (_icp2Usd > 0 && dollarAmount > 0) {
@@ -99,9 +106,19 @@ const PaymentModal = ({
         setIcpValue(0)
       }
     }
-
+    const calculateJunaValue = () => {
+      const dollarAmount = tourType ? +data.total_prize : +data.entry_prize
+      if (junaBalance > 0 && dollarAmount > 0) {
+        const junaValue = dollarAmount
+        console.log("junaValue", junaValue)
+        setJunaValue(junaValue)
+      } else {
+        setJunaValue(0)
+      }
+    }
+    calculateJunaValue()
     calculateIcpValue()
-  }, [])
+  }, [data.poolPrize, data.entryPrice, _icp2Usd, tourType])
 
   const payFee = () => {
     if (data.game_type === "Duo") {
@@ -180,11 +197,15 @@ const PaymentModal = ({
                     <></>
                   )}
                   <div className="">
-                    <img
-                      src={`Icp.svg`}
-                      className="mt-3rem mb-[.3rem] w-[3rem] h-[3rem]"
-                      alt=""
-                    />
+                    {showJuna ? (
+                      <FaEthereum className="text-[#f6b8fc]" size={18} />
+                    ) : (
+                      <img
+                        src={`Icp.svg`}
+                        className="mt-3rem mb-[.3rem] w-[3rem] h-[3rem]"
+                        alt=""
+                      />
+                    )}
                   </div>
                   {/* <h1 className="font-valorant mt-2 text-primary-second text-[1.1rem] text-semibold">
                     Payment
@@ -255,6 +276,35 @@ const PaymentModal = ({
                         <p className="font-bold mt-3 mb-6 text-center text-primary-second text-[1.1rem] text-semibold">
                           Select payment option
                         </p>
+                        {/* Toggle for ICP/Juna */}
+                        <div className="flex items-center justify-center gap-2 mt-2 mb-2">
+                          <span
+                            className={`text-xs font-semibold ${
+                              !showJuna
+                                ? "text-primary-second"
+                                : "text-white/60"
+                            }`}
+                          >
+                            ICP
+                          </span>
+                          <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={showJuna}
+                              onChange={() => setShowJuna((v) => !v)}
+                              className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 border border-primary-second  peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-second rounded-full peer peer-checked:bg-primary-second transition-all"></div>
+                            <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-all peer-checked:translate-x-5"></div>
+                          </label>
+                          <span
+                            className={`text-xs font-semibold ${
+                              showJuna ? "text-primary-second" : "text-white/60"
+                            }`}
+                          >
+                            JUNA
+                          </span>
+                        </div>
                         {/* <PaymentCard
                           onChange={() => handlePaymentChange("CkUsdc")}
                           paymentTitle="CkUsdc"
@@ -263,12 +313,16 @@ const PaymentModal = ({
                           handlePaymentChange={handlePaymentChange}
                         /> */}
                         <PaymentCard
-                          onChange={() => handlePaymentChange("ICP")}
-                          paymentTitle="ICP"
+                          onChange={() =>
+                            handlePaymentChange(!showJuna ? "ICP" : "JUNA")
+                          }
+                          paymentTitle={!showJuna ? "ICP" : "JUNA"}
                           img="Icp.svg"
                           selectedPayment={selectedPayment}
                           handlePaymentChange={handlePaymentChange}
                           owner={principal}
+                          showJuna={showJuna}
+                          ethAddress={ethAddress}
                         />
                         <div className="flex flex-col mt-4 p-4">
                           <div className="flex justify-between items-center w-full">
@@ -276,12 +330,18 @@ const PaymentModal = ({
                               Transfer Amount
                             </p>
                             <p className=" text-[.9rem] lg:text-[1.2rem] font-bold text-white/80  ">
-                              {data.game_type === "Duo"
-                                ? +icp?.toFixed(8) * 2
+                              {!showJuna
+                                ? data.game_type === "Duo"
+                                  ? +icp?.toFixed(8) * 2
+                                  : data.game_type === "Squad"
+                                  ? +icp?.toFixed(8) * 4
+                                  : icp?.toFixed(8)
+                                : data.game_type === "Duo"
+                                ? +junaValue?.toFixed(8) * 2
                                 : data.game_type === "Squad"
-                                ? +icp?.toFixed(8) * 4
-                                : icp?.toFixed(8)}{" "}
-                              ICP
+                                ? +junaValue?.toFixed(8) * 4
+                                : junaValue?.toFixed(8)}
+                              {!showJuna ? " ICP" : " JUNA"}
                             </p>
                           </div>
                         </div>
@@ -289,12 +349,17 @@ const PaymentModal = ({
                           <p></p>
                         ) : (
                           <button
-                            disabled={selectedPayment === "ICP" ? false : true}
+                            disabled={
+                              selectedPayment === "ICP" ||
+                              selectedPayment === "JUNA"
+                                ? false
+                                : true
+                            }
                             onClick={
                               data.game_type === "Single" ||
                               data.game_type === "TeamvTeam"
                                 ? () =>
-                                    paid === true
+                                    paid === true || junaFeePaid === true
                                       ? setActive("second")
                                       : payFee()
                                 : players.map(
@@ -310,15 +375,16 @@ const PaymentModal = ({
                                     )
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
-                              selectedPayment === "ICP"
+                              selectedPayment === "ICP" ||
+                              selectedPayment === "JUNA"
                                 ? "bg-primary-second"
                                 : "bg-primary-second/15"
                             } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                           >
-                            {isLoading ? (
+                            {isLoading || junaTxnHash ? (
                               <ClipLoader
                                 color={color}
-                                loading={isLoading}
+                                loading={isLoading || junaTxnHash}
                                 cssOverride={override}
                                 size={20}
                                 aria-label="Loading Spinner"
@@ -326,16 +392,40 @@ const PaymentModal = ({
                               />
                             ) : (
                               <p className="font-semibold">
-                                {paid === true ? "Next" : "Approve"}
+                                {paid === true || junaFeePaid === true
+                                  ? "Next"
+                                  : "Approve"}
                               </p>
                             )}
                           </button>
                         )}
-                        {_icp2Usd === 0 ? (
-                          <p className="mt-2 text-white/80 text-center text-[.7rem]">
-                            Pls check back some other time, ICP price is
-                            currently unavailable
-                          </p>
+                        {!showJuna ? (
+                          _icp2Usd === 0 ? (
+                            <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                              Pls check back some other time, ICP price is
+                              currently unavailable
+                            </p>
+                          ) : (
+                            <p className="mt-2 text-white/80 text-center text-[.7rem]">
+                              By proceeding you approve the amount of $
+                              {Object.keys(
+                                data.tournament_type,
+                              )[0].toUpperCase() === "PREPAID"
+                                ? data.total_prize
+                                : data.game_type === "squad" &&
+                                  Object.keys(
+                                    data.tournament_type,
+                                  )[0].toUpperCase() !== "PREPAID"
+                                ? +data.entry_prize * 4
+                                : data.game_type === "Duo" &&
+                                  Object.keys(
+                                    data.tournament_type,
+                                  )[0].toUpperCase() !== "PREPAID"
+                                ? +data.entry_prize * 2
+                                : data.entry_prize}{" "}
+                              worth of ICP to be deducted from your wallet.
+                            </p>
+                          )
                         ) : (
                           <p className="mt-2 text-white/80 text-center text-[.7rem]">
                             By proceeding you approve the amount of $
@@ -354,7 +444,7 @@ const PaymentModal = ({
                                 )[0].toUpperCase() !== "PREPAID"
                               ? +data.entry_prize * 2
                               : data.entry_prize}{" "}
-                            worth of ICP to be deducted from your wallet.
+                            worth of JUNA to be deducted from your wallet.
                           </p>
                         )}
                       </>

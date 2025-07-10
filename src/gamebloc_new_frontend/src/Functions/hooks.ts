@@ -38,11 +38,13 @@ export const hooks = () => {
   const [reward, setReward] = useState<any>()
   const [done, setDone] = useState<boolean>(false)
   const [isLoadingJuna, setIsLoadingJuna] = useState(false)
+  const [junaFeePaid, setJunaFeePaid] = useState<boolean>(false)
   const [updating, setUpdating] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [activateloading, setActivateloading] = useState<boolean>(false)
   const [claimloading, setClaimloading] = useState<boolean>(false)
   const [sending, setIsSending] = useState<boolean>(false)
+  const [junaTxnHash, setJunaTxnHash] = useState<boolean>(false)
   const [fetching, setFetching] = useState<boolean>(false)
   const [loadingEthBalance, setLoadingEthBalance] = useState<boolean>(false)
   const [gettingCode, setGettingCode] = useState<boolean>(false)
@@ -509,6 +511,61 @@ export const hooks = () => {
     }
   }
 
+  // Transfer Juna tokens
+  const transferJuna = async (
+    amount: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    if (!window.ethereum || !ethAddress) return
+
+    const tokenAddress = "0xdED9326E0c81A02f7D81988E2cD3a933e2e16EC2" // JUNA token
+    const adminAddress = "0x8Fe263a91679e75210Ba7265053c2401ee79a647" // 👈 replace with real one
+
+    try {
+      setJunaTxnHash(true)
+      const decimals = 18
+      const rawAmount = BigInt(amount * 10 ** decimals)
+        .toString(16)
+        .padStart(64, "0")
+      const recipient = adminAddress.slice(2).padStart(64, "0")
+
+      const data = "0xa9059cbb" + recipient + rawAmount // 0xa9059cbb = transfer()
+
+      const txParams = {
+        from: ethAddress,
+        to: tokenAddress,
+        data,
+      }
+
+      const txHash = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        params: [txParams],
+      })
+
+      console.log("Transfer Successful:", txHash)
+      setJunaFeePaid(true)
+      popUp(successMsg, route)
+      return txHash
+    } catch (err) {
+      console.error("Transfer error:", err)
+      errorPopUp(errorMsg)
+    } finally {
+      setJunaTxnHash(false)
+    }
+  }
+
+  // approve Juna transaction
+  const approveJuna = (
+    amount: number,
+    successMsg: string,
+    errorMsg: string,
+    route: string,
+  ) => {
+    transferJuna(amount, successMsg, errorMsg, route)
+  }
+
   return {
     bet,
     done,
@@ -519,6 +576,8 @@ export const hooks = () => {
     claimloading,
     isLoadingJuna,
     activateloading,
+    junaTxnHash,
+    junaFeePaid,
     loadingEthBalance,
     reward,
     gettingCode,
@@ -544,6 +603,7 @@ export const hooks = () => {
     getUserWalletAddress,
     fetchEthBalance,
     fetchJunaBalance,
+    approveJuna,
   }
 }
 

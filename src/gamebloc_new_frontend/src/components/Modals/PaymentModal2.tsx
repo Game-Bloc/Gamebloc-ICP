@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { useAppSelector } from "../../redux/hooks"
 import { useGameblocHooks } from "../../Functions/gameblocHooks"
+import { hooks } from "../../Functions/hooks"
 import {
   CheckCircleOutlined,
   CheckOutlined,
@@ -59,6 +60,7 @@ const PaymentModal2 = ({
   const [date, setDate] = useState<number>()
   const [amount, setAmount] = useState<number>(null)
   const [createdAt, setCreatedAt] = useState<string>("")
+  const { junaTxnHash, junaFeePaid, approveJuna } = hooks()
   const { paid, isLoading, payICPfee, approveFee } = useGameblocHooks()
   const [selectedPayment, setSelectedPayment] = useState<string | null>(null)
   const username = useAppSelector((state) => state.userProfile.username)
@@ -71,11 +73,15 @@ const PaymentModal2 = ({
     setCreatedAt(generateDate())
     setDate(Date.now())
     if (gameType === "Duo") {
-      setAmount(+icp.toFixed(8) * 2)
+      !showJuna
+        ? setAmount(+icp.toFixed(8) * 2)
+        : setAmount(+juna.toFixed(8) * 2)
     } else if (gameType === "Squad") {
-      setAmount(+icp.toFixed(8) * 4)
+      !showJuna
+        ? setAmount(+icp.toFixed(8) * 4)
+        : setAmount(+juna.toFixed(8) * 4)
     } else {
-      setAmount(+icp.toFixed(8))
+      !showJuna ? setAmount(+icp.toFixed(8)) : setAmount(+juna.toFixed(8))
     }
   }, [])
 
@@ -84,16 +90,31 @@ const PaymentModal2 = ({
   }
 
   console.log("icp", +icp.toFixed(8))
+
   const payFee = () => {
     if (tourType === "Prepaid") {
-      approveFee(
-        +icp.toFixed(8),
-        "Payment Approved",
-        "Something went wrong",
-        "",
-      )
+      !showJuna
+        ? approveFee(
+            +icp.toFixed(8),
+            "Payment Approved",
+            "Something went wrong",
+            "",
+          )
+        : approveJuna(
+            +juna.toFixed(8),
+            "Transaction Approved",
+            "Something went wrong!!!",
+            "",
+          )
     } else {
-      approveFee(amount, "Payment Approved", "Something went wrong", "")
+      !showJuna
+        ? approveFee(amount, "Payment Approved", "Something went wrong", "")
+        : approveJuna(
+            amount,
+            "Transaction Approved",
+            "Something went wrong!!!",
+            "",
+          )
     }
   }
 
@@ -254,7 +275,9 @@ const PaymentModal2 = ({
                                 : true
                             }
                             onClick={() =>
-                              paid === true ? setActive("second") : payFee()
+                              paid === true || junaFeePaid === true
+                                ? setActive("second")
+                                : payFee()
                             }
                             className={`flex mt-8 text-black text-[.9rem] ${
                               selectedPayment === "ICP" ||
@@ -263,10 +286,10 @@ const PaymentModal2 = ({
                                 : "bg-primary-second/15"
                             } font-bold  justify-center items-center py-6  px-6 w-full h-[1.5rem] rounded-full `}
                           >
-                            {isLoading ? (
+                            {isLoading || junaTxnHash ? (
                               <ClipLoader
                                 color={color}
-                                loading={isLoading}
+                                loading={isLoading || junaTxnHash}
                                 cssOverride={override}
                                 size={20}
                                 aria-label="Loading Spinner"
@@ -274,7 +297,9 @@ const PaymentModal2 = ({
                               />
                             ) : (
                               <p className="font-semibold">
-                                {paid === false ? "Approve" : "Next"}
+                                {paid === true || junaFeePaid === true
+                                  ? "Next"
+                                  : "Approve"}
                               </p>
                             )}
                           </button>

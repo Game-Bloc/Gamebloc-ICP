@@ -21,6 +21,7 @@ import { useAuth } from "../Auth/use-auth-client"
 import { useCountdown } from "../components/utils/CountDown"
 import Wager from "../components/tournament/Wager/Wager"
 import WagerModal from "../components/Modals/WagerModal"
+import hooks from "../Functions/hooks"
 const gameImage = require("../../assets/category1.png").default
 
 const TournamentDetail = () => {
@@ -33,6 +34,7 @@ const TournamentDetail = () => {
   const role = useAppSelector((state) => state.userProfile.role)
   const { updating, updateTournament } = useUpdateTournament()
   const { loading, nodata, fetchAllTournaments } = useFetchAllTournaments()
+  const { fetchJunaBalance } = hooks()
 
   // Safeguard for tournament data filtering
   const tourData =
@@ -49,6 +51,7 @@ const TournamentDetail = () => {
 
   useEffect(() => {
     updateTournament()
+    fetchJunaBalance()
   }, [isAuthenticated, notAuthenticated])
 
   // console.log("data", tournamentData)
