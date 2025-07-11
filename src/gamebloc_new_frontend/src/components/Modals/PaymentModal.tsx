@@ -94,8 +94,6 @@ const PaymentModal = ({
   }, [])
 
   useEffect(() => {
-    console.log("junaValue-----", junaValue)
-    console.log("JunaBalance-----", junaBalance)
     const calculateIcpValue = () => {
       const dollarAmount = tourType ? +data.total_prize : +data.entry_prize
       if (_icp2Usd > 0 && dollarAmount > 0) {

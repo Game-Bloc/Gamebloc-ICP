@@ -141,7 +141,7 @@ const Header = () => {
         ) : (
           <div className="flex relative items-center">
             {/* Show MetaMask info if connected */}
-            {ethAddress && (
+            {/* {ethAddress && (
               <div className="ml-4 flex items-center gap-3 px-3 py-2 rounded-lg bg-[#f6b8fc15] shadow-sm text-xs font-medium">
                 <FaEthereum className="text-[#f6b8fc]" size={16} />
                 <div className="flex items-center gap-4">
@@ -239,7 +239,7 @@ const Header = () => {
                   </div>
                 </div>
               </div>
-            )}
+            )} */}
             <Tooltip placement="bottom" title="Notifications" color="#bfa9c27e">
               <div
                 onClick={

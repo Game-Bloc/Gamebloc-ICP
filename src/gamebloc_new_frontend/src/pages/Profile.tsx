@@ -23,6 +23,7 @@ import DepositPromptModal from "../components/Modals/Deposit/DepositPromptModal"
 import QrModal from "../components/Modals/Deposit/QrModal"
 import NairaDepositModal from "../components/Modals/Deposit/NairaDepositModal"
 import { FaEthereum } from "react-icons/fa6"
+import { FaSync } from "react-icons/fa"
 
 const items: TabsProps["items"] = [
   {
@@ -60,6 +61,8 @@ const Profile = () => {
   const [transferModal, setTransferModal] = useState<boolean>(false)
   const [promptModal, setPromptModal] = useState<boolean>(false)
   const [qrModal, setQrModal] = useState<boolean>(false)
+  const { fetchEthBalance, loadingEthBalance } = hooks()
+  const ethBalance = useAppSelector((state) => state.juna.ethBalance)
   const [fiatModal, setFiatModal] = useState<boolean>(false)
   const username = useAppSelector((state) => state.userProfile.username)
   const principal = useAppSelector((state) => state.userProfile.principal_id)
@@ -245,49 +248,77 @@ const Profile = () => {
                           {/* Show balance for selected mode */}
                           {!showJuna ? (
                             <div className="flex items-center  mt-2">
-                              {fetching ? (
-                                <div>
-                                  <ClipLoader
-                                    color={color}
-                                    loading={fetching}
-                                    cssOverride={override}
-                                    size={10}
-                                    aria-label="Loading Spinner"
-                                    data-testid="loader"
+                              <div className="flex flex-row gap-4">
+                                <div className="flex flex-row">
+                                  <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
+                                    {fetching ? "..." : balance}
+                                  </p>
+                                  <img
+                                    src={`Icp.svg`}
+                                    className="w-6 h-6 m-0"
+                                    alt=""
                                   />
                                 </div>
-                              ) : (
-                                <div className="flex flex-row gap-4">
-                                  <div className="flex flex-row">
-                                    <p className="text-bold text-[1rem] mr-1  sm:text-[1rem]  text-[#ffffff]">
-                                      {balance}
-                                    </p>
-                                    <img
-                                      src={`Icp.svg`}
-                                      className="w-6 h-6 m-0"
-                                      alt=""
-                                    />
-                                  </div>
-                                  <div className="flex flex-row">
-                                    <p className="text-[1rem] text-white mr-4">
-                                      ≈
-                                    </p>
-                                    <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
-                                      ${(balance * _icp2Usd).toFixed(2)}
-                                    </p>
-                                  </div>
+                                <div className="flex flex-row">
+                                  <p className="text-[1rem] text-white mr-4">
+                                    ≈
+                                  </p>
+                                  <p className="text-bold text-[1rem]   sm:text-[1rem]  text-[#ffffff]">
+                                    $
+                                    {fetching
+                                      ? ".."
+                                      : (balance * _icp2Usd).toFixed(2)}
+                                  </p>
                                 </div>
-                              )}
+                                <button
+                                  onClick={getICPBalance}
+                                  className="p-0.5 hover:bg-[#f6b8fc20] rounded transition-colors"
+                                  title="Refresh balance"
+                                >
+                                  <FaSync
+                                    className={`text-[#f6b8fc] ${
+                                      fetching ? "animate-spin" : ""
+                                    }`}
+                                    size={10}
+                                  />
+                                </button>
+                              </div>
                             </div>
                           ) : (
-                            <div className="flex items-center mt-2 gap-2">
-                              <FaEthereum
-                                className="text-[#f6b8fc]"
-                                size={18}
-                              />
-                              <span className="text-bold text-[1rem] text-[#ffffff]">
-                                {isLoadingJuna ? "..." : junaBalance} JUNA
-                              </span>
+                            <div className="flex flex-col gap-4">
+                              <div className="flex items-center mt-2 gap-2">
+                                <FaEthereum
+                                  className="text-[#f6b8fc]"
+                                  size={18}
+                                />
+                                <span className="text-bold text-[1rem] text-[#ffffff]">
+                                  {isLoadingJuna ? "..." : junaBalance} JUNA
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <FaEthereum
+                                  className="text-[#f6b8fc]"
+                                  size={18}
+                                />
+                                <span className="text-bold text-[1rem] text-[#ffffff]">
+                                  {loadingEthBalance
+                                    ? "..."
+                                    : `${ethBalance} ETH`}
+                                </span>
+                                <button
+                                  onClick={fetchEthBalance}
+                                  className="p-0.5 hover:bg-[#f6b8fc20] rounded transition-colors"
+                                  title="Refresh balance"
+                                >
+                                  <FaSync
+                                    className={`text-[#f6b8fc] ${
+                                      loadingEthBalance ? "animate-spin" : ""
+                                    }`}
+                                    size={10}
+                                  />
+                                </button>
+                              </div>
                             </div>
                           )}
                           <div className="flex items-center">
@@ -363,7 +394,7 @@ const Profile = () => {
                         ) : (
                           <div className="flex flex-col justify-start">
                             <p className="text-[#E0DFBA] text-[.8rem] sm:text-base text-bold">
-                              MetaMask Wallet Address
+                              Eth Wallet Address
                             </p>
                             <div className=" border-solid border-[#634E6D] mt-[.5rem] flex border rounded-md w-full md:w-[15rem]">
                               <Copy textToCopy={ethAddress || ""} />
